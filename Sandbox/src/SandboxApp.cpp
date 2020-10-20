@@ -1,10 +1,18 @@
+#include <LightEngine.h>
 
-namespace LightEngine
+class SandBox : public LightEngine::Application
 {
-	__declspec(dllimport)void Print();
-}
+public:
+	SandBox()
+	{
+	}
+	~SandBox()
+	{
+	}
 
-int main()
+};
+
+LightEngine::Application* LightEngine::CreateApplication()
 {
-	LightEngine::Print();
+	return new SandBox();
 }
