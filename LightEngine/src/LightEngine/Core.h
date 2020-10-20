@@ -1,4 +1,5 @@
 #pragma once
+
 #ifdef LE_PLATFORM_WINDOWS
 	#ifdef LE_BUILD_DLL
 		#define LIGHTENGINE_API __declspec(dllexport)
