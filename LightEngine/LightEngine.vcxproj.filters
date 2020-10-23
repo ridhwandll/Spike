@@ -4,6 +4,9 @@
     <Filter Include="LightEngine">
       <UniqueIdentifier>{135B6D8E-7F10-E683-0805-E05A74B9DC87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LightEngine\Events">
+      <UniqueIdentifier>{9773D12C-8357-9282-ECB7-8CD5D8BA7C04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LightEngine.h" />
@@ -15,6 +18,18 @@
     </ClInclude>
     <ClInclude Include="src\LightEngine\EntryPoint.h">
       <Filter>LightEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Events\ApplicationEvent.h">
+      <Filter>LightEngine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Events\Event.h">
+      <Filter>LightEngine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Events\KeyEvent.h">
+      <Filter>LightEngine\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Events\MouseEvent.h">
+      <Filter>LightEngine\Events</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Log.h">
       <Filter>LightEngine</Filter>

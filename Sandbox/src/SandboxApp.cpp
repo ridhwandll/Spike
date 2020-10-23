@@ -3,16 +3,16 @@
 class SandBox : public LightEngine::Application
 {
 public:
-	SandBox()
-	{
-	}
-	~SandBox()
-	{
-	}
+    SandBox()
+    {
+    }
+    ~SandBox()
+    {
+    }
 
 };
 
 LightEngine::Application* LightEngine::CreateApplication()
 {
-	return new SandBox();
+    return new SandBox();
 }
