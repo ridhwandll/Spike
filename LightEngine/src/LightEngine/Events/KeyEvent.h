@@ -1,12 +1,10 @@
 #pragma once
-#pragma once
 
 #include "Event.h"
 
-#include <sstream>
 
 namespace LightEngine {
-
+//KEY EVENT
     class LIGHTENGINE_API KeyEvent : public Event
     {
     public:
@@ -19,7 +17,7 @@ namespace LightEngine {
 
         int m_KeyCode;
     };
-
+//KEY PRESSED EVENT
     class LIGHTENGINE_API KeyPressedEvent : public KeyEvent
     {
     public:
@@ -39,7 +37,7 @@ namespace LightEngine {
     private:
         int m_RepeatCount;
     };
-
+//KEY RELEASED EVENT
     class LIGHTENGINE_API KeyReleasedEvent : public KeyEvent
     {
     public:

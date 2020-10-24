@@ -34,6 +34,7 @@
     <ClInclude Include="src\LightEngine\Log.h">
       <Filter>LightEngine</Filter>
     </ClInclude>
+    <ClInclude Include="src\lepch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Application.cpp">
@@ -42,5 +43,6 @@
     <ClCompile Include="src\LightEngine\Log.cpp">
       <Filter>LightEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\lepch.cpp" />
   </ItemGroup>
 </Project>

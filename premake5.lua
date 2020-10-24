@@ -18,6 +18,9 @@ project "LightEngine"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "lepch.h"
+	pchsource "LightEngine/src/lepch.cpp"
+
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -104,3 +107,4 @@ project "Sandbox"
 	filter "configurations:Dist"
 		defines "LE_DIST"
 		optimize "On" 
+		

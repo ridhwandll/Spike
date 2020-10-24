@@ -2,10 +2,9 @@
 
 #include "Event.h"
 
-#include <sstream>
 
 namespace LightEngine {
-
+//WINDOW RESIZE EVENT
     class LIGHTENGINE_API WindowResizeEvent : public Event
     {
     public:
@@ -27,7 +26,7 @@ namespace LightEngine {
     private:
         unsigned int m_Width, m_Height;
     };
-
+//WINDOW CLOSE EVENT
     class LIGHTENGINE_API WindowCloseEvent : public Event
     {
     public:
@@ -36,7 +35,7 @@ namespace LightEngine {
         EVENT_CLASS_TYPE(WindowClose)
             EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
-
+//APP TICK
     class LIGHTENGINE_API AppTickEvent : public Event
     {
     public:
@@ -45,7 +44,7 @@ namespace LightEngine {
         EVENT_CLASS_TYPE(AppTick)
             EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
-
+//APP UPDATE 
     class LIGHTENGINE_API AppUpdateEvent : public Event
     {
     public:
@@ -54,7 +53,7 @@ namespace LightEngine {
         EVENT_CLASS_TYPE(AppUpdate)
             EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
-
+//APP RENDER EVENT
     class LIGHTENGINE_API AppRenderEvent : public Event
     {
     public:

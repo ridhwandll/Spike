@@ -1,5 +1,5 @@
+#include "lepch.h"
 #include "Application.h"
-
 #include "LightEngine/Events/ApplicationEvent.h"
 #include "LightEngine/Log.h"
 
@@ -24,7 +24,7 @@ namespace LightEngine
         }
         if (e.IsInCategory(EventCategoryInput))
         {
-            LE_TRACE(e);
+            LE_CRITICAL(e);
         }
         while (true);
     }

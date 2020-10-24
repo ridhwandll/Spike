@@ -1,9 +1,7 @@
 #pragma once
-
+#include "lepch.h"
 #include "LightEngine/Core.h"
 
-#include <string>
-#include <functional>
 
 namespace LightEngine {
 
@@ -36,7 +34,7 @@ namespace LightEngine {
         virtual const char* GetName() const override { return #type; }
 
     #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
-
+//MAIN EVENT CLASS
     class LIGHTENGINE_API Event
     {
         friend class EventDispatcher;
@@ -48,12 +46,12 @@ namespace LightEngine {
 
         inline bool IsInCategory(EventCategory category)
         {
-            return GetCategoryFlags() & category;
+            return (GetCategoryFlags() & category);
         }
     protected:
         bool m_Handled = false;
     };
-
+//EVENT DISPATCHER
     class EventDispatcher
     {
         template<typename T>
@@ -77,7 +75,7 @@ namespace LightEngine {
     private:
         Event& m_Event;
     };
-
+//OPERATOR OVERLOADING FOR THE EVENTS
     inline std::ostream& operator<<(std::ostream& os, const Event& e)
     {
         return os << e.ToString();

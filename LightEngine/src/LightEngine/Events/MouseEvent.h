@@ -2,10 +2,8 @@
 
 #include "Event.h"
 
-#include <sstream>
-
 namespace LightEngine {
-
+//MOUSE MOVED EVENT
     class LIGHTENGINE_API MouseMovedEvent : public Event
     {
     public:
@@ -27,7 +25,7 @@ namespace LightEngine {
     private:
         float m_MouseX, m_MouseY;
     };
-
+//MOUSE SCROLLED EVENT
     class LIGHTENGINE_API MouseScrolledEvent : public Event
     {
     public:
@@ -49,7 +47,7 @@ namespace LightEngine {
     private:
         float m_XOffset, m_YOffset;
     };
-
+//MOUSE BUTTON EVENT
     class LIGHTENGINE_API MouseButtonEvent : public Event
     {
     public:
@@ -62,7 +60,7 @@ namespace LightEngine {
 
         int m_Button;
     };
-
+//MOUSE BUTTON PRESSED
     class LIGHTENGINE_API MouseButtonPressedEvent : public MouseButtonEvent
     {
     public:
@@ -78,7 +76,7 @@ namespace LightEngine {
 
         EVENT_CLASS_TYPE(MouseButtonPressed)
     };
-
+//MOUSE BUTTON RELEASED
     class LIGHTENGINE_API MouseButtonReleasedEvent : public MouseButtonEvent
     {
     public:
