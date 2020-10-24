@@ -12,6 +12,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "LightEngine/Log.h"
+
 #ifdef LE_PLATFORM_WINDOWS
     #include <Windows.h>
 #endif 

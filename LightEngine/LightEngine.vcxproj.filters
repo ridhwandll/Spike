@@ -35,6 +35,8 @@
       <Filter>LightEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\lepch.h" />
+    <ClInclude Include="src\LightEngine\Window.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Application.cpp">
@@ -44,5 +46,6 @@
       <Filter>LightEngine</Filter>
     </ClCompile>
     <ClCompile Include="src\lepch.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
   </ItemGroup>
 </Project>

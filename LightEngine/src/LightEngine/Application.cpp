@@ -3,11 +3,13 @@
 #include "LightEngine/Events/ApplicationEvent.h"
 #include "LightEngine/Log.h"
 
+#include <GLFW/glfw3.h>
+
 namespace LightEngine
 {
     Application::Application()
     {
-
+        m_Window = std::unique_ptr<Window>(Window::Create());
     }
 
     Application::~Application()
@@ -17,15 +19,11 @@ namespace LightEngine
 
     void Application::Run()
     {
-        WindowResizeEvent e(1280, 720);
-        if (e.IsInCategory(EventCategoryApplication))
+        while (m_Running)
         {
-            LE_TRACE(e);
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+            m_Window->OnUpdate();
         }
-        if (e.IsInCategory(EventCategoryInput))
-        {
-            LE_CRITICAL(e);
-        }
-        while (true);
     }
 }
