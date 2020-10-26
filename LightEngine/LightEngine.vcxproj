@@ -84,6 +84,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/MDd</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -109,6 +110,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MDd</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -135,6 +137,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MDd</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -157,18 +160,22 @@
     <ClInclude Include="src\LightEngine\Events\Event.h" />
     <ClInclude Include="src\LightEngine\Events\KeyEvent.h" />
     <ClInclude Include="src\LightEngine\Events\MouseEvent.h" />
+    <ClInclude Include="src\LightEngine\Layer.h" />
+    <ClInclude Include="src\LightEngine\LayerStack.h" />
     <ClInclude Include="src\LightEngine\Log.h" />
-    <ClInclude Include="src\lepch.h" />
     <ClInclude Include="src\LightEngine\Window.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\lepch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Application.cpp" />
+    <ClCompile Include="src\LightEngine\Layer.cpp" />
+    <ClCompile Include="src\LightEngine\LayerStack.cpp" />
     <ClCompile Include="src\LightEngine\Log.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\lepch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

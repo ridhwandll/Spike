@@ -10,12 +10,13 @@ namespace LightEngine
     class WindowsWindow : public Window
     {
     public:
-        WindowsWindow(const WindowProps& props);
-        virtual ~WindowsWindow();
+        WindowsWindow(const WindowProps& props); //Constructor declaration for this class
+        virtual ~WindowsWindow(); //Destructor declaration for this class
 
-        void OnUpdate() override;
+        void OnUpdate() override; //Override the OnUpdate function of the Window class
 
-        inline unsigned int GetWidth() const override { return m_Data.Width; }
+        //Override the GetWidth() and GetHeight() function of the Window class in Window.h
+        inline unsigned int GetWidth() const override { return m_Data.Width; } 
         inline unsigned int GetHeight() const override { return m_Data.Height; }
 
         // Window attributes

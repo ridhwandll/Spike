@@ -62,14 +62,17 @@ project "LightEngine"
 
 	filter "configurations:Debug"
 		defines "LE_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "LE_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "LE_DIST"
+		buildoptions "/MD"
 		optimize "On"
 
 project "Sandbox"
@@ -109,13 +112,16 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "LE_DEBUG"
+		buildoptions "/MDd"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "LE_RELEASE"
+		buildoptions "/MD"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "LE_DIST"
+		buildoptions "/MD"
 		optimize "On" 
 		

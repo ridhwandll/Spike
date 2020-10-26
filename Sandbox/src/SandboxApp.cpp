@@ -1,15 +1,32 @@
 #include <LightEngine.h>
 
+class ExampleLayer : public LightEngine::Layer
+{
+public:
+    ExampleLayer()
+        : Layer("Example")
+    {
+    }
+
+    void OnUpdate() override
+    {
+        LE_INFO("ExampleLayer::Update");
+    }
+
+    void OnEvent(LightEngine::Event& event) override
+    {
+        LE_TRACE("{0}", event);
+    }
+
+};
 class SandBox : public LightEngine::Application
 {
 public:
     SandBox()
     {
+        PushLayer(new ExampleLayer());
     }
-    ~SandBox()
-    {
-    }
-
+    ~SandBox(){}
 };
 
 LightEngine::Application* LightEngine::CreateApplication()
