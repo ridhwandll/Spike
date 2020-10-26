@@ -4,3 +4,6 @@
 [submodule "LightEngine/vendor/GLFW"]
 	path = LightEngine/vendor/GLFW
 	url = https://github.com/FahimFuad/glfw.git
+[submodule "LightEngine/vendor/imgui"]
+	path = LightEngine/vendor/imgui
+	url = https://github.com/FahimFuad/imgui
