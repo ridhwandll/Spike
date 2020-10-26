@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "LightEngine/Log.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace LightEngine
 {
