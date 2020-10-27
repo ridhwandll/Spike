@@ -10,9 +10,13 @@
     #error LightEngine only supports Windows!
 #endif // LE_PLATFORM_WINDOWS
 
+#ifdef LE_DEBUG
+    #define LE_ENABLE_ASSERTS
+#endif
+
 #ifdef LE_ENABLE_ASSERTS
-    #define LE_ASSERT(x, ...) { if(!(x)) { HZ_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-    #define LE_CORE_ASSERT(x, ...) { if(!(x)) { HZ_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+    #define LE_ASSERT(x, ...) { if(!(x)) { LE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+    #define LE_CORE_ASSERT(x, ...) { if(!(x)) { LE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
     #define LE_ASSERT(x, ...)
     #define LE_CORE_ASSERT(x, ...)
