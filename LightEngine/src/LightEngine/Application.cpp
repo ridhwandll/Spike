@@ -3,6 +3,7 @@
 #include "LightEngine/Log.h"
 
 #include <glad/glad.h>
+#include "Input.h"
 
 namespace LightEngine
 {
@@ -55,10 +56,10 @@ namespace LightEngine
             glClear(GL_COLOR_BUFFER_BIT);
             for (Layer* layer : m_LayerStack)
                 layer->OnUpdate();
+
             m_Window->OnUpdate();
         }
     }
-
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
         m_Running = false;
