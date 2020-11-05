@@ -1,5 +1,6 @@
 #include <LightEngine.h>
 
+#include "imgui/imgui.h"
 class ExampleLayer : public LightEngine::Layer
 {
 public:
@@ -11,7 +12,12 @@ public:
     void OnUpdate() override
     {
     }
-
+    virtual void OnImGuiRender() override
+    {
+        ImGui::Begin("Test");
+        ImGui::Text("This is LightEngine!");
+        ImGui::End();
+    }
     void OnEvent(LightEngine::Event& event) override
     {
         if (event.GetEventType() == LightEngine::EventType::KeyPressed)
@@ -27,7 +33,6 @@ public:
     SandBox()
     {
         PushLayer(new ExampleLayer());
-        PushOverlay(new LightEngine::ImGuiLayer());
     }
     ~SandBox(){}
 };
