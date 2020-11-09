@@ -17,9 +17,12 @@ IncludeDir["Glad"] = "LightEngine/vendor/Glad/include"
 IncludeDir["ImGui"] = "LightEngine/vendor/imgui"
 IncludeDir["glm"] = "LightEngine/vendor/glm"
 
-include "LightEngine/vendor/GLFW"
-include "LightEngine/vendor/Glad"
-include "LightEngine/vendor/imgui"
+group "Dependencies"
+	include "LightEngine/vendor/GLFW"
+	include "LightEngine/vendor/Glad"
+	include "LightEngine/vendor/imgui"
+
+group ""
 
 project "LightEngine"
 	location "LightEngine"
@@ -138,4 +141,3 @@ project "Sandbox"
 		defines "LE_DIST"
 		runtime "Release"
 		optimize "on" 
-		

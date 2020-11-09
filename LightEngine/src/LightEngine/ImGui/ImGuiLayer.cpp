@@ -34,7 +34,6 @@ namespace LightEngine
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
@@ -46,7 +45,6 @@ namespace LightEngine
             style.WindowRounding = 0.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
-
         Application& app = Application::Get();
         GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
@@ -78,7 +76,7 @@ namespace LightEngine
         //Rendering
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+       
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
             GLFWwindow* backup_current_context = glfwGetCurrentContext();
@@ -87,11 +85,10 @@ namespace LightEngine
             glfwMakeContextCurrent(backup_current_context);
         }
     }
+
     void ImGuiLayer::OnImGuiRender()
     {
         static bool show = true;
         ImGui::ShowDemoWindow(&show);
     }
-
-
 }

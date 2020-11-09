@@ -13,8 +13,14 @@
     <Filter Include="src\LightEngine\ImGui">
       <UniqueIdentifier>{54DB6E5E-C047-2A59-893B-C2B6F5664CC1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\LightEngine\Renderer">
+      <UniqueIdentifier>{90F136A8-7C16-8628-A561-6BB891E58446}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Platform">
       <UniqueIdentifier>{21CA02E5-0D2D-9289-B6B2-CA3FA2F45D0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Platform\OpenGL">
+      <UniqueIdentifier>{35A49437-A105-7245-2A73-B8F796D3A804}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Platform\Windows">
       <UniqueIdentifier>{5B054582-4794-CE4B-F0B2-E246DC20DFF1}</UniqueIdentifier>
@@ -87,8 +93,14 @@
     <ClInclude Include="src\LightEngine\MouseButtonCodes.h">
       <Filter>src\LightEngine</Filter>
     </ClInclude>
+    <ClInclude Include="src\LightEngine\Renderer\GraphicsContext.h">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\LightEngine\Window.h">
       <Filter>src\LightEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
       <Filter>src\Platform\Windows</Filter>
@@ -1342,6 +1354,9 @@
     </ClCompile>
     <ClCompile Include="src\LightEngine\Log.cpp">
       <Filter>src\LightEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
