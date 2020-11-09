@@ -156,6 +156,7 @@
     <ClInclude Include="src\LightEngine\Log.h" />
     <ClInclude Include="src\LightEngine\MouseButtonCodes.h" />
     <ClInclude Include="src\LightEngine\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\LightEngine\Renderer\Shader.h" />
     <ClInclude Include="src\LightEngine\Window.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
@@ -577,6 +578,7 @@
     <ClCompile Include="src\LightEngine\Layer.cpp" />
     <ClCompile Include="src\LightEngine\LayerStack.cpp" />
     <ClCompile Include="src\LightEngine\Log.cpp" />
+    <ClCompile Include="src\LightEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
@@ -598,4 +600,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

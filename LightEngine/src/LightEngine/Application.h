@@ -7,6 +7,7 @@
 
 #include "LightEngine/ImGui/ImGuiLayer.h"
 
+#include "LightEngine/Renderer/Shader.h"
 namespace LightEngine
 {
     class LIGHTENGINE_API Application
@@ -31,6 +32,7 @@ namespace LightEngine
         LayerStack m_LayerStack;
 
         unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+        std::unique_ptr<Shader> m_Shader;
     private:
         static Application* s_Instance;
     };
