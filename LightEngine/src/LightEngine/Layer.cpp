@@ -7,9 +7,4 @@ namespace LightEngine
         : m_DebugName(debugName)
     {
     }
-
-    Layer::~Layer()
-    {
-
-    }
 }

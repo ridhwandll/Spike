@@ -1,19 +1,17 @@
 #pragma once
 
 #include "LightEngine/Layer.h"
-
 #include "LightEngine/Events/ApplicationEvent.h"
 #include "LightEngine/Events/KeyEvent.h"
 #include "LightEngine/Events/MouseEvent.h"
 
 namespace LightEngine
 {
-
     class LIGHTENGINE_API ImGuiLayer : public Layer
     {
     public:
         ImGuiLayer();
-        ~ImGuiLayer();
+        ~ImGuiLayer() = default;
 
         virtual void OnAttach() override;
         virtual void OnDetach() override;

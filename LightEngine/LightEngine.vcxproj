@@ -155,9 +155,12 @@
     <ClInclude Include="src\LightEngine\LayerStack.h" />
     <ClInclude Include="src\LightEngine\Log.h" />
     <ClInclude Include="src\LightEngine\MouseButtonCodes.h" />
+    <ClInclude Include="src\LightEngine\Renderer\Buffer.h" />
     <ClInclude Include="src\LightEngine\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\LightEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\LightEngine\Renderer\Shader.h" />
     <ClInclude Include="src\LightEngine\Window.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
@@ -578,7 +581,10 @@
     <ClCompile Include="src\LightEngine\Layer.cpp" />
     <ClCompile Include="src\LightEngine\LayerStack.cpp" />
     <ClCompile Include="src\LightEngine\Log.cpp" />
+    <ClCompile Include="src\LightEngine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\LightEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
