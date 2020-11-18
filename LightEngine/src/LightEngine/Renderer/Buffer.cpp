@@ -11,8 +11,8 @@ namespace LightEngine
     {
         switch (Renderer::GetAPI())
         {
-        case RendererAPI::None:    LE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::OpenGL:  return new OpenGLVertexBuffer(vertices, size);
+        case RendererAPI::API::None:    LE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::API::OpenGL:  return new OpenGLVertexBuffer(vertices, size);
         }
     
         LE_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -23,8 +23,8 @@ namespace LightEngine
     {
         switch (Renderer::GetAPI())
         {
-        case RendererAPI::None:    LE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::OpenGL:  return new OpenGLIndexBuffer(indices, size);
+        case RendererAPI::API::None:    LE_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::API::OpenGL:  return new OpenGLIndexBuffer(indices, size);
         }
     
         LE_CORE_ASSERT(false, "Unknown RendererAPI!");
