@@ -3,6 +3,7 @@
 #include "LightEngine/Log.h"
 #include "LightEngine/Renderer/Renderer.h"
 #include "Input.h"
+#include "GLFW/glfw3.h"
 
 namespace LightEngine
 {
@@ -51,8 +52,13 @@ namespace LightEngine
     {
         while (m_Running)
         {
+            // should be Platform::GetTime();
+            float time = (float)glfwGetTime();
+            Timestep timestep = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
             for (Layer* layer : m_LayerStack)
-                layer->OnUpdate();
+                layer->OnUpdate(timestep);
 
             m_ImGuiLayer->Begin();
             for (Layer* layer : m_LayerStack)

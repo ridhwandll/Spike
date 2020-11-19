@@ -112,23 +112,23 @@ public:
         m_BlueShader.reset(new LightEngine::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
-    void OnUpdate() override
+    void OnUpdate(LightEngine::Timestep ts) override
     {
         if (LightEngine::Input::IsKeyPressed(LE_KEY_LEFT))
-            m_CameraPosition.x -= m_CameraMoveSpeed;
+            m_CameraPosition.x -= m_CameraMoveSpeed * ts;
         else if (LightEngine::Input::IsKeyPressed(LE_KEY_RIGHT))
-            m_CameraPosition.x += m_CameraMoveSpeed;
+            m_CameraPosition.x += m_CameraMoveSpeed * ts;
 
         if (LightEngine::Input::IsKeyPressed(LE_KEY_UP))
-            m_CameraPosition.y += m_CameraMoveSpeed;
+            m_CameraPosition.y += m_CameraMoveSpeed * ts;
         else if (LightEngine::Input::IsKeyPressed(LE_KEY_DOWN))
-            m_CameraPosition.y -= m_CameraMoveSpeed;
+            m_CameraPosition.y -= m_CameraMoveSpeed * ts;
 
         if (LightEngine::Input::IsKeyPressed(LE_KEY_A))
-            m_cameraRotaiton += m_CameraRotationSpeed;
+            m_cameraRotaiton += m_CameraRotationSpeed * ts;
  
         else if (LightEngine::Input::IsKeyPressed(LE_KEY_D))
-            m_cameraRotaiton -= m_CameraRotationSpeed;
+            m_cameraRotaiton -= m_CameraRotationSpeed * ts;
 
 
         LightEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
@@ -159,9 +159,9 @@ private:
 
     LightEngine::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition;
-    float m_CameraMoveSpeed = 0.1f;
+    float m_CameraMoveSpeed = 5.0f;
     float m_cameraRotaiton = 0.0f;
-    float m_CameraRotationSpeed = 2.0f;
+    float m_CameraRotationSpeed = 180.0f;
 };
 
 class SandBox : public LightEngine::Application

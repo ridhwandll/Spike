@@ -1,7 +1,7 @@
 #pragma once
-
 #include "LightEngine/Core.h"
 #include "LightEngine/Events/Event.h"
+#include "LightEngine/Core/Timestep.h"
 
 namespace LightEngine
 {
@@ -14,7 +14,7 @@ namespace LightEngine
 
         virtual void OnAttach() {}
         virtual void OnDetach() {}
-        virtual void OnUpdate() {}
+        virtual void OnUpdate(Timestep ts) {}
         virtual void OnImGuiRender() {}
         virtual void OnEvent(Event& event) {}
 

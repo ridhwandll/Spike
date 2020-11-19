@@ -5,6 +5,8 @@
 #include "LightEngine/Layer.h"
 #include "LightEngine/Log.h"
 
+#include "LightEngine/Core/Timestep.h"
+
 #include "LightEngine/Input.h"
 #include "LightEngine/KeyCodes.h"
 #include "LightEngine/MouseButtonCodes.h"

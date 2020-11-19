@@ -143,6 +143,7 @@
     <ClInclude Include="src\LightEngine.h" />
     <ClInclude Include="src\LightEngine\Application.h" />
     <ClInclude Include="src\LightEngine\Core.h" />
+    <ClInclude Include="src\LightEngine\Core\Timestep.h" />
     <ClInclude Include="src\LightEngine\EntryPoint.h" />
     <ClInclude Include="src\LightEngine\Events\ApplicationEvent.h" />
     <ClInclude Include="src\LightEngine\Events\Event.h" />
