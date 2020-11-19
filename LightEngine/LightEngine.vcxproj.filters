@@ -1344,6 +1344,7 @@
     <ClInclude Include="src\LightEngine\Renderer\RendererAPI.h" />
     <ClInclude Include="src\LightEngine\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\LightEngine\Renderer\OrthographicCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Application.cpp">
@@ -1385,5 +1386,6 @@
     <ClCompile Include="src\LightEngine\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\LightEngine\Renderer\OrthographicCamera.cpp" />
   </ItemGroup>
 </Project>

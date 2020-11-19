@@ -157,6 +157,7 @@
     <ClInclude Include="src\LightEngine\MouseButtonCodes.h" />
     <ClInclude Include="src\LightEngine\Renderer\Buffer.h" />
     <ClInclude Include="src\LightEngine\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\LightEngine\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\LightEngine\Renderer\RenderCommand.h" />
     <ClInclude Include="src\LightEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\LightEngine\Renderer\RendererAPI.h" />
@@ -587,6 +588,7 @@
     <ClCompile Include="src\LightEngine\LayerStack.cpp" />
     <ClCompile Include="src\LightEngine\Log.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\LightEngine\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\RendererAPI.cpp" />

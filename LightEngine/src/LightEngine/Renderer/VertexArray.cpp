@@ -5,7 +5,6 @@
 
 namespace LightEngine
 {
-
     VertexArray* VertexArray::Create()
     {
         switch (Renderer::GetAPI())
