@@ -10,6 +10,18 @@
 #include "LightEngine/MouseButtonCodes.h"
 
 #include "LightEngine/ImGui/ImGuiLayer.h"
-//******Entry Point******
+
+//******Renderer**********
+#include "LightEngine/Renderer/Renderer.h"
+#include "LightEngine/Renderer/RenderCommand.h"
+
+#include "LightEngine/Renderer/Buffer.h"
+#include "LightEngine/Renderer/Shader.h"
+#include "LightEngine/Renderer/VertexArray.h"
+
+#include "LightEngine/Renderer/OrthographicCamera.h"
+//************************
+
+//******Entry Point*******
 #include "LightEngine/EntryPoint.h"
-//***********************
+//************************

@@ -5,14 +5,11 @@
 #include "LightEngine/Events/Event.h"
 #include "LightEngine/Events/ApplicationEvent.h"
 #include "LightEngine/ImGui/ImGuiLayer.h"
-#include "LightEngine/Renderer/Shader.h"
-#include "LightEngine/Renderer/Buffer.h"
-#include "LightEngine/Renderer/VertexArray.h"
-#include "LightEngine/Renderer/OrthographicCamera.h"
+
 
 namespace LightEngine
 {
-    class LIGHTENGINE_API Application
+    class Application
     {
     public:
         Application();
@@ -35,14 +32,6 @@ namespace LightEngine
         ImGuiLayer* m_ImGuiLayer;
         bool m_Running = true;
         LayerStack m_LayerStack;
-
-        std::shared_ptr<Shader> m_Shader;
-        std::shared_ptr<VertexArray> m_VertexArray;
-
-        std::shared_ptr<Shader> m_BlueShader;
-        std::shared_ptr<VertexArray> m_SquareVA;
-
-        OrthographicCamera m_Camera;
     private:
         static Application* s_Instance;
     };
