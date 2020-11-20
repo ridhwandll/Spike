@@ -1,7 +1,9 @@
 #include <LightEngine.h>
 
+#include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "glm/gtc/type_ptr.hpp"
 
 class ExampleLayer : public LightEngine::Layer
 {
@@ -84,9 +86,9 @@ public:
             }
         )";
 
-        m_Shader.reset(new LightEngine::Shader(vertexSrc, fragmentSrc));
+        m_Shader.reset(LightEngine::Shader::Create(vertexSrc, fragmentSrc));
 
-        std::string blueShaderVertexSrc = R"(
+        std::string faltColorShaderVertexSrc = R"(
             #version 330 core
             
             layout(location = 0) in vec3 a_Position;
@@ -102,18 +104,19 @@ public:
             }
         )";
 
-        std::string blueShaderFragmentSrc = R"(
+        std::string flatColorShaderFragmentSrc = R"(
             #version 330 core
             
             layout(location = 0) out vec4 color;
             in vec3 v_Position;
+            uniform vec3 u_Color;
             void main()
             {
-                color = vec4(0.2, 0.3, 0.8, 1.0);
+                color = vec4(u_Color, 1.0f);
             }
         )";
 
-        m_BlueShader.reset(new LightEngine::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
+        m_FlatColorShader.reset(LightEngine::Shader::Create(faltColorShaderVertexSrc, flatColorShaderFragmentSrc));
     }
 
     void OnUpdate(LightEngine::Timestep ts) override
@@ -145,13 +148,16 @@ public:
 
         static glm::mat4 scale = glm::scale(glm::mat4(0.1f), glm::vec3(0.1f));
 
+        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_FlatColorShader)->Bind();
+        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+
         for(int y = 0; y < 20; y++)
         {
             for (int x = 0; x < 20; x++)
             {
                 glm::vec3 pos(x * 0.11f,y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-                LightEngine::Renderer::Submit(m_BlueShader, m_SquareVA, transform);
+                LightEngine::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
             }
         }
         LightEngine::Renderer::Submit(m_Shader, m_VertexArray);
@@ -160,6 +166,9 @@ public:
     }
     virtual void OnImGuiRender() override
     {
+        ImGui::Begin("Settings");
+        ImGui::ColorEdit3("Square color", glm::value_ptr(m_SquareColor));
+        ImGui::End();
     }
     void OnEvent(LightEngine::Event& event) override
     {
@@ -168,7 +177,7 @@ private:
     std::shared_ptr<LightEngine::Shader> m_Shader;
     std::shared_ptr<LightEngine::VertexArray> m_VertexArray;
 
-    std::shared_ptr<LightEngine::Shader> m_BlueShader;
+    std::shared_ptr<LightEngine::Shader> m_FlatColorShader;
     std::shared_ptr<LightEngine::VertexArray> m_SquareVA;
 
     LightEngine::OrthographicCamera m_Camera;
@@ -177,6 +186,7 @@ private:
 
     float m_cameraRotaiton = 0.0f;
     float m_CameraRotationSpeed = 180.0f;
+    glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.0f};
 };
 
 class SandBox : public LightEngine::Application
