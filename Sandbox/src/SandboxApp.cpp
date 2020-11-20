@@ -19,7 +19,7 @@ public:
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
 
-        std::shared_ptr<LightEngine::VertexBuffer> vertexBuffer;
+        LightEngine::Ref<LightEngine::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(LightEngine::VertexBuffer::Create(vertices, sizeof(vertices)));
         LightEngine::BufferLayout layout = {
             { LightEngine::ShaderDataType::Float3, "a_Position" },
@@ -29,7 +29,7 @@ public:
         m_VertexArray->AddVertexBuffer(vertexBuffer);
 
         uint32_t indices[3] = { 0, 1, 2 };
-        std::shared_ptr<LightEngine::IndexBuffer> indexBuffer;
+        LightEngine::Ref<LightEngine::IndexBuffer> indexBuffer;
         indexBuffer.reset(LightEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -42,7 +42,7 @@ public:
             -0.5f,  0.5f, 0.0f
         };
 
-        std::shared_ptr<LightEngine::VertexBuffer> squareVB;
+        LightEngine::Ref<LightEngine::VertexBuffer> squareVB;
         squareVB.reset(LightEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
         squareVB->SetLayout({
             { LightEngine::ShaderDataType::Float3, "a_Position" }
@@ -50,7 +50,7 @@ public:
         m_SquareVA->AddVertexBuffer(squareVB);
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-        std::shared_ptr<LightEngine::IndexBuffer> squareIB;
+        LightEngine::Ref<LightEngine::IndexBuffer> squareIB;
         squareIB.reset(LightEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -174,11 +174,11 @@ public:
     {
     }
 private:
-    std::shared_ptr<LightEngine::Shader> m_Shader;
-    std::shared_ptr<LightEngine::VertexArray> m_VertexArray;
+    LightEngine::Ref<LightEngine::Shader> m_Shader;
+    LightEngine::Ref<LightEngine::VertexArray> m_VertexArray;
 
-    std::shared_ptr<LightEngine::Shader> m_FlatColorShader;
-    std::shared_ptr<LightEngine::VertexArray> m_SquareVA;
+    LightEngine::Ref<LightEngine::Shader> m_FlatColorShader;
+    LightEngine::Ref<LightEngine::VertexArray> m_SquareVA;
 
     LightEngine::OrthographicCamera m_Camera;
     glm::vec3 m_CameraPosition;
