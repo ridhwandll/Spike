@@ -19,6 +19,7 @@
 
 #include "LightEngine/Renderer/Buffer.h"
 #include "LightEngine/Renderer/Shader.h"
+#include "LightEngine/Renderer/Texture.h"
 #include "LightEngine/Renderer/VertexArray.h"
 
 #include "LightEngine/Renderer/OrthographicCamera.h"

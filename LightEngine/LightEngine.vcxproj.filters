@@ -7,6 +7,9 @@
     <Filter Include="src\LightEngine">
       <UniqueIdentifier>{AA8E47A6-161A-B56A-1F2B-385F8B35116B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\LightEngine\Core">
+      <UniqueIdentifier>{426D3677-2EFC-BF40-D71A-D43BC388D0E6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\LightEngine\Events">
       <UniqueIdentifier>{4ED7A823-3AD1-D175-233E-68860FD737E2}</UniqueIdentifier>
     </Filter>
@@ -46,6 +49,9 @@
     <Filter Include="vendor\glm\glm\gtx">
       <UniqueIdentifier>{B3A6A76B-9F8A-68C1-08EB-6214F4ED5243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LightEngine.h">
@@ -56,6 +62,9 @@
     </ClInclude>
     <ClInclude Include="src\LightEngine\Core.h">
       <Filter>src\LightEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\Timestep.h">
+      <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\EntryPoint.h">
       <Filter>src\LightEngine</Filter>
@@ -114,6 +123,9 @@
     <ClInclude Include="src\LightEngine\Renderer\Shader.h">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\LightEngine\Renderer\Texture.h">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\VertexArray.h">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
@@ -127,6 +139,12 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
@@ -1365,8 +1383,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Core\Timestep.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Application.cpp">
@@ -1405,6 +1424,9 @@
     <ClCompile Include="src\LightEngine\Renderer\Shader.cpp">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\LightEngine\Renderer\Texture.cpp">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\LightEngine\Renderer\VertexArray.cpp">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClCompile>
@@ -1415,6 +1437,12 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
@@ -1429,6 +1457,8 @@
     <ClCompile Include="src\lepch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
