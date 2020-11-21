@@ -23,19 +23,19 @@ namespace LightEngine
         }
         else if (channels == 3)
         {
-            internalFormat = GL_RGB8;
-            dataFormat = GL_RGB;
+          internalFormat = GL_RGB8;
+          dataFormat = GL_RGB;
         }
 
         LE_CORE_ASSERT(internalFormat & dataFormat, "Texture format not supported!");
 
-        glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-        glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
+        glGenTextures(1, &m_RendererID);
+        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
 
         stbi_image_free(data);
     }
@@ -47,6 +47,8 @@ namespace LightEngine
 
     void OpenGLTexture2D::Bind(uint32_t slot) const
     {
-        glBindTextureUnit(slot, m_RendererID);
+        GLenum textureUnit = GL_TEXTURE0 + slot;
+        glActiveTexture(textureUnit);
+        glBindTexture(GL_TEXTURE_2D, m_RendererID);
     }
 }

@@ -1,9 +1,6 @@
 #include <LightEngine.h>
-
 #include "Platform/OpenGL/OpenGLShader.h"
-
 #include "imgui/imgui.h"
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -164,7 +161,7 @@ public:
         m_TextureShader.reset(LightEngine::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
 
         m_Texture = LightEngine::Texture2D::Create("assets/textures/Checkerboard.png");
-        m_LightEngineTexture = LightEngine::Texture2D::Create("assets/textures/LightEngine.png");
+        m_LightEngineTexture = LightEngine::Texture2D::Create("assets/textures/LightEngineNOBG.png");
 
         std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_TextureShader)->Bind();
         std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
@@ -213,11 +210,10 @@ public:
         m_Texture->Bind();
         LightEngine::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
         m_LightEngineTexture->Bind();
-        LightEngine::Renderer::Submit(m_TextureShader, m_SquareVA,
-            glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, -0.25f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        LightEngine::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
         // Triangle
-        // LightEngine::Renderer::Submit(m_Shader, m_VertexArray);
+        //LightEngine::Renderer::Submit(m_Shader, m_VertexArray);
 
         LightEngine::Renderer::EndScene();
     }
