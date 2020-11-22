@@ -89,7 +89,7 @@ public:
             }
         )";
 
-        m_Shader.reset(LightEngine::Shader::Create(vertexSrc, fragmentSrc));
+        m_Shader = (LightEngine::Shader::Create("VertexPosColorTriangle", vertexSrc, fragmentSrc));
 
         std::string flatColorShaderVertexSrc = R"(
             #version 330 core
@@ -123,15 +123,15 @@ public:
             }
         )";
 
-        m_FlatColorShader.reset(LightEngine::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
+        m_FlatColorShader = LightEngine::Shader::Create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
-        m_TextureShader.reset(LightEngine::Shader::Create("assets/shaders/Texture.glsl"));
+        auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
         m_Texture = LightEngine::Texture2D::Create("assets/textures/Checkerboard.png");
         m_LightEngineTexture = LightEngine::Texture2D::Create("assets/textures/LightEngineNOBG.png");
 
-        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_TextureShader)->Bind();
-        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(textureShader)->Bind();
+        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
     }
 
     void OnUpdate(LightEngine::Timestep ts) override
@@ -173,11 +173,12 @@ public:
                 LightEngine::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
             }
         }
+        auto textureShader = m_ShaderLibrary.Get("Texture");
 
         m_Texture->Bind();
-        LightEngine::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        LightEngine::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
         m_LightEngineTexture->Bind();
-        LightEngine::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        LightEngine::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
         // Triangle
         //LightEngine::Renderer::Submit(m_Shader, m_VertexArray);
@@ -196,10 +197,11 @@ public:
     {
     }
 private:
+    LightEngine::ShaderLibrary m_ShaderLibrary;
     LightEngine::Ref<LightEngine::Shader> m_Shader;
     LightEngine::Ref<LightEngine::VertexArray> m_VertexArray;
 
-    LightEngine::Ref<LightEngine::Shader> m_FlatColorShader, m_TextureShader;
+    LightEngine::Ref<LightEngine::Shader> m_FlatColorShader;
     LightEngine::Ref<LightEngine::VertexArray> m_SquareVA;
 
     LightEngine::Ref<LightEngine::Texture2D> m_Texture, m_LightEngineTexture;

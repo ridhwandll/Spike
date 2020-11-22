@@ -16,7 +16,6 @@ namespace LightEngine
         LE_CORE_LOG_ERROR("GLFW Error ({0}): {1}", error, description);
     }
 
-
     Window* Window::Create(const WindowProps& props)
     {
         return new WindowsWindow(props);
@@ -50,7 +49,7 @@ namespace LightEngine
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
         GLFWimage images[1];
-        images[0].pixels = stbi_load("assets/textures/Checkerboard.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+        images[0].pixels = stbi_load("assets/textures/LightEngine.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
         glfwSetWindowIcon(m_Window, 1, images);
         stbi_image_free(images[0].pixels);
 
