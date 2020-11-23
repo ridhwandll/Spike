@@ -1,16 +1,17 @@
 #pragma once
 //For use by LightEngine Applications
 
-#include "LightEngine/Application.h"
-#include "LightEngine/Layer.h"
-#include "LightEngine/Log.h"
+#include "LightEngine/Core/Application.h"
+#include "LightEngine/Core/Layer.h"
+#include "LightEngine/Core/Log.h"
 
 #include "LightEngine/Core/Timestep.h"
 
-#include "LightEngine/Input.h"
-#include "LightEngine/KeyCodes.h"
-#include "LightEngine/MouseButtonCodes.h"
-#include "LightEngine/OrthographicCameraController.h"
+#include "LightEngine/Core/Input.h"
+#include "LightEngine/Core/KeyCodes.h"
+#include "LightEngine/Core/MouseButtonCodes.h"
+
+#include "LightEngine/Renderer/OrthographicCameraController.h"
 #include "LightEngine/ImGui/ImGuiLayer.h"
 
 //******Renderer**********
@@ -26,5 +27,5 @@
 //************************
 
 //******Entry Point*******
-#include "LightEngine/EntryPoint.h"
+#include "LightEngine/Core/EntryPoint.h"
 //************************

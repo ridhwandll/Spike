@@ -1,7 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "Window.h"
-#include "LightEngine/LayerStack.h"
+#include "LightEngine/Core/LayerStack.h"
 #include "LightEngine/Events/Event.h"
 #include "LightEngine/Events/ApplicationEvent.h"
 #include "LightEngine/ImGui/ImGuiLayer.h"

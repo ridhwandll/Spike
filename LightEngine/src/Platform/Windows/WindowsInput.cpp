@@ -1,7 +1,7 @@
 #include "lepch.h"
 #include "WindowsInput.h"
 
-#include "LightEngine/Application.h"
+#include "LightEngine/Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace LightEngine

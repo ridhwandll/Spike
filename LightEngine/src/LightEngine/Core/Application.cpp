@@ -1,6 +1,6 @@
 #include "lepch.h"
 #include "Application.h"
-#include "LightEngine/Log.h"
+#include "LightEngine/Core/Log.h"
 #include "LightEngine/Renderer/Renderer.h"
 #include "Input.h"
 #include "GLFW/glfw3.h"

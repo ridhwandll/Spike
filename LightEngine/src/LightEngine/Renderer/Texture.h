@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "LightEngine/Core.h"
+#include "LightEngine/Core/Core.h"
 
 namespace LightEngine
 {

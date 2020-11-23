@@ -57,17 +57,38 @@
     <ClInclude Include="src\LightEngine.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Application.h">
-      <Filter>src\LightEngine</Filter>
+    <ClInclude Include="src\LightEngine\Core\Application.h">
+      <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Core.h">
-      <Filter>src\LightEngine</Filter>
+    <ClInclude Include="src\LightEngine\Core\Core.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\EntryPoint.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\Input.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\KeyCodes.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\Layer.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\LayerStack.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\Log.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\MouseButtonCodes.h">
+      <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Core\Timestep.h">
       <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\EntryPoint.h">
-      <Filter>src\LightEngine</Filter>
+    <ClInclude Include="src\LightEngine\Core\Window.h">
+      <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Events\ApplicationEvent.h">
       <Filter>src\LightEngine\Events</Filter>
@@ -84,24 +105,6 @@
     <ClInclude Include="src\LightEngine\ImGui\ImGuiLayer.h">
       <Filter>src\LightEngine\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Input.h">
-      <Filter>src\LightEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightEngine\KeyCodes.h">
-      <Filter>src\LightEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightEngine\Layer.h">
-      <Filter>src\LightEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightEngine\LayerStack.h">
-      <Filter>src\LightEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightEngine\Log.h">
-      <Filter>src\LightEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightEngine\MouseButtonCodes.h">
-      <Filter>src\LightEngine</Filter>
-    </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\Buffer.h">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
@@ -109,6 +112,9 @@
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\OrthographicCamera.h">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Renderer\OrthographicCameraController.h">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\RenderCommand.h">
@@ -128,9 +134,6 @@
     </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\VertexArray.h">
       <Filter>src\LightEngine\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\LightEngine\Window.h">
-      <Filter>src\LightEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
@@ -1386,11 +1389,19 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\OrthographicCameraController.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\LightEngine\Application.cpp">
-      <Filter>src\LightEngine</Filter>
+    <ClCompile Include="src\LightEngine\Core\Application.cpp">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightEngine\Core\Layer.cpp">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightEngine\Core\LayerStack.cpp">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightEngine\Core\Log.cpp">
+      <Filter>src\LightEngine\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\LightEngine\ImGui\ImGuiBuild.cpp">
       <Filter>src\LightEngine\ImGui</Filter>
@@ -1398,19 +1409,13 @@
     <ClCompile Include="src\LightEngine\ImGui\ImGuiLayer.cpp">
       <Filter>src\LightEngine\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\LightEngine\Layer.cpp">
-      <Filter>src\LightEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LightEngine\LayerStack.cpp">
-      <Filter>src\LightEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LightEngine\Log.cpp">
-      <Filter>src\LightEngine</Filter>
-    </ClCompile>
     <ClCompile Include="src\LightEngine\Renderer\Buffer.cpp">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\LightEngine\Renderer\OrthographicCamera.cpp">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightEngine\Renderer\OrthographicCameraController.cpp">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\LightEngine\Renderer\RenderCommand.cpp">
@@ -1461,6 +1466,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\LightEngine\OrthographicCameraController.cpp" />
   </ItemGroup>
 </Project>

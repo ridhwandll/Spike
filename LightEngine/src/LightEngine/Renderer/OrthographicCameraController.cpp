@@ -1,7 +1,7 @@
 #include "lepch.h"
 #include "OrthographicCameraController.h"
-#include "LightEngine/Input.h"
-#include "LightEngine/KeyCodes.h"
+#include "LightEngine/Core/Input.h"
+#include "LightEngine/Core/KeyCodes.h"
 
 namespace LightEngine
 {

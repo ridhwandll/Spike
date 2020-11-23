@@ -1,5 +1,5 @@
 #pragma once
-#include "LightEngine/Core.h"
+#include "LightEngine/Core/Core.h"
 #include "LightEngine/Events/Event.h"
 #include "LightEngine/Core/Timestep.h"
 

@@ -2,7 +2,7 @@
 
 #include "lepch.h"
 
-#include "LightEngine/Core.h"
+#include "LightEngine/Core/Core.h"
 #include "LightEngine/Events/Event.h"
 
 namespace LightEngine

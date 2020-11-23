@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LightEngine/Input.h"
+#include "LightEngine/Core/Input.h"
 
 namespace LightEngine
 {
