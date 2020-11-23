@@ -16,16 +16,20 @@ This can also be used an powerful **GameEngine**!<br/>
     - If you want to generate for other IDE or versions of Visual Studio then in the project directory run your favourite premake [action](https://github.com/premake/premake-core/wiki/Using-Premake#using-premake-to-generate-project-files)
     - Once premake generate the project files then you can hit the run button and make the engine up and running!<br/>
 - CMake
-    - Coming Soon!
+    - Again, start by cloning the repository with `git clone --recursive https://github.com/FahimFuad/LightEngine.git`.
+    - Create a directory in which to build your project, e.g. 'build'
+    - Run `cmake .. -G "Visual Studio 16 2019"` in the build directory to generate the solution.
+    - Once the project files are generated, you should be able to import the project and run it.
 ### Mac & Linux
 - Premake
     - Start by cloning the repository with `git clone --recursive https://github.com/FahimFuad/LightEngine.git` to clone along with the submodules. If you have already cloned and you want to initialize the submodules, type `git submodule init` and to update the submodules type `git submodule update` in your project directory.
     - To genereate the project files for your IDE, select the actions of the premake and run them in the project directory. A list of actions of the premake can be found [here](https://github.com/premake/premake-core/wiki/Using-Premake#using-premake-to-generate-project-files)
     - The engine is now ready to light!
 - CMake
-    - Coming Soon!
-- CMake
-    - Coming Soon!
+    - Again, start by cloning the repository with `git clone --recursive https://github.com/FahimFuad/LightEngine.git`.
+    - Create a directory in which to build your project, e.g. 'build'
+    - Within your build directory, run `cmake ..` to generate makefiles or `cmake .. -G "CodeBlocks - Unix Makefiles"` to generate a Code::Blocks project.
+    - To build the project, run `make` inside the build directory.
 # Main features to come: 
 - Fast 2D rendering (UI, particles, sprites, etc.)
 - High-fidelity Physically-Based 3D rendering (this will be expanded later, 2D to come first)
