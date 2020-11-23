@@ -8,7 +8,7 @@ class ExampleLayer : public LightEngine::Layer
 {
 public:
     ExampleLayer()
-        : Layer("Example"), m_CameraController(1280.0f / 720.0f)
+        : Layer("Example"), m_CameraController(1280.0f / 720.0f, true)
     {
         m_VertexArray.reset(LightEngine::VertexArray::Create());
 
@@ -211,7 +211,6 @@ public:
     {
 
     }
-
 };
 
 LightEngine::Application* LightEngine::CreateApplication()

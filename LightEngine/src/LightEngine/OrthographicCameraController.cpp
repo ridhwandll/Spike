@@ -5,9 +5,8 @@
 
 namespace LightEngine
 {
-
     OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
-        :m_AspectRatio(aspectRatio), m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_Rotation(rotation)
+        : m_AspectRatio(aspectRatio), m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_Rotation(rotation)
     {
     }
 
@@ -23,7 +22,7 @@ namespace LightEngine
         else if (Input::IsKeyPressed(LE_KEY_S))
             m_CameraPosition.y -= m_CameraTranslationSpeed * ts;
 
-        if(m_Rotation)
+        if (m_Rotation)
         {
             if (Input::IsKeyPressed(LE_KEY_Q))
                 m_CameraRotation += m_CameraRotationSpeed * ts;
@@ -32,7 +31,9 @@ namespace LightEngine
 
             m_Camera.SetRotation(m_CameraRotation);
         }
+
         m_Camera.SetPosition(m_CameraPosition);
+
         m_CameraTranslationSpeed = m_ZoomLevel;
     }
 
@@ -53,9 +54,8 @@ namespace LightEngine
 
     bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
     {
-        m_AspectRatio -= static_cast<float>(e.GetWidth()) / static_cast<float>(e.GetHeight());
+        m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
         m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
         return false;
     }
-
 }

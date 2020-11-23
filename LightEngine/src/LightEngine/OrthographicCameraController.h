@@ -16,6 +16,15 @@ namespace LightEngine
 
         OrthographicCamera& GetCamera() { return m_Camera; }
         const OrthographicCamera& GetCamera() const { return m_Camera; }
+
+        float GetCameraSpeed() { return m_CameraTranslationSpeed; }
+        void SetCameraSpeed(float speed) { m_CameraTranslationSpeed = speed; }
+
+        float GetCameraRotationSpeed() { return m_CameraRotationSpeed; }
+        void SetCameraRotationSpeed(float speed) { m_CameraRotationSpeed = speed; }
+
+        float GetZoomLevel() { return m_ZoomLevel; }
+        void SetZoomLevel(float level) { m_ZoomLevel = level; }
     private:
         bool OnMouseScrolled(MouseScrolledEvent& e);
         bool OnWindowResized(WindowResizeEvent& e);

@@ -6,12 +6,12 @@
 namespace LightEngine
 {
     /////////////////////////////////////////////////////////////////////////////
-    // VertexBuffer /////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////
+     // VertexBuffer /////////////////////////////////////////////////////////////
+     /////////////////////////////////////////////////////////////////////////////
 
     OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
     {
-        glGenBuffers(1, &m_RendererID);
+        glCreateBuffers(1, &m_RendererID);
         glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
     }
@@ -38,21 +38,21 @@ namespace LightEngine
     OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
         : m_Count(count)
     {
-        glGenBuffers(1, &m_RendererID);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+        glCreateBuffers(1, &m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
     }
-    
+
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
         glDeleteBuffers(1, &m_RendererID);
     }
-    
+
     void OpenGLIndexBuffer::Bind() const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
     }
-    
+
     void OpenGLIndexBuffer::Unbind() const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
