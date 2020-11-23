@@ -18,6 +18,6 @@ namespace LightEngine
         virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const = 0;
         virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;
 
-        static VertexArray* Create();
+        static Ref<VertexArray> Create();
     };
 }

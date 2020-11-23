@@ -24,8 +24,3 @@
 #include "LightEngine/Renderer/VertexArray.h"
 
 #include "LightEngine/Renderer/OrthographicCamera.h"
-//************************
-
-//******Entry Point*******
-#include "LightEngine/Core/EntryPoint.h"
-//************************
