@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "LightEngine/Core/Log.h"
 #include "LightEngine/Renderer/Renderer.h"
+#include "LightEngine/Renderer/Renderer2D.h"
 #include "Input.h"
 #include "GLFW/glfw3.h"
 
@@ -20,7 +21,7 @@ namespace LightEngine
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
         Renderer::Init();
-
+        Renderer2D::Init();
         m_ImGuiLayer = new ImGuiLayer();
         PushOverlay(m_ImGuiLayer);
     }

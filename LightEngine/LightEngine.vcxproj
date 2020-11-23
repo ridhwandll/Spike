@@ -167,6 +167,7 @@
     <ClInclude Include="src\LightEngine\Renderer\OrthographicCameraController.h" />
     <ClInclude Include="src\LightEngine\Renderer\RenderCommand.h" />
     <ClInclude Include="src\LightEngine\Renderer\Renderer.h" />
+    <ClInclude Include="src\LightEngine\Renderer\Renderer2D.h" />
     <ClInclude Include="src\LightEngine\Renderer\RendererAPI.h" />
     <ClInclude Include="src\LightEngine\Renderer\Shader.h" />
     <ClInclude Include="src\LightEngine\Renderer\Texture.h" />
@@ -602,6 +603,7 @@
     <ClCompile Include="src\LightEngine\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\LightEngine\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\LightEngine\Renderer\Texture.cpp" />

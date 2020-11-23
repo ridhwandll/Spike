@@ -16,6 +16,7 @@
 
 //******Renderer**********
 #include "LightEngine/Renderer/Renderer.h"
+#include "LightEngine/Renderer/Renderer2D.h"
 #include "LightEngine/Renderer/RenderCommand.h"
 
 #include "LightEngine/Renderer/Buffer.h"
