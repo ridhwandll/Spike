@@ -11,7 +11,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
- 
+    m_CheckerboardTexture = LightEngine::Texture2D::Create("assets/textures/Checkerboard.png");
 }
 
 void Sandbox2D::OnDetach()
@@ -27,10 +27,11 @@ void Sandbox2D::OnUpdate(LightEngine::Timestep ts)
     LightEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
     LightEngine::RenderCommand::Clear();
 
-    LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());\
+    LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
 
     LightEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
     LightEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, {0.2f, 0.3f, 0.9f, 1.0f});
+    LightEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 10.0f, 10.0f }, m_CheckerboardTexture);
 
     LightEngine::Renderer2D::EndScene();
 }

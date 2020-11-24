@@ -60,9 +60,6 @@
     <ClInclude Include="src\LightEngine\Core\Application.h">
       <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Core\Core.h">
-      <Filter>src\LightEngine\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\LightEngine\Core\EntryPoint.h">
       <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
@@ -1390,6 +1387,9 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\LightEngine\Core\Base.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Core\Application.cpp">

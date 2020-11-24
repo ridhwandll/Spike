@@ -17,6 +17,7 @@ namespace LightEngine
         virtual void Bind() const override;
         virtual void Unbind() const override;
 
+        void SetInt(const std::string& name, int value) override;
         void SetFloat3(const std::string& name, const glm::vec3& value) override;
         void SetFloat4(const std::string& name, const glm::vec4& value) override;
         void SetMat4(const std::string& name, const glm::mat4& value) override;
@@ -30,6 +31,7 @@ namespace LightEngine
         void UploadUniformFloat4(const std::string& name, const glm::vec4& values);
         void UploadUniformMat3  (const std::string& name, const glm::mat3& matrix);
         void UploadUniformMat4  (const std::string& name, const glm::mat4& matrix);
+
     private:
         std::string ReadFile(const std::string& filepath);
         std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);

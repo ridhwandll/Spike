@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LightEngine/Core/Core.h"
+#include "LightEngine/Core/Base.h"
 #include "Layer.h"
 
 #include <vector>
