@@ -156,6 +156,7 @@
     <ClInclude Include="src\LightEngine\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\LightEngine\Core\Timestep.h" />
     <ClInclude Include="src\LightEngine\Core\Window.h" />
+    <ClInclude Include="src\LightEngine\Debug\Instrumentor.h" />
     <ClInclude Include="src\LightEngine\Events\ApplicationEvent.h" />
     <ClInclude Include="src\LightEngine\Events\Event.h" />
     <ClInclude Include="src\LightEngine\Events\KeyEvent.h" />
@@ -635,4 +636,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

@@ -20,24 +20,33 @@ void Sandbox2D::OnDetach()
 
 void Sandbox2D::OnUpdate(LightEngine::Timestep ts)
 {
+    LE_PROFILE_FUNCTION();
     // Update
-    m_CameraController.OnUpdate(ts);
+    {
+        LE_PROFILE_SCOPE();
+        m_CameraController.OnUpdate(ts);
+    }
 
     // Render
-    LightEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-    LightEngine::RenderCommand::Clear();
+    {
+        LE_PROFILE_SCOPE();
+        LightEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        LightEngine::RenderCommand::Clear();
+    }
 
-    LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-
-    LightEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
-    LightEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, {0.2f, 0.3f, 0.9f, 1.0f});
-    LightEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 10.0f, 10.0f }, m_CheckerboardTexture);
-
-    LightEngine::Renderer2D::EndScene();
+    {
+        LE_PROFILE_SCOPE();
+        LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        LightEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
+        LightEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, { 0.2f, 0.3f, 0.9f, 1.0f });
+        LightEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 10.0f, 10.0f }, m_CheckerboardTexture);
+        LightEngine::Renderer2D::EndScene();
+    }
 }
 
 void Sandbox2D::OnImGuiRender()
 {
+    LE_PROFILE_FUNCTION();
     ImGui::Begin("Settings");
     ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
     ImGui::End();

@@ -15,6 +15,7 @@
 #include <unordered_set>
 
 #include "LightEngine/Core/Log.h"
+#include "LightEngine/Debug/Instrumentor.h"
 
 #ifdef LE_PLATFORM_WINDOWS
     #include <Windows.h>
