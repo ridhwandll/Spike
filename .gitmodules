@@ -1,12 +1,16 @@
 [submodule "LightEngine/vendor/spdlog"]
 	path = LightEngine/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+	branch = v1.x
 [submodule "LightEngine/vendor/GLFW"]
 	path = LightEngine/vendor/GLFW
 	url = https://github.com/FahimFuad/glfw.git
+	branch = master
 [submodule "LightEngine/vendor/imgui"]
 	path = LightEngine/vendor/imgui
 	url = https://github.com/FahimFuad/imgui
+	branch = docking
 [submodule "LightEngine/vendor/glm"]
 	path = LightEngine/vendor/glm
 	url = https://github.com/g-truc/glm
+	branch = master

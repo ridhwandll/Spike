@@ -60,6 +60,9 @@
     <ClInclude Include="src\LightEngine\Core\Application.h">
       <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\LightEngine\Core\Base.h">
+      <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\LightEngine\Core\EntryPoint.h">
       <Filter>src\LightEngine\Core</Filter>
     </ClInclude>
@@ -118,6 +121,9 @@
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\Renderer.h">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Renderer\Renderer2D.h">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Renderer\RendererAPI.h">
@@ -1386,10 +1392,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Renderer\Renderer2D.h" />
-    <ClInclude Include="src\LightEngine\Core\Base.h">
-      <Filter>src\LightEngine\Core</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Core\Application.cpp">
@@ -1423,6 +1425,9 @@
       <Filter>src\LightEngine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\LightEngine\Renderer\Renderer.cpp">
+      <Filter>src\LightEngine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightEngine\Renderer\Renderer2D.cpp">
       <Filter>src\LightEngine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\LightEngine\Renderer\RendererAPI.cpp">
@@ -1467,6 +1472,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\LightEngine\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>
