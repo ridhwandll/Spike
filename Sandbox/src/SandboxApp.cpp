@@ -21,7 +21,7 @@ public:
         };
 
         LightEngine::Ref<LightEngine::VertexBuffer> vertexBuffer;
-        vertexBuffer.reset(LightEngine::VertexBuffer::Create(vertices, sizeof(vertices)));
+        vertexBuffer = LightEngine::VertexBuffer::Create(vertices, sizeof(vertices));
         LightEngine::BufferLayout layout = {
             { LightEngine::ShaderDataType::Float3, "a_Position" },
             { LightEngine::ShaderDataType::Float4, "a_Color" }
@@ -31,7 +31,7 @@ public:
 
         uint32_t indices[3] = { 0, 1, 2 };
         LightEngine::Ref<LightEngine::IndexBuffer> indexBuffer;
-        indexBuffer.reset(LightEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+        indexBuffer = LightEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
         m_SquareVA = LightEngine::VertexArray::Create();
@@ -44,7 +44,7 @@ public:
         };
 
         LightEngine::Ref<LightEngine::VertexBuffer> squareVB;
-        squareVB.reset(LightEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        squareVB = LightEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
         squareVB->SetLayout({
             { LightEngine::ShaderDataType::Float3, "a_Position" },
             { LightEngine::ShaderDataType::Float2, "a_TexCoord" }
@@ -53,7 +53,7 @@ public:
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
         LightEngine::Ref<LightEngine::IndexBuffer> squareIB;
-        squareIB.reset(LightEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        squareIB = (LightEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
 
         std::string vertexSrc = R"(

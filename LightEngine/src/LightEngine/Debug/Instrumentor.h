@@ -120,7 +120,7 @@ namespace LightEngine
     };
 }
 
-#define LE_PROFILE 1
+#define LE_PROFILE 0
 #if LE_PROFILE
     #define LE_PROFILE_BEGIN_SESSION(name, filepath) ::LightEngine::Instrumentor::Get().BeginSession(name, filepath)
     #define LE_PROFILE_END_SESSION() ::LightEngine::Instrumentor::Get().EndSession()
