@@ -173,6 +173,12 @@ namespace LightEngine
         UploadUniformInt(name, value);
     }
 
+    void OpenGLShader::SetFloat(const std::string& name, float value)
+    {
+        LE_PROFILE_FUNCTION();
+        UploadUniformFloat(name, value);
+    }
+
     void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
     {
         LE_PROFILE_FUNCTION();
