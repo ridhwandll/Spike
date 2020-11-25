@@ -8,6 +8,7 @@ namespace LightEngine
     public:
         inline static void Init()
         {
+            LE_PROFILE_FUNCTION();
             s_RendererAPI->Init();
         }
 

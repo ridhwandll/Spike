@@ -1,5 +1,6 @@
 #include "lepch.h"
-#include "Renderer.h"
+#include "LightEngine/Renderer/Renderer.h"
+#include "LightEngine/Renderer/Renderer2D.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace LightEngine
@@ -8,7 +9,14 @@ namespace LightEngine
 
     void Renderer::Init()
     {
+        LE_PROFILE_FUNCTION();
         RenderCommand::Init();
+        Renderer2D::Init();
+    }
+
+    void Renderer::Shutdown()
+    {
+        Renderer2D::Shutdown();
     }
 
     void Renderer::OnWindowResize(uint32_t width, uint32_t height)

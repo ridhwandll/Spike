@@ -14,6 +14,8 @@ namespace LightEngine
 
     Application::Application()
     {
+        LE_PROFILE_FUNCTION();
+
         LE_CORE_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
 
@@ -26,20 +28,29 @@ namespace LightEngine
         PushOverlay(m_ImGuiLayer);
     }
 
+    Application::~Application()
+    {
+        LE_PROFILE_FUNCTION();
+        Renderer::Shutdown();
+    }
+
     void Application::PushLayer(Layer* layer)
     {
+        LE_PROFILE_FUNCTION();
         m_LayerStack.PushLayer(layer);
         layer->OnAttach();
     }
 
     void Application::PushOverlay(Layer* layer)
     {
+        LE_PROFILE_FUNCTION();
         m_LayerStack.PushOverlay(layer);
         layer->OnAttach();
     }
 
     void Application::OnEvent(Event& e)
     {
+        LE_PROFILE_FUNCTION();
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
@@ -54,8 +65,11 @@ namespace LightEngine
 
     void Application::Run()
     {
+        LE_PROFILE_FUNCTION();
         while (m_Running)
         {
+            LE_PROFILE_SCOPE("Run Loop");
+
             // should be Platform::GetTime();
             float time = (float)glfwGetTime();
             Timestep timestep = time - m_LastFrameTime;
@@ -63,14 +77,20 @@ namespace LightEngine
 
             if(!m_Minimized)
             {
-                for (Layer* layer : m_LayerStack)
-                    layer->OnUpdate(timestep);
-            }
+                {
+                    LE_PROFILE_SCOPE("LayerStack OnUpdates");
+                    for (Layer* layer : m_LayerStack)
+                        layer->OnUpdate(timestep);
+                }
 
-            m_ImGuiLayer->Begin();
-            for (Layer* layer : m_LayerStack)
-                layer->OnImGuiRender();
-            m_ImGuiLayer->End();
+                m_ImGuiLayer->Begin();
+                {
+                    LE_PROFILE_SCOPE("LayerStack OnImGuiRender");
+                    for (Layer* layer : m_LayerStack)
+                        layer->OnImGuiRender();
+                }
+                m_ImGuiLayer->End();
+            }
 
             m_Window->OnUpdate();
         }
@@ -84,6 +104,7 @@ namespace LightEngine
 
     bool Application::OnWindowResize(WindowResizeEvent& e)
     {
+        LE_PROFILE_FUNCTION();
         if (e.GetHeight() == 0 || e.GetWidth() == 0)
         {
             m_Minimized = true;

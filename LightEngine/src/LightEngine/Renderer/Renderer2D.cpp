@@ -18,6 +18,7 @@ namespace LightEngine
 
     void Renderer2D::Init()
     {
+        LE_PROFILE_FUNCTION();
         s_data = new Renderer2DStorage();
         s_data->QuadVertexArray = LightEngine::VertexArray::Create();
 
@@ -53,18 +54,20 @@ namespace LightEngine
 
     void Renderer2D::Shutdown()
     {
-
+        LE_PROFILE_FUNCTION();
+        delete s_data;
     }
 
     void Renderer2D::BeginScene(const OrthographicCamera& camera)
     {
+        LE_PROFILE_FUNCTION();
         s_data->TextureShader->Bind();
         s_data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
     }
 
     void Renderer2D::EndScene()
     {
-
+        LE_PROFILE_FUNCTION();
     }
 
     void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
@@ -74,6 +77,7 @@ namespace LightEngine
 
     void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
     {
+        LE_PROFILE_FUNCTION();
         s_data->TextureShader->SetFloat4("u_Color", color);
         s_data->WhiteTexture->Bind();
 
@@ -91,6 +95,7 @@ namespace LightEngine
 
     void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
     {
+        LE_PROFILE_FUNCTION();
         s_data->TextureShader->SetFloat4("u_Color", glm::vec4(1.0f));
         texture->Bind();
 

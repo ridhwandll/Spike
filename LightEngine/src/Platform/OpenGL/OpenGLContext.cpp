@@ -15,6 +15,7 @@ namespace LightEngine
 
     void OpenGLContext::Init()
     {
+        LE_PROFILE_FUNCTION();
         glfwMakeContextCurrent(m_WindowHandle);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         LE_CORE_ASSERT(status, "Failed to initialize Glad!");
@@ -27,6 +28,7 @@ namespace LightEngine
 
     void OpenGLContext::SwapBuffers()
     {
+        LE_PROFILE_FUNCTION();
         glfwSwapBuffers(m_WindowHandle);
     }
 
