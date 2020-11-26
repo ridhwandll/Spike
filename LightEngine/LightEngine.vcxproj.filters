@@ -10,6 +10,9 @@
     <Filter Include="src\LightEngine\Core">
       <UniqueIdentifier>{426D3677-2EFC-BF40-D71A-D43BC388D0E6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\LightEngine\Debug">
+      <UniqueIdentifier>{A070105E-0CDD-CB58-D5D0-63B641FCEDC0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\LightEngine\Events">
       <UniqueIdentifier>{4ED7A823-3AD1-D175-233E-68860FD737E2}</UniqueIdentifier>
     </Filter>
@@ -89,6 +92,9 @@
     </ClInclude>
     <ClInclude Include="src\LightEngine\Core\Window.h">
       <Filter>src\LightEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LightEngine\Debug\Instrumentor.h">
+      <Filter>src\LightEngine\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\LightEngine\Events\ApplicationEvent.h">
       <Filter>src\LightEngine\Events</Filter>
@@ -1392,7 +1398,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\LightEngine\Debug\Instrumentor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\LightEngine\Core\Application.cpp">
