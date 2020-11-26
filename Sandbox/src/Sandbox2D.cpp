@@ -34,13 +34,16 @@ void Sandbox2D::OnUpdate(LightEngine::Timestep ts)
     }
 
     {
+        static float rotation = 0.0f;
+        rotation += ts * 50.0f;
+
         LE_PROFILE_SCOPE();
         LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        //LightEngine::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(-45.0f), m_SquareColor);
+        LightEngine::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, rotation, m_SquareColor);
         LightEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, m_SquareColor);
         LightEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, { 0.2f, 0.3f, 0.9f, 1.0f });
-        LightEngine::Renderer2D::DrawQuad({ -5.0f, -5.0f, -0.1 }, { 10.0f, 10.0f }, m_CheckerboardTexture, 10.0f);
-        LightEngine::Renderer2D::DrawQuad({ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f }, m_CheckerboardTexture, 20.0f);
+        LightEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 10.0f, 10.0f }, m_CheckerboardTexture, 10.0f);
+        LightEngine::Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, rotation, m_CheckerboardTexture, 20.0f);
         LightEngine::Renderer2D::EndScene();
     }
 }

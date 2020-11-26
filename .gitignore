@@ -1,6 +1,9 @@
 #Directories
-bin/*
-bin-int/*
+/bin/
+/bin-int/
+*/*/*/bin/
+*/*/*/bin-int/
+
 
 #files
 *.user

@@ -1,5 +1,7 @@
 
-# LightEngine [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/FahimFuad/LightEngine/blob/main/LICENSE)
+# LightEngine
+![](https://github.com/FahimFuad/LightEngine/workflows/build/badge.svg)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/FahimFuad/LightEngine/blob/main/LICENSE)
 
 ![LightEngine](Resources/Branding/LEdark.png)<br/>
 
@@ -40,9 +42,13 @@ This can also be used an powerful **GameEngine**!<br/>
 - Integrated 3rd party 2D and 3D physics engine
 - Procedural terrain and world generation
 - Robust Artificial Intelligence(AI) system
-- Audio system
+- Audio system<br/>
 
-## Contributing
+## Contributing [![GitHub contributors](https://img.shields.io/github/contributors/FahimFuad/LightEngine.svg)](https://GitHub.com/FahimFuad/LightEngine/graphs/contributors/)
+- For contributing, fork this repository first.
+- Then made a feature branch in your fork and start adding stuff.
+- When you're ready with your feature, you can send a Pull Request(PR).
+- Then your code will be reviewed and if everything goes well, your commits will be mergerd!
 
 This engine is inspired from **TheCherno's** [Hazel](https://github.com/TheCherno/Hazel) Engine.
 
