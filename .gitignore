@@ -4,13 +4,26 @@
 */*/*/bin/
 */*/*/bin-int/
 
-
 #files
 *.user
 
-# Visual Studio files and folder
+# Precompiled Headers
+*.pch
+
+# Visual Studio
 .vs/
-**.sln
-**.vcxproj
-**.vcxproj.filters
-**.vcxproj.user
+*.sln
+**/*.vcxproj
+**/*.filters
+**/*.user
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Others
+*.ini
+*.cfg
+*.json

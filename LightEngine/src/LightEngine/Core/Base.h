@@ -55,7 +55,7 @@
         #define LIGHTENGINE_API
     #endif
 #else
-    #error Hazel only supports Windows!
+    #error LightEngine only supports Windows!
 #endif // End of DLL support
 
 #ifdef LE_DEBUG
