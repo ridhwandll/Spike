@@ -2,10 +2,8 @@
 #include "lepch.h"
 #include "LightEngine/Core/Base.h"
 
-
 namespace LightEngine
 {
-
     // Events in LightEngine are currently blocking, meaning when an event occurs it
     // immediately gets dispatched and must be dealt with right then an there.
     // For the future, a better strategy might be to buffer events in an event
@@ -45,7 +43,7 @@ namespace LightEngine
         virtual int GetCategoryFlags() const = 0;
         virtual std::string ToString() const { return GetName(); }
 
-        inline bool IsInCategory(EventCategory category) { return (GetCategoryFlags() & category);}
+        bool IsInCategory(EventCategory category) { return (GetCategoryFlags() & category);}
     };
 //EVENT DISPATCHER
     class EventDispatcher

@@ -173,6 +173,7 @@
     <ClInclude Include="src\LightEngine\Renderer\Shader.h" />
     <ClInclude Include="src\LightEngine\Renderer\Texture.h" />
     <ClInclude Include="src\LightEngine\Renderer\VertexArray.h" />
+    <ClInclude Include="src\LightEngine\Utility\Random.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />

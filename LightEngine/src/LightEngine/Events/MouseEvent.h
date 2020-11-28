@@ -1,8 +1,8 @@
 #pragma once
-
 #include "Event.h"
 
-namespace LightEngine {
+namespace LightEngine
+{
 //MOUSE MOVED EVENT
     class LIGHTENGINE_API MouseMovedEvent : public Event
     {
@@ -10,8 +10,8 @@ namespace LightEngine {
         MouseMovedEvent(float x, float y)
             : m_MouseX(x), m_MouseY(y) {}
 
-        inline float GetX() const { return m_MouseX; }
-        inline float GetY() const { return m_MouseY; }
+        float GetX() const { return m_MouseX; }
+        float GetY() const { return m_MouseY; }
 
         std::string ToString() const override
         {
@@ -21,7 +21,7 @@ namespace LightEngine {
         }
 
         EVENT_CLASS_TYPE(MouseMoved)
-            EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+        EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     private:
         float m_MouseX, m_MouseY;
     };
@@ -32,8 +32,8 @@ namespace LightEngine {
         MouseScrolledEvent(float xOffset, float yOffset)
             : m_XOffset(xOffset), m_YOffset(yOffset) {}
 
-        inline float GetXOffset() const { return m_XOffset; }
-        inline float GetYOffset() const { return m_YOffset; }
+        float GetXOffset() const { return m_XOffset; }
+        float GetYOffset() const { return m_YOffset; }
 
         std::string ToString() const override
         {
@@ -43,7 +43,7 @@ namespace LightEngine {
         }
 
         EVENT_CLASS_TYPE(MouseScrolled)
-            EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+        EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     private:
         float m_XOffset, m_YOffset;
     };
@@ -51,7 +51,7 @@ namespace LightEngine {
     class LIGHTENGINE_API MouseButtonEvent : public Event
     {
     public:
-        inline int GetMouseButton() const { return m_Button; }
+        int GetMouseButton() const { return m_Button; }
 
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     protected:

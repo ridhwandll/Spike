@@ -4,6 +4,7 @@
 #include "LightEngine/Core/Application.h"
 #include "LightEngine/Core/Layer.h"
 #include "LightEngine/Core/Log.h"
+#include "LightEngine/Utility/Random.h"
 
 #include "LightEngine/Core/Timestep.h"
 

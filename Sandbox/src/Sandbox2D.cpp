@@ -13,8 +13,11 @@ void Sandbox2D::OnAttach()
 {
     LE_PROFILE_FUNCTION();
     m_CheckerboardTexture = LightEngine::Texture2D::Create("assets/textures/Checkerboard.png");
+    LE_CORE_LOG_WARN("Random Int: {0}",LightEngine::Random::LERandom<int>(3, 3));
+    LE_CORE_LOG_WARN("Random Float: {0}",LightEngine::Random::LERandom<float>());
+    LE_CORE_LOG_WARN("Random Double: {0}",LightEngine::Random::LERandom<double>(1, 5));
+    LE_CORE_LOG_WARN("Random Bool: {0}",LightEngine::Random::LERandom<bool>());
 }
-
 void Sandbox2D::OnDetach()
 {
     LE_PROFILE_FUNCTION();
@@ -25,7 +28,6 @@ void Sandbox2D::OnUpdate(LightEngine::Timestep ts)
     LE_PROFILE_FUNCTION();
     // Update
      m_CameraController.OnUpdate(ts);
-
     // Render
      LightEngine::Renderer2D::ResetStats();
     {

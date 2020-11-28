@@ -7,7 +7,6 @@
 
 namespace LightEngine
 {
-
     struct WindowProps
     {
         std::string Title;
@@ -17,9 +16,7 @@ namespace LightEngine
         WindowProps(const std::string& title = "LightEngine",
                     unsigned int width = 1280,
                     unsigned int height = 720)
-            : Title(title), Width(width), Height(height)
-        {
-        }
+            : Title(title), Width(width), Height(height) {}
     };
 
     // Interface representing a desktop system based Window

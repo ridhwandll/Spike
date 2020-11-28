@@ -1,9 +1,8 @@
 #pragma once
-
 #include "Event.h"
 
-
-namespace LightEngine {
+namespace LightEngine
+{
 //WINDOW RESIZE EVENT
     class LIGHTENGINE_API WindowResizeEvent : public Event
     {
@@ -11,8 +10,8 @@ namespace LightEngine {
         WindowResizeEvent(unsigned int width, unsigned int height)
             : m_Width(width), m_Height(height) {}
 
-        inline unsigned int GetWidth() const { return m_Width; }
-        inline unsigned int GetHeight() const { return m_Height; }
+        unsigned int GetWidth() const { return m_Width; }
+        unsigned int GetHeight() const { return m_Height; }
 
         std::string ToString() const override
         {
@@ -22,7 +21,7 @@ namespace LightEngine {
         }
 
         EVENT_CLASS_TYPE(WindowResize)
-            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     private:
         unsigned int m_Width, m_Height;
     };
@@ -33,7 +32,7 @@ namespace LightEngine {
         WindowCloseEvent() {}
 
         EVENT_CLASS_TYPE(WindowClose)
-            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 //APP TICK
     class LIGHTENGINE_API AppTickEvent : public Event
@@ -42,7 +41,7 @@ namespace LightEngine {
         AppTickEvent() {}
 
         EVENT_CLASS_TYPE(AppTick)
-            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 //APP UPDATE 
     class LIGHTENGINE_API AppUpdateEvent : public Event
@@ -51,7 +50,7 @@ namespace LightEngine {
         AppUpdateEvent() {}
 
         EVENT_CLASS_TYPE(AppUpdate)
-            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 //APP RENDER EVENT
     class LIGHTENGINE_API AppRenderEvent : public Event
@@ -60,6 +59,6 @@ namespace LightEngine {
         AppRenderEvent() {}
 
         EVENT_CLASS_TYPE(AppRender)
-            EVENT_CLASS_CATEGORY(EventCategoryApplication)
+        EVENT_CLASS_CATEGORY(EventCategoryApplication)
     };
 }

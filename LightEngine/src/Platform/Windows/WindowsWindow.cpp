@@ -5,6 +5,7 @@
 #include "LightEngine/Events/KeyEvent.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
+// GLFW is temporary. In Windows it will be replaced by WIN32 API
 namespace LightEngine
 {
     static bool s_GLFWInitialized = false;
@@ -82,24 +83,24 @@ namespace LightEngine
 
                 switch (action)
                 {
-                case GLFW_PRESS:
-                {
-                    KeyPressedEvent event(key, 0);
-                    data.EventCallback(event);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    KeyReleasedEvent event(key);
-                    data.EventCallback(event);
-                    break;
-                }
-                case GLFW_REPEAT:
-                {
-                    KeyPressedEvent event(key, 1);
-                    data.EventCallback(event);
-                    break;
-                }
+                    case GLFW_PRESS:
+                    {
+                        KeyPressedEvent event(key, 0);
+                        data.EventCallback(event);
+                        break;
+                    }
+                    case GLFW_RELEASE:
+                    {
+                        KeyReleasedEvent event(key);
+                        data.EventCallback(event);
+                        break;
+                    }
+                    case GLFW_REPEAT:
+                    {
+                        KeyPressedEvent event(key, 1);
+                        data.EventCallback(event);
+                        break;
+                    }
                 }
             });
 
@@ -117,18 +118,18 @@ namespace LightEngine
 
                 switch (action)
                 {
-                case GLFW_PRESS:
-                {
-                    MouseButtonPressedEvent event(button);
-                    data.EventCallback(event);
-                    break;
-                }
-                case GLFW_RELEASE:
-                {
-                    MouseButtonReleasedEvent event(button);
-                    data.EventCallback(event);
-                    break;
-                }
+                    case GLFW_PRESS:
+                    {
+                        MouseButtonPressedEvent event(button);
+                        data.EventCallback(event);
+                        break;
+                    }
+                    case GLFW_RELEASE:
+                    {
+                        MouseButtonReleasedEvent event(button);
+                        data.EventCallback(event);
+                        break;
+                    }
                 }
             });
 
