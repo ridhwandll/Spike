@@ -6,6 +6,15 @@
 
 namespace LightEngine
 {
+    struct OrthographicCameraBounds
+    {
+        float Left, Right;
+        float Bottom, Top;
+
+        float GetWidth() { return Right - Left; }
+        float GetHeight() { return Top - Bottom; }
+    };
+
     class OrthographicCameraController
     {
     public:
@@ -23,6 +32,7 @@ namespace LightEngine
         float GetCameraRotationSpeed() { return m_CameraRotationSpeed; }
         void SetCameraRotationSpeed(float speed) { m_CameraRotationSpeed = speed; }
 
+        const OrthographicCameraBounds& GetBounds() { return m_Bounds; }
         float GetZoomLevel() { return m_ZoomLevel; }
         void SetZoomLevel(float level) { m_ZoomLevel = level; }
     private:
@@ -32,6 +42,7 @@ namespace LightEngine
         float m_AspectRatio;
         float m_ZoomLevel = 1.0f;
         bool m_Rotation = false;
+        OrthographicCameraBounds m_Bounds;
         OrthographicCamera m_Camera;
 
         glm::vec3 m_CameraPosition = { 0.0f, 0.0f, 0.0f };
