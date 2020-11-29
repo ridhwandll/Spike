@@ -52,7 +52,15 @@ namespace LightEngine
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 410");
     }
-
+    void ImGuiLayer::OnEvent(Event& e)
+    {
+        if (m_BlockEvents)
+        {
+            ImGuiIO& io = ImGui::GetIO();
+            e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+            e.Handled |= e.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+        }
+    }
     void ImGuiLayer::OnDetach()
     {
         LE_PROFILE_FUNCTION();

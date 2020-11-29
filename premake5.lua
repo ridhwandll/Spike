@@ -1,6 +1,6 @@
 workspace "LightEngine"
 	architecture "x86_64"
-	startproject "Sandbox"
+	startproject "Lightning-Editor"
 
 	configurations
 	{

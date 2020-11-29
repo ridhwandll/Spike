@@ -1,29 +1,13 @@
-#Directories
-/bin/
-/bin-int/
-*/*/*/bin/
-*/*/*/bin-int/
+# Binaries
+**/bin/
+bin-int/
 
-#files
-*.user
-
-# Precompiled Headers
-*.pch
-
-# Visual Studio
+# Visual Studio files and folder
 .vs/
-*.sln
-**/*.vcxproj
-**/*.filters
-**/*.user
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Others
-*.ini
-*.cfg
-*.json
+#Others
+**.json
