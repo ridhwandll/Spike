@@ -48,6 +48,11 @@ namespace LightEngine
         layer->OnAttach();
     }
 
+    void Application::Close()
+    {
+        m_Running = false;
+    }
+
     void Application::OnEvent(Event& e)
     {
         LE_PROFILE_FUNCTION();
