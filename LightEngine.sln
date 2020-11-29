@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "LightEngine\vendor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LightEngine", "LightEngine\LightEngine.vcxproj", "{135B6D8E-7F10-E683-0805-E05A74B9DC87}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lightning-Editor", "Lightning-Editor\Lightning-Editor.vcxproj", "{3D7FF6DB-2978-152E-52AA-FAB23E02F539}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -50,6 +52,12 @@ Global
 		{135B6D8E-7F10-E683-0805-E05A74B9DC87}.Dist|x64.Build.0 = Dist|x64
 		{135B6D8E-7F10-E683-0805-E05A74B9DC87}.Release|x64.ActiveCfg = Release|x64
 		{135B6D8E-7F10-E683-0805-E05A74B9DC87}.Release|x64.Build.0 = Release|x64
+		{3D7FF6DB-2978-152E-52AA-FAB23E02F539}.Debug|x64.ActiveCfg = Debug|x64
+		{3D7FF6DB-2978-152E-52AA-FAB23E02F539}.Debug|x64.Build.0 = Debug|x64
+		{3D7FF6DB-2978-152E-52AA-FAB23E02F539}.Dist|x64.ActiveCfg = Dist|x64
+		{3D7FF6DB-2978-152E-52AA-FAB23E02F539}.Dist|x64.Build.0 = Dist|x64
+		{3D7FF6DB-2978-152E-52AA-FAB23E02F539}.Release|x64.ActiveCfg = Release|x64
+		{3D7FF6DB-2978-152E-52AA-FAB23E02F539}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

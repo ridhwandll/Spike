@@ -3,7 +3,7 @@
 //#include <glad/glad.h>
 #include <glm/glm.hpp>
 
-typedef unsigned int GLenum; //Should be removed!
+typedef uint32_t GLenum; //Should be removed!
 
 namespace LightEngine
 {
