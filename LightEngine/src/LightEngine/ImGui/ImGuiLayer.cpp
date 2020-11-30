@@ -33,7 +33,8 @@ namespace LightEngine
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-        // Setup Dear ImGui style
+        io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-Regular.ttf", 15.0f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-Regular.ttf", 15.0f);
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
 
