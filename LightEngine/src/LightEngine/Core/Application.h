@@ -19,6 +19,7 @@ namespace LightEngine
 
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
+        void SetAppIcon(const std::string& imagePath);
 
         Window& GetWindow() { return *m_Window; }
         void Close();

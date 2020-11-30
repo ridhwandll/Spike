@@ -3,7 +3,7 @@
 ![](https://github.com/FahimFuad/LightEngine/workflows/build/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/FahimFuad/LightEngine/blob/main/LICENSE)
 
-![LightEngine](Resources/Branding/LEdark.png)<br/>
+![LightEngine](Resources/Branding/LightEngine.png)<br/>
 
 Welcome to the **LightEngine**'s source code!<br/>
 Its basically an application making engine written in **C++**<br/>

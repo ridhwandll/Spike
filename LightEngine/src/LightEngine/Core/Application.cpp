@@ -5,6 +5,7 @@
 #include "LightEngine/Renderer/Renderer2D.h"
 #include "Input.h"
 #include "GLFW/glfw3.h"
+#include "stb_image.h"
 
 namespace LightEngine
 {
@@ -46,6 +47,14 @@ namespace LightEngine
         LE_PROFILE_FUNCTION();
         m_LayerStack.PushOverlay(layer);
         layer->OnAttach();
+    }
+
+    void Application::SetAppIcon(const std::string& imagePath)
+    {
+        GLFWimage icons[1];
+        icons[0].pixels = stbi_load(imagePath.c_str(), &icons[0].width, &icons[0].height, 0, 4);
+        glfwSetWindowIcon(static_cast<GLFWwindow*>(m_Window->GetNativeWindow()), 1, icons);
+        stbi_image_free(icons[0].pixels);
     }
 
     void Application::Close()

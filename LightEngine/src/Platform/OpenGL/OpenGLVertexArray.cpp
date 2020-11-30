@@ -59,7 +59,6 @@ namespace LightEngine
         uint32_t index = 0;
         for (const auto& element : layout)
         {
-
             glEnableVertexAttribArray(index);
             glVertexAttribPointer(index,
                 element.GetComponentCount(),

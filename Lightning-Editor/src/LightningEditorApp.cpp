@@ -1,6 +1,5 @@
 #include <LightEngine.h>
 #include <LightEngine/Core/EntryPoint.h>
-
 #include "EditorLayer.h"
 
 namespace LightEngine {
@@ -11,6 +10,7 @@ namespace LightEngine {
         LightEngineEditor()
             :Application("LightEngine Editor")
         {
+            SetAppIcon("D:/Dev/LightEngine/Resources/Branding/LightEngine.png");
             PushLayer(new EditorLayer());
         }
 
