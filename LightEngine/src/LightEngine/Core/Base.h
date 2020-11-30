@@ -42,29 +42,23 @@
     #error "Unknown platform!"
 #endif // End of platform detection
 
-
-// DLL support
-#ifdef LE_PLATFORM_WINDOWS
-    #if LE_DYNAMIC_LINK
-        #ifdef LE_BUILD_DLL
-            #define LIGHTENGINE_API __declspec(dllexport)
-        #else
-            #define LIGHTENGINE_API __declspec(dllimport)
-        #endif
-    #else
-        #define LIGHTENGINE_API
-    #endif
-#else
-    #error LightEngine only supports Windows!
-#endif // End of DLL support
-
 #ifdef LE_DEBUG
+    #if defined(LE_PLATFORM_WINDOWS)
+        #define LE_DEBUGBREAK() __debugbreak()
+    #elif defined(LE_PLATFORM_LINUX)
+        #include<signal.h>
+        #define LE_DEBUGBREAK() raise(SIGTRAP)
+    #else
+        #error "LightEngine doesn't support debugbreak yet, on this platform!"
+    #endif
     #define LE_ENABLE_ASSERTS
+#else
+    #define LE_DEBUGBREAK()
 #endif
 
 #ifdef LE_ENABLE_ASSERTS
-    #define LE_ASSERT(x, ...) { if(!(x)) { LE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-    #define LE_CORE_ASSERT(x, ...) { if(!(x)) { LE_CORE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+    #define LE_ASSERT(x, ...) { if(!(x)) { LE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); LE_DEBUGBREAK(); } }
+    #define LE_CORE_ASSERT(x, ...) { if(!(x)) { LE_CORE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); LE_DEBUGBREAK(); } }
 #else
     #define LE_ASSERT(x, ...)
     #define LE_CORE_ASSERT(x, ...)

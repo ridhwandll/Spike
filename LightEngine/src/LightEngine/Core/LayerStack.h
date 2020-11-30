@@ -7,7 +7,7 @@
 
 namespace LightEngine
 {
-    class LIGHTENGINE_API LayerStack
+    class  LayerStack
     {
     public:
         LayerStack();

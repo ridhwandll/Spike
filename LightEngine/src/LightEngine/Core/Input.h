@@ -1,14 +1,15 @@
 #pragma once
-
-#include "Base.h"
+#include "LightEngine/Core/Base.h"
+#include "LightEngine/Core/KeyCodes.h"
+#include "LightEngine/Core/MouseCodes.h"
 
 namespace LightEngine
 {
-    class LIGHTENGINE_API Input
+    class Input
     {
     public:
-        static bool IsKeyPressed(int keycode);
-        static bool IsMouseButtonPressed(int button);
+        static bool IsKeyPressed(KeyCode keycode);
+        static bool IsMouseButtonPressed(MouseCode button);
         static std::pair<float, float> GetMousePosition();
         static float GetMouseX();
         static float GetMouseY();

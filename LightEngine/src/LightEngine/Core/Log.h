@@ -5,7 +5,7 @@
 
 namespace LightEngine
 {
-    class LIGHTENGINE_API Log
+    class  Log
     {
     public:
         static void Init();

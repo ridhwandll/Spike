@@ -1,5 +1,6 @@
 #include "lepch.h"
 #include "WindowsWindow.h"
+#include "LightEngine/Core/Input.h"
 #include "LightEngine/Events/ApplicationEvent.h"
 #include "LightEngine/Events/MouseEvent.h"
 #include "LightEngine/Events/KeyEvent.h"
@@ -66,15 +67,15 @@ namespace LightEngine
                 data.Width = width;
                 data.Height = height;
 
-                WindowResizeEvent event(width, height);
-                data.EventCallback(event);
+                WindowResizeEvent e(width, height);
+                data.EventCallback(e);
             });
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-                WindowCloseEvent event;
-                data.EventCallback(event);
+                WindowCloseEvent e;
+                data.EventCallback(e);
             });
 
         glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -85,20 +86,20 @@ namespace LightEngine
                 {
                     case GLFW_PRESS:
                     {
-                        KeyPressedEvent event(key, 0);
-                        data.EventCallback(event);
+                        KeyPressedEvent e(static_cast<KeyCode>(key), 0);
+                        data.EventCallback(e);
                         break;
                     }
                     case GLFW_RELEASE:
                     {
-                        KeyReleasedEvent event(key);
-                        data.EventCallback(event);
+                        KeyReleasedEvent e(static_cast<KeyCode>(key));
+                        data.EventCallback(e);
                         break;
                     }
                     case GLFW_REPEAT:
                     {
-                        KeyPressedEvent event(key, 1);
-                        data.EventCallback(event);
+                        KeyPressedEvent e(static_cast<KeyCode>(key), 1);
+                        data.EventCallback(e);
                         break;
                     }
                 }
@@ -108,8 +109,8 @@ namespace LightEngine
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-                KeyTypedEvent event(keycode);
-                data.EventCallback(event);
+                KeyTypedEvent e(static_cast<KeyCode>(keycode));
+                data.EventCallback(e);
             });
 
         glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
@@ -120,14 +121,14 @@ namespace LightEngine
                 {
                     case GLFW_PRESS:
                     {
-                        MouseButtonPressedEvent event(button);
-                        data.EventCallback(event);
+                        MouseButtonPressedEvent e(static_cast<MouseCode>(button));
+                        data.EventCallback(e);
                         break;
                     }
                     case GLFW_RELEASE:
                     {
-                        MouseButtonReleasedEvent event(button);
-                        data.EventCallback(event);
+                        MouseButtonReleasedEvent e(static_cast<MouseCode>(button));
+                        data.EventCallback(e);
                         break;
                     }
                 }
@@ -137,16 +138,16 @@ namespace LightEngine
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-                MouseScrolledEvent event((float)xOffset, (float)yOffset);
-                data.EventCallback(event);
+                MouseScrolledEvent e((float)xOffset, (float)yOffset);
+                data.EventCallback(e);
             });
 
         glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-                MouseMovedEvent event((float)xPos, (float)yPos);
-                data.EventCallback(event);
+                MouseMovedEvent e((float)xPos, (float)yPos);
+                data.EventCallback(e);
             });
     }
 

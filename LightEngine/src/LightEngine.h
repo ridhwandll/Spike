@@ -10,7 +10,7 @@
 
 #include "LightEngine/Core/Input.h"
 #include "LightEngine/Core/KeyCodes.h"
-#include "LightEngine/Core/MouseButtonCodes.h"
+#include "LightEngine/Core/MouseCodes.h"
 
 #include "LightEngine/Renderer/OrthographicCameraController.h"
 #include "LightEngine/ImGui/ImGuiLayer.h"

@@ -1,10 +1,11 @@
 #pragma once
-#include "Event.h"
+#include "LightEngine/Events/Event.h"
+#include "LightEngine/Core/Input.h"
 
 namespace LightEngine
 {
 //MOUSE MOVED EVENT
-    class LIGHTENGINE_API MouseMovedEvent : public Event
+    class  MouseMovedEvent : public Event
     {
     public:
         MouseMovedEvent(float x, float y)
@@ -26,7 +27,7 @@ namespace LightEngine
         float m_MouseX, m_MouseY;
     };
 //MOUSE SCROLLED EVENT
-    class LIGHTENGINE_API MouseScrolledEvent : public Event
+    class  MouseScrolledEvent : public Event
     {
     public:
         MouseScrolledEvent(float xOffset, float yOffset)
@@ -48,23 +49,23 @@ namespace LightEngine
         float m_XOffset, m_YOffset;
     };
 //MOUSE BUTTON EVENT
-    class LIGHTENGINE_API MouseButtonEvent : public Event
+    class  MouseButtonEvent : public Event
     {
     public:
-        int GetMouseButton() const { return m_Button; }
+        MouseCode GetMouseButton() const { return m_Button; }
 
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     protected:
-        MouseButtonEvent(int button)
+        MouseButtonEvent(MouseCode button)
             : m_Button(button) {}
 
-        int m_Button;
+        MouseCode m_Button;
     };
 //MOUSE BUTTON PRESSED
-    class LIGHTENGINE_API MouseButtonPressedEvent : public MouseButtonEvent
+    class  MouseButtonPressedEvent : public MouseButtonEvent
     {
     public:
-        MouseButtonPressedEvent(int button)
+        MouseButtonPressedEvent(MouseCode button)
             : MouseButtonEvent(button) {}
 
         std::string ToString() const override
@@ -77,10 +78,10 @@ namespace LightEngine
         EVENT_CLASS_TYPE(MouseButtonPressed)
     };
 //MOUSE BUTTON RELEASED
-    class LIGHTENGINE_API MouseButtonReleasedEvent : public MouseButtonEvent
+    class  MouseButtonReleasedEvent : public MouseButtonEvent
     {
     public:
-        MouseButtonReleasedEvent(int button)
+        MouseButtonReleasedEvent(MouseCode button)
             : MouseButtonEvent(button) {}
 
         std::string ToString() const override

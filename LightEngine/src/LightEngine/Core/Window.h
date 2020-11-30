@@ -20,7 +20,7 @@ namespace LightEngine
     };
 
     // Interface representing a desktop system based Window
-    class LIGHTENGINE_API Window
+    class  Window
     {
     public:
         using EventCallbackFn = std::function<void(Event&)>;
