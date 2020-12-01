@@ -1,19 +1,21 @@
 workspace "LightEngine"
-	architecture "x86_64"
-	startproject "Lightning-Editor"
+    architecture "x86_64"
+    startproject "Lightning-Editor"
 
-	configurations
-	{
-		"Debug",
-		"Release",
-		"Dist"
-	}
+    configurations
+    {
+        "Debug",
+        "Release",
+        "Dist"
+    }
+    
+    flags
+    {
+        "MultiProcessorCompile"
+    }
 
-	flags
-	{
-		"MultiProcessorCompile"
-	}
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "LightEngine/vendor/GLFW/include"
@@ -21,174 +23,177 @@ IncludeDir["Glad"] = "LightEngine/vendor/Glad/include"
 IncludeDir["ImGui"] = "LightEngine/vendor/imgui"
 IncludeDir["glm"] = "LightEngine/vendor/glm"
 IncludeDir["stb_image"] = "LightEngine/vendor/stb_image"
-
+IncludeDir["entt"] = "LightEngine/vendor/entt/include"
 
 group "Dependencies"
-	include "LightEngine/vendor/GLFW"
-	include "LightEngine/vendor/Glad"
-	include "LightEngine/vendor/imgui"
+    include "LightEngine/vendor/GLFW"
+    include "LightEngine/vendor/Glad"
+    include "LightEngine/vendor/imgui"
 group ""
 
 project "LightEngine"
-	location "LightEngine"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
+    location "LightEngine"
+    kind "StaticLib"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "lepch.h"
-	pchsource "LightEngine/src/lepch.cpp"
+    pchheader "lepch.h"
+    pchsource "LightEngine/src/lepch.cpp"
 
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.cpp",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl",
-	}
-	defines
-	{
-		"_CRT_SECURE_NO_WARNINGS"
-	}
-	includedirs
-	{
-		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/stb_image/**.h",
+        "%{prj.name}/vendor/stb_image/**.cpp",
+        "%{prj.name}/vendor/glm/glm/**.hpp",
+        "%{prj.name}/vendor/glm/glm/**.inl",
+    }
 
-	}
-	links
-	{
-		"GLFW",
-		"Glad",
-		"ImGui",
-		"opengl32.lib"
-	}
+    defines
+    {
+        "_CRT_SECURE_NO_WARNINGS",
+        "GLFW_INCLUDE_NONE"
+    }
 
-	filter "system:windows"
-		systemversion "latest"
+    includedirs
+    {
+        "%{prj.name}/src",
+        "%{prj.name}/vendor/spdlog/include",
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}"
+    }
 
-		defines
-		{
-			"LE_PLATFORM_WINDOWS",
-			"LE_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
-		}
+    links 
+    { 
+        "GLFW",
+        "Glad",
+        "ImGui",
+        "opengl32.lib"
+    }
 
-	filter "configurations:Debug"
-		defines "LE_DEBUG"
-		runtime "Debug"
-		symbols "on"
+    filter "system:windows"
+        systemversion "latest"
 
-	filter "configurations:Release"
-		defines "LE_RELEASE"
-		runtime "Release"
-		optimize "on"
+        defines
+        {
+        }
 
-	filter "configurations:Dist"
-		defines "LE_DIST"
-		runtime "Release"
-		optimize "on"
+    filter "configurations:Debug"
+        defines "LE_DEBUG"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:Release"
+        defines "LE_RELEASE"
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:Dist"
+        defines "LE_DIST"
+        runtime "Release"
+        optimize "on"
 
 project "Sandbox"
-	location "Sandbox"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
+    location "Sandbox"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
 
-	includedirs
-	{
-		"LightEngine/vendor/spdlog/include",
-		"LightEngine/src",
-		"LightEngine/vendor",
-		"%{IncludeDir.glm}"
-	}
+    includedirs
+    {
+        "LightEngine/vendor/spdlog/include",
+        "LightEngine/src",
+        "LightEngine/vendor",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.entt}"
+    }
 
-	links
-	{
-		"LightEngine"
-	}
+    links
+    {
+        "LightEngine"
+    }
 
-	filter "system:windows"
-		systemversion "latest"
+    filter "system:windows"
+        systemversion "latest"
+        
+    filter "configurations:Debug"
+        defines "LE_DEBUG"
+        runtime "Debug"
+        symbols "on"
 
-	filter "configurations:Debug"
-		defines "LE_DEBUG"
-		runtime "Debug"
-		symbols "on"
+    filter "configurations:Release"
+        defines "LE_RELEASE"
+        runtime "Release"
+        optimize "on"
 
-	filter "configurations:Release"
-		defines "LE_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "LE_DIST"
-		runtime "Release"
-		optimize "on" 
+    filter "configurations:Dist"
+        defines "LE_DIST"
+        runtime "Release"
+        optimize "on"
 
 project "Lightning-Editor"
-	location "Lightning-Editor"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
-	staticruntime "on"
+    location "Lightning-Editor"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files
-	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
-	}
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
 
-	includedirs
-	{
-		"LightEngine/vendor/spdlog/include",
-		"LightEngine/src",
-		"LightEngine/vendor",
-		"%{IncludeDir.glm}"
-	}
+    includedirs
+    {
+        "LightEngine/vendor/spdlog/include",
+        "LightEngine/src",
+        "LightEngine/vendor",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.entt}"
+    }
 
-	links
-	{
-		"LightEngine"
-	}
+    links
+    {
+        "LightEngine"
+    }
 
-	filter "system:windows"
-		systemversion "latest"
+    filter "system:windows"
+        systemversion "latest"
+        
+    filter "configurations:Debug"
+        defines "LE_DEBUG"
+        runtime "Debug"
+        symbols "on"
 
-	filter "configurations:Debug"
-		defines "LE_DEBUG"
-		runtime "Debug"
-		symbols "on"
+    filter "configurations:Release"
+        defines "LE_RELEASE"
+        runtime "Release"
+        optimize "on"
 
-	filter "configurations:Release"
-		defines "LE_RELEASE"
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:Dist"
-		defines "LE_DIST"
-		runtime "Release"
-		optimize "on" 
+    filter "configurations:Dist"
+        defines "LE_DIST"
+        runtime "Release"
+        optimize "on"

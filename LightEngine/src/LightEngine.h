@@ -14,6 +14,8 @@
 
 #include "LightEngine/Renderer/OrthographicCameraController.h"
 #include "LightEngine/ImGui/ImGuiLayer.h"
+#include "LightEngine/Scene/Scene.h"
+#include "LightEngine/Scene/Components.h"
 
 //******Renderer**********
 #include "LightEngine/Renderer/Renderer.h"
