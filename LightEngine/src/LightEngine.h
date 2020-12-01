@@ -16,6 +16,7 @@
 #include "LightEngine/ImGui/ImGuiLayer.h"
 #include "LightEngine/Scene/Scene.h"
 #include "LightEngine/Scene/Components.h"
+#include "LightEngine/Scene/Entity.h"
 
 //******Renderer**********
 #include "LightEngine/Renderer/Renderer.h"

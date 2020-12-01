@@ -3,28 +3,12 @@
 #include "LightEngine/Renderer/Renderer2D.h"
 #include <glm/glm.hpp>
 #include "LightEngine/Scene/Components.h"
+#include "Entity.h"
 
 namespace LightEngine
 {
-    struct MeshComponent 
-    {
-        float Value;
-        MeshComponent() = default;
-    };
     Scene::Scene()
     {
-#if 0
-        entt::entity entity = m_Registry.create();
-
-        if (m_Registry.has<TransformComponent>(entity))
-            m_Registry.emplace<TransformComponent>(entity, glm::mat4(1.0f));
-
-        auto view = m_Registry.view<TransformComponent>();
-        for (auto entity : view)
-        {
-            TransformComponent& transform = view.get<TransformComponent>(entity);
-        }
-#endif
     }
 
     Scene::~Scene()
@@ -32,9 +16,14 @@ namespace LightEngine
 
     }
 
-    entt::entity Scene::CreateEntity()
+    Entity Scene::CreateEntity(const std::string name)
     {
-        return m_Registry.create();
+        Entity entity = { m_Registry.create(), this };
+        entity.AddComponent<TransformComponent>();
+        auto& tag = entity.AddComponent<TagComponent>();
+
+        tag.Tag = name.empty() ? "Entity" : name;
+        return entity;
     }
 
     void Scene::OnUpdate(Timestep ts)

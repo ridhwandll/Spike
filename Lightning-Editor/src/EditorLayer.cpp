@@ -24,9 +24,10 @@ namespace LightEngine
 
         m_ActiveScene = CreateRef<Scene>();
 
-        auto square = m_ActiveScene->CreateEntity();
-        m_ActiveScene->GetReg().emplace<TransformComponent>(square);
-        m_ActiveScene->GetReg().emplace<SpriteRendererComponent>(square, m_SquareColor);
+        //Entity
+        auto square = m_ActiveScene->CreateEntity("Square Entity");
+
+        square.AddComponent<SpriteRendererComponent>(m_SquareColor);
 
         m_SquareEntity = square;
     }
@@ -47,7 +48,6 @@ namespace LightEngine
         m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
 
-
         // Update
         if (m_ViewportFocused)
             m_CameraController.OnUpdate(ts);
@@ -58,10 +58,9 @@ namespace LightEngine
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
 
+        //Start and Update scene
         Renderer2D::BeginScene(m_CameraController.GetCamera());
-
         m_ActiveScene->OnUpdate(ts);
-        m_ActiveScene->GetReg().get<SpriteRendererComponent>(m_SquareEntity).Color = m_SquareColor;
         Renderer2D::EndScene();
 
         m_Framebuffer->Unbind();
@@ -127,8 +126,17 @@ namespace LightEngine
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-        ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+        if(m_SquareEntity)
+        {
+            ImGui::Separator();
+            ImGui::Text("%s", m_SquareEntity.GetComponent<TagComponent>().Tag.c_str());
+            m_SquareEntity.GetComponent<SpriteRendererComponent>().Color = m_SquareColor;
+            ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+            ImGui::Separator();
+        }
+
         ImGui::End();
+
 
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
