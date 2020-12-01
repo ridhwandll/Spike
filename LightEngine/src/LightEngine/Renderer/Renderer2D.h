@@ -1,5 +1,6 @@
 #pragma once
 #include "LightEngine/Renderer/OrthographicCamera.h"
+#include "LightEngine/Renderer/Camera.h"
 #include "LightEngine/Renderer/Texture.h"
 #include "LightEngine/Renderer/SubTexture2D.h"
 
@@ -10,6 +11,7 @@ namespace LightEngine
     public:
         static void Init();
         static void Shutdown();
+        static void BeginScene(const Camera& camera, const glm::mat4& transform);
         static void BeginScene(const OrthographicCamera& camera);
         static void EndScene();
         static void Flush();

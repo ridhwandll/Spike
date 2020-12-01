@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "LightEngine/Renderer/Camera.h"
 
 namespace LightEngine
 {
@@ -35,5 +36,17 @@ namespace LightEngine
 
         SpriteRendererComponent(const glm::vec4& color)
             :Color(color) {}
+    };
+
+    struct CameraComponent
+    {
+        LightEngine::Camera Camera;
+        bool Primary = true;
+
+        CameraComponent() = default;
+        CameraComponent(const CameraComponent&) = default;
+
+        CameraComponent(const glm::mat4& projection)
+            :Camera(projection) {}
     };
 }
