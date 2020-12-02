@@ -1,6 +1,6 @@
 #pragma once
 #include "LightEngine/Events/Event.h"
-#include "LightEngine/Core/Input.h"
+#include "LightEngine/Core/MouseCodes.h"
 
 namespace LightEngine
 {
@@ -8,7 +8,7 @@ namespace LightEngine
     class  MouseMovedEvent : public Event
     {
     public:
-        MouseMovedEvent(float x, float y)
+        MouseMovedEvent(const float x, const float y)
             : m_MouseX(x), m_MouseY(y) {}
 
         float GetX() const { return m_MouseX; }
@@ -30,7 +30,7 @@ namespace LightEngine
     class  MouseScrolledEvent : public Event
     {
     public:
-        MouseScrolledEvent(float xOffset, float yOffset)
+        MouseScrolledEvent(const float xOffset, const float yOffset)
             : m_XOffset(xOffset), m_YOffset(yOffset) {}
 
         float GetXOffset() const { return m_XOffset; }
@@ -56,7 +56,7 @@ namespace LightEngine
 
         EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
     protected:
-        MouseButtonEvent(MouseCode button)
+        MouseButtonEvent(const MouseCode button)
             : m_Button(button) {}
 
         MouseCode m_Button;
@@ -65,7 +65,7 @@ namespace LightEngine
     class  MouseButtonPressedEvent : public MouseButtonEvent
     {
     public:
-        MouseButtonPressedEvent(MouseCode button)
+        MouseButtonPressedEvent(const MouseCode button)
             : MouseButtonEvent(button) {}
 
         std::string ToString() const override
@@ -81,7 +81,7 @@ namespace LightEngine
     class  MouseButtonReleasedEvent : public MouseButtonEvent
     {
     public:
-        MouseButtonReleasedEvent(MouseCode button)
+        MouseButtonReleasedEvent(const MouseCode button)
             : MouseButtonEvent(button) {}
 
         std::string ToString() const override

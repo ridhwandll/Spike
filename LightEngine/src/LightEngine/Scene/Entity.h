@@ -43,6 +43,12 @@ namespace LightEngine
             m_Scene->m_Registry.remove_all(m_EntityHandle);
         }
 
+        template<typename T>
+        void AddNativeScript()
+        {
+            AddComponent<NativeScriptComponent>().Bind<T>();
+        }
+
         operator bool() const { return m_EntityHandle != entt::null; }
     private:
         entt::entity m_EntityHandle{ entt::null };

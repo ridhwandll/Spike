@@ -1,4 +1,11 @@
 #pragma once
+#include "LightEngine/Core/PlatformDetection.h"
+
+#ifdef LE_PLATFORM_WINDOWS
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+#endif
 
 #include <iostream>
 #include <fstream>
@@ -14,6 +21,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "LightEngine/Core/Base.h"
 #include "LightEngine/Core/Log.h"
 #include "LightEngine/Debug/Instrumentor.h"
 

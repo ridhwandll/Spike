@@ -5,23 +5,23 @@
 
 namespace LightEngine
 {
-    bool Input::IsKeyPressed(KeyCode key)
+    bool Input::IsKeyPressed(const KeyCode keycode)
     {
-        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        auto state = glfwGetKey(window, static_cast<int32_t>(key));
+        auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+        auto state = glfwGetKey(window, static_cast<int32_t>(keycode));
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
-    bool Input::IsMouseButtonPressed(MouseCode key)
+    bool Input::IsMouseButtonPressed(const MouseCode key)
     {
-        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+        auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
         auto state = glfwGetMouseButton(window, static_cast<int32_t>(key));
         return state == GLFW_PRESS;
     }
 
-    std::pair<float, float> Input::GetMousePosition()
+    glm::vec2 Input::GetMousePosition()
     {
-        auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+        auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
 
@@ -30,14 +30,12 @@ namespace LightEngine
 
     float Input::GetMouseX()
     {
-        auto [x, y] = GetMousePosition();
-        return x;
+        return GetMousePosition().x;
     }
 
     float Input::GetMouseY()
     {
-        auto [x, y] = GetMousePosition();
-        return y;
+        return GetMousePosition().y;
     }
 
 }

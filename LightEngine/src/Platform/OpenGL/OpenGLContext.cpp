@@ -23,7 +23,7 @@ namespace LightEngine
         LE_CORE_LOG_INFO("Vendor  : {0}", glGetString(GL_VENDOR));
         LE_CORE_LOG_INFO("Renderer: {0}", glGetString(GL_RENDERER));
         LE_CORE_LOG_INFO("Version : {0}", glGetString(GL_VERSION));
-
+        LE_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "LightEngine requires at least OpenGL version 4.5!");
     }
 
     void OpenGLContext::SwapBuffers()

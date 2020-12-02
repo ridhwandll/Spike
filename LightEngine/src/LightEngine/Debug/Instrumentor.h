@@ -1,11 +1,14 @@
 #pragma once
-
 #include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <sstream>
+
+#include "LightEngine/Core/Log.h"
 
 namespace LightEngine
 {

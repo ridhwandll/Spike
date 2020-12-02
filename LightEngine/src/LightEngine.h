@@ -1,6 +1,8 @@
 #pragma once
 //For use by LightEngine Applications
 
+
+#include "LightEngine/Debug/Instrumentor.h"
 #include "LightEngine/Core/Application.h"
 #include "LightEngine/Core/Layer.h"
 #include "LightEngine/Core/Log.h"
@@ -32,3 +34,4 @@
 #include "LightEngine/Renderer/VertexArray.h"
 
 #include "LightEngine/Renderer/OrthographicCamera.h"
+

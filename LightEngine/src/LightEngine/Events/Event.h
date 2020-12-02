@@ -1,5 +1,5 @@
 #pragma once
-#include "lepch.h"
+#include <functional>
 #include "LightEngine/Core/Base.h"
 
 namespace LightEngine

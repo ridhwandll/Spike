@@ -284,6 +284,9 @@ namespace LightEngine
         s_Data.Stats.QuadCount++;
     }
 
+    ///////////////////////////////////////////
+    //Draw Quad with Transform and Texture/////
+    ///////////////////////////////////////////
     void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
     {
         LE_PROFILE_FUNCTION();
@@ -297,7 +300,7 @@ namespace LightEngine
         float textureIndex = 0.0f;
         for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
         {
-            if (*s_Data.TextureSlots[i].get() == *texture.get())
+            if (*s_Data.TextureSlots[i] == *texture)
             {
                 textureIndex = (float)i;
                 break;

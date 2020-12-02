@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lepch.h"
+#include <sstream>
 
 #include "LightEngine/Core/Base.h"
 #include "LightEngine/Events/Event.h"
