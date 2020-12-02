@@ -17,6 +17,7 @@
 #include "LightEngine/Scene/Scene.h"
 #include "LightEngine/Scene/Components.h"
 #include "LightEngine/Scene/Entity.h"
+#include "LightEngine/Scene/ScriptableEntity.h"
 
 //******Renderer**********
 #include "LightEngine/Renderer/Renderer.h"
