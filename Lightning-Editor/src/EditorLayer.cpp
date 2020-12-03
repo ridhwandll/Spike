@@ -1,13 +1,12 @@
 #include "EditorLayer.h"
 #include <imgui/imgui.h>
-
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace LightEngine
 {
     EditorLayer::EditorLayer()
-        : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, true), m_SquareColor({ 0.2f, 0.3f, 0.8f, 1.0f })
+        : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, true)
     {
     }
 
@@ -26,7 +25,7 @@ namespace LightEngine
 
         //Entity
         m_SquareEntity = m_ActiveScene->CreateEntity("First Square");
-        m_SquareEntity.AddComponent<SpriteRendererComponent>(m_SquareColor);
+        m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 
         m_SecondSquareEntity = m_ActiveScene->CreateEntity("Second Square");
         m_SecondSquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
@@ -156,38 +155,14 @@ namespace LightEngine
         }
 
         m_SceneHierarchyPanel.OnImGuiRender();
-        ImGui::Begin("Settings");
 
+
+        ImGui::Begin("Render2D Stats");
         auto stats = Renderer2D::GetStats();
-        ImGui::Text("Renderer2D Stats:");
         ImGui::Text("Draw Calls: %d", stats.DrawCalls);
         ImGui::Text("Quads: %d", stats.QuadCount);
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-        if(m_SquareEntity)
-        {
-            ImGui::Separator();
-            ImGui::Text("%s", m_SquareEntity.GetComponent<TagComponent>().Tag.c_str());
-            m_SquareEntity.GetComponent<SpriteRendererComponent>().Color = m_SquareColor;
-            ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
-            ImGui::Separator();
-        }
-
-        ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_CameraEntity.GetComponent<TransformComponent>().Transform[3]));
-
-        if (ImGui::Checkbox("Primary Camera", &m_PrimaryCamera))
-        {
-            m_CameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
-            m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
-        }
-
-        {
-            auto& camera = m_SecondCameraEntity.GetComponent<CameraComponent>().Camera;
-            float orthoSize = camera.GetOrthographicSize();
-            if (ImGui::DragFloat("Second Camera Ortho Size", &orthoSize))
-                camera.SetOrthographicSize(orthoSize);
-        }
         ImGui::End();
 
 
