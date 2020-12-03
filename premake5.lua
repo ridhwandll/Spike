@@ -1,5 +1,3 @@
-include "./vendor/premake/premake_customization/solution_items.lua"
-
 workspace "LightEngine"
     architecture "x86_64"
     startproject "Lightning-Editor"
@@ -9,10 +7,6 @@ workspace "LightEngine"
         "Debug",
         "Release",
         "Dist"
-    }
-    solution_items
-    {
-        ".editorconfig"
     }
     flags
     {
@@ -31,7 +25,6 @@ IncludeDir["stb_image"] = "%{wks.location}/LightEngine/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/LightEngine/vendor/entt/include"
 
 group "Dependencies"
-    include "vendor/premake"
     include "LightEngine/vendor/GLFW"
     include "LightEngine/vendor/Glad"
     include "LightEngine/vendor/imgui"

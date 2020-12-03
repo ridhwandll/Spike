@@ -14,7 +14,7 @@ jobs:
         submodules: recursive
 
     - name: Generate Project Files
-      run: ./Scripts/GenProjects-windows.bat
+      run: ./Scripts/WindowsGenProjects.bat
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.0.2

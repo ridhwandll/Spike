@@ -2,6 +2,8 @@
 **/bin/
 bin-int/
 
+!vendor/premake/bin/
+
 # Visual Studio files and folder
 .vs/
 **.sln
