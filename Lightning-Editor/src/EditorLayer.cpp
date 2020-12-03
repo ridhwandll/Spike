@@ -29,7 +29,7 @@ namespace LightEngine
 
         m_SecondSquareEntity = m_ActiveScene->CreateEntity("Second Square");
         m_SecondSquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
-        m_SecondSquareEntity.GetComponent<TransformComponent>().Transform[3][0] = 2.0f;
+        m_SecondSquareEntity.GetComponent<TransformComponent>().Translation.x = 2.0f;
 
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
         m_CameraEntity.AddComponent<CameraComponent>();
@@ -41,27 +41,27 @@ namespace LightEngine
         class CameraController : public ScriptableEntity
         {
         public:
-            void OnCreate()
+            void OnCreate() override
             {
             }
 
-            void OnDestroy()
+            void OnDestroy() override
             {
             }
 
-            void OnUpdate(Timestep ts)
+            void OnUpdate(Timestep ts) override
             {
-                auto& transform = GetComponent<TransformComponent>().Transform;
+                auto& translation = GetComponent<TransformComponent>().Translation;
                 float speed = 5.0f;
 
                 if (Input::IsKeyPressed(Key::A))
-                    transform[3][0] -= speed * ts;
+                    translation.x -= speed * ts;
                 if (Input::IsKeyPressed(Key::D))
-                    transform[3][0] += speed * ts;
+                    translation.x += speed * ts;
                 if (Input::IsKeyPressed(Key::W))
-                    transform[3][1] += speed * ts;
+                    translation.y += speed * ts;
                 if (Input::IsKeyPressed(Key::S))
-                    transform[3][1] -= speed * ts;
+                    translation.y -= speed * ts;
             }
         };
 
