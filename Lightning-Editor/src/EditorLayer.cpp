@@ -66,6 +66,7 @@ namespace LightEngine
 
         m_CameraEntity.AddNativeScript<CameraController>();
         m_SecondCameraEntity.AddNativeScript<CameraController>();
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
     void EditorLayer::OnDetach()
@@ -152,6 +153,7 @@ namespace LightEngine
             ImGui::EndMenuBar();
         }
 
+        m_SceneHierarchyPanel.OnImGuiRender();
         ImGui::Begin("Settings");
 
         auto stats = Renderer2D::GetStats();
