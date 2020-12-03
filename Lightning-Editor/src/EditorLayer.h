@@ -28,6 +28,7 @@ namespace LightEngine
         Ref<Texture2D> m_CheckerboardTexture;
 
         Entity m_SquareEntity;
+        Entity m_SecondSquareEntity;
         Entity m_CameraEntity;
         Entity m_SecondCameraEntity;
 

@@ -25,8 +25,12 @@ namespace LightEngine
         m_ActiveScene = CreateRef<Scene>();
 
         //Entity
-        m_SquareEntity = m_ActiveScene->CreateEntity("Square Entity");
+        m_SquareEntity = m_ActiveScene->CreateEntity("First Square");
         m_SquareEntity.AddComponent<SpriteRendererComponent>(m_SquareColor);
+
+        m_SecondSquareEntity = m_ActiveScene->CreateEntity("Second Square");
+        m_SecondSquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+        m_SecondSquareEntity.GetComponent<TransformComponent>().Transform[3][0] = 2.0f;
 
         m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
         m_CameraEntity.AddComponent<CameraComponent>();
@@ -40,8 +44,6 @@ namespace LightEngine
         public:
             void OnCreate()
             {
-                auto& transform = GetComponent<TransformComponent>().Transform;
-                transform[3][0] = Random::LERandom<float>(1, 5);
             }
 
             void OnDestroy()
