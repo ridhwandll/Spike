@@ -19,6 +19,6 @@ namespace LightEngine
         void DrawComponents(Entity entity);
     private:
         Ref<Scene> m_Context;
-        Entity m_SelctionContext;
+        Entity m_SelectionContext;
     };
 }

@@ -3,11 +3,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "LightEngine/Scene/SceneSerializer.h"
+#include "LightEngine/Utility/PlatformUtils.h"
 
 namespace LightEngine
 {
     EditorLayer::EditorLayer()
-        : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f, true)
+        : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f)
     {
     }
 
@@ -23,36 +24,41 @@ namespace LightEngine
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         m_ActiveScene = CreateRef<Scene>();
+
 #if 0
-        //Entity
-        m_SquareEntity = m_ActiveScene->CreateEntity("First Square");
-        m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
+        // Entity
+        auto square = m_ActiveScene->CreateEntity("Green Square");
+        square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
 
-        m_SecondSquareEntity = m_ActiveScene->CreateEntity("Second Square");
-        m_SecondSquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
-        m_SecondSquareEntity.GetComponent<TransformComponent>().Translation.x = 2.0f;
+        auto redSquare = m_ActiveScene->CreateEntity("Red Square");
+        redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
 
-        m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
+        m_SquareEntity = square;
+
+        m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
         m_CameraEntity.AddComponent<CameraComponent>();
 
-        m_SecondCameraEntity = m_ActiveScene->CreateEntity("Second Camera");
-        auto& cc = m_SecondCameraEntity.AddComponent<CameraComponent>();
+        m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
+        auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
         cc.Primary = false;
 
         class CameraController : public ScriptableEntity
         {
         public:
-            void OnCreate() override
-            {
-            }
-
-            void OnDestroy() override
-            {
-            }
-
-            void OnUpdate(Timestep ts) override
+            virtual void OnCreate() override
             {
                 auto& translation = GetComponent<TransformComponent>().Translation;
+                translation.x = rand() % 10 - 5.0f;
+            }
+
+            virtual void OnDestroy() override
+            {
+            }
+
+            virtual void OnUpdate(Timestep ts) override
+            {
+                auto& translation = GetComponent<TransformComponent>().Translation;
+
                 float speed = 5.0f;
 
                 if (Input::IsKeyPressed(Key::A))
@@ -66,9 +72,10 @@ namespace LightEngine
             }
         };
 
-        m_CameraEntity.AddNativeScript<CameraController>();
-        m_SecondCameraEntity.AddNativeScript<CameraController>();
+        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 #endif
+
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
@@ -80,6 +87,7 @@ namespace LightEngine
     void EditorLayer::OnUpdate(Timestep ts)
     {
         LE_PROFILE_FUNCTION();
+
         // Resize
         if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
             m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
@@ -87,6 +95,7 @@ namespace LightEngine
         {
             m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
+
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
 
@@ -100,6 +109,7 @@ namespace LightEngine
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
 
+        // Update scene
         m_ActiveScene->OnUpdate(ts);
 
         m_Framebuffer->Unbind();
@@ -114,6 +124,8 @@ namespace LightEngine
         bool opt_fullscreen = opt_fullscreen_persistant;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
+        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+        // because it would be confusing to have two docking targets within each others.
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         if (opt_fullscreen)
         {
@@ -127,6 +139,7 @@ namespace LightEngine
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
 
+        // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
         if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
             window_flags |= ImGuiWindowFlags_NoBackground;
 
@@ -138,62 +151,63 @@ namespace LightEngine
             ImGui::PopStyleVar(2);
 
         // DockSpace
+        ImGuiIO& io = ImGui::GetIO();
         ImGuiStyle& style = ImGui::GetStyle();
         float minWinSizeX = style.WindowMinSize.x;
-        style.WindowMinSize.x = 250.0f;
-
-        ImGuiIO& io = ImGui::GetIO();
+        style.WindowMinSize.x = 270.0f;
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
+
         style.WindowMinSize.x = minWinSizeX;
 
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("Serialize"))
-                {
-                    SceneSerializer serializer(m_ActiveScene);
-                    serializer.Serialize("assets/scenes/Example.LightEngine");
-                }
-                if (ImGui::MenuItem("DeSerialize"))
-                {
-                    SceneSerializer serializer(m_ActiveScene);
-                    serializer.Deserialize("assets/scenes/Example.LightEngine");
-                }
-                if (ImGui::MenuItem("Exit"))
-                    Application::Get().Close();
+                if (ImGui::MenuItem("New", "Ctrl+N"))
+                    NewScene();
+
+                if (ImGui::MenuItem("Open...", "Ctrl+O"))
+                    OpenScene();
+
+                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+                    SaveSceneAs();
+
+                if (ImGui::MenuItem("Exit")) Application::Get().Close();
                 ImGui::EndMenu();
             }
 
             ImGui::EndMenuBar();
         }
 
-        //Update the pan
         m_SceneHierarchyPanel.OnImGuiRender();
 
-        ImGui::Begin("Render2D Stats");
+        ImGui::Begin("Stats");
+
         auto stats = Renderer2D::GetStats();
+        ImGui::Text("Renderer2D Stats:");
         ImGui::Text("Draw Calls: %d", stats.DrawCalls);
         ImGui::Text("Quads: %d", stats.QuadCount);
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
         ImGui::End();
 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
         ImGui::Begin("Viewport");
+
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
         Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 
+        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-        uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-        ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+        ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
         ImGui::End();
         ImGui::PopStyleVar();
 
@@ -203,5 +217,74 @@ namespace LightEngine
     void EditorLayer::OnEvent(Event& e)
     {
         m_CameraController.OnEvent(e);
+
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<KeyPressedEvent>(LE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
     }
+
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+    {
+        // Shortcuts
+        if (e.GetRepeatCount() > 0)
+            return false;
+
+        bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+        bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+        switch (e.GetKeyCode())
+        {
+        case Key::N:
+        {
+            if (control)
+                NewScene();
+
+            break;
+        }
+        case Key::O:
+        {
+            if (control)
+                OpenScene();
+
+            break;
+        }
+        case Key::S:
+        {
+            if (control && shift)
+                SaveSceneAs();
+
+            break;
+        }
+        }
+    }
+
+    void EditorLayer::NewScene()
+    {
+        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+    }
+
+    void EditorLayer::OpenScene()
+    {
+        std::string filepath = FileDialogs::OpenFile("LightEngine Scene (*.light)\0*.light\0");
+        if (!filepath.empty())
+        {
+            m_ActiveScene = CreateRef<Scene>();
+            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Deserialize(filepath);
+        }
+    }
+
+    void EditorLayer::SaveSceneAs()
+    {
+        std::string filepath = FileDialogs::SaveFile("LightEngine Scene (*.light)\0*.light\0");
+        if (!filepath.empty())
+        {
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize(filepath);
+        }
+    }
+
 }

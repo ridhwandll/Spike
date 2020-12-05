@@ -15,6 +15,7 @@ namespace LightEngine
     void SceneHierarchyPanel::SetContext(const Ref<Scene>& context)
     {
         m_Context = context;
+        m_SelectionContext = {};
     }
 
     void SceneHierarchyPanel::OnImGuiRender()
@@ -28,7 +29,7 @@ namespace LightEngine
         });
 
         if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-            m_SelctionContext = {};
+            m_SelectionContext = {};
 
         //Right Click on a blank space
         if (ImGui::BeginPopupContextWindow(0, 1, false))
@@ -43,9 +44,9 @@ namespace LightEngine
 
         // Inspector
         ImGui::Begin("Inspector");
-        if (m_SelctionContext)
+        if (m_SelectionContext)
         {
-            DrawComponents(m_SelctionContext);
+            DrawComponents(m_SelectionContext);
         }
         ImGui::End();
     }
@@ -57,14 +58,14 @@ namespace LightEngine
     {
         auto& tag = entity.GetComponent<TagComponent>().Tag;
 
-        ImGuiTreeNodeFlags flags = ((m_SelctionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+        ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
         flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
         bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 
         if (ImGui::IsItemClicked())
         {
-            m_SelctionContext = entity;
+            m_SelectionContext = entity;
         }
 
         bool entityDeleted = false;
@@ -85,8 +86,8 @@ namespace LightEngine
         if (entityDeleted)
         {
             m_Context->DestroyEntity(entity);
-            if (m_SelctionContext == entity)
-                m_SelctionContext = {};
+            if (m_SelectionContext == entity)
+                m_SelectionContext = {};
         }
 
     }
@@ -224,24 +225,24 @@ namespace LightEngine
         {
             if (ImGui::MenuItem("Transform"))
             {
-                if (!m_SelctionContext.HasComponent<TransformComponent>())
-                    m_SelctionContext.AddComponent<TransformComponent>();
+                if (!m_SelectionContext.HasComponent<TransformComponent>())
+                    m_SelectionContext.AddComponent<TransformComponent>();
                 else
                     LE_CORE_LOG_WARN("This entity already has Transform component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Camera"))
             {
-                if (!m_SelctionContext.HasComponent<CameraComponent>())
-                    m_SelctionContext.AddComponent<CameraComponent>();
+                if (!m_SelectionContext.HasComponent<CameraComponent>())
+                    m_SelectionContext.AddComponent<CameraComponent>();
                 else
                     LE_CORE_LOG_WARN("This entity already has Camera component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Sprite Renderer"))
             {
-                if (!m_SelctionContext.HasComponent<SpriteRendererComponent>())
-                    m_SelctionContext.AddComponent<SpriteRendererComponent>();
+                if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
+                    m_SelectionContext.AddComponent<SpriteRendererComponent>();
                 else
                     LE_CORE_LOG_WARN("This entity already has Sprite Renderer component");
                 ImGui::CloseCurrentPopup();
