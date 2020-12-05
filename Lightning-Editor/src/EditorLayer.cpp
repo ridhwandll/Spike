@@ -2,6 +2,7 @@
 #include <imgui/imgui.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "LightEngine/Scene/SceneSerializer.h"
 
 namespace LightEngine
 {
@@ -22,7 +23,7 @@ namespace LightEngine
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         m_ActiveScene = CreateRef<Scene>();
-
+#if 0
         //Entity
         m_SquareEntity = m_ActiveScene->CreateEntity("First Square");
         m_SquareEntity.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
@@ -67,6 +68,7 @@ namespace LightEngine
 
         m_CameraEntity.AddNativeScript<CameraController>();
         m_SecondCameraEntity.AddNativeScript<CameraController>();
+#endif
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
     }
 
@@ -146,22 +148,32 @@ namespace LightEngine
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
-
         style.WindowMinSize.x = minWinSizeX;
 
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("Exit")) Application::Get().Close();
+                if (ImGui::MenuItem("Serialize"))
+                {
+                    SceneSerializer serializer(m_ActiveScene);
+                    serializer.Serialize("assets/scenes/Example.LightEngine");
+                }
+                if (ImGui::MenuItem("DeSerialize"))
+                {
+                    SceneSerializer serializer(m_ActiveScene);
+                    serializer.Deserialize("assets/scenes/Example.LightEngine");
+                }
+                if (ImGui::MenuItem("Exit"))
+                    Application::Get().Close();
                 ImGui::EndMenu();
             }
 
             ImGui::EndMenuBar();
         }
 
+        //Update the pan
         m_SceneHierarchyPanel.OnImGuiRender();
-
 
         ImGui::Begin("Render2D Stats");
         auto stats = Renderer2D::GetStats();
@@ -170,8 +182,6 @@ namespace LightEngine
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
         ImGui::End();
-
-
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin("Viewport");
