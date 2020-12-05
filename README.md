@@ -32,6 +32,9 @@ This can also be used an powerful **GameEngine**!<br/>
     - Create a directory in which to build your project, e.g. 'build'
     - Within your build directory, run `cmake ..` to generate makefiles or `cmake .. -G "CodeBlocks - Unix Makefiles"` to generate a Code::Blocks project.
     - To build the project, run `make` inside the build directory.
+# Screenshot
+![LightEngine](Resources/Screenshots/Demo.png)<br/>
+
 # Main features to come: 
 - Fast 2D rendering (UI, particles, sprites, etc.)
 - High-fidelity Physically-Based 3D rendering (this will be expanded later, 2D to come first)
