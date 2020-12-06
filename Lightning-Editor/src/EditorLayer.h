@@ -42,7 +42,7 @@ namespace LightEngine
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
-
+        int m_GizmoType = -1;
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;
     };

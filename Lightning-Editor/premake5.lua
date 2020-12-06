@@ -19,7 +19,8 @@ project "Lightning-Editor"
 		"%{wks.location}/LightEngine/src",
 		"%{wks.location}/LightEngine/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}",
 	}
 
 	links

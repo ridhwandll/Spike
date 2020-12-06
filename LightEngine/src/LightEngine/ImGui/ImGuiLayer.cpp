@@ -7,9 +7,9 @@
 
 #include "LightEngine/Core/Application.h"
 
-// TEMPORARY
-#include <GLFW/glfw3.h>
-#include <glad/glad.h>
+#include <GLFW/glfw3.h> // TEMPORARY
+#include <glad/glad.h> // TEMPORARY
+#include <ImGuizmo.h>
 
 namespace LightEngine
 {
@@ -78,6 +78,7 @@ namespace LightEngine
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
     }
 
     void ImGuiLayer::End()

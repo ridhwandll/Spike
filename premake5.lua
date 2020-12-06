@@ -24,6 +24,7 @@ IncludeDir["glm"] = "%{wks.location}/LightEngine/vendor/glm"
 IncludeDir["stb_image"] = "%{wks.location}/LightEngine/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/LightEngine/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/LightEngine/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "%{wks.location}/LightEngine/vendor/ImGuizmo"
 
 group "Dependencies"
     include "LightEngine/vendor/GLFW"
