@@ -25,7 +25,7 @@ namespace LightEngine
     {
     public:
         template<typename T>
-        static T LERandom(T min = 0, T max = 500)
+        static T LERandom(T min = 0, T max = 100)
         {
             if constexpr (std::is_same_v<T, int>)
             {
@@ -75,8 +75,8 @@ namespace LightEngine
 
             if constexpr (!std::is_same_v<T, bool> || !std::is_same_v<T, int> || !std::is_same_v<T, float> || !std::is_same_v<T, double>)
             {
-                LE_CORE_ASSERT(false, "Given data type not supported!")
-                return 1;
+                LE_CORE_ASSERT(false, "Given data type in LERandom is not supported!");
+                return -1;
             }
         }
     private:

@@ -118,7 +118,6 @@ namespace LightEngine
 
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
-
         // Update
         if (m_ViewportFocused)
             m_CameraController.OnUpdate(ts);
@@ -193,13 +192,15 @@ namespace LightEngine
                 if (ImGui::MenuItem("Open...", "Ctrl+O"))
                     OpenScene();
 
+                if (ImGui::MenuItem("Save", "Ctrl+S"))
+                    SaveScene();
+
                 if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
                     SaveSceneAs();
 
                 if (ImGui::MenuItem("Exit")) Application::Get().Close();
                 ImGui::EndMenu();
             }
-
             ImGui::EndMenuBar();
         }
 
@@ -265,6 +266,7 @@ namespace LightEngine
 
             if (ImGuizmo::IsUsing())
             {
+                m_GizmoInUse = true;
                 glm::vec3 translation, rotation, scale;
                 Math::DecomposeTransform(transform, translation, rotation, scale);
 
@@ -272,6 +274,10 @@ namespace LightEngine
                 tc.Translation = translation;
                 tc.Rotation += deltaRotation;
                 tc.Scale = scale;
+            }
+            else
+            {
+                m_GizmoInUse = false;
             }
         }
 
@@ -318,21 +324,35 @@ namespace LightEngine
             {
                 if (control && shift)
                     SaveSceneAs();
-
+                if (control)
+                    SaveScene();
                 break;
             }
+
             // Gizmos
             case Key::Q:
-                m_GizmoType = -1;
+                if (!m_GizmoInUse)
+                {
+                    m_GizmoType = -1;
+                }
                 break;
             case Key::W:
-                m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+                if (!m_GizmoInUse)
+                {
+                    m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+                }
                 break;
             case Key::E:
-                m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+                if (!m_GizmoInUse)
+                {
+                    m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+                }
                 break;
             case Key::R:
-                m_GizmoType = ImGuizmo::OPERATION::SCALE;
+                if (!m_GizmoInUse)
+                {
+                    m_GizmoType = ImGuizmo::OPERATION::SCALE;
+                }
                 break;
         }
     }
@@ -342,6 +362,7 @@ namespace LightEngine
         m_ActiveScene = CreateRef<Scene>();
         m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+        m_FirstTimeSave = true;
     }
 
     void EditorLayer::OpenScene()
@@ -349,6 +370,8 @@ namespace LightEngine
         std::string filepath = FileDialogs::OpenFile("LightEngine Scene (*.light)\0*.light\0");
         if (!filepath.empty())
         {
+            m_FirstTimeSave = false;
+            m_ActiveFilepath = filepath;
             m_ActiveScene = CreateRef<Scene>();
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_SceneHierarchyPanel.SetContext(m_ActiveScene);
@@ -363,8 +386,23 @@ namespace LightEngine
         std::string filepath = FileDialogs::SaveFile("LightEngine Scene (*.light)\0*.light\0");
         if (!filepath.empty())
         {
+            m_FirstTimeSave = false;
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize(filepath);
+        }
+    }
+
+    void EditorLayer::SaveScene()
+    {
+        if (m_FirstTimeSave)
+        {
+            SaveSceneAs();
+        }
+        else
+        {
+            SceneSerializer serializer(m_ActiveScene);
+            serializer.Serialize(m_ActiveFilepath);
+            LE_LOG_DEBUG("Items Saved");
         }
     }
 

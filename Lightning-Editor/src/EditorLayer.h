@@ -41,6 +41,7 @@ namespace LightEngine
         void NewScene();
         void OpenScene();
         void SaveSceneAs();
+        void SaveScene();
     private:
         OrthographicCameraController m_CameraController;
         Ref<VertexArray> m_SquareVA;
@@ -60,7 +61,13 @@ namespace LightEngine
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
+
+        std::string m_ActiveFilepath = std::string();
+        bool m_FirstTimeSave = false;
+
         int m_GizmoType = -1;
+        bool m_GizmoInUse = false;
+
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;
     };

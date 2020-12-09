@@ -52,7 +52,7 @@ namespace LightEngine
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
         io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-ExtraBold.ttf", 17.0f);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-Regular.ttf", 17.0f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-Bold.ttf", 17.0f);
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
 

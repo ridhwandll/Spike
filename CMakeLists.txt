@@ -18,7 +18,7 @@ add_library(
     ${GLM_INL_FILES}
 )
 
-target_link_libraries(LightEngine GLFW Glad ImGui glew opengl32)
+target_link_libraries(LightEngine GLFW Glad ImGui opengl32)
 
 target_include_directories(LightEngine PUBLIC
     LightEngine/vendor/GLFW/include
