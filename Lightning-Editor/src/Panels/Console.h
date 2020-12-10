@@ -17,61 +17,29 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-#include "LightEngine.h"
-#include "Panels/SceneHierarchyPanel.h"
-#include "Panels/Console.h"
+#include <map>
+#include <string>
 
 namespace LightEngine
 {
-    class EditorLayer : public Layer
+    class Console
     {
     public:
-        EditorLayer();
-        virtual ~EditorLayer() = default;
+        Console();
+        ~Console() = default;
 
-        virtual void OnAttach() override;
-        virtual void OnDetach() override;
+        enum class LogLevel
+        {
+            LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR 
+        };
 
-        void OnUpdate(Timestep ts) override;
-        virtual void OnImGuiRender() override;
-        void OnEvent(Event& e) override;
+        void OnImGuiRender();
+        void Print(std::string message, LogLevel level = LogLevel::LVL_DEBUG);
 
     private:
-        bool OnKeyPressed(KeyPressedEvent& e);
+        void ClearLog();
 
-        void NewScene();
-        void OpenScene();
-        void SaveSceneAs();
-        void SaveScene();
     private:
-        OrthographicCameraController m_CameraController;
-        Ref<VertexArray> m_SquareVA;
-        Ref<Shader> m_FlatColorShader;
-        Ref<Framebuffer> m_Framebuffer;
-
-        Ref<Scene> m_ActiveScene;
-
-        Ref<Texture2D> m_CheckerboardTexture;
-
-        Entity m_SquareEntity;
-        Entity m_SecondSquareEntity;
-        Entity m_CameraEntity;
-        Entity m_SecondCameraEntity;
-
-        bool m_PrimaryCamera = true;
-
-        bool m_ViewportFocused = false, m_ViewportHovered = false;
-        glm::vec2 m_ViewportSize = {0.0f, 0.0f};
-
-        std::string m_ActiveFilepath = std::string();
-        bool m_FirstTimeSave = false;
-
-        int m_GizmoType = -1;
-        bool m_GizmoInUse = false;
-
-        //Panels
-        SceneHierarchyPanel m_SceneHierarchyPanel;
-        Console m_Console;
+        std::multimap<LogLevel, std::string> m_Messages{};
     };
-
 }

@@ -35,7 +35,6 @@ namespace LightEngine
     void EditorLayer::OnAttach()
     {
         LE_PROFILE_FUNCTION();
-
         m_CheckerboardTexture = Texture2D::Create("assets/textures/Checkerboard.png");
 
         FramebufferSpecification fbSpec;
@@ -182,6 +181,8 @@ namespace LightEngine
 
         style.WindowMinSize.x = minWinSizeX;
 
+        m_Console.OnImGuiRender();
+
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -207,7 +208,6 @@ namespace LightEngine
         m_SceneHierarchyPanel.OnImGuiRender();
 
         ImGui::Begin("Stats");
-
         auto stats = Renderer2D::GetStats();
         ImGui::Text("Renderer2D Stats:");
         ImGui::Text("Draw Calls: %d", stats.DrawCalls);
@@ -402,7 +402,7 @@ namespace LightEngine
         {
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize(m_ActiveFilepath);
-            LE_LOG_DEBUG("Items Saved");
+            m_Console.Print("Item(s) Saved", Console::LogLevel::LVL_INFO);
         }
     }
 

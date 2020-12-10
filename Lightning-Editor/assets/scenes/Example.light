@@ -81,12 +81,3 @@ Entities:
         OrthographicFar: 1
       Primary: false
       FixedAspectRatio: false
-  - Entity: 45692584
-    TagComponent:
-      Tag: Sprite
-    TransformComponent:
-      Translation: [3, 3, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [1, 0, 0.946429253, 1]
