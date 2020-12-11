@@ -13,7 +13,8 @@ It is a **Game engine** written in **C++**
 
 ## Windows
 
-![Windows supported](https://img.shields.io/badge/Windows64-Suppoeted-green.svg)
+![Windows64 supported](https://img.shields.io/badge/Windows64-Supported-green.svg)
+![Windows32 Notsupported](https://img.shields.io/badge/Windows32-NotSupported-red.svg)
 
 - Visual Studio 2019 is highly recommended in Windows
 - Start by cloning the repository with `git clone --recursive https://github.com/FahimFuad/LightEngine.git` to clone along with the submodules. If you have already cloned and you want to initialize the submodules, type `git submodule init` and to update the submodules type `git submodule update` in your project directory.
@@ -30,11 +31,11 @@ It is a **Game engine** written in **C++**
 - To genereate the project files for your IDE, select the actions of the premake and run them in the project directory. A list of actions of the premake can be found [here](https://github.com/premake/premake-core/wiki/Using-Premake#using-premake-to-generate-project-files)
 - The engine is now ready to light!
 
-# :zap: Screenshot
+# Screenshot
 
 ![LightEngine](Resources/Screenshots/Demo.png)
 
-# :zap: In Action
+# In Action
 
 ![LE](https://s8.gifyu.com/images/Demoaa758ed2fadc5ba8.gif)
 
@@ -69,6 +70,7 @@ It is a **Game engine** written in **C++**
 - On Screen Gizmos to control the Transform of the object
   - Translation, rotation and scale
 - Built in editor console
+- Editor Camera
 
 ## Contributing [![GitHub contributors](https://img.shields.io/github/contributors/FahimFuad/LightEngine.svg)](https://GitHub.com/FahimFuad/LightEngine/graphs/contributors/)
 
