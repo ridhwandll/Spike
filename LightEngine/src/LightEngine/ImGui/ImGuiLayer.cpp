@@ -19,7 +19,7 @@
 #include "lepch.h"
 #include "ImGuiLayer.h"
 
-#include "imgui.h"
+#include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
@@ -48,7 +48,6 @@ namespace LightEngine
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-        //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
         io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-ExtraBold.ttf", 17.0f);
@@ -122,6 +121,7 @@ namespace LightEngine
     void ImGuiLayer::SetDarkThemeColors()
     {
         auto& colors = ImGui::GetStyle().Colors;
+        ImGui::GetStyle().TabRounding = 5.0f;
         colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
         // Headers

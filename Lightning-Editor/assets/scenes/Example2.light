@@ -31,9 +31,9 @@ Entities:
     TagComponent:
       Tag: Yellow
     TransformComponent:
-      Translation: [-0.354999989, 0, 0.349999994]
-      Rotation: [0, -0.785398185, 0]
-      Scale: [1, 1, 1]
+      Translation: [2.75904107, 2.63939524, 4.01016617]
+      Rotation: [0.837085545, -0.715224624, 0.727891982]
+      Scale: [1.00000072, 0.999999583, 0.99999553]
     SpriteRendererComponent:
       Color: [0.633064508, 0.597326994, 0, 1]
   - Entity: 45692584

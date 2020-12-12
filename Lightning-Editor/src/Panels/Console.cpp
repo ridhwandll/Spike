@@ -18,8 +18,6 @@
 /*****************************************************************************/
 #include "Console.h"
 #include <imgui/imgui.h>
-#include <chrono>
-
 
 namespace LightEngine
 {
@@ -34,6 +32,7 @@ namespace LightEngine
         if (ImGui::Button("Clear"))
             ClearLog();
 
+        ImGui::BeginChild("Console");
         for (auto itr = m_Messages.begin(); itr != m_Messages.end(); ++itr)
         {
             if (itr->first == LogLevel::LVL_DEBUG)
@@ -53,6 +52,7 @@ namespace LightEngine
                 ImGui::TextColored({ 1, 0, 0, 1 }, ("[ERROR] " + itr->second).c_str());
             }
         }
+        ImGui::EndChild();
 
         ImGui::End();
     }

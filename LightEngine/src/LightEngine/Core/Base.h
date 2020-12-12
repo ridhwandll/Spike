@@ -27,7 +27,7 @@
         #include<signal.h>
         #define LE_DEBUGBREAK() raise(SIGTRAP)
     #else
-        #error "LightEngine doesn't support debugbreak yet, on this platform!"
+        #error "LightEngine doesn't support debugbreak on this platform!"
     #endif
     #define LE_ENABLE_ASSERTS
 #else
@@ -37,9 +37,11 @@
 #ifdef LE_ENABLE_ASSERTS
     #define LE_ASSERT(x, ...) { if(!(x)) { LE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); LE_DEBUGBREAK(); } }
     #define LE_CORE_ASSERT(x, ...) { if(!(x)) { LE_CORE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); LE_DEBUGBREAK(); } }
+    #define LE_INTERNAL_ASSERT(x) { LE_CORE_LOG_CRITICAL(x); LE_DEBUGBREAK(); }
 #else
     #define LE_ASSERT(x, ...)
     #define LE_CORE_ASSERT(x, ...)
+    #define LE_INTERNAL_ASSERT(...)
 #endif
 
 #define BIT(x) (1 << x)
