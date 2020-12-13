@@ -39,17 +39,17 @@ namespace Spike
 }
 
 //Core Log Macros
-#define LE_CORE_LOG_TRACE(...)    ::Spike::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define LE_CORE_LOG_DEBUG(...)    ::Spike::Log::GetCoreLogger()->debug(__VA_ARGS__)
-#define LE_CORE_LOG_INFO(...)     ::Spike::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define LE_CORE_LOG_WARN(...)     ::Spike::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define LE_CORE_LOG_ERROR(...)    ::Spike::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define LE_CORE_LOG_CRITICAL(...) ::Spike::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define SPK_CORE_LOG_TRACE(...)    ::Spike::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define SPK_CORE_LOG_DEBUG(...)    ::Spike::Log::GetCoreLogger()->debug(__VA_ARGS__)
+#define SPK_CORE_LOG_INFO(...)     ::Spike::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define SPK_CORE_LOG_WARN(...)     ::Spike::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define SPK_CORE_LOG_ERROR(...)    ::Spike::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define SPK_CORE_LOG_CRITICAL(...) ::Spike::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 //Client Log Macros
-#define LE_LOG_TRACE(...)         ::Spike::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define LE_LOG_DEBUG(...)         ::Spike::Log::GetClientLogger()->debug(__VA_ARGS__)
-#define LE_LOG_INFO(...)          ::Spike::Log::GetClientLogger()->info(__VA_ARGS__)
-#define LE_LOG_WARN(...)          ::Spike::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define LE_LOG_ERROR(...)         ::Spike::Log::GetClientLogger()->error(__VA_ARGS__)
-#define LE_LOG_CRITICAL(...)      ::Spike::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define SPK_LOG_TRACE(...)         ::Spike::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define SPK_LOG_DEBUG(...)         ::Spike::Log::GetClientLogger()->debug(__VA_ARGS__)
+#define SPK_LOG_INFO(...)          ::Spike::Log::GetClientLogger()->info(__VA_ARGS__)
+#define SPK_LOG_WARN(...)          ::Spike::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define SPK_LOG_ERROR(...)         ::Spike::Log::GetClientLogger()->error(__VA_ARGS__)
+#define SPK_LOG_CRITICAL(...)      ::Spike::Log::GetClientLogger()->critical(__VA_ARGS__)

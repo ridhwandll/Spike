@@ -18,7 +18,7 @@
 /*****************************************************************************/
 #pragma once
 
-#ifdef LE_PLATFORM_WINDOWS
+#ifdef SPK_PLATFORM_WINDOWS
 
 extern Spike::Application* Spike::CreateApplication();
 
@@ -38,4 +38,4 @@ int main(int argc, char** argv)
     LE_PROFILE_END_SESSION();
 }
 
-#endif // LE_PLATFORM_WINDOWS
+#endif // SPK_PLATFORM_WINDOWS

@@ -35,7 +35,7 @@ namespace Spike
     {
         LE_PROFILE_FUNCTION();
 
-        LE_CORE_ASSERT(!s_Instance, "Application already exists!");
+        SPK_CORE_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
 
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));

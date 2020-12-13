@@ -300,7 +300,7 @@ namespace Spike
         m_SceneHierarchyPanel.OnEvent(e);
         m_EditorCamera.OnEvent(e);
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<KeyPressedEvent>(LE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
+        dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
     }
 
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)

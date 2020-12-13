@@ -27,11 +27,11 @@ namespace Spike
     {
         switch (Renderer::GetAPI())
         {
-            case RendererAPI::API::None:    LE_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return CreateRef<OpenGLFramebuffer>(spec);
         }
 
-        LE_INTERNAL_ASSERT("Unknown RendererAPI!");
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
 

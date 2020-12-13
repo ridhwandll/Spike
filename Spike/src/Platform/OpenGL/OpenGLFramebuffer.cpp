@@ -63,7 +63,7 @@ namespace Spike
         glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, m_Specification.Width, m_Specification.Height);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachment, 0);
 
-        LE_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+        SPK_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -83,7 +83,7 @@ namespace Spike
     {
         if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
         {
-            LE_CORE_LOG_WARN("Attempted to resize framebuffer to (Width: {0}, Height: {1})", width, height);
+            SPK_CORE_LOG_WARN("Attempted to resize framebuffer to (Width: {0}, Height: {1})", width, height);
             return;
         }
         m_Specification.Width = width;

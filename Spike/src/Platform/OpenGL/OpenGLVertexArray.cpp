@@ -38,7 +38,7 @@ namespace Spike
             case Spike::ShaderDataType::Int4:    return GL_INT;
             case Spike::ShaderDataType::Bool:    return GL_BOOL;
         }
-        LE_INTERNAL_ASSERT("Unknown ShaderDataType!");
+        SPK_INTERNAL_ASSERT("Unknown ShaderDataType!");
         return 0;
     }
 
@@ -69,7 +69,7 @@ namespace Spike
    void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     {
         LE_PROFILE_FUNCTION();
-        LE_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+        SPK_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
         glBindVertexArray(m_RendererID);
         vertexBuffer->Bind();
         const auto& layout = vertexBuffer->GetLayout();
@@ -116,7 +116,7 @@ namespace Spike
                     break;
                 }
                 default:
-                    LE_INTERNAL_ASSERT("Unknown ShaderDataType!");
+                    SPK_INTERNAL_ASSERT("Unknown ShaderDataType!");
             }
         }
         m_VertexBuffers.push_back(vertexBuffer);

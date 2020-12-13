@@ -27,28 +27,28 @@ namespace Spike
     {
         switch (Renderer::GetAPI())
         {
-        case RendererAPI::API::None:    LE_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
         case RendererAPI::API::OpenGL:  return CreateRef<OpenGLShader>(filepath);
         }
 
-        LE_INTERNAL_ASSERT("Unknown RendererAPI!");
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
     Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
     {
         switch (Renderer::GetAPI())
         {
-            case RendererAPI::API::None:    LE_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
         }
 
-        LE_INTERNAL_ASSERT("Unknown RendererAPI!");
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
 
     void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
     {
-        LE_CORE_ASSERT(!Exists(name), "Shader already exists!");
+        SPK_CORE_ASSERT(!Exists(name), "Shader already exists!");
         m_Shaders[name] = shader;
     }
 
@@ -74,7 +74,7 @@ namespace Spike
 
     Ref<Shader> ShaderLibrary::Get(const std::string& name)
     {
-        LE_CORE_ASSERT(Exists(name), "Shader not found!");
+        SPK_CORE_ASSERT(Exists(name), "Shader not found!");
         return m_Shaders[name];
     }
 

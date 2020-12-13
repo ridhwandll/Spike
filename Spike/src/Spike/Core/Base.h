@@ -20,33 +20,33 @@
 #include <memory>
 #include "Spike/Core/PlatformDetection.h"
 
-#ifdef LE_DEBUG
-    #if defined(LE_PLATFORM_WINDOWS)
-        #define LE_DEBUGBREAK() __debugbreak()
-    #elif defined(LE_PLATFORM_LINUX)
+#ifdef SPK_DEBUG
+    #if defined(SPK_PLATFORM_WINDOWS)
+        #define SPK_DEBUGBREAK() __debugbreak()
+    #elif defined(SPK_PLATFORM_LINUX)
         #include<signal.h>
-        #define LE_DEBUGBREAK() raise(SIGTRAP)
+        #define SPK_DEBUGBREAK() raise(SIGTRAP)
     #else
         #error "Spike doesn't support debugbreak on this platform!"
     #endif
-    #define LE_ENABLE_ASSERTS
+    #define SPK_ENABSPK_ASSERTS
 #else
-    #define LE_DEBUGBREAK()
+    #define SPK_DEBUGBREAK()
 #endif
 
-#ifdef LE_ENABLE_ASSERTS
-    #define LE_ASSERT(x, ...) { if(!(x)) { LE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); LE_DEBUGBREAK(); } }
-    #define LE_CORE_ASSERT(x, ...) { if(!(x)) { LE_CORE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); LE_DEBUGBREAK(); } }
-    #define LE_INTERNAL_ASSERT(x) { LE_CORE_LOG_CRITICAL(x); LE_DEBUGBREAK(); }
+#ifdef SPK_ENABSPK_ASSERTS
+    #define SPK_ASSERT(x, ...) { if(!(x)) { SPK_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); SPK_DEBUGBREAK(); } }
+    #define SPK_CORE_ASSERT(x, ...) { if(!(x)) { SPK_CORE_LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); SPK_DEBUGBREAK(); } }
+    #define SPK_INTERNAL_ASSERT(x) { SPK_CORE_LOG_CRITICAL(x); SPK_DEBUGBREAK(); }
 #else
-    #define LE_ASSERT(x, ...)
-    #define LE_CORE_ASSERT(x, ...)
-    #define LE_INTERNAL_ASSERT(...)
+    #define SPK_ASSERT(x, ...)
+    #define SPK_CORE_ASSERT(x, ...)
+    #define SPK_INTERNAL_ASSERT(...)
 #endif
 
 #define BIT(x) (1 << x)
 
-#define LE_BIND_EVENT_FN(fn) [this](auto&&... args)->decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+#define SPK_BIND_EVENT_FN(fn) [this](auto&&... args)->decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
 namespace Spike
 {

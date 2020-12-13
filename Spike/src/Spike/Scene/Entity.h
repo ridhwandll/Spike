@@ -32,7 +32,7 @@ namespace Spike
         template<typename T, typename... Args>
         T& AddComponent(Args&&... args)
         {
-            LE_CORE_ASSERT(!HasComponent<T>(), "Entity already has this component!");
+            SPK_CORE_ASSERT(!HasComponent<T>(), "Entity already has this component!");
             T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
             m_Scene->OnComponentAdded<T>(*this, component);
             return component;
@@ -41,7 +41,7 @@ namespace Spike
         template<typename T>
         T& GetComponent()
         {
-            LE_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
+            SPK_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
             return m_Scene->m_Registry.get<T>(m_EntityHandle);
         }
 
@@ -54,7 +54,7 @@ namespace Spike
         template<typename T>
         void RemoveComponent()
         {
-            LE_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
+            SPK_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
             m_Scene->m_Registry.remove<T>(m_EntityHandle);
         }
 

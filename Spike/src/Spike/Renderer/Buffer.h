@@ -41,7 +41,7 @@ namespace Spike
             case ShaderDataType::Int4:     return 4 * 4;
             case ShaderDataType::Bool:     return 1;
         }
-        LE_INTERNAL_ASSERT("Unknown ShaderDataType!");
+        SPK_INTERNAL_ASSERT("Unknown ShaderDataType!");
         return 0;
     }
 
@@ -76,7 +76,7 @@ namespace Spike
                 case ShaderDataType::Int4:   return 4;
                 case ShaderDataType::Bool:   return 1;
             }
-            LE_INTERNAL_ASSERT("Unknown ShaderDataType!");
+            SPK_INTERNAL_ASSERT("Unknown ShaderDataType!");
             return Size;
         }
     };

@@ -263,7 +263,7 @@ namespace Spike
                 if (!m_SelectionContext.HasComponent<TransformComponent>())
                     m_SelectionContext.AddComponent<TransformComponent>();
                 else
-                    LE_CORE_LOG_WARN("This entity already has Transform component!");
+                    SPK_CORE_LOG_WARN("This entity already has Transform component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Camera"))
@@ -271,7 +271,7 @@ namespace Spike
                 if (!m_SelectionContext.HasComponent<CameraComponent>())
                     m_SelectionContext.AddComponent<CameraComponent>();
                 else
-                    LE_CORE_LOG_WARN("This entity already has Camera component!");
+                    SPK_CORE_LOG_WARN("This entity already has Camera component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Sprite Renderer"))
@@ -279,7 +279,7 @@ namespace Spike
                 if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
                     m_SelectionContext.AddComponent<SpriteRendererComponent>();
                 else
-                    LE_CORE_LOG_WARN("This entity already has Sprite Renderer component");
+                    SPK_CORE_LOG_WARN("This entity already has Sprite Renderer component");
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -362,7 +362,7 @@ namespace Spike
     void SceneHierarchyPanel::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<KeyPressedEvent>(LE_BIND_EVENT_FN(SceneHierarchyPanel::OnKeyPressed));
+        dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(SceneHierarchyPanel::OnKeyPressed));
     }
 
     bool SceneHierarchyPanel::OnKeyPressed(KeyPressedEvent& e)

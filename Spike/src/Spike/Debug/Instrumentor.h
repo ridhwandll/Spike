@@ -63,7 +63,7 @@ namespace Spike
                 // profiling output.
                 if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
                 {
-                    LE_CORE_LOG_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
+                    SPK_CORE_LOG_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
                 }
                 InternalEndSession();
             }
@@ -78,7 +78,7 @@ namespace Spike
             {
                 if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
                 {
-                    LE_CORE_LOG_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+                    SPK_CORE_LOG_ERROR("Instrumentor could not open results file '{0}'.", filepath);
                 }
             }
         }

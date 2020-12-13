@@ -19,7 +19,7 @@
 #pragma once
 #include "Spike/Core/PlatformDetection.h"
 
-#ifdef LE_PLATFORM_WINDOWS
+#ifdef SPK_PLATFORM_WINDOWS
     #ifndef NOMINMAX
         #define NOMINMAX
     #endif
@@ -43,6 +43,6 @@
 #include "Spike/Core/Log.h"
 #include "Spike/Debug/Instrumentor.h"
 
-#ifdef LE_PLATFORM_WINDOWS
+#ifdef SPK_PLATFORM_WINDOWS
     #include <Windows.h>
 #endif 

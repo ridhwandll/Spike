@@ -32,7 +32,7 @@ namespace Spike
 
     static void GLFWErrorCallback(int error, const char* description)
     {
-        LE_CORE_LOG_ERROR("GLFW Error ({0}): {1}", error, description);
+        SPK_CORE_LOG_ERROR("GLFW Error ({0}): {1}", error, description);
     }
 
     Window* Window::Create(const WindowProps& props)
@@ -64,7 +64,7 @@ namespace Spike
             LE_PROFILE_SCOPE("glfwInit");
             // TODO: glfwTerminate on system shutdown
             int success = glfwInit();
-            LE_CORE_ASSERT(success, "Could not intialize GLFW!");
+            SPK_CORE_ASSERT(success, "Could not intialize GLFW!");
             glfwSetErrorCallback(GLFWErrorCallback);
             s_GLFWInitialized = true;
         }

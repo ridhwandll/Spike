@@ -28,7 +28,7 @@ namespace Spike
         if (type == "vertex") return GL_VERTEX_SHADER;
         if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
 
-        LE_INTERNAL_ASSERT("Unknown shader type!");
+        SPK_INTERNAL_ASSERT("Unknown shader type!");
         return 0;
     }
 
@@ -77,7 +77,7 @@ namespace Spike
         }
         else
         {
-            LE_CORE_LOG_CRITICAL("Could not open file path \"{0}\"", filepath);
+            SPK_CORE_LOG_CRITICAL("Could not open file path \"{0}\"", filepath);
         }
         return result;
     }
@@ -93,13 +93,13 @@ namespace Spike
         while (pos != std::string::npos)
         {
             size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
-            LE_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+            SPK_CORE_ASSERT(eol != std::string::npos, "Syntax error");
             size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
             std::string type = source.substr(begin, eol - begin);
-            LE_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
+            SPK_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
-            LE_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+            SPK_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
             pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
 
             shaderSources[ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
@@ -112,7 +112,7 @@ namespace Spike
     {
         LE_PROFILE_FUNCTION();
         GLuint program = glCreateProgram();
-        LE_CORE_ASSERT(shaderSources.size() <= 2, "We only support two shaders for now.");
+        SPK_CORE_ASSERT(shaderSources.size() <= 2, "We only support two shaders for now.");
         std::array<GLenum, 2> glShaderIDs;
         int glShaderIDIndex = 0;
         for (auto& keyvalue : shaderSources)
@@ -137,8 +137,8 @@ namespace Spike
                 glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
                 glDeleteShader(shader);
 
-                LE_CORE_LOG_CRITICAL("{0}", infoLog.data());
-                LE_INTERNAL_ASSERT("Shader compilation failure!");
+                SPK_CORE_LOG_CRITICAL("{0}", infoLog.data());
+                SPK_INTERNAL_ASSERT("Shader compilation failure!");
                 break;
             }
             glAttachShader(program, shader);
@@ -160,8 +160,8 @@ namespace Spike
 
             for(auto id : glShaderIDs)
                 glDeleteShader(id);
-            LE_CORE_LOG_CRITICAL("{0}", infoLog.data());
-            LE_INTERNAL_ASSERT("Shader link failure!");
+            SPK_CORE_LOG_CRITICAL("{0}", infoLog.data());
+            SPK_INTERNAL_ASSERT("Shader link failure!");
         }
         for (auto id : glShaderIDs)
         {

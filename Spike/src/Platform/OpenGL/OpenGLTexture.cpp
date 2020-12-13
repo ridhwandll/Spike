@@ -49,7 +49,7 @@ namespace Spike
             LE_PROFILE_SCOPE("stbi_load->>OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
             data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         }
-        LE_CORE_ASSERT(data, "Failed to load image!");
+        SPK_CORE_ASSERT(data, "Failed to load image!");
         m_Width = width;
         m_Height = height;
 
@@ -68,7 +68,7 @@ namespace Spike
         m_InternalFormat = internalFormat;
         m_DataFormat = dataFormat;
 
-        LE_CORE_ASSERT(internalFormat & dataFormat, "Texture format not supported!");
+        SPK_CORE_ASSERT(internalFormat & dataFormat, "Texture format not supported!");
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -106,7 +106,7 @@ namespace Spike
     {
         LE_PROFILE_FUNCTION();
         uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-        LE_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
+        SPK_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }

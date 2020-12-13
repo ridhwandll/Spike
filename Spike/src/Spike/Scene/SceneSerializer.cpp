@@ -187,7 +187,7 @@ namespace Spike
 
     void SceneSerializer::SerializeRuntime(const std::string& filepath)
     {
-        LE_INTERNAL_ASSERT("Method not implemented yet!");
+        SPK_INTERNAL_ASSERT("Method not implemented yet!");
     }
 
     bool SceneSerializer::Deserialize(const std::string& filepath)
@@ -201,7 +201,7 @@ namespace Spike
             return false;
 
         std::string sceneName = data["Scene"].as<std::string>();
-        LE_CORE_LOG_TRACE("Deserializing scene '{0}'", sceneName);
+        SPK_CORE_LOG_TRACE("Deserializing scene '{0}'", sceneName);
 
         auto entities = data["Entities"];
         if (entities)
@@ -215,7 +215,7 @@ namespace Spike
                 if (tagComponent)
                     name = tagComponent["Tag"].as<std::string>();
 
-                LE_CORE_LOG_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+                SPK_CORE_LOG_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
                 Entity deserializedEntity = m_Scene->CreateEntity(name);
 
@@ -263,7 +263,7 @@ namespace Spike
 
     bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
     {
-        LE_INTERNAL_ASSERT("Method not implemented yet!");
+        SPK_INTERNAL_ASSERT("Method not implemented yet!");
         return false;
     }
 

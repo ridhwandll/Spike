@@ -78,8 +78,8 @@ namespace Spike
     {
         LE_PROFILE_FUNCTION();
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<MouseScrolledEvent>(LE_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-        dispatcher.Dispatch<WindowResizeEvent>(LE_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+        dispatcher.Dispatch<MouseScrolledEvent>(SPK_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+        dispatcher.Dispatch<WindowResizeEvent>(SPK_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
     }
 
     void OrthographicCameraController::OnResize(float width, float height)

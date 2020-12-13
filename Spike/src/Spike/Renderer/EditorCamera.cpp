@@ -98,7 +98,7 @@ namespace Spike
     void EditorCamera::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<MouseScrolledEvent>(LE_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
+        dispatcher.Dispatch<MouseScrolledEvent>(SPK_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
     }
 
     bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e)
