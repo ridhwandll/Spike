@@ -17,8 +17,9 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-#include <map>
+#include <vector>
 #include <string>
+#include "../FontAwesome.h"
 
 namespace Spike
 {
@@ -38,8 +39,11 @@ namespace Spike
 
     private:
         void ClearLog();
-
     private:
-        std::multimap<LogLevel, std::string> m_Messages{};
+        std::vector<std::pair<LogLevel, std::string>> m_Messages{};
+        std::string m_IconDebug = ICON_FK_BUG;
+        std::string m_IconWarn = ICON_FK_EXCLAMATION_CIRCLE;
+        std::string m_IconError = ICON_FK_EXCLAMATION_TRIANGLE;
+        std::string m_IconInfo = ICON_FK_INFO_CIRCLE;
     };
 }

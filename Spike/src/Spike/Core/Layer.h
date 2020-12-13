@@ -23,7 +23,6 @@
 
 namespace Spike
 {
-
     class  Layer
     {
     public:

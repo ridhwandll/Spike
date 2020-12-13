@@ -33,24 +33,33 @@ namespace Spike
             ClearLog();
 
         ImGui::BeginChild("Console");
+
+        ImVec4 color;
+        std::string type;
         for (auto itr = m_Messages.begin(); itr != m_Messages.end(); ++itr)
         {
             if (itr->first == LogLevel::LVL_DEBUG)
             {
-                ImGui::TextColored({ 0, 0.5, 1, 1 }, ("[DEBUG] " + itr->second).c_str());
+                color = { 0, 0.5, 1, 1 };
+                type = m_IconDebug + " [DEBUG] ";
             }
             if (itr->first == LogLevel::LVL_INFO)
             {
-                ImGui::TextColored({ 0, 1, 0, 1 }, ("[INFO] " + itr->second).c_str());
+                color = { 0, 1, 0, 1 };
+                type = m_IconInfo + " [INFO] ";
             }
             if (itr->first == LogLevel::LVL_WARN)
             {
-                ImGui::TextColored({ 1, 0.9, 0, 1 }, ("[WARN] " + itr->second).c_str());
+                color = { 1, 0.9, 0, 1 };
+                type = m_IconWarn + " [WARNING] ";
             }
             if (itr->first == LogLevel::LVL_ERROR)
             {
-                ImGui::TextColored({ 1, 0, 0, 1 }, ("[ERROR] " + itr->second).c_str());
+                color = { 1, 0, 0, 1 };
+                type = m_IconError + " [ERROR] ";
             }
+            ImGui::TextColored(color, (type + itr->second).c_str());
+            ImGui::Separator();
         }
         ImGui::EndChild();
 
@@ -63,22 +72,22 @@ namespace Spike
         {
             case Spike::Console::LogLevel::LVL_INFO:
             {
-                m_Messages.insert(std::pair <LogLevel, std::string>(LogLevel::LVL_INFO, message));
+                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_INFO, message));
                 break;
             }
             case Spike::Console::LogLevel::LVL_DEBUG:
             {
-                m_Messages.insert(std::pair <LogLevel, std::string>(LogLevel::LVL_DEBUG, message));
+                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_DEBUG, message));
                 break;
             }
             case Spike::Console::LogLevel::LVL_WARN:
             {
-                m_Messages.insert(std::pair <LogLevel, std::string>(LogLevel::LVL_WARN, message));
+                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_WARN, message));
                 break;
             }
             case Spike::Console::LogLevel::LVL_ERROR:
             {
-                m_Messages.insert(std::pair <LogLevel, std::string>(LogLevel::LVL_ERROR, message));
+                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_ERROR, message));
                 break;
             }
         }

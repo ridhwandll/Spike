@@ -21,6 +21,8 @@
 #include "Spike/Core/Log.h"
 #include "Spike/Core/Base.h"
 #include "Spike/Scene/Entity.h"
+#include "Spike/Events/Event.h"
+#include "Spike/Events/KeyEvent.h"
 
 namespace Spike
 {
@@ -32,11 +34,15 @@ namespace Spike
         void SetContext(const Ref<Scene>& context);
 
         void OnImGuiRender();
+        void OnEvent(Event& e);
         Entity GetSelectedEntity() const { return m_SelectionContext; }
     private:
+        bool OnKeyPressed(KeyPressedEvent& e);
         void DrawEntityNode(Entity entity);
         void DrawComponents(Entity entity);
     private:
+        bool m_IsHierarchyFocused = false;
+        bool m_IsHierarchyHovered = false;
         Ref<Scene> m_Context;
         Entity m_SelectionContext;
     };

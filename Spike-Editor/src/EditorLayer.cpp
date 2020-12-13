@@ -24,6 +24,7 @@
 #include "Spike/Utility/PlatformUtils.h"
 #include <ImGuizmo.h>
 #include "Spike/Math/Math.h"
+#include "FontAwesome.h"
 
 namespace Spike
 {
@@ -201,7 +202,8 @@ namespace Spike
                 if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
                     SaveSceneAs();
 
-                if (ImGui::MenuItem("Exit")) Application::Get().Close();
+                if (ImGui::MenuItem("Exit"))
+                    Application::Get().Close();
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -216,7 +218,6 @@ namespace Spike
         ImGui::Text("Quads: %d", stats.QuadCount);
         ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -287,7 +288,6 @@ namespace Spike
             }
         }
 
-
         ImGui::End();
         ImGui::PopStyleVar();
 
@@ -297,6 +297,7 @@ namespace Spike
     void EditorLayer::OnEvent(Event& e)
     {
         m_CameraController.OnEvent(e);
+        m_SceneHierarchyPanel.OnEvent(e);
         m_EditorCamera.OnEvent(e);
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(LE_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
@@ -373,7 +374,7 @@ namespace Spike
 
     void EditorLayer::OpenScene()
     {
-        std::string filepath = FileDialogs::OpenFile("Spike Scene (*.light)\0*.light\0");
+        std::string filepath = FileDialogs::OpenFile("Spike Scene (*.spike)\0*.spike\0");
         if (!filepath.empty())
         {
             m_FirstTimeSave = false;
@@ -408,7 +409,7 @@ namespace Spike
         {
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize(m_ActiveFilepath);
-            m_Console.Print("Item(s) Saved", Console::LogLevel::LVL_INFO);
+            m_Console.Print("Scene Saved!", Console::LogLevel::LVL_INFO);
         }
     }
 

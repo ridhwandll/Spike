@@ -28,6 +28,7 @@
 #include <GLFW/glfw3.h> // TEMPORARY
 #include <glad/glad.h> // TEMPORARY
 #include <ImGuizmo.h>
+#include "../../Spike-Editor/src/FontAwesome.h"
 
 namespace Spike
 {
@@ -52,6 +53,11 @@ namespace Spike
 
         io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-ExtraBold.ttf", 17.0f);
         io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/JetBrains Mono/JetBrainsMono-Bold.ttf", 17.0f);
+
+        ImFontConfig config;
+        config.MergeMode = true;
+        static const ImWchar icon_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
+        io.Fonts->AddFontFromFileTTF("assets/fonts/fontawesome-webfont.ttf", 14.0f, &config, icon_ranges);
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
 

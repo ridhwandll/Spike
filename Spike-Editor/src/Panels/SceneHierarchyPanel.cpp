@@ -16,12 +16,13 @@
 /*   See the License for the specific language governing permissions and     */
 /*   limitations under the License.                                          */
 /*****************************************************************************/
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
-
 #include "SceneHierarchyPanel.h"
 #include "Spike/Scene/Components.h"
-#include "glm/gtc/type_ptr.hpp"
+#include "Spike/Core/Input.h"
+#include "../FontAwesome.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Spike
 {
@@ -40,13 +41,17 @@ namespace Spike
     {
         // Hierarchy
         ImGui::Begin("Hierarchy");
+
         m_Context->m_Registry.each([&](auto entityID)
         {
             Entity entity{ entityID, m_Context.get() };
             DrawEntityNode(entity);
         });
 
-        if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+        m_IsHierarchyFocused = ImGui::IsWindowFocused();
+        m_IsHierarchyHovered = ImGui::IsWindowHovered();
+
+        if (ImGui::IsMouseDown(0) && m_IsHierarchyHovered)
             m_SelectionContext = {};
 
         //Right Click on a blank space
@@ -203,7 +208,8 @@ namespace Spike
 
             bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, name.c_str());
             ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-            if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
+            const char* iconAddButton = ICON_FK_DOT_CIRCLE_O;
+            if (ImGui::Button(iconAddButton, ImVec2{ lineHeight, lineHeight }))
             {
                 ImGui::OpenPopup("Component Settings");
             }
@@ -351,5 +357,22 @@ namespace Spike
         {
             ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         });
+    }
+
+    void SceneHierarchyPanel::OnEvent(Event& e)
+    {
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<KeyPressedEvent>(LE_BIND_EVENT_FN(SceneHierarchyPanel::OnKeyPressed));
+    }
+
+    bool SceneHierarchyPanel::OnKeyPressed(KeyPressedEvent& e)
+    {
+        if (Input::IsKeyPressed(Key::Delete) && m_IsHierarchyFocused)
+        {
+            if (m_SelectionContext)
+                m_Context->DestroyEntity(m_SelectionContext);
+            m_SelectionContext = {};
+            return false;
+        }
     }
 }
