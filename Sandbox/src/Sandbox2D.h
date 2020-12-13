@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/*                        Lightengine  SourceCode                            */
+/*                             Spike SourceCode                              */
 /*                                                                           */
 /* File created by: Fahim Fuad                                               */
 /* Other editors: None                                                       */
@@ -17,11 +17,11 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-#include <LightEngine.h>
-#include "LightEngine/Core/Base.h"
+#include <Spike.h>
+#include "Spike/Core/Base.h"
 
 
-class Sandbox2D : public LightEngine::Layer
+class Sandbox2D : public Spike::Layer
 {
 public:
     Sandbox2D();
@@ -29,15 +29,15 @@ public:
     virtual void OnAttach() override;
     virtual void OnDetach() override;
 
-    void OnUpdate(LightEngine::Timestep ts) override;
+    void OnUpdate(Spike::Timestep ts) override;
     virtual void OnImGuiRender() override;
-    void OnEvent(LightEngine::Event& e) override;
+    void OnEvent(Spike::Event& e) override;
 private:
-    LightEngine::OrthographicCameraController m_CameraController;
+    Spike::OrthographicCameraController m_CameraController;
 
     // TODO: These are temporary
-    LightEngine::Ref<LightEngine::Shader> m_FlatColorShader;
-    LightEngine::Ref<LightEngine::VertexArray> m_SquareVA;
-    LightEngine::Ref < LightEngine::Texture2D > m_CheckerboardTexture;
+    Spike::Ref<Spike::Shader> m_FlatColorShader;
+    Spike::Ref<Spike::VertexArray> m_SquareVA;
+    Spike::Ref < Spike::Texture2D > m_CheckerboardTexture;
     glm::vec4 m_SquareColor = { 0.9f, 0.2f, 0.1f, 1.0f };
 };

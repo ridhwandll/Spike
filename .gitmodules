@@ -1,19 +1,19 @@
-[submodule "LightEngine/vendor/spdlog"]
-	path = LightEngine/vendor/spdlog
+[submodule "Spike/vendor/spdlog"]
+	path = Spike/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 	branch = v1.x
-[submodule "LightEngine/vendor/GLFW"]
-	path = LightEngine/vendor/GLFW
+[submodule "Spike/vendor/GLFW"]
+	path = Spike/vendor/GLFW
 	url = https://github.com/FahimFuad/glfw.git
 	branch = master
-[submodule "LightEngine/vendor/imgui"]
-	path = LightEngine/vendor/imgui
+[submodule "Spike/vendor/imgui"]
+	path = Spike/vendor/imgui
 	url = https://github.com/FahimFuad/imgui
 	branch = docking
-[submodule "LightEngine/vendor/glm"]
-	path = LightEngine/vendor/glm
+[submodule "Spike/vendor/glm"]
+	path = Spike/vendor/glm
 	url = https://github.com/g-truc/glm
 	branch = master
-[submodule "LightEngine/vendor/yaml-cpp"]
-	path = LightEngine/vendor/yaml-cpp
+[submodule "Spike/vendor/yaml-cpp"]
+	path = Spike/vendor/yaml-cpp
 	url = https://github.com/FahimFuad/yaml-cpp.git

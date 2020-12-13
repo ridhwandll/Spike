@@ -1,6 +1,6 @@
-workspace "LightEngine"
+workspace "Spike"
     architecture "x86_64"
-    startproject "Lightning-Editor"
+    startproject "Spike-Editor"
 
     configurations
     {
@@ -17,22 +17,22 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "%{wks.location}/LightEngine/vendor/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/LightEngine/vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/LightEngine/vendor/imgui"
-IncludeDir["glm"] = "%{wks.location}/LightEngine/vendor/glm"
-IncludeDir["stb_image"] = "%{wks.location}/LightEngine/vendor/stb_image"
-IncludeDir["entt"] = "%{wks.location}/LightEngine/vendor/entt/include"
-IncludeDir["yaml_cpp"] = "%{wks.location}/LightEngine/vendor/yaml-cpp/include"
-IncludeDir["ImGuizmo"] = "%{wks.location}/LightEngine/vendor/ImGuizmo"
+IncludeDir["GLFW"] = "%{wks.location}/Spike/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/Spike/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/Spike/vendor/imgui"
+IncludeDir["glm"] = "%{wks.location}/Spike/vendor/glm"
+IncludeDir["stb_image"] = "%{wks.location}/Spike/vendor/stb_image"
+IncludeDir["entt"] = "%{wks.location}/Spike/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "%{wks.location}/Spike/vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "%{wks.location}/Spike/vendor/ImGuizmo"
 
 group "Dependencies"
-    include "LightEngine/vendor/GLFW"
-    include "LightEngine/vendor/Glad"
-    include "LightEngine/vendor/imgui"
-    include "LightEngine/vendor/yaml-cpp"
+    include "Spike/vendor/GLFW"
+    include "Spike/vendor/Glad"
+    include "Spike/vendor/imgui"
+    include "Spike/vendor/yaml-cpp"
 group ""
 
-include "LightEngine"
+include "Spike"
 include "Sandbox"
-include "Lightning-Editor"
+include "Spike-Editor"

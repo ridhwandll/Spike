@@ -15,32 +15,32 @@ project "Sandbox"
 
 	includedirs
 	{
-		"%{wks.location}/LightEngine/vendor/spdlog/include",
-		"%{wks.location}/LightEngine/src",
-		"%{wks.location}/LightEngine/vendor",
+		"%{wks.location}/Spike/vendor/spdlog/include",
+		"%{wks.location}/Spike/src",
+		"%{wks.location}/Spike/vendor",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}"
 	}
 
 	links
 	{
-		"LightEngine"
+		"Spike"
 	}
 
 	filter "system:windows"
 		systemversion "latest"
 
 	filter "configurations:Debug"
-		defines "LE_DEBUG"
+		defines "SPK_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "LE_RELEASE"
+		defines "SPK_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "LE_DIST"
+		defines "SPK_DIST"
 		runtime "Release"
 		optimize "on" 

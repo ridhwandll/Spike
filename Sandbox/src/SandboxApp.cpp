@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/*                        Lightengine  SourceCode                            */
+/*                             Spike SourceCode                              */
 /*                                                                           */
 /* File created by: Fahim Fuad                                               */
 /* Other editors: None                                                       */
@@ -16,21 +16,21 @@
 /*   See the License for the specific language governing permissions and     */
 /*   limitations under the License.                                          */
 /*****************************************************************************/
-#include <LightEngine.h>
-#include <LightEngine/Core/EntryPoint.h>
+#include <Spike.h>
+#include <Spike/Core/EntryPoint.h>
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include "Sandbox2D.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class ExampleLayer : public LightEngine::Layer
+class ExampleLayer : public Spike::Layer
 {
 public:
     ExampleLayer()
         : Layer("Example"), m_CameraController(1280.0f / 720.0f, true)
     {
-        m_VertexArray = LightEngine::VertexArray::Create();
+        m_VertexArray = Spike::VertexArray::Create();
 
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -38,21 +38,21 @@ public:
              0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
         };
 
-        LightEngine::Ref<LightEngine::VertexBuffer> vertexBuffer;
-        vertexBuffer = LightEngine::VertexBuffer::Create(vertices, sizeof(vertices));
-        LightEngine::BufferLayout layout = {
-            { LightEngine::ShaderDataType::Float3, "a_Position" },
-            { LightEngine::ShaderDataType::Float4, "a_Color" }
+        Spike::Ref<Spike::VertexBuffer> vertexBuffer;
+        vertexBuffer = Spike::VertexBuffer::Create(vertices, sizeof(vertices));
+        Spike::BufferLayout layout = {
+            { Spike::ShaderDataType::Float3, "a_Position" },
+            { Spike::ShaderDataType::Float4, "a_Color" }
         };
         vertexBuffer->SetLayout(layout);
         m_VertexArray->AddVertexBuffer(vertexBuffer);
 
         uint32_t indices[3] = { 0, 1, 2 };
-        LightEngine::Ref<LightEngine::IndexBuffer> indexBuffer;
-        indexBuffer = LightEngine::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+        Spike::Ref<Spike::IndexBuffer> indexBuffer;
+        indexBuffer = Spike::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
-        m_SquareVA = LightEngine::VertexArray::Create();
+        m_SquareVA = Spike::VertexArray::Create();
 
         float squareVertices[5 * 4] = {
             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -61,17 +61,17 @@ public:
             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
         };
 
-        LightEngine::Ref<LightEngine::VertexBuffer> squareVB;
-        squareVB = LightEngine::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
+        Spike::Ref<Spike::VertexBuffer> squareVB;
+        squareVB = Spike::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
         squareVB->SetLayout({
-            { LightEngine::ShaderDataType::Float3, "a_Position" },
-            { LightEngine::ShaderDataType::Float2, "a_TexCoord" }
+            { Spike::ShaderDataType::Float3, "a_Position" },
+            { Spike::ShaderDataType::Float2, "a_TexCoord" }
             });
         m_SquareVA->AddVertexBuffer(squareVB);
 
         uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-        LightEngine::Ref<LightEngine::IndexBuffer> squareIB;
-        squareIB = (LightEngine::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+        Spike::Ref<Spike::IndexBuffer> squareIB;
+        squareIB = (Spike::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
         m_SquareVA->SetIndexBuffer(squareIB);
 
         std::string vertexSrc = R"(
@@ -109,7 +109,7 @@ public:
             }
         )";
 
-        m_Shader = (LightEngine::Shader::Create("VertexPosColorTriangle", vertexSrc, fragmentSrc));
+        m_Shader = (Spike::Shader::Create("VertexPosColorTriangle", vertexSrc, fragmentSrc));
 
         std::string flatColorShaderVertexSrc = R"(
             #version 330 core
@@ -143,32 +143,32 @@ public:
             }
         )";
 
-        m_FlatColorShader = LightEngine::Shader::Create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
+        m_FlatColorShader = Spike::Shader::Create("FlatColor", flatColorShaderVertexSrc, flatColorShaderFragmentSrc);
 
         auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
-        m_Texture = LightEngine::Texture2D::Create("assets/textures/Checkerboard.png");
-        m_LightEngineTexture = LightEngine::Texture2D::Create("assets/textures/LightEngineNOBG.png");
+        m_Texture = Spike::Texture2D::Create("assets/textures/Checkerboard.png");
+        m_SpikeTexture = Spike::Texture2D::Create("assets/textures/SpikeNOBG.png");
 
-        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(textureShader)->Bind();
-        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
+        std::dynamic_pointer_cast<Spike::OpenGLShader>(textureShader)->Bind();
+        std::dynamic_pointer_cast<Spike::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
     }
 
-    void OnUpdate(LightEngine::Timestep ts) override
+    void OnUpdate(Spike::Timestep ts) override
     {
         // Update
         m_CameraController.OnUpdate(ts);
 
         // Render
-        LightEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-        LightEngine::RenderCommand::Clear();
+        Spike::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        Spike::RenderCommand::Clear();
 
-        LightEngine::Renderer::BeginScene(m_CameraController.GetCamera());
+        Spike::Renderer::BeginScene(m_CameraController.GetCamera());
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_FlatColorShader)->Bind();
-        std::dynamic_pointer_cast<LightEngine::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
+        std::dynamic_pointer_cast<Spike::OpenGLShader>(m_FlatColorShader)->Bind();
+        std::dynamic_pointer_cast<Spike::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 
         for (int y = 0; y < 20; y++)
         {
@@ -176,21 +176,21 @@ public:
             {
                 glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
                 glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-                LightEngine::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
+                Spike::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
             }
         }
 
         auto textureShader = m_ShaderLibrary.Get("Texture");
 
         m_Texture->Bind();
-        LightEngine::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-        m_LightEngineTexture->Bind();
-        LightEngine::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        Spike::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+        m_SpikeTexture->Bind();
+        Spike::Renderer::Submit(textureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
         // Triangle
-        //LightEngine::Renderer::Submit(m_Shader, m_VertexArray);
+        //Spike::Renderer::Submit(m_Shader, m_VertexArray);
 
-        LightEngine::Renderer::EndScene();
+        Spike::Renderer::EndScene();
     }
 
     virtual void OnImGuiRender() override
@@ -200,26 +200,26 @@ public:
         ImGui::End();
     }
 
-    void OnEvent(LightEngine::Event& e) override
+    void OnEvent(Spike::Event& e) override
     {
         m_CameraController.OnEvent(e);
     }
 private:
-    LightEngine::ShaderLibrary m_ShaderLibrary;
-    LightEngine::Ref<LightEngine::Shader> m_Shader;
-    LightEngine::Ref<LightEngine::VertexArray> m_VertexArray;
+    Spike::ShaderLibrary m_ShaderLibrary;
+    Spike::Ref<Spike::Shader> m_Shader;
+    Spike::Ref<Spike::VertexArray> m_VertexArray;
 
-    LightEngine::Ref<LightEngine::Shader> m_FlatColorShader;
-    LightEngine::Ref<LightEngine::VertexArray> m_SquareVA;
+    Spike::Ref<Spike::Shader> m_FlatColorShader;
+    Spike::Ref<Spike::VertexArray> m_SquareVA;
 
-    LightEngine::Ref<LightEngine::Texture2D> m_Texture, m_LightEngineTexture;
+    Spike::Ref<Spike::Texture2D> m_Texture, m_SpikeTexture;
 
-    LightEngine::OrthographicCameraController m_CameraController;
+    Spike::OrthographicCameraController m_CameraController;
     glm::vec3 m_CameraPosition;
     glm::vec3 m_SquareColor = { 0.2f, 0.3f, 0.8f };
 };
 
-class Sandbox : public LightEngine::Application
+class Sandbox : public Spike::Application
 {
 public:
     Sandbox()
@@ -234,7 +234,7 @@ public:
     }
 };
 
-LightEngine::Application* LightEngine::CreateApplication()
+Spike::Application* Spike::CreateApplication()
 {
     return new Sandbox();
 }

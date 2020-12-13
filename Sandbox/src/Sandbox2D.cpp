@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/*                        Lightengine  SourceCode                            */
+/*                             Spike SourceCode                              */
 /*                                                                           */
 /* File created by: Fahim Fuad                                               */
 /* Other editors: None                                                       */
@@ -30,24 +30,24 @@ Sandbox2D::Sandbox2D()
 void Sandbox2D::OnAttach()
 {
     LE_PROFILE_FUNCTION();
-    m_CheckerboardTexture = LightEngine::Texture2D::Create("assets/textures/Checkerboard.png");
+    m_CheckerboardTexture = Spike::Texture2D::Create("assets/textures/Checkerboard.png");
 }
 void Sandbox2D::OnDetach()
 {
     LE_PROFILE_FUNCTION();
 }
 
-void Sandbox2D::OnUpdate(LightEngine::Timestep ts)
+void Sandbox2D::OnUpdate(Spike::Timestep ts)
 {
     LE_PROFILE_FUNCTION();
     // Update
      m_CameraController.OnUpdate(ts);
     // Render
-     LightEngine::Renderer2D::ResetStats();
+     Spike::Renderer2D::ResetStats();
     {
         LE_PROFILE_SCOPE("Renderer Preparation");
-        LightEngine::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-        LightEngine::RenderCommand::Clear();
+        Spike::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        Spike::RenderCommand::Clear();
     }
 
     {
@@ -55,24 +55,24 @@ void Sandbox2D::OnUpdate(LightEngine::Timestep ts)
         rotation += ts * 50.0f;
 
         LE_PROFILE_SCOPE("Renderer Draw");
-        LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        LightEngine::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(45.0f), { 0.9f, 0.1f, 0.3f, 1.0f });
-        LightEngine::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.9f, 0.1f, 0.3f, 1.0f });
-        LightEngine::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, { 0.2f, 0.3f, 0.9f, 1.0f });
-        LightEngine::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 20.0f, 20.0f }, m_CheckerboardTexture, 10.0f);
-        LightEngine::Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_CheckerboardTexture, 20.0f);
-        LightEngine::Renderer2D::EndScene();
+        Spike::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        Spike::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(45.0f), { 0.9f, 0.1f, 0.3f, 1.0f });
+        Spike::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.9f, 0.1f, 0.3f, 1.0f });
+        Spike::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, { 0.2f, 0.3f, 0.9f, 1.0f });
+        Spike::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 20.0f, 20.0f }, m_CheckerboardTexture, 10.0f);
+        Spike::Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_CheckerboardTexture, 20.0f);
+        Spike::Renderer2D::EndScene();
         
-        LightEngine::Renderer2D::BeginScene(m_CameraController.GetCamera());
+        Spike::Renderer2D::BeginScene(m_CameraController.GetCamera());
         for (float y = -5.0f; y < 5.0f; y += 0.5f)
         {
             for (float x = -5.0f; x < 5.0f; x += 0.5f)
             {
                 glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.8f };
-                LightEngine::Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, color);
+                Spike::Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, color);
             }
         }
-        LightEngine::Renderer2D::EndScene();
+        Spike::Renderer2D::EndScene();
     }
 }
 
@@ -81,7 +81,7 @@ void Sandbox2D::OnImGuiRender()
     LE_PROFILE_FUNCTION();
 
     ImGui::Begin("Settings");
-    auto stats = LightEngine::Renderer2D::GetStats();
+    auto stats = Spike::Renderer2D::GetStats();
     ImGui::Text("Renderer2D Stats:");
     ImGui::Text("Draw Calls: %d", stats.DrawCalls);
     ImGui::Text("Quads: %d", stats.QuadCount);
@@ -92,7 +92,7 @@ void Sandbox2D::OnImGuiRender()
 
 }
 
-void Sandbox2D::OnEvent(LightEngine::Event& e)
+void Sandbox2D::OnEvent(Spike::Event& e)
 {
     m_CameraController.OnEvent(e);
 }
