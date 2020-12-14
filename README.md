@@ -18,7 +18,7 @@ It is a **Game engine** written in **C++**
 
 - Visual Studio 2019 is highly recommended in Windows
 - Start by cloning the repository with `git clone --recursive https://github.com/FahimFuad/Spike.git` to clone along with the submodules. If you have already cloned and you want to initialize the submodules, type `git submodule init` and to update the submodules type `git submodule update` in your project directory.
-- Run the `GenProjects-windows.bat` file inside the scripts folder and Premake will generate project files for Visual Studio 2019.
+- Run the `WindowsGenProjects.bat` file inside the scripts folder and Premake will generate project files for Visual Studio 2019.
 - If you want to generate for other IDE or versions of Visual Studio then in the project directory run your favourite premake [action](https://github.com/premake/premake-core/wiki/Using-Premake#using-premake-to-generate-project-files)
 - Once premake generate the project files then you can hit the run button and make the engine up and running!
 
@@ -81,4 +81,4 @@ It is a **Game engine** written in **C++**
 
 This engine is inspired from **TheCherno's** [Hazel](https://github.com/TheCherno/Hazel) Engine.
 
-[![Discord](https://img.shields.io/badge/Spike--red.svg?style=social&logo=discord)](https://discord.gg/65AvSfUeym)
+[![Discord](https://img.shields.io/badge/Spike--red.svg?style=social&logo=discord)](https://discord.gg/QugaNbUPzb)

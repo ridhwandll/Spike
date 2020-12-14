@@ -1,3 +1,5 @@
+include "./vendor/premake/premake_customization/clean_build.lua"
+
 workspace "Spike"
     architecture "x86_64"
     startproject "Spike-Editor"

@@ -2,19 +2,19 @@ Scene: Untitled
 Entities:
   - Entity: 45692584
     TagComponent:
+      Tag: Yellow
+    TransformComponent:
+      Translation: [0.350866318, -3.44448972, -0.929395676]
+      Rotation: [1.57079637, 0, 0]
+      Scale: [27.0000095, 16.9989758, 0.99996376]
+    SpriteRendererComponent:
+      Color: [1, 0.583333254, 0, 1]
+  - Entity: 45692584
+    TagComponent:
       Tag: Green
     TransformComponent:
-      Translation: [0, 0, -1.504457]
+      Translation: [0.248159885, -1.8027122, -1.504457]
       Rotation: [0, 0, 0]
       Scale: [27, 16.6844082, 0.00253999978]
     SpriteRendererComponent:
       Color: [0.0820108429, 0.391129017, 0, 1]
-  - Entity: 45692584
-    TagComponent:
-      Tag: Yellow
-    TransformComponent:
-      Translation: [0.350866318, -3.44448972, -1.1260407]
-      Rotation: [1.57079637, 0, 0]
-      Scale: [27.0000095, 16.9996452, 0.999984682]
-    SpriteRendererComponent:
-      Color: [1, 0.583333254, 0, 1]
