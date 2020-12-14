@@ -21,8 +21,19 @@
 
 namespace Spike
 {
+    Console* Console::m_Console = new Console();
     Console::Console()
     {
+    }
+
+    Console::~Console()
+    {
+        delete m_Console;
+    }
+
+    Console* Console::Get()
+    {
+        return m_Console;
     }
 
     void Console::OnImGuiRender()
@@ -40,22 +51,22 @@ namespace Spike
         {
             if (itr->first == LogLevel::LVL_DEBUG)
             {
-                color = { 0, 0.5, 1, 1 };
+                color = { 0.0f, 0.5f, 1.0f, 1.0f };
                 type = m_IconDebug + " [DEBUG] ";
             }
             if (itr->first == LogLevel::LVL_INFO)
             {
-                color = { 0, 1, 0, 1 };
+                color = { 0.0f, 1.0f, 0.0f, 1.0f };
                 type = m_IconInfo + " [INFO] ";
             }
             if (itr->first == LogLevel::LVL_WARN)
             {
-                color = { 1, 0.9, 0, 1 };
+                color = { 1.0f, 0.9f, 0.0f, 1.0f };
                 type = m_IconWarn + " [WARNING] ";
             }
             if (itr->first == LogLevel::LVL_ERROR)
             {
-                color = { 1, 0, 0, 1 };
+                color = { 1.0f, 0.0f, 0.0f, 1.0f };
                 type = m_IconError + " [ERROR] ";
             }
             ImGui::TextColored(color, (type + itr->second).c_str());

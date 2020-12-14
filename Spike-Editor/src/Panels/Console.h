@@ -26,20 +26,24 @@ namespace Spike
     class Console
     {
     public:
-        Console();
-        ~Console() = default;
+        ~Console();
 
         enum class LogLevel
         {
             LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR 
         };
 
+        static Console* Get();
+
         void OnImGuiRender();
         void Print(std::string message, LogLevel level = LogLevel::LVL_DEBUG);
 
     private:
+        Console();
         void ClearLog();
+
     private:
+        static Console* m_Console;
         std::vector<std::pair<LogLevel, std::string>> m_Messages{};
         std::string m_IconDebug = ICON_FK_BUG;
         std::string m_IconWarn = ICON_FK_EXCLAMATION_CIRCLE;

@@ -17,14 +17,16 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #include "EditorLayer.h"
-#include <imgui/imgui.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include "Panels/Console.h"
 #include "Spike/Scene/SceneSerializer.h"
 #include "Spike/Utility/PlatformUtils.h"
-#include <ImGuizmo.h>
 #include "Spike/Math/Math.h"
 #include "FontAwesome.h"
+
+#include <imgui/imgui.h>
+#include <ImGuizmo.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Spike
 {
@@ -184,7 +186,7 @@ namespace Spike
 
         style.WindowMinSize.x = minWinSizeX;
 
-        m_Console.OnImGuiRender();
+        Console::Get()->OnImGuiRender();
 
         if (ImGui::BeginMenuBar())
         {
@@ -362,6 +364,7 @@ namespace Spike
                 }
                 break;
         }
+        return false;
     }
 
     void EditorLayer::NewScene()
@@ -409,7 +412,7 @@ namespace Spike
         {
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize(m_ActiveFilepath);
-            m_Console.Print("Scene Saved!", Console::LogLevel::LVL_INFO);
+            Console::Get()->Print("Scene Saved!", Console::LogLevel::LVL_INFO);
         }
     }
 

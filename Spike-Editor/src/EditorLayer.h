@@ -19,7 +19,6 @@
 #pragma once
 #include "Spike.h"
 #include "Panels/SceneHierarchyPanel.h"
-#include "Panels/Console.h"
 #include "Spike/Renderer/EditorCamera.h"
 
 namespace Spike
@@ -73,7 +72,6 @@ namespace Spike
 
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;
-        Console m_Console;
     };
 
 }

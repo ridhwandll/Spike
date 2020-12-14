@@ -17,6 +17,7 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #include "SceneHierarchyPanel.h"
+#include "Console.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
 #include "../FontAwesome.h"
@@ -61,7 +62,7 @@ namespace Spike
             {
                 m_SelectionContext = m_Context->CreateEntity("Empty Entity");
             }
-            if (ImGui::MenuItem("Create Camera Entity"))
+            if (ImGui::MenuItem("Create Camera"))
             {
                 m_SelectionContext = m_Context->CreateEntity("Camera");
                 m_SelectionContext.AddComponent<CameraComponent>();
@@ -263,7 +264,7 @@ namespace Spike
                 if (!m_SelectionContext.HasComponent<TransformComponent>())
                     m_SelectionContext.AddComponent<TransformComponent>();
                 else
-                    SPK_CORE_LOG_WARN("This entity already has Transform component!");
+                    Console::Get()->Print("This entity already has Transform component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Camera"))
@@ -271,7 +272,7 @@ namespace Spike
                 if (!m_SelectionContext.HasComponent<CameraComponent>())
                     m_SelectionContext.AddComponent<CameraComponent>();
                 else
-                    SPK_CORE_LOG_WARN("This entity already has Camera component!");
+                    Console::Get()->Print("This entity already has Camera component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Sprite Renderer"))
@@ -279,7 +280,7 @@ namespace Spike
                 if (!m_SelectionContext.HasComponent<SpriteRendererComponent>())
                     m_SelectionContext.AddComponent<SpriteRendererComponent>();
                 else
-                    SPK_CORE_LOG_WARN("This entity already has Sprite Renderer component");
+                    Console::Get()->Print("This entity already has Sprite Renderer component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -349,7 +350,7 @@ namespace Spike
                 if (ImGui::DragFloat("Far Clip", &farClip))
                     camera.SetOrthographicFarClip(farClip);
 
-                ImGui::Checkbox("fixed Aspect Ratio", &component.FixedAspectRatio);
+                ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
             }
         });
 
@@ -374,5 +375,6 @@ namespace Spike
             m_SelectionContext = {};
             return false;
         }
+        return false;
     }
 }
