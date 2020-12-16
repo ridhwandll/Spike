@@ -16,38 +16,15 @@
 /*   See the License for the specific language governing permissions and     */
 /*   limitations under the License.                                          */
 /*****************************************************************************/
+
+//UI utility function to be used in the Panels and the GUI stuff
 #pragma once
-#include <vector>
 #include <string>
-#include "../FontAwesome.h"
+#include "Spike/Scene/Entity.h"
+#include <glm/glm.hpp>
 
 namespace Spike
 {
-    class Console
-    {
-    public:
-        ~Console();
-
-        enum class LogLevel
-        {
-            LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR 
-        };
-
-        static Console* Get();
-
-        void OnImGuiRender();
-        void Print(std::string message, LogLevel level = LogLevel::LVL_DEBUG);
-
-    private:
-        Console();
-        void ClearLog();
-
-    private:
-        static Console* m_Console;
-        std::vector<std::pair<LogLevel, std::string>> m_Messages{};
-        std::string m_IconDebug = ICON_FK_BUG;
-        std::string m_IconWarn = ICON_FK_EXCLAMATION_CIRCLE;
-        std::string m_IconError = ICON_FK_EXCLAMATION_TRIANGLE;
-        std::string m_IconInfo = ICON_FK_INFO_CIRCLE;
-    };
+    void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
+    void DrawComponents(Entity entity);
 }

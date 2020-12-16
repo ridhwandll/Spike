@@ -19,6 +19,7 @@
 #pragma once
 #include "Scene.h"
 #include "entt.hpp"
+#include "Spike/Core/Log.h"
 
 namespace Spike
 {

@@ -39,7 +39,6 @@ namespace Spike
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
         void DrawEntityNode(Entity entity);
-        void DrawComponents(Entity entity);
     private:
         bool m_IsHierarchyFocused = false;
         bool m_IsHierarchyHovered = false;

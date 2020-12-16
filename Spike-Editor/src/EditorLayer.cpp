@@ -17,7 +17,7 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #include "EditorLayer.h"
-#include "Panels/Console.h"
+#include "Panels/ConsolePanel.h"
 #include "Spike/Scene/SceneSerializer.h"
 #include "Spike/Utility/PlatformUtils.h"
 #include "Spike/Math/Math.h"

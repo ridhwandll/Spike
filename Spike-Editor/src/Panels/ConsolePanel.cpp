@@ -16,7 +16,7 @@
 /*   See the License for the specific language governing permissions and     */
 /*   limitations under the License.                                          */
 /*****************************************************************************/
-#include "Console.h"
+#include "ConsolePanel.h"
 #include <imgui/imgui.h>
 
 namespace Spike
