@@ -22,6 +22,7 @@
 namespace Spike
 {
     Console* Console::m_Console = new Console();
+
     Console::Console()
     {
     }
@@ -38,67 +39,104 @@ namespace Spike
 
     void Console::OnImGuiRender()
     {
-        ImGui::Begin("Console");
+        ImGuiStyle& style = ImGui::GetStyle();
 
-        if (ImGui::Button("Clear"))
-            ClearLog();
+        ImGui::Begin(ICON_FK_LIST" Console");
 
-        ImGui::BeginChild("Console");
+        if (ImGui::Button(ICON_FK_COGS))
+            ImGui::OpenPopup("Console Settings");
+
+        if(ImGui::BeginPopup("Console Settings"))
+        {
+            if (ImGui::Button("Clear"))
+                ClearLog();
+
+            ImGui::Checkbox("Scroll Lock", &m_AutoScrollingEnabled);
+            ImGui::EndPopup();
+        }
+
+        ImGui::BeginChild(ICON_FK_LIST" Console");
 
         ImVec4 color;
         std::string type;
         for (auto itr = m_Messages.begin(); itr != m_Messages.end(); ++itr)
         {
-            if (itr->first == LogLevel::LVL_DEBUG)
+            switch (itr->first)
             {
-                color = { 0.0f, 0.5f, 1.0f, 1.0f };
-                type = m_IconDebug + " [DEBUG] ";
+                case LogLevel::LVL_INFO:
+                {
+                    color = { 0.0f, 1.0f, 0.0f, 1.0f };
+                    type = ICON_FK_INFO_CIRCLE" [INFO] ";
+                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    break;
+                }
+                case LogLevel::LVL_DEBUG:
+                {
+                    color = { 0.0f, 0.5f, 1.0f, 1.0f };
+                    type = ICON_FK_BUG" [DEBUG] ";
+                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    break;
+                }
+                case LogLevel::LVL_WARN:
+                {
+                    color = { 1.0f, 0.9f, 0.0f, 1.0f };
+                    type = ICON_FK_EXCLAMATION_TRIANGLE" [WARNING] ";
+                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    break;
+                }
+                case LogLevel::LVL_ERROR:
+                {
+                    color = { 1.0f, 0.2f, 0.1f, 1.0f };
+                    type = ICON_FK_EXCLAMATION_CIRCLE" [ERROR] ";
+                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    break;
+                }
+                case LogLevel::LVL_CRITICAL:
+                {
+                    color = { 0.5f, 0.0f, 0.7f, 1.0f };
+                    type = ICON_FK_EXCLAMATION_CIRCLE" [CRITICAL] ";
+                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    break;
+                }
             }
-            if (itr->first == LogLevel::LVL_INFO)
-            {
-                color = { 0.0f, 1.0f, 0.0f, 1.0f };
-                type = m_IconInfo + " [INFO] ";
-            }
-            if (itr->first == LogLevel::LVL_WARN)
-            {
-                color = { 1.0f, 0.9f, 0.0f, 1.0f };
-                type = m_IconWarn + " [WARNING] ";
-            }
-            if (itr->first == LogLevel::LVL_ERROR)
-            {
-                color = { 1.0f, 0.0f, 0.0f, 1.0f };
-                type = m_IconError + " [ERROR] ";
-            }
-            ImGui::TextColored(color, (type + itr->second).c_str());
             ImGui::Separator();
         }
-        ImGui::EndChild();
 
+        if (m_AutoScrollingEnabled)
+            ImGui::SetScrollY(ImGui::GetScrollMaxY() + 100);
+
+        ImGui::EndChild();
         ImGui::End();
+
     }
 
     void Console::Print(std::string message, LogLevel level)
     {
         switch (level)
         {
-            case Spike::Console::LogLevel::LVL_INFO:
+            case LogLevel::LVL_INFO:
             {
                 m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_INFO, message));
                 break;
             }
-            case Spike::Console::LogLevel::LVL_DEBUG:
+            case LogLevel::LVL_DEBUG:
             {
                 m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_DEBUG, message));
                 break;
             }
-            case Spike::Console::LogLevel::LVL_WARN:
+            case LogLevel::LVL_WARN:
             {
                 m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_WARN, message));
                 break;
             }
-            case Spike::Console::LogLevel::LVL_ERROR:
+            case LogLevel::LVL_ERROR:
             {
                 m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_ERROR, message));
+                break;
+            }
+            case LogLevel::LVL_CRITICAL:
+            {
+                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_CRITICAL, message));
                 break;
             }
         }

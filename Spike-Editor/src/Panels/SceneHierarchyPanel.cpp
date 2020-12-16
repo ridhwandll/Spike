@@ -21,6 +21,7 @@
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
 #include <imgui/imgui.h>
+#include "../FontAwesome.h"
 
 namespace Spike
 {
@@ -75,7 +76,7 @@ namespace Spike
 
 
         // Inspector
-        ImGui::Begin("Inspector");
+        ImGui::Begin(ICON_FK_INFO_CIRCLE" Inspector");
         if (m_SelectionContext)
         {
             DrawComponents(m_SelectionContext);

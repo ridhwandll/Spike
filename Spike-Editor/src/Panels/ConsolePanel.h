@@ -37,18 +37,19 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "../Panels/Panel.h"
 #include "../FontAwesome.h"
 
 namespace Spike
 {
-    class Console
+    class Console : public Panel
     {
     public:
         ~Console();
 
         enum class LogLevel
         {
-            LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR 
+            LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR, LVL_CRITICAL
         };
 
         static Console* Get();
@@ -56,6 +57,8 @@ namespace Spike
         void OnImGuiRender();
         void Print(std::string message, LogLevel level = LogLevel::LVL_DEBUG);
 
+        virtual Entity GetSelectedEntity() const override { return m_SelectionContext; }
+        virtual Ref<Scene> GetCurrentScene() const override { return m_Context; }
     private:
         Console();
         void ClearLog();
@@ -63,9 +66,6 @@ namespace Spike
     private:
         static Console* m_Console;
         std::vector<std::pair<LogLevel, std::string>> m_Messages{};
-        std::string m_IconDebug = ICON_FK_BUG;
-        std::string m_IconWarn = ICON_FK_EXCLAMATION_CIRCLE;
-        std::string m_IconError = ICON_FK_EXCLAMATION_TRIANGLE;
-        std::string m_IconInfo = ICON_FK_INFO_CIRCLE;
+        bool m_AutoScrollingEnabled = true;
     };
 }

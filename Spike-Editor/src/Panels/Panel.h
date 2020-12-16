@@ -17,32 +17,25 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-#include "Panel.h"
-#include "Spike/Core/Log.h"
-#include "Spike/Core/Base.h"
+#include "Spike/Scene/Scene.h"
 #include "Spike/Scene/Entity.h"
-#include "Spike/Events/Event.h"
-#include "Spike/Events/KeyEvent.h"
 
 namespace Spike
 {
-    class SceneHierarchyPanel : public Panel
+    class Panel
     {
     public:
-        SceneHierarchyPanel() = default;
-        SceneHierarchyPanel(const Ref<Scene>& context);
-        void SetContext(const Ref<Scene>& context);
+        virtual ~Panel() = default;
 
-        void OnImGuiRender();
-        void OnEvent(Event& e);
+        static Panel* Get();
 
-        virtual Entity GetSelectedEntity() const override { return m_SelectionContext; }
-        virtual Ref<Scene> GetCurrentScene() const override { return m_Context; }
-    private:
-        bool OnKeyPressed(KeyPressedEvent& e);
-        void DrawEntityNode(Entity entity);
-    private:
-        bool m_IsHierarchyFocused = false;
-        bool m_IsHierarchyHovered = false;
+        virtual Entity GetSelectedEntity() const { return m_SelectionContext; };
+        virtual Ref<Scene> GetCurrentScene() const { return m_Context; };
+
+    protected:
+        Panel() = default;
+        static Panel* m_Instance;
+        Ref<Scene> m_Context;
+        Entity m_SelectionContext;
     };
 }

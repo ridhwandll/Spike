@@ -222,8 +222,11 @@ namespace Spike
         ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
         ImGui::End();
 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-        ImGui::Begin("Viewport");
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });\
+
+        std::string icon = ICON_FK_GAMEPAD;
+        std::string title = icon + " Viewport";
+        ImGui::Begin(title.c_str());
 
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
@@ -388,17 +391,19 @@ namespace Spike
 
             SceneSerializer serializer(m_ActiveScene);
             serializer.Deserialize(filepath);
+            Console::Get()->Print("Succesfully deserialized scene!", Console::LogLevel::LVL_INFO);
         }
     }
 
     void EditorLayer::SaveSceneAs()
     {
-        std::string filepath = FileDialogs::SaveFile("Spike Scene (*.light)\0*.light\0");
+        std::string filepath = FileDialogs::SaveFile("Spike Scene (*.spike)\0*.spike\0");
         if (!filepath.empty())
         {
             m_FirstTimeSave = false;
             SceneSerializer serializer(m_ActiveScene);
             serializer.Serialize(filepath);
+            Console::Get()->Print("Scene serialized succesfully!", Console::LogLevel::LVL_INFO);
         }
     }
 

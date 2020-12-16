@@ -126,8 +126,16 @@ namespace Spike
 
     void ImGuiLayer::SetDarkThemeColors()
     {
+        auto& style = ImGui::GetStyle();
         auto& colors = ImGui::GetStyle().Colors;
-        ImGui::GetStyle().TabRounding = 5.0f;
+
+        style.TabRounding = 5.0f;
+        style.FrameRounding = 5.0f;
+        style.PopupRounding = 5.0f;
+        style.ScrollbarRounding = 5.0f;
+        style.GrabRounding = 5.0f;
+        style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+
         colors[ImGuiCol_WindowBg] = ImVec4{ 0.1f, 0.105f, 0.11f, 1.0f };
 
         // Headers

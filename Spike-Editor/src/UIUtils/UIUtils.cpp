@@ -43,11 +43,10 @@ namespace Spike
 
             bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, name.c_str());
             ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-            const char* iconAddButton = ICON_FK_DOT_CIRCLE_O;
-            if (ImGui::Button(iconAddButton, ImVec2{ lineHeight, lineHeight }))
-            {
+
+            if (ImGui::Button(ICON_FK_PLUS_CIRCLE, ImVec2{ lineHeight, lineHeight }))
                 ImGui::OpenPopup("Component Settings");
-            }
+
             ImGui::PopStyleVar();
 
             bool removeComponent = false;
@@ -82,7 +81,8 @@ namespace Spike
         ImGui::NextColumn();
 
         ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0.0f, 0.0f });
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
 
         float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
         ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
@@ -128,7 +128,7 @@ namespace Spike
         ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
         ImGui::PopItemWidth();
 
-        ImGui::PopStyleVar();
+        ImGui::PopStyleVar(2);
 
         ImGui::Columns(1);
 
@@ -187,7 +187,7 @@ namespace Spike
         }
         ImGui::PopItemWidth();
 
-        DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
+        DrawComponent<TransformComponent>(ICON_FK_WRENCH" Transform", entity, [](auto& component)
         {
             DrawVec3Control("Translation", component.Translation);
             glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -196,7 +196,7 @@ namespace Spike
             DrawVec3Control("Scale", component.Scale, 1.0f);
         });
 
-        DrawComponent<CameraComponent>("Camera", entity, [](auto& component)
+        DrawComponent<CameraComponent>(ICON_FK_CAMERA" Camera", entity, [](auto& component)
         {
             auto& camera = component.Camera;
 
