@@ -21,10 +21,22 @@
 #pragma once
 #include <string>
 #include "Spike/Scene/Entity.h"
+#include <imgui/imgui.h>
 #include <glm/glm.hpp>
 
 namespace Spike
 {
     void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
     void DrawComponents(Entity entity);
+
+    template<typename UIFunction>
+    void DrawToggleButton(const char* text, ImVec4 color, UIFunction uiFunction)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
+        if (ImGui::Button(text))
+        {
+            uiFunction();
+        }
+        ImGui::PopStyleColor();
+    }
 }

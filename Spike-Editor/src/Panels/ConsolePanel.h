@@ -39,6 +39,7 @@
 #include <string>
 #include "../Panels/Panel.h"
 #include "../FontAwesome.h"
+#include <imgui/imgui.h>
 
 namespace Spike
 {
@@ -62,10 +63,22 @@ namespace Spike
     private:
         Console();
         void ClearLog();
-
     private:
         static Console* m_Console;
         std::vector<std::pair<LogLevel, std::string>> m_Messages{};
-        bool m_AutoScrollingEnabled = true;
+        bool m_ScrollLockEnabled = false;
+
+        //Colors
+        ImVec4 m_InfoColor = { 0.0f, 1.0f, 0.0f, 1.0f };
+        ImVec4 m_DebugColor = { 0.0f, 0.5f, 1.0f, 1.0f };
+        ImVec4 m_WarnColor = { 1.0f, 0.9f, 0.0f, 1.0f };
+        ImVec4 m_ErrorColor = { 1.0f, 0.2f, 0.1f, 1.0f };
+        ImVec4 m_CriticalColor = { 0.5f, 0.0f, 0.7f, 1.0f };
+
+        //Bool switches
+        bool m_WarningEnabled = true;
+        bool m_InfoEnabled = true;
+        bool m_DebugEnabled = true;
+        bool m_ErrorEnabled = true;
     };
 }

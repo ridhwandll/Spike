@@ -17,7 +17,7 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #include "ConsolePanel.h"
-#include <imgui/imgui.h>
+#include "../UIUtils/UIUtils.h"
 
 namespace Spike
 {
@@ -51,13 +51,23 @@ namespace Spike
             if (ImGui::Button("Clear"))
                 ClearLog();
 
-            ImGui::Checkbox("Scroll Lock", &m_AutoScrollingEnabled);
+            ImGui::Checkbox("Scroll Lock", &m_ScrollLockEnabled);
             ImGui::EndPopup();
         }
 
+        ImGui::SameLine();
+
+        //TODO: Button Shows effects if they are toggled on
+        DrawToggleButton(ICON_FK_INFO_CIRCLE, m_InfoColor, [this]() { m_InfoEnabled ^= true; });               //Info
+        ImGui::SameLine();
+        DrawToggleButton(ICON_FK_BUG, m_DebugColor, [this]() { m_DebugEnabled ^= true; });                     //Bug
+        ImGui::SameLine();
+        DrawToggleButton(ICON_FK_EXCLAMATION_TRIANGLE, m_WarnColor, [this]() { m_WarningEnabled ^= true; });   //Warn
+        ImGui::SameLine();
+        DrawToggleButton(ICON_FK_EXCLAMATION_CIRCLE, m_ErrorColor, [this]() { m_ErrorEnabled ^= true; });      //Error
+
         ImGui::BeginChild(ICON_FK_LIST" Console");
 
-        ImVec4 color;
         std::string type;
         for (auto itr = m_Messages.begin(); itr != m_Messages.end(); ++itr)
         {
@@ -65,44 +75,51 @@ namespace Spike
             {
                 case LogLevel::LVL_INFO:
                 {
-                    color = { 0.0f, 1.0f, 0.0f, 1.0f };
-                    type = ICON_FK_INFO_CIRCLE" [INFO] ";
-                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    if (m_InfoEnabled)
+                    {
+                        type = ICON_FK_INFO_CIRCLE" [INFO] ";
+                        ImGui::TextColored(m_InfoColor, (type + itr->second).c_str());
+                    }
                     break;
                 }
                 case LogLevel::LVL_DEBUG:
                 {
-                    color = { 0.0f, 0.5f, 1.0f, 1.0f };
-                    type = ICON_FK_BUG" [DEBUG] ";
-                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    if (m_DebugEnabled)
+                    {
+                        type = ICON_FK_BUG" [DEBUG] ";
+                        ImGui::TextColored(m_DebugColor, (type + itr->second).c_str());
+                    }
                     break;
                 }
                 case LogLevel::LVL_WARN:
                 {
-                    color = { 1.0f, 0.9f, 0.0f, 1.0f };
-                    type = ICON_FK_EXCLAMATION_TRIANGLE" [WARNING] ";
-                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    if (m_WarningEnabled)
+                    {
+                        type = ICON_FK_EXCLAMATION_TRIANGLE" [WARNING] ";
+                        ImGui::TextColored(m_WarnColor, (type + itr->second).c_str());
+                    }
                     break;
                 }
                 case LogLevel::LVL_ERROR:
                 {
-                    color = { 1.0f, 0.2f, 0.1f, 1.0f };
-                    type = ICON_FK_EXCLAMATION_CIRCLE" [ERROR] ";
-                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    if (m_ErrorEnabled)
+                    {
+                        type = ICON_FK_EXCLAMATION_CIRCLE" [ERROR] ";
+                        ImGui::TextColored(m_ErrorColor, (type + itr->second).c_str());
+                    }
                     break;
                 }
                 case LogLevel::LVL_CRITICAL:
                 {
-                    color = { 0.5f, 0.0f, 0.7f, 1.0f };
+                    // You can't toggle off the critical errors!
                     type = ICON_FK_EXCLAMATION_CIRCLE" [CRITICAL] ";
-                    ImGui::TextColored(color, (type + itr->second).c_str());
+                    ImGui::TextColored(m_CriticalColor, (type + itr->second).c_str());
                     break;
                 }
             }
-            ImGui::Separator();
         }
 
-        if (m_AutoScrollingEnabled)
+        if (m_ScrollLockEnabled)
             ImGui::SetScrollY(ImGui::GetScrollMaxY() + 100);
 
         ImGui::EndChild();

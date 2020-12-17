@@ -20,7 +20,6 @@
 #include "Spike/Scene/Components.h"
 #include "../Panels/SceneHierarchyPanel.h"
 #include "../Panels/ConsolePanel.h"
-#include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 

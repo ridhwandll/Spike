@@ -41,7 +41,7 @@
 
 #include "Spike/Core/Base.h"
 #include "Spike/Core/Log.h"
-#include "../../Spike-Editor/src/Panels/ConsolePanel.h"
+//#include "../../Spike-Editor/src/Panels/ConsolePanel.h"
 #include "Spike/Debug/Instrumentor.h"
 
 #ifdef SPK_PLATFORM_WINDOWS
