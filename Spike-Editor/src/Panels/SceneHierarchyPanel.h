@@ -35,9 +35,6 @@ namespace Spike
 
         void OnImGuiRender();
         void OnEvent(Event& e);
-
-        virtual Entity GetSelectedEntity() const override { return m_SelectionContext; }
-        virtual Ref<Scene> GetCurrentScene() const override { return m_Context; }
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
         void DrawEntityNode(Entity entity);

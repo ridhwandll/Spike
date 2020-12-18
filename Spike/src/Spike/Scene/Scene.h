@@ -35,7 +35,7 @@ namespace Spike
         Scene();
         ~Scene();
 
-        Entity CreateEntity(const std::string name = std::string());
+        Entity CreateEntity(const std::string& name = std::string());
         void DestroyEntity(Entity entity);
 
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);

@@ -68,7 +68,6 @@ namespace Spike
 
         ImGui::BeginChild(ICON_FK_LIST" Console");
 
-        std::string type;
         for (auto itr = m_Messages.begin(); itr != m_Messages.end(); ++itr)
         {
             switch (itr->first)
@@ -77,8 +76,7 @@ namespace Spike
                 {
                     if (m_InfoEnabled)
                     {
-                        type = ICON_FK_INFO_CIRCLE" [INFO] ";
-                        ImGui::TextColored(m_InfoColor, (type + itr->second).c_str());
+                        ImGui::TextColored(m_InfoColor, (ICON_FK_INFO_CIRCLE" [INFO] " + itr->second).c_str());
                     }
                     break;
                 }
@@ -86,8 +84,7 @@ namespace Spike
                 {
                     if (m_DebugEnabled)
                     {
-                        type = ICON_FK_BUG" [DEBUG] ";
-                        ImGui::TextColored(m_DebugColor, (type + itr->second).c_str());
+                        ImGui::TextColored(m_DebugColor, (ICON_FK_BUG" [DEBUG] " + itr->second).c_str());
                     }
                     break;
                 }
@@ -95,8 +92,7 @@ namespace Spike
                 {
                     if (m_WarningEnabled)
                     {
-                        type = ICON_FK_EXCLAMATION_TRIANGLE" [WARNING] ";
-                        ImGui::TextColored(m_WarnColor, (type + itr->second).c_str());
+                        ImGui::TextColored(m_WarnColor, (ICON_FK_EXCLAMATION_TRIANGLE" [WARNING] " + itr->second).c_str());
                     }
                     break;
                 }
@@ -104,16 +100,14 @@ namespace Spike
                 {
                     if (m_ErrorEnabled)
                     {
-                        type = ICON_FK_EXCLAMATION_CIRCLE" [ERROR] ";
-                        ImGui::TextColored(m_ErrorColor, (type + itr->second).c_str());
+                        ImGui::TextColored(m_ErrorColor, (ICON_FK_EXCLAMATION_CIRCLE" [ERROR] " + itr->second).c_str());
                     }
                     break;
                 }
                 case LogLevel::LVL_CRITICAL:
                 {
                     // You can't toggle off the critical errors!
-                    type = ICON_FK_EXCLAMATION_CIRCLE" [CRITICAL] ";
-                    ImGui::TextColored(m_CriticalColor, (type + itr->second).c_str());
+                    ImGui::TextColored(m_CriticalColor, (ICON_FK_EXCLAMATION_CIRCLE" [CRITICAL] " + itr->second).c_str());
                     break;
                 }
             }
@@ -127,36 +121,9 @@ namespace Spike
 
     }
 
-    void Console::Print(std::string message, LogLevel level)
+    void Console::Print(const std::string& message, LogLevel level)
     {
-        switch (level)
-        {
-            case LogLevel::LVL_INFO:
-            {
-                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_INFO, message));
-                break;
-            }
-            case LogLevel::LVL_DEBUG:
-            {
-                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_DEBUG, message));
-                break;
-            }
-            case LogLevel::LVL_WARN:
-            {
-                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_WARN, message));
-                break;
-            }
-            case LogLevel::LVL_ERROR:
-            {
-                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_ERROR, message));
-                break;
-            }
-            case LogLevel::LVL_CRITICAL:
-            {
-                m_Messages.emplace_back(std::pair <LogLevel, std::string>(LogLevel::LVL_CRITICAL, message));
-                break;
-            }
-        }
+        m_Messages.emplace_back(std::pair <LogLevel, std::string>(level, message));
     }
 
     void Console::ClearLog()

@@ -224,9 +224,7 @@ namespace Spike
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });\
 
-        std::string icon = ICON_FK_GAMEPAD;
-        std::string title = icon + " Viewport";
-        ImGui::Begin(title.c_str());
+        ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
 
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
@@ -376,6 +374,7 @@ namespace Spike
         m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
         m_FirstTimeSave = true;
+        Console::Get()->Print("Successfully created new scene!", Console::LogLevel::LVL_INFO);
     }
 
     void EditorLayer::OpenScene()

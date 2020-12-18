@@ -36,7 +36,7 @@ namespace Spike
             auto& component = entity.GetComponent<ComponentType>();
             ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4.0f, 4.0f });
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 1.0f, 1.0f });
             float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
             ImGui::Separator();
 

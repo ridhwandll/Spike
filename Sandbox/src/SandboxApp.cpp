@@ -28,10 +28,8 @@ class ExampleLayer : public Spike::Layer
 {
 public:
     ExampleLayer()
-        : Layer("Example"), m_CameraController(1280.0f / 720.0f, true)
+        : Layer("Example"), m_CameraController(1280.0f / 720.0f, true), m_VertexArray(Spike::VertexArray::Create())
     {
-        m_VertexArray = Spike::VertexArray::Create();
-
         float vertices[3 * 7] = {
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
              0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,

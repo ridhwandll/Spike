@@ -47,7 +47,6 @@ namespace Spike
     {
     public:
         ~Console();
-
         enum class LogLevel
         {
             LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR, LVL_CRITICAL
@@ -56,7 +55,7 @@ namespace Spike
         static Console* Get();
 
         void OnImGuiRender();
-        void Print(std::string message, LogLevel level = LogLevel::LVL_DEBUG);
+        void Print(const std::string& message, LogLevel level = LogLevel::LVL_DEBUG);
 
         virtual Entity GetSelectedEntity() const override { return m_SelectionContext; }
         virtual Ref<Scene> GetCurrentScene() const override { return m_Context; }

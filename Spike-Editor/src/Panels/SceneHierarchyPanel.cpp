@@ -109,7 +109,6 @@ namespace Spike
 
         if (opened)
         {
-            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
             ImGui::TreePop();
         }
 

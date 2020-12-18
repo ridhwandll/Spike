@@ -2,13 +2,13 @@ Scene: Untitled
 Entities:
   - Entity: 45692584
     TagComponent:
-      Tag: Small Red Entity
+      Tag: Green
     TransformComponent:
-      Translation: [0, 1.43068433, 0]
+      Translation: [0.248159885, -1.46255445, -1.504457]
       Rotation: [0, 0, 0]
-      Scale: [6.26068592, 4.09946299, 1]
+      Scale: [27, 16.6844082, 0.00253999978]
     SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
+      Color: [0.0820108429, 0.391129017, 0, 1]
   - Entity: 45692584
     TagComponent:
       Tag: Ash
@@ -20,10 +20,10 @@ Entities:
       Color: [0.330645144, 0.330641836, 0.330641836, 1]
   - Entity: 45692584
     TagComponent:
-      Tag: Green
+      Tag: Small Red Entity
     TransformComponent:
-      Translation: [0.248159885, -1.46255445, -1.504457]
+      Translation: [0, 1.43068433, 0]
       Rotation: [0, 0, 0]
-      Scale: [27, 16.6844082, 0.00253999978]
+      Scale: [6.26068592, 4.09946299, 1]
     SpriteRendererComponent:
-      Color: [0.0820108429, 0.391129017, 0, 1]
+      Color: [1, 0, 0, 1]

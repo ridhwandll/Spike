@@ -2,14 +2,16 @@
 # Spike
 
 ![workflow](https://github.com/FahimFuad/Spike/workflows/build/badge.svg) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/FahimFuad/Spike/blob/main/LICENSE)
-
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/742fb18d76ca40c691137d01cfbc7c8a)](https://www.codacy.com/gh/FahimFuad/Spike/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FahimFuad/Spike&amp;utm_campaign=Badge_Grade)
 ![Spike](Resources/Branding/SpikeLarge.png)
 
-## :zap: Welcome to the **Spike**'s source code
+## Welcome to the **Spike**'s source code
 
 It is a **Game engine** written in **C++**
 
 # :wrench: Project Setup
+
+<img src="https://premake.github.io/premake-logo.png" width=32 /> **We use premake for project files generation**
 
 ## Windows
 
@@ -71,6 +73,19 @@ It is a **Game engine** written in **C++**
   - Translation, rotation and scale
 - Built in editor console
 - Editor Camera
+
+# Dependencies
+
+- **[DearImGui](https://github.com/FahimFuad/imgui)** for Graphical User Interface
+- [GLFW](https://github.com/FahimFuad/glfw) for Windowing
+- [Glad](https://github.com/Dav1dde/glad) OpenGL loader
+- [ImGuizmo](https://github.com/FahimFuad/ImGuizmo) for Gizmo's
+- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h) for image loading
+- [glm](https://github.com/g-truc/glm) used as Math Library
+- [EnTT](https://github.com/skypjack/entt) for Entity component system
+- [spdlog](https://github.com/gabime/spdlog) for fast Logging
+- [yaml-cpp](https://github.com/FahimFuad/yaml-cpp) for scene serialization
+
 
 ## Contributing [![GitHub contributors](https://img.shields.io/github/contributors/FahimFuad/Spike.svg)](https://GitHub.com/FahimFuad/Spike/graphs/contributors/)
 
