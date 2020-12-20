@@ -21,7 +21,7 @@
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
 #include <imgui/imgui.h>
-#include "../FontAwesome.h"
+#include <FontAwesome.h>
 
 namespace Spike
 {

@@ -22,7 +22,7 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
-
+#include <FontAwesome.h>
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
 
@@ -33,9 +33,10 @@ namespace Spike
         std::string Tag;
         TagComponent() = default;
         TagComponent(const TagComponent&) = default;
-
         TagComponent(const std::string tag)
             :Tag(tag) {}
+
+        const char* GetName() { return "Tag"; }
     };
     struct TransformComponent
     {
@@ -45,10 +46,16 @@ namespace Spike
 
         TransformComponent() = default;
         TransformComponent(const TransformComponent&) = default;
-
         TransformComponent(const glm::vec3& translation)
             :Translation(translation) {}
 
+        void Reset()
+        {
+            Translation = { 0.0f, 0.0f, 0.0f };
+            Rotation = { 0.0f, 0.0f, 0.0f };
+            Scale = { 1.0f, 1.0f, 1.0f };
+        }
+        const char* GetName() { return ICON_FK_WRENCH" Transform"; }
         glm::mat4 GetTransform() const
         {
             glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
@@ -62,9 +69,14 @@ namespace Spike
 
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
-
         SpriteRendererComponent(const glm::vec4& color)
             :Color(color) {}
+
+        void Reset()
+        {
+            Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+        }
+        const char* GetName() { return "Sprite Renderer"; }
     };
 
     struct CameraComponent
@@ -75,6 +87,13 @@ namespace Spike
 
         CameraComponent() = default;
         CameraComponent(const CameraComponent&) = default;
+
+        void Reset()
+        {
+            Primary = true;
+            FixedAspectRatio = false;
+        }
+        const char* GetName() { return ICON_FK_CAMERA" Camera"; }
     };
 
     struct NativeScriptComponent
@@ -90,5 +109,6 @@ namespace Spike
             InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
             DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
         }
+        const char* GetName() { return "Native Script"; };
     };
 }

@@ -77,14 +77,14 @@ It is a **Game engine** written in **C++**
 # Dependencies
 
 - **[DearImGui](https://github.com/FahimFuad/imgui)** for Graphical User Interface
-- [GLFW](https://github.com/FahimFuad/glfw) for Windowing
-- [Glad](https://github.com/Dav1dde/glad) OpenGL loader
-- [ImGuizmo](https://github.com/FahimFuad/ImGuizmo) for Gizmo's
-- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h) for image loading
-- [glm](https://github.com/g-truc/glm) used as Math Library
-- [EnTT](https://github.com/skypjack/entt) for Entity component system
-- [spdlog](https://github.com/gabime/spdlog) for fast Logging
-- [yaml-cpp](https://github.com/FahimFuad/yaml-cpp) for scene serialization
+- **[GLFW](https://github.com/FahimFuad/glfw)** for Windowing
+- **[Glad](https://github.com/Dav1dde/glad)** OpenGL loader
+- **[ImGuizmo](https://github.com/FahimFuad/ImGuizmo)** for Gizmo's
+- **[stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)** for image loading
+- **[glm](https://github.com/g-truc/glm)** used as Math Library
+- **[EnTT](https://github.com/skypjack/entt)** for Entity component system
+- **[spdlog](https://github.com/gabime/spdlog)** for fast Logging
+- **[yaml-cpp](https://github.com/FahimFuad/yaml-cpp)** for scene serialization
 
 
 ## Contributing [![GitHub contributors](https://img.shields.io/github/contributors/FahimFuad/Spike.svg)](https://GitHub.com/FahimFuad/Spike/graphs/contributors/)
@@ -96,4 +96,4 @@ It is a **Game engine** written in **C++**
 
 This engine is inspired from **TheCherno's** [Hazel](https://github.com/TheCherno/Hazel) Engine.
 
-[![Discord](https://img.shields.io/badge/Spike--red.svg?style=social&logo=discord)](https://discord.gg/QugaNbUPzb)
+[![Discord](https://img.shields.io/badge/SpikeEngine--red.svg?style=social&logo=discord)](https://discord.gg/QugaNbUPzb)

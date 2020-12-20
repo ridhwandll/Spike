@@ -21,6 +21,7 @@ project "Spike-Editor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.FontAwesome}"
 	}
 
 	links

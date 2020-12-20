@@ -26,7 +26,7 @@
 namespace Spike
 {
     template<typename ComponentType, typename UIFunction>
-    static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
+    static void DrawComponent(Entity entity, UIFunction uiFunction)
     {
         if (entity.HasComponent<ComponentType>())
         {
@@ -38,9 +38,8 @@ namespace Spike
 
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 1.0f, 1.0f });
             float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-            ImGui::Separator();
 
-            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, name.c_str());
+            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, component.GetName());
             ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 
             if (ImGui::Button(ICON_FK_PLUS_CIRCLE, ImVec2{ lineHeight, lineHeight }))
@@ -51,8 +50,11 @@ namespace Spike
             bool removeComponent = false;
             if (ImGui::BeginPopup("Component Settings"))
             {
+                if (ImGui::MenuItem("Reset"))
+                    component.Reset();
                 if (ImGui::MenuItem("Remove Component"))
                     removeComponent = true;
+
                 ImGui::EndPopup();
             }
 
@@ -186,7 +188,7 @@ namespace Spike
         }
         ImGui::PopItemWidth();
 
-        DrawComponent<TransformComponent>(ICON_FK_WRENCH" Transform", entity, [](auto& component)
+        DrawComponent<TransformComponent>(entity, [](auto& component)
         {
             DrawVec3Control("Translation", component.Translation);
             glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -195,7 +197,7 @@ namespace Spike
             DrawVec3Control("Scale", component.Scale, 1.0f);
         });
 
-        DrawComponent<CameraComponent>(ICON_FK_CAMERA" Camera", entity, [](auto& component)
+        DrawComponent<CameraComponent>(entity, [](auto& component)
         {
             auto& camera = component.Camera;
 
@@ -253,7 +255,7 @@ namespace Spike
             }
         });
 
-        DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
+        DrawComponent<SpriteRendererComponent>(entity, [](auto& component)
         {
             ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
         });
