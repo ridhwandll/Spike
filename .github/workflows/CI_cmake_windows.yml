@@ -1,4 +1,4 @@
-name: build_windows_cmake
+name: build_windows_premake
 
 on: [ push, pull_request ]
 
@@ -20,6 +20,6 @@ jobs:
       uses: microsoft/setup-msbuild@v1.0.2
 
     - name: Build Solution
-       run: |
+      run: |
         cd build
         msbuild -property:Configuration=Release,MultiProcessorCompilation=true -maxCpuCount -verbosity:minimal -noLogo Spike.sln
