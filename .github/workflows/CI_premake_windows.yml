@@ -1,4 +1,4 @@
-name: build
+name: build_windows_premake
 
 on: [ push, pull_request ]
 

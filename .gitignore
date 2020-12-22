@@ -2,7 +2,12 @@
 **/bin/
 bin-int/
 
+# Keep the premake bin
 !vendor/premake/bin/
+
+# CMake
+build/
+cmake-build-debug/
 
 # Visual Studio files and folder
 .vs/

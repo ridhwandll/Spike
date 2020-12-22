@@ -6,6 +6,7 @@ project "Spike-Editor"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+	debugdir "%{wks.location}"
 
 	files
 	{
@@ -34,6 +35,7 @@ project "Spike-Editor"
 
 	filter "configurations:Debug"
 		defines "SPK_DEBUG"
+		debugdir "%{wks.location}"
 		runtime "Debug"
 		symbols "on"
 
