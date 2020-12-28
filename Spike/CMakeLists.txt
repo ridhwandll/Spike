@@ -1,4 +1,3 @@
-  
 file(GLOB_RECURSE spike_source_files "src/Spike/*.cpp")
 file(GLOB_RECURSE spike_header_files "src/Spike/*.h")
 

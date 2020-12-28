@@ -20,6 +20,7 @@
 
 #include "Spike/Renderer/EditorCamera.h"
 #include "Spike/Core/Timestep.h"
+#include "Spike/Renderer/Framebuffer.h"
 
 #pragma warning(push, 0)
 #include <entt.hpp>
@@ -38,9 +39,13 @@ namespace Spike
         Entity CreateEntity(const std::string& name = std::string());
         void DestroyEntity(Entity entity);
 
-        void OnUpdateEditor(Timestep ts, EditorCamera& camera);
         void OnUpdateRuntime(Timestep ts);
+        void OnUpdateEditor(Timestep ts, EditorCamera& camera);
         void OnViewportResize(uint32_t width, uint32_t height);
+
+        void DrawIDBuffer(Ref<Framebuffer> target, EditorCamera& camera);
+        int Pixel(int x, int y);
+
         Entity GetPrimaryCameraEntity();
     private:
         template<typename T>

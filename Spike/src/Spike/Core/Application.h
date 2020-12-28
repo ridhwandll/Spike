@@ -30,7 +30,7 @@ namespace Spike
     class Application
     {
     public:
-        Application(const std::string& name = "Lightning Application");
+        Application(const std::string& name = "Spike Application");
         virtual ~Application();
         void Run();
         void OnEvent(Event& e);

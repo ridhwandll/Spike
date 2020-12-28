@@ -38,6 +38,7 @@ namespace Spike
 
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
+        bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
         void NewScene();
         void OpenScene();
@@ -48,6 +49,7 @@ namespace Spike
         Ref<VertexArray> m_SquareVA;
         Ref<Shader> m_FlatColorShader;
         Ref<Framebuffer> m_Framebuffer;
+        Ref<Framebuffer> m_IDFramebuffer;
 
         Ref<Scene> m_ActiveScene;
 
@@ -57,12 +59,14 @@ namespace Spike
         Entity m_SecondSquareEntity;
         Entity m_CameraEntity;
         Entity m_SecondCameraEntity;
+        Entity m_HoveredEntity;
 
         bool m_PrimaryCamera = true;
         EditorCamera m_EditorCamera;
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
+        glm::vec2 m_ViewportBounds[2];
 
         std::string m_ActiveFilepath = std::string();
         bool m_FirstTimeSave = false;

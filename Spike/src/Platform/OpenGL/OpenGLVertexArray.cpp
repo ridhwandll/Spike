@@ -26,17 +26,17 @@ namespace Spike
     {
         switch (type)
         {
-            case Spike::ShaderDataType::Float:   return GL_FLOAT;
-            case Spike::ShaderDataType::Float2:  return GL_FLOAT;
-            case Spike::ShaderDataType::Float3:  return GL_FLOAT;
-            case Spike::ShaderDataType::Float4:  return GL_FLOAT;
-            case Spike::ShaderDataType::Mat3:    return GL_FLOAT;
-            case Spike::ShaderDataType::Mat4:    return GL_FLOAT;
-            case Spike::ShaderDataType::Int:     return GL_INT;
-            case Spike::ShaderDataType::Int2:    return GL_INT;
-            case Spike::ShaderDataType::Int3:    return GL_INT;
-            case Spike::ShaderDataType::Int4:    return GL_INT;
-            case Spike::ShaderDataType::Bool:    return GL_BOOL;
+            case ShaderDataType::Float:   return GL_FLOAT;
+            case ShaderDataType::Float2:  return GL_FLOAT;
+            case ShaderDataType::Float3:  return GL_FLOAT;
+            case ShaderDataType::Float4:  return GL_FLOAT;
+            case ShaderDataType::Mat3:    return GL_FLOAT;
+            case ShaderDataType::Mat4:    return GL_FLOAT;
+            case ShaderDataType::Int:     return GL_INT;
+            case ShaderDataType::Int2:    return GL_INT;
+            case ShaderDataType::Int3:    return GL_INT;
+            case ShaderDataType::Int4:    return GL_INT;
+            case ShaderDataType::Bool:    return GL_BOOL;
         }
         SPK_INTERNAL_ASSERT("Unknown ShaderDataType!");
         return 0;
@@ -81,10 +81,6 @@ namespace Spike
                 case ShaderDataType::Float2:
                 case ShaderDataType::Float3:
                 case ShaderDataType::Float4:
-                case ShaderDataType::Int:
-                case ShaderDataType::Int2:
-                case ShaderDataType::Int3:
-                case ShaderDataType::Int4:
                 case ShaderDataType::Bool:
                 {
                     glEnableVertexAttribArray(m_VertexBufferIndex);
@@ -113,6 +109,20 @@ namespace Spike
                         glVertexAttribDivisor(m_VertexBufferIndex, 1);
                         m_VertexBufferIndex++;
                     }
+                    break;
+                }
+                case ShaderDataType::Int:
+                case ShaderDataType::Int2:
+                case ShaderDataType::Int3:
+                case ShaderDataType::Int4:
+                {
+                    glEnableVertexAttribArray(m_VertexBufferIndex);
+                    glVertexAttribIPointer(m_VertexBufferIndex,
+                        element.GetComponentCount(),
+                        ShaderDataTypeToOpenGLBaseType(element.Type),
+                        layout.GetStride(),
+                        (const void*)element.Offset);
+                    m_VertexBufferIndex++;
                     break;
                 }
                 default:
