@@ -2,7 +2,7 @@
 /*                             Spike SourceCode                              */
 /*                                                                           */
 /* File created by: Fahim Fuad                                               */
-/* Other editors: None                                                       */
+/* Other editors: Spectrum76 (Rayvant)                                       */
 /*                                                                           */
 /*   Licensed under the Apache License, Version 2.0 (the "License");         */
 /*   you may not use this file except in compliance with the License.        */
@@ -25,7 +25,7 @@ namespace Spike
     {
     public:
         template<typename T>
-        static T LERandom(T min = 0, T max = 100)
+        static T SPKRandom(T min = 0, T max = 100)
         {
             if constexpr (std::is_same_v<T, int>)
             {
