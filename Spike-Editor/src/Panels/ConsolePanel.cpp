@@ -66,7 +66,7 @@ namespace Spike
         ImGui::SameLine();
         DrawToggleButton(ICON_FK_EXCLAMATION_CIRCLE, m_ErrorColor, [this]() { m_ErrorEnabled ^= true; });      //Error
 
-        ImGui::BeginChild(ICON_FK_LIST" Console");
+        ImGui::BeginChild(ICON_FK_LIST" Console", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         for (auto itr = m_Messages.begin(); itr != m_Messages.end(); ++itr)
         {

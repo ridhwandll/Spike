@@ -2,24 +2,6 @@ Scene: Untitled
 Entities:
   - Entity: 45692584
     TagComponent:
-      Tag: Small Red Entity
-    TransformComponent:
-      Translation: [1.1920929e-07, 15.047039, 0]
-      Rotation: [1.57079637, 0, 0]
-      Scale: [25.8956013, 4.87060022, 4.5923996]
-    SpriteRendererComponent:
-      Color: [1, 0, 0, 1]
-  - Entity: 45692584
-    TagComponent:
-      Tag: Ash
-    TransformComponent:
-      Translation: [0.350866318, -2.54189348, -1.86996984]
-      Rotation: [1.57079637, 0, 0]
-      Scale: [27.0000095, 16.9984093, 0.999946058]
-    SpriteRendererComponent:
-      Color: [0.552419364, 0.494504094, 0, 1]
-  - Entity: 45692584
-    TagComponent:
       Tag: Green
     TransformComponent:
       Translation: [0.248159885, -1.35402548, -1.50138581]
@@ -27,3 +9,27 @@ Entities:
       Scale: [27, 16.6844082, 0.00253999978]
     SpriteRendererComponent:
       Color: [0.0820108429, 0.391129017, 0, 1]
+      TextureFilepath: ""
+      TilingFactor: 1
+  - Entity: 45692584
+    TagComponent:
+      Tag: Yellow
+    TransformComponent:
+      Translation: [0.350866318, -2.54189348, -1.86996984]
+      Rotation: [1.57079637, 0, 0]
+      Scale: [27.0000076, 26.3420696, 0.999945998]
+    SpriteRendererComponent:
+      Color: [0.552419364, 0.494504094, 0, 1]
+      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
+      TilingFactor: 1
+  - Entity: 45692584
+    TagComponent:
+      Tag: Small Red Entity
+    TransformComponent:
+      Translation: [1.1920929e-07, 15.047039, 0]
+      Rotation: [1.57079637, 0, 0]
+      Scale: [25.8956013, 4.87060022, 4.5923996]
+    SpriteRendererComponent:
+      Color: [1, 0, 0, 1]
+      TextureFilepath: ""
+      TilingFactor: 1

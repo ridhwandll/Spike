@@ -20,6 +20,7 @@
 #include "SceneSerializer.h"
 #include "Entity.h"
 #include "Components.h"
+#include "Panels/ConsolePanel.h"
 #include <yaml-cpp/yaml.h>
 
 namespace YAML
@@ -157,7 +158,8 @@ namespace Spike
 
             auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
             out << YAML::Key << "Color" << YAML::Value << spriteRendererComponent.Color;
-
+            out << YAML::Key << "TextureFilepath" << YAML::Value << spriteRendererComponent.TextureFilepath;
+            out << YAML::Key << "TilingFactor" << YAML::Value << spriteRendererComponent.TilingFactor;
             out << YAML::EndMap; // SpriteRendererComponent
         }
 
@@ -192,11 +194,13 @@ namespace Spike
 
     bool SceneSerializer::Deserialize(const std::string& filepath)
     {
-        std::ifstream stream(filepath);
-        std::stringstream strStream;
-        strStream << stream.rdbuf();
-
-        YAML::Node data = YAML::Load(strStream.str());
+        YAML::Node data;
+        try { data = YAML::LoadFile(filepath); }
+        catch (const YAML::ParserException& ex)
+        {
+            Console::Get()->Print("Failed to load.spike file!");
+            SPK_CORE_LOG_ERROR("Failed to load .spike file '{0}'\n     {1}", filepath, ex.what());
+        }
         if (!data["Scene"])
             return false;
 
@@ -208,7 +212,7 @@ namespace Spike
         {
             for (auto entity : entities)
             {
-                uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO
+                uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO: Make it take an uuid or a SPIKE id, not a garbage value
 
                 std::string name;
                 auto tagComponent = entity["TagComponent"];
@@ -254,6 +258,16 @@ namespace Spike
                 {
                     auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
                     src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+                    auto textureFilePath = spriteRendererComponent["TextureFilepath"];
+                    if (textureFilePath)
+                    {
+                        std::string textureFilepath = textureFilePath.as<std::string>();
+                        if(!textureFilepath.empty())
+                            src.SetTexture(textureFilepath);
+                    }
+                    auto tilingFactor = spriteRendererComponent["TilingFactor"];
+                    if (tilingFactor)
+                        src.TilingFactor = tilingFactor.as<float>();
                 }
             }
         }

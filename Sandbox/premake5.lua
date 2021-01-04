@@ -20,6 +20,7 @@ project "Sandbox"
 		"%{wks.location}/Spike/src",
 		"%{wks.location}/Spike/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.FontAwesome}"
 	}

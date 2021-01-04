@@ -56,6 +56,7 @@ namespace Spike
         {
             m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
                 {
+                    // TODO: Move to Scene::OnScenePlay
                     if (!nsc.Instance)
                     {
                         nsc.Instance = nsc.InstantiateScript();
@@ -92,8 +93,8 @@ namespace Spike
             auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
             for (auto entity : group)
             {
-                auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
+                auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
             }
 
             Renderer2D::EndScene();
@@ -110,7 +111,7 @@ namespace Spike
             for (auto entity : group) {
                 auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
+                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
             }
 
             Renderer2D::EndScene();

@@ -17,13 +17,14 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
+#include "Spike/Renderer/Texture.h"
+#include "Panels/ConsolePanel.h"
+#include "SceneCamera.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <FontAwesome.h>
-#include "SceneCamera.h"
 #include "ScriptableEntity.h"
 
 namespace Spike
@@ -66,15 +67,28 @@ namespace Spike
     struct SpriteRendererComponent
     {
         glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+        Ref<Texture2D> Texture = nullptr;
+        std::string TextureFilepath;
+        float TilingFactor = 1.0f;
 
         SpriteRendererComponent() = default;
         SpriteRendererComponent(const SpriteRendererComponent&) = default;
         SpriteRendererComponent(const glm::vec4& color)
             :Color(color) {}
 
+        void SetTexture(const std::string& filepath)
+        {
+            Texture = Texture2D::Create(filepath);
+            TextureFilepath = filepath;
+            SPK_CORE_LOG_INFO("Successfully loaded Texture from: {0}", filepath);
+        }
+
+        void RemoveTexture() { Texture = nullptr; Console::Get()->Print("Successfully removed the Texture!", Console::LogLevel::LVL_INFO); }
+
         void Reset()
         {
             Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+            RemoveTexture();
         }
         const char* GetName() { return "Sprite Renderer"; }
     };

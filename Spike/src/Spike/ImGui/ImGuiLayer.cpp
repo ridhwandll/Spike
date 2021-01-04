@@ -45,7 +45,7 @@ namespace Spike
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
@@ -142,6 +142,9 @@ namespace Spike
         colors[ImGuiCol_Header] =             ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
         colors[ImGuiCol_HeaderHovered] =      ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
         colors[ImGuiCol_HeaderActive] =       ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+
+        // Checbox
+        colors[ImGuiCol_CheckMark] =          ImVec4{ 0.0f, 0.8f, 0.0f, 1.0f };
 
         // Buttons
         colors[ImGuiCol_Button] =             ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };

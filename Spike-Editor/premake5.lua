@@ -18,7 +18,9 @@ project "Spike-Editor"
 	{
 		"%{wks.location}/Spike/vendor/spdlog/include",
 		"%{wks.location}/Spike/src",
+		"../Spike-Editor/src",
 		"%{wks.location}/Spike/vendor",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",

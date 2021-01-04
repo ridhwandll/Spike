@@ -19,12 +19,45 @@
 #include "UIUtils.h"
 #include "Spike/Scene/Components.h"
 #include "../Panels/SceneHierarchyPanel.h"
+#include "Spike/Utility/PlatformUtils.h"
 #include "../Panels/ConsolePanel.h"
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
 
 namespace Spike
 {
+    static void DrawFloatControl(const char* label, float* value, float columnWidth)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::DragFloat("##value", value, 0.1f);
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+    }
+
+    void DrawColorControl(const char* label, glm::vec4& value, float columnWidth)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::PushItemWidth(-std::numeric_limits<float>::min());
+        ImGui::ColorEdit4("##value", glm::value_ptr(value));
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+    }
+
     template<typename ComponentType, typename UIFunction>
     static void DrawComponent(Entity entity, UIFunction uiFunction)
     {
@@ -257,7 +290,38 @@ namespace Spike
 
         DrawComponent<SpriteRendererComponent>(entity, [](auto& component)
         {
-            ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+            DrawColorControl("Color", component.Color);
+
+            const uint64_t id = component.Texture == nullptr ? 0 : component.Texture->GetRendererID();
+
+            ImGui::Text("Texture");
+            const float cursorPos = ImGui::GetCursorPosY();
+            const ImVec2 buttonSize = { 65, 65 };
+            ImGui::SameLine(ImGui::GetWindowWidth() * 0.8f);
+
+            if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
+            {
+                std::string filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
+                if (!filepath.empty())
+                    component.SetTexture(filepath);
+            }
+
+            ImGui::SetCursorPosY(cursorPos + 5);
+
+            if (ImGui::Button("Add Texture"))
+            {
+                std::string filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
+                if (!filepath.empty())
+                    component.SetTexture(filepath);
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Remove Texture"))
+                component.RemoveTexture();
+
+            // Tiling Factor
+            DrawFloatControl("Tiling Factor", &component.TilingFactor, 120);
         });
     }
 }

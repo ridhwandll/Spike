@@ -19,9 +19,9 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "../Panels/Panel.h"
+#include "Panels/Panel.h"
 #include <FontAwesome.h>
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 namespace Spike
 {

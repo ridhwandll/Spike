@@ -8,6 +8,7 @@ add_executable(SpikeEditor
 
 target_include_directories(SpikeEditor PRIVATE
     "src"
+    "Spike/vendor"
 )
 
 set_property(TARGET SpikeEditor PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")

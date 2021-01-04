@@ -33,6 +33,7 @@ project "Spike"
 	includedirs
 	{
 		"src",
+		"../Spike-Editor/src",
 		"vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",

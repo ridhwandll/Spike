@@ -31,7 +31,7 @@ namespace Spike
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -49,7 +49,11 @@ namespace Spike
             LE_PROFILE_SCOPE("stbi_load->>OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
             data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         }
-        SPK_CORE_ASSERT(data, "Failed to load image!");
+
+        if (data == nullptr) //We don't want to assert here....the engine should be running
+        {
+            SPK_CORE_LOG_CRITICAL("Failed to load image!");
+        }
         m_Width = width;
         m_Height = height;
 
@@ -68,11 +72,15 @@ namespace Spike
         m_InternalFormat = internalFormat;
         m_DataFormat = dataFormat;
 
-        SPK_CORE_ASSERT(internalFormat & dataFormat, "Texture format not supported!");
+        if (!(internalFormat & dataFormat)) //We don't want to assert here....the engine should be running
+        {
+            SPK_CORE_LOG_CRITICAL("Texture format not supported!");
+            return;
+        }
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
-        
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -110,5 +118,4 @@ namespace Spike
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
-
 }

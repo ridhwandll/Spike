@@ -302,6 +302,54 @@ namespace Spike
 
         s_Data.Stats.QuadCount++;
     }
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, uint32_t entityID, float tilingFactor, const glm::vec4& tintColor)
+    {
+        LE_PROFILE_FUNCTION();
+
+        constexpr size_t quadVertexCount = 4;
+        constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+        if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+            NextBatch();
+
+        float textureIndex = 0.0f;
+        if (texture)
+        {
+            for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+            {
+                if (*s_Data.TextureSlots[i] == *texture)
+                {
+                    textureIndex = (float)i;
+                    break;
+                }
+            }
+
+            if (textureIndex == 0.0f)
+            {
+                if (s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+                    NextBatch();
+
+                textureIndex = (float)s_Data.TextureSlotIndex;
+                s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+                s_Data.TextureSlotIndex++;
+            }
+        }
+
+        for (size_t i = 0; i < quadVertexCount; i++)
+        {
+            s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+            s_Data.QuadVertexBufferPtr->Color = tintColor;
+            s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+            s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+            s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr->ObjectID = (int)entityID;
+            s_Data.QuadVertexBufferPtr++;
+        }
+
+        s_Data.QuadIndexCount += 6;
+
+        s_Data.Stats.QuadCount++;
+    }
 
     void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
     {
