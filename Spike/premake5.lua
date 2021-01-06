@@ -19,7 +19,8 @@ project "Spike"
 		"vendor/stb_image/**.cpp",
 		"vendor/glm/glm/**.hpp",
 		"vendor/glm/glm/**.inl",
-
+		"vendor/assimp/include/**.hpp",
+		"vendor/assimp/include/**.inl",
 		"vendor/ImGuizmo/ImGuizmo.h",
 		"vendor/ImGuizmo/ImGuizmo.cpp"
 	}
@@ -43,7 +44,13 @@ project "Spike"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FontAwesome}"
+	}
+
+	libdirs
+	{
+		"%{wks.location}/Spike/vendor/assimp/lib"
 	}
 
 	links
@@ -52,6 +59,7 @@ project "Spike"
 		"Glad",
 		"ImGui",
 		"yaml-cpp",
+		"assimp-vc142-mt.lib",
 		"opengl32.lib"
 	}
 

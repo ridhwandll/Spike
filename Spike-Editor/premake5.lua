@@ -24,12 +24,18 @@ project "Spike-Editor"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FontAwesome}"
 	}
 
 	links
 	{
 		"Spike"
+	}
+
+	postbuildcommands 
+	{
+		'{COPY} "../Spike/vendor/assimp/lib/assimp-vc142-mt.dll" "%{cfg.targetdir}"'
 	}
 
 	filter "system:windows"

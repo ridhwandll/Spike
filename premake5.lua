@@ -27,6 +27,7 @@ IncludeDir["stb_image"] = "%{wks.location}/Spike/vendor/stb_image"
 IncludeDir["entt"] = "%{wks.location}/Spike/vendor/entt/include"
 IncludeDir["yaml_cpp"] = "%{wks.location}/Spike/vendor/yaml-cpp/include"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Spike/vendor/ImGuizmo"
+IncludeDir["Assimp"] = "%{wks.location}/Spike/vendor/assimp/include"
 IncludeDir["FontAwesome"] = "%{wks.location}/Spike-Editor/src"
 
 group "Dependencies"

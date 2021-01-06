@@ -22,7 +22,13 @@ project "Sandbox"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.FontAwesome}"
+	}
+
+	libdirs
+	{
+		"%{wks.location}/Spike/vendor/assimp/lib"
 	}
 
 	links
