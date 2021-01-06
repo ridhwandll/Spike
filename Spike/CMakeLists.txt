@@ -29,6 +29,7 @@ add_library(Spike STATIC ${SPK_CROSS_PLATFORM_FILES} ${SPK_OS_FILES}
 
     "vendor/ImGuizmo/ImGuizmo.h"
     "vendor/ImGuizmo/ImGuizmo.cpp"
+
 )
 
 target_precompile_headers(Spike PUBLIC "src/spkpch.h")
@@ -46,6 +47,7 @@ target_include_directories(Spike PUBLIC
     "vendor"
     "vendor/spdlog/include"
     "vendor/imgui"
+    "vendor/assimp/include"
     "vendor/ImGuizmo"
     "vendor/glm"
     "vendor/entt/include"
@@ -70,6 +72,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Dist")
 endif()
 
 set_property(TARGET Spike PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+
+set(LIB_LOCATION ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib)
+target_link_libraries(Spike PUBLIC ${LIB_LOCATION})
 
 target_link_libraries(Spike PRIVATE glfw glad)
 target_link_libraries(Spike PUBLIC imgui yaml-cpp)
