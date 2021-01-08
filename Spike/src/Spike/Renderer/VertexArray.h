@@ -17,12 +17,13 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-#include <memory>
+#include "Spike/Core/Ref.h"
 #include "Spike/Renderer/Buffer.h"
+#include <memory>
 
 namespace Spike
 {
-    class VertexArray
+    class VertexArray : public RefCounted
     {
     public:
         virtual ~VertexArray() = default;

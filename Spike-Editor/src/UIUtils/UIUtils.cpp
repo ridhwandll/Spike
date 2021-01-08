@@ -292,7 +292,7 @@ namespace Spike
         {
             DrawColorControl("Color", component.Color);
 
-            const uint64_t id = component.Texture == nullptr ? 0 : component.Texture->GetRendererID();
+            const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
 
             ImGui::Text("Texture");
             const float cursorPos = ImGui::GetCursorPosY();

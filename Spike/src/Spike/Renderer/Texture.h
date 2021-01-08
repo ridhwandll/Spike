@@ -17,12 +17,13 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
+#include "Spike/Core/Ref.h"
 #include <string>
 #include "Spike/Core/Base.h"
 
 namespace Spike
 {
-    class Texture
+    class Texture : public RefCounted
     {
     public:
         virtual ~Texture() = default;

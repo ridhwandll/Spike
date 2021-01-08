@@ -17,12 +17,14 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-#include <glm/glm.hpp>
+#include "Spike/Core/Ref.h"
 #include "Texture.h"
+#include <glm/glm.hpp>
+
 
 namespace Spike
 {
-    class SubTexture2D
+    class SubTexture2D : public RefCounted
     {
     public:
         SubTexture2D(const Ref<Texture2D>& texture, glm::vec2 min, glm::vec2 max);

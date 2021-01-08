@@ -17,6 +17,7 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
+#include "Spike/Core/Ref.h"
 #include "glm/glm.hpp"
 
 namespace Spike
@@ -29,7 +30,7 @@ namespace Spike
         bool SwapChainTarget = false;
     };
 
-    class Framebuffer
+    class Framebuffer : public RefCounted
     {
     public:
         virtual ~Framebuffer() = default;

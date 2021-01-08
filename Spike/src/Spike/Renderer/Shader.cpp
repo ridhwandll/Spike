@@ -28,7 +28,7 @@ namespace Spike
         switch (Renderer::GetAPI())
         {
         case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::API::OpenGL:  return CreateRef<OpenGLShader>(filepath);
+        case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(filepath);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
@@ -39,7 +39,7 @@ namespace Spike
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return CreateRef<OpenGLShader>(name, vertexSrc, fragmentSrc);
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(name, vertexSrc, fragmentSrc);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");

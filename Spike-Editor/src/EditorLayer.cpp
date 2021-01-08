@@ -49,7 +49,7 @@ namespace Spike
         m_Framebuffer = Framebuffer::Create(fbSpec);
         m_IDFramebuffer = Framebuffer::Create(fbSpec);
 
-        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 #if 0
         // Entity
@@ -154,7 +154,7 @@ namespace Spike
         if (mouseX >= 0 && mouseY >= 0 && mouseX < viewportWidth && mouseY < viewportHeight)
         {
             int pixel = m_ActiveScene->Pixel(mx, my);
-            m_HoveredEntity = pixel == -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.get());
+            m_HoveredEntity = pixel == -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.Raw());
         }
 
         m_Framebuffer->Unbind();
@@ -412,7 +412,7 @@ namespace Spike
 
     void EditorLayer::NewScene()
     {
-        m_ActiveScene = CreateRef<Scene>();
+        m_ActiveScene = Ref<Scene>::Create();
         m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_ActiveScene);
         m_FirstTimeSave = true;
@@ -426,7 +426,7 @@ namespace Spike
         {
             m_FirstTimeSave = false;
             m_ActiveFilepath = filepath;
-            m_ActiveScene = CreateRef<Scene>();
+            m_ActiveScene = Ref<Scene>::Create();
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 

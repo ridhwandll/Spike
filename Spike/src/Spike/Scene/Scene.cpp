@@ -94,7 +94,10 @@ namespace Spike
             for (auto entity : group)
             {
                 auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                if (sprite.Texture)
+                    Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                else
+                    Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
             }
 
             Renderer2D::EndScene();

@@ -17,7 +17,7 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
-
+#include "Spike/Core/Ref.h"
 #include "Spike/Renderer/EditorCamera.h"
 #include "Spike/Core/Timestep.h"
 #include "Spike/Renderer/Framebuffer.h"
@@ -30,7 +30,7 @@ namespace Spike
 {
     class Entity;
 
-    class Scene
+    class Scene : public RefCounted
     {
     public:
         Scene();

@@ -17,13 +17,14 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
+#include "Spike/Core/Ref.h"
 #include <string>
 #include <unordered_map>
 #include <glm/glm.hpp>
 
 namespace Spike
 {
-    class Shader
+    class Shader : public RefCounted
     {
     public:
         virtual ~Shader() = default;
@@ -43,7 +44,7 @@ namespace Spike
         static Ref<Shader> Create(const std::string& filepath);
         static Ref<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
     };
-    class ShaderLibrary
+    class ShaderLibrary : public RefCounted
     {
     public:
         void Add(const std::string& name, const Ref<Shader>& shader);

@@ -29,7 +29,7 @@ namespace Spike
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(width, height);
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(width, height);
         }
     
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
@@ -41,7 +41,7 @@ namespace Spike
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(path);
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");

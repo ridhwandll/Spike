@@ -17,6 +17,7 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
+#include "Spike/Core/Ref.h"
 
 namespace Spike
 {
@@ -116,7 +117,7 @@ namespace Spike
         std::vector<BufferElement> m_Elements;
         uint32_t m_Stride = 0;
     };
-    class VertexBuffer
+    class VertexBuffer : public RefCounted
     {
     public:
         virtual ~VertexBuffer() = default;
@@ -133,7 +134,7 @@ namespace Spike
         static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
     };
 
-    class IndexBuffer
+    class IndexBuffer : public RefCounted
     {
     public:
         virtual ~IndexBuffer() = default;
