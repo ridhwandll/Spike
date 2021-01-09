@@ -57,4 +57,5 @@ namespace Spike
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
+    typedef uint8_t byte;
 }

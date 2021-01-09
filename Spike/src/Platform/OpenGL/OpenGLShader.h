@@ -59,7 +59,7 @@ namespace Spike
         void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
     private:
         std::string m_Name;
-        uint32_t m_RendererID;
+        RendererID m_RendererID;
     };
 
 }

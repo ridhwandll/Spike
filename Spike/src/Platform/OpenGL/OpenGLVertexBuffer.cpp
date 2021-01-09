@@ -16,41 +16,49 @@
 /*   See the License for the specific language governing permissions and     */
 /*   limitations under the License.                                          */
 /*****************************************************************************/
-#pragma once
+#include "spkpch.h"
+#include "OpenGLVertexBuffer.h"
+#include <glad/glad.h>
 
+namespace Spike
+{
+    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+    {
+        LE_PROFILE_FUNCTION();
+        glCreateBuffers(1, &m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+    }
 
+    OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+    {
+        LE_PROFILE_FUNCTION();
+        glCreateBuffers(1, &m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+    }
 
-//For use by Spike Applications
-#include "Spike/Debug/Instrumentor.h"
-#include "Spike/Core/Application.h"
-#include "Spike/Core/Layer.h"
-#include "Spike/Core/Log.h"
-#include "Spike/Utility/Random.h"
+    OpenGLVertexBuffer::~OpenGLVertexBuffer()
+    {
+        LE_PROFILE_FUNCTION();
+        glDeleteBuffers(1, &m_RendererID);
+    }
 
-#include "Spike/Core/Timestep.h"
+    void OpenGLVertexBuffer::Bind() const
+    {
+        LE_PROFILE_FUNCTION();
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+    }
 
-#include "Spike/Core/Input.h"
-#include "Spike/Core/KeyCodes.h"
-#include "Spike/Core/MouseCodes.h"
+    void OpenGLVertexBuffer::Unbind() const
+    {
+        LE_PROFILE_FUNCTION();
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
 
-#include "Spike/Renderer/OrthographicCameraController.h"
-#include "Spike/ImGui/ImGuiLayer.h"
-#include "Spike/Scene/Scene.h"
-#include "Spike/Scene/Components.h"
-#include "Spike/Scene/Entity.h"
-#include "Spike/Scene/ScriptableEntity.h"
-
-//******Renderer**********
-#include "Spike/Renderer/Renderer.h"
-#include "Spike/Renderer/Renderer2D.h"
-#include "Spike/Renderer/RenderCommand.h"
-
-#include "Spike/Renderer/IndexBuffer.h"
-#include "Spike/Renderer/Shader.h"
-#include "Spike/Renderer/Framebuffer.h"
-#include "Spike/Renderer/Texture.h"
-#include "Spike/Renderer/SubTexture2D.h"
-#include "Spike/Renderer/VertexArray.h"
-
-#include "Spike/Renderer/OrthographicCamera.h"
-
+    void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+    }
+}

@@ -17,39 +17,12 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #include "spkpch.h"
-#include "Buffer.h"
-
+#include "IndexBuffer.h"
 #include "Renderer.h"
-
-#include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/OpenGL/OpenGLIndexBuffer.h"
 
 namespace Spike
 {
-    Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
-    {
-        switch (Renderer::GetAPI())
-        {
-            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size);
-        }
-
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
-    }
-
-
-    Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
-    {
-        switch (Renderer::GetAPI())
-        {
-            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size);
-        }
-    
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
-    }
-
     Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
     {
         switch (Renderer::GetAPI())

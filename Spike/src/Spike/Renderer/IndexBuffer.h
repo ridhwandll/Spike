@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/*                        Spike SourceCode                                   */
+/*                             Spike SourceCode                              */
 /*                                                                           */
 /* File created by: Fahim Fuad                                               */
 /* Other editors: None                                                       */
@@ -17,40 +17,20 @@
 /*   limitations under the License.                                          */
 /*****************************************************************************/
 #pragma once
+#include "Spike/Core/Ref.h"
 
+namespace Spike
+{
+    class IndexBuffer : public RefCounted
+    {
+    public:
+        virtual ~IndexBuffer() = default;
 
+        virtual void Bind() const = 0;
+        virtual void Unbind() const = 0;
 
-//For use by Spike Applications
-#include "Spike/Debug/Instrumentor.h"
-#include "Spike/Core/Application.h"
-#include "Spike/Core/Layer.h"
-#include "Spike/Core/Log.h"
-#include "Spike/Utility/Random.h"
+        virtual uint32_t GetCount() const = 0;
 
-#include "Spike/Core/Timestep.h"
-
-#include "Spike/Core/Input.h"
-#include "Spike/Core/KeyCodes.h"
-#include "Spike/Core/MouseCodes.h"
-
-#include "Spike/Renderer/OrthographicCameraController.h"
-#include "Spike/ImGui/ImGuiLayer.h"
-#include "Spike/Scene/Scene.h"
-#include "Spike/Scene/Components.h"
-#include "Spike/Scene/Entity.h"
-#include "Spike/Scene/ScriptableEntity.h"
-
-//******Renderer**********
-#include "Spike/Renderer/Renderer.h"
-#include "Spike/Renderer/Renderer2D.h"
-#include "Spike/Renderer/RenderCommand.h"
-
-#include "Spike/Renderer/IndexBuffer.h"
-#include "Spike/Renderer/Shader.h"
-#include "Spike/Renderer/Framebuffer.h"
-#include "Spike/Renderer/Texture.h"
-#include "Spike/Renderer/SubTexture2D.h"
-#include "Spike/Renderer/VertexArray.h"
-
-#include "Spike/Renderer/OrthographicCamera.h"
-
+        static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+    };
+}

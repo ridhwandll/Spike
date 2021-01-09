@@ -18,7 +18,8 @@
 /*****************************************************************************/
 #pragma once
 #include "Spike/Core/Ref.h"
-#include "Spike/Renderer/Buffer.h"
+#include "Spike/Renderer/VertexBuffer.h"
+#include "Spike/Renderer/IndexBuffer.h"
 #include <memory>
 
 namespace Spike

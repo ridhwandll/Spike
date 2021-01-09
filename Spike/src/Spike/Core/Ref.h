@@ -1,36 +1,47 @@
 /*****************************************************************************/
-/*                        Spike SourceCode                                   */
+/*                This file is licensed under SPIKE LICENSE                  */
+/*                          Spike SourceCode                                 */
 /*                                                                           */
 /* File created by: Fahim Fuad                                               */
 /* Other editors: None                                                       */
 /*                                                                           */
-/*   Licensed under the Apache License, Version 2.0 (the "License");         */
-/*   you may not use this file except in compliance with the License.        */
-/*   You may obtain a copy of the License at                                 */
-/*                                                                           */
-/*       http://www.apache.org/licenses/LICENSE-2.0                          */
-/*                                                                           */
-/*   Unless required by applicable law or agreed to in writing, software     */
-/*   distributed under the License is distributed on an "AS IS" BASIS,       */
-/*   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.*/
-/*   See the License for the specific language governing permissions and     */
-/*   limitations under the License.                                          */
+/*                     SPECIAL NOTE FOR THIS FILE                            */
+/* You must NOT copy this file. If you want to use this file, you must retain*/
+/*              this licence and this comment block AS IS                    */
+/* You must NOT claim that you wrote this file. The "Spike  SourceCode" word */
+/*              should be present throughout all the copies                  */
+/* You must NOT change this ot edit this file by any means. Namespace should */
+/*                 be 'Spike' throughout all the copies                      */
+/* You CAN remove the lines marked as '//removeable'. Happy using Spike::Ref!*/
 /*****************************************************************************/
 #pragma once
+#include "Spike/Core/Log.h"
 #include <stdint.h>
 
 namespace Spike
 {
+//#define ENABLE_REF_LOGGING                                          //removeable
+#ifdef ENABLE_REF_LOGGING                                             //removeable
+    #define SPK_REF_LOG_INCREMENT(...) SPK_CORE_LOG_WARN(__VA_ARGS__) //removeable
+    #define SPK_REF_LOG_DECREMENT(...) SPK_CORE_LOG_INFO(__VA_ARGS__) //removeable
+#else                                                                 //removeable
+    #define SPK_REF_LOG_INCREMENT(...)                                //removeable
+    #define SPK_REF_LOG_DECREMENT(...)                                //removeable
+#endif                                                                //removeable
+
+
     class RefCounted
     {
     public:
         void IncRefCount() const
         {
             m_RefCount++;
+            SPK_REF_LOG_INCREMENT("REF incremented!");                //removeable
         }
         void DecRefCount() const
         {
             m_RefCount--;
+            SPK_REF_LOG_DECREMENT("REF decremented!");                //removeable
         }
 
         uint32_t GetRefCount() const { return m_RefCount; }
@@ -168,5 +179,8 @@ namespace Spike
         T* m_Instance;
     };
 
-    // TODO: WeakRef
+    /*Useful typedefs*/                           //removeable
+    typedef uint32_t RendererID;                  //removeable
+
+    // TODO: WeakRef                              //removeable
 }

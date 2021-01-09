@@ -38,7 +38,7 @@ public:
 
         Spike::Ref<Spike::VertexBuffer> vertexBuffer;
         vertexBuffer = Spike::VertexBuffer::Create(vertices, sizeof(vertices));
-        Spike::BufferLayout layout = {
+        Spike::VertexBufferLayout layout = {
             { Spike::ShaderDataType::Float3, "a_Position" },
             { Spike::ShaderDataType::Float4, "a_Color" }
         };

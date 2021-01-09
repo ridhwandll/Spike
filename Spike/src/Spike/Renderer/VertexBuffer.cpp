@@ -16,41 +16,38 @@
 /*   See the License for the specific language governing permissions and     */
 /*   limitations under the License.                                          */
 /*****************************************************************************/
-#pragma once
+#include "spkpch.h"
+#include "RendererAPI.h"
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "Platform/OpenGL/OpenGLVertexBuffer.h"
+
+namespace Spike
+{
+    Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+    {
+        switch (Renderer::GetAPI())
+        {
+        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size);
+        }
+
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
+    }
 
 
+    Ref<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+    {
+        switch (Renderer::GetAPI())
+        {
+        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size);
+        }
 
-//For use by Spike Applications
-#include "Spike/Debug/Instrumentor.h"
-#include "Spike/Core/Application.h"
-#include "Spike/Core/Layer.h"
-#include "Spike/Core/Log.h"
-#include "Spike/Utility/Random.h"
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
+    }
 
-#include "Spike/Core/Timestep.h"
 
-#include "Spike/Core/Input.h"
-#include "Spike/Core/KeyCodes.h"
-#include "Spike/Core/MouseCodes.h"
-
-#include "Spike/Renderer/OrthographicCameraController.h"
-#include "Spike/ImGui/ImGuiLayer.h"
-#include "Spike/Scene/Scene.h"
-#include "Spike/Scene/Components.h"
-#include "Spike/Scene/Entity.h"
-#include "Spike/Scene/ScriptableEntity.h"
-
-//******Renderer**********
-#include "Spike/Renderer/Renderer.h"
-#include "Spike/Renderer/Renderer2D.h"
-#include "Spike/Renderer/RenderCommand.h"
-
-#include "Spike/Renderer/IndexBuffer.h"
-#include "Spike/Renderer/Shader.h"
-#include "Spike/Renderer/Framebuffer.h"
-#include "Spike/Renderer/Texture.h"
-#include "Spike/Renderer/SubTexture2D.h"
-#include "Spike/Renderer/VertexArray.h"
-
-#include "Spike/Renderer/OrthographicCamera.h"
-
+}

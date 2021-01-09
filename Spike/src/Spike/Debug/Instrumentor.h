@@ -219,7 +219,7 @@ namespace Spike
     }
 }
 
-#define LE_PROFILE 1
+#define LE_PROFILE 0
 #if LE_PROFILE
 // Resolve which function signature macro will be used. Note that this only
 // is resolved when the (pre)compiler starts, so the syntax highlighting

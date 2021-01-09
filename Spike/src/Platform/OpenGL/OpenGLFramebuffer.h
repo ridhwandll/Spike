@@ -36,7 +36,7 @@ namespace Spike
         virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 
     private:
-        uint32_t m_RendererID = 0;
+        RendererID m_RendererID = 0;
         uint32_t m_ColorAttachment = 0, m_DepthAttachment = 0;
         uint32_t m_IDAttachment = 0;
         FramebufferSpecification m_Specification;

@@ -23,6 +23,7 @@
 #include "../Panels/ConsolePanel.h"
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <stb_image/stb_image.h>
 #include <string>
 
 namespace Spike
@@ -293,6 +294,7 @@ namespace Spike
             DrawColorControl("Color", component.Color);
 
             const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
+            stbi_set_flip_vertically_on_load(1);
 
             ImGui::Text("Texture");
             const float cursorPos = ImGui::GetCursorPosY();
