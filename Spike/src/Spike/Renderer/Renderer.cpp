@@ -55,6 +55,11 @@ namespace Spike
         s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
     }
 
+    void Renderer::BeginScene(EditorCamera& camera)
+    {
+        s_SceneData->ViewProjectionMatrix = camera.GetViewProjection();
+    }
+
     void Renderer::EndScene()
     {
     }

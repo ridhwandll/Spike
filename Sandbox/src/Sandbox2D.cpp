@@ -23,14 +23,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 Sandbox2D::Sandbox2D()
-    :Layer("Sandbox2D"), m_CameraController(1280.0f / 720.0f, true)
+    :Layer("Sandbox2D"), m_CameraController(30.0f, 1.778f, 0.1f, 1000.0f), m_Mesh(Spike::Mesh("Spike-Editor/assets/meshes/i.fbx"))
 {
+
 }
 
 void Sandbox2D::OnAttach()
 {
     LE_PROFILE_FUNCTION();
-    m_CheckerboardTexture = Spike::Texture2D::Create("assets/textures/Checkerboard.png");
+    m_CheckerboardTexture = Spike::Texture2D::Create("Spike-Editor/assets/textures/Checkerboard.png");
+
 }
 void Sandbox2D::OnDetach()
 {
@@ -51,28 +53,9 @@ void Sandbox2D::OnUpdate(Spike::Timestep ts)
     }
 
     {
-        static float rotation = 0.0f;
-        rotation += ts * 50.0f;
-
-        LE_PROFILE_SCOPE("Renderer Draw");
-        Spike::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        Spike::Renderer2D::DrawRotatedQuad({ 1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(45.0f), { 0.9f, 0.1f, 0.3f, 1.0f });
-        Spike::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.9f, 0.1f, 0.3f, 1.0f });
-        Spike::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.8f }, { 0.2f, 0.3f, 0.9f, 1.0f });
-        Spike::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1 }, { 20.0f, 20.0f }, m_CheckerboardTexture, 10.0f);
-        Spike::Renderer2D::DrawRotatedQuad({ -2.0f, 0.0f, 0.0f }, { 1.0f, 1.0f }, glm::radians(rotation), m_CheckerboardTexture, 20.0f);
-        Spike::Renderer2D::EndScene();
-        
-        Spike::Renderer2D::BeginScene(m_CameraController.GetCamera());
-        for (float y = -5.0f; y < 5.0f; y += 0.5f)
-        {
-            for (float x = -5.0f; x < 5.0f; x += 0.5f)
-            {
-                glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.8f };
-                Spike::Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, color);
-            }
-        }
-        Spike::Renderer2D::EndScene();
+        Spike::Renderer::BeginScene(m_CameraController);
+        m_Mesh.Draw(glm::translate(glm::mat4(4.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+        Spike::Renderer::EndScene();
     }
 }
 

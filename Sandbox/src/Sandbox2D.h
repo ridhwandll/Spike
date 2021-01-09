@@ -19,7 +19,8 @@
 #pragma once
 #include <Spike.h>
 #include "Spike/Core/Base.h"
-
+#include "Spike/Renderer/EditorCamera.h"
+#include "Spike/Renderer/Mesh.h"
 
 class Sandbox2D : public Spike::Layer
 {
@@ -33,9 +34,10 @@ public:
     virtual void OnImGuiRender() override;
     void OnEvent(Spike::Event& e) override;
 private:
-    Spike::OrthographicCameraController m_CameraController;
+    Spike::EditorCamera m_CameraController;
 
     // TODO: These are temporary
+    Spike::Mesh m_Mesh;
     Spike::Ref<Spike::Shader> m_FlatColorShader;
     Spike::Ref<Spike::VertexArray> m_SquareVA;
     Spike::Ref < Spike::Texture2D > m_CheckerboardTexture;
