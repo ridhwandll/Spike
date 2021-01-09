@@ -5,7 +5,7 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : OpenGLFramebuffer
+File Name      : AABB
 File Type      : h
 File created on: 2021/01/09
 File created by: Fahim Fuad
@@ -25,29 +25,18 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Spike/Renderer/Framebuffer.h"
-
+#include <glm/glm.hpp>
 namespace Spike
 {
-    class OpenGLFramebuffer : public Framebuffer
+    struct AABB
     {
-    public:
-        OpenGLFramebuffer(const FramebufferSpecification& spec);
-        virtual ~OpenGLFramebuffer();
+        glm::vec3 Min, Max;
 
-        void Invalidate();
-        virtual void Bind() override;
-        virtual void Unbind() override;
-        virtual void Resize(const uint32_t width, const uint32_t height) override;
+        AABB()
+            : Min(0.0f), Max(0.0f) {}
 
-        virtual uint32_t GetColorAttachmentRendererID() const override { return m_ColorAttachment; }
-        virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
+        AABB(const glm::vec3& min, const glm::vec3& max)
+            : Min(min), Max(max) {}
 
-    private:
-        RendererID m_RendererID = 0;
-        uint32_t m_ColorAttachment = 0, m_DepthAttachment = 0;
-        uint32_t m_IDAttachment = 0;
-        FramebufferSpecification m_Specification;
     };
-
 }

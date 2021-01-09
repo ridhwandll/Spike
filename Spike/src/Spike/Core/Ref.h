@@ -1,33 +1,43 @@
-/*****************************************************************************/
-/*                This file is licensed under SPIKE LICENSE                  */
-/*                          Spike SourceCode                                 */
-/*                                                                           */
-/* File created by: Fahim Fuad                                               */
-/* Other editors: None                                                       */
-/*                                                                           */
-/*                     SPECIAL NOTE FOR THIS FILE                            */
-/* You must NOT copy this file. If you want to use this file, you must retain*/
-/*              this licence and this comment block AS IS                    */
-/* You must NOT claim that you wrote this file. The "Spike  SourceCode" word */
-/*              should be present throughout all the copies                  */
-/* You must NOT change this ot edit this file by any means. Namespace should */
-/*                 be 'Spike' throughout all the copies                      */
-/* You CAN remove the lines marked as '//removeable'. Happy using Spike::Ref!*/
-/*****************************************************************************/
+/*
+                               SPIKE ENGINE
+               This file is licensed under the SPIKE LICENSE
+                          --Spike Source Code--
+
+         Copyright 2021 - SpikeTechnologies - All Rights Reserved
+
+File Name      : Ref
+File Type      : h
+File created on: 2021/01/09
+File created by: Fahim Fuad
+Other editors  : None
+Github repository : https://github.com/FahimFuad/Spike
+ 
+0.This software is provided 'AS-IS', without any express or implied warranty.
+  In no event will the authors or contributors be held liable for any damages
+  arising from the use of this software.
+
+1.The origin of this software must not be misrepresented; you must not claim
+  that you wrote the original software.
+ 
+2.You MUST NOT change or alter this file. This excludes the contributions done
+  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
+
+3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+*/
 #pragma once
 #include "Spike/Core/Log.h"
 #include <stdint.h>
 
 namespace Spike
 {
-//#define ENABLE_REF_LOGGING                                          //removeable
-#ifdef ENABLE_REF_LOGGING                                             //removeable
-    #define SPK_REF_LOG_INCREMENT(...) SPK_CORE_LOG_WARN(__VA_ARGS__) //removeable
-    #define SPK_REF_LOG_DECREMENT(...) SPK_CORE_LOG_INFO(__VA_ARGS__) //removeable
-#else                                                                 //removeable
-    #define SPK_REF_LOG_INCREMENT(...)                                //removeable
-    #define SPK_REF_LOG_DECREMENT(...)                                //removeable
-#endif                                                                //removeable
+//#define ENABLE_REF_LOGGING
+#ifdef ENABLE_REF_LOGGING
+    #define SPK_REF_LOG_INCREMENT(...) SPK_CORE_LOG_WARN(__VA_ARGS__)
+    #define SPK_REF_LOG_DECREMENT(...) SPK_CORE_LOG_INFO(__VA_ARGS__)
+#else
+    #define SPK_REF_LOG_INCREMENT(...)
+    #define SPK_REF_LOG_DECREMENT(...)
+#endif
 
 
     class RefCounted
@@ -179,8 +189,8 @@ namespace Spike
         T* m_Instance;
     };
 
-    /*Useful typedefs*/                           //removeable
-    typedef uint32_t RendererID;                  //removeable
+    /*Useful typedefs*/
+    typedef uint32_t RendererID;
 
-    // TODO: WeakRef                              //removeable
+    // TODO: WeakRef
 }
