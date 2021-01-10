@@ -50,11 +50,6 @@ namespace Spike
         RenderCommand::SetViewport(0, 0, width, height);
     }
 
-    void Renderer::BeginScene(OrthographicCamera& camera)
-    {
-        s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
-    }
-
     void Renderer::BeginScene(EditorCamera& camera)
     {
         s_SceneData->ViewProjectionMatrix = camera.GetViewProjection();
@@ -64,7 +59,7 @@ namespace Spike
     {
     }
 
-    void Renderer::Submit(Ref<Shader>& shader, Ref<VertexArray>& vertexArray, const glm::mat4 transform)
+    void Renderer::Submit(Ref<Shader> shader, Ref<VertexArray> vertexArray, const glm::mat4& transform)
     {
         shader->Bind();
         shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
@@ -72,5 +67,15 @@ namespace Spike
 
         vertexArray->Bind();
         RenderCommand::DrawIndexed(vertexArray);
+    }
+
+    void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
+    {
+        mesh->m_MeshShader->Bind();
+        mesh->m_MeshShader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+        mesh->m_MeshShader->SetMat4("u_Transform", transform);
+
+        mesh->m_VertexArray->Bind();
+        RenderCommand::DrawIndexed(mesh->m_VertexArray);
     }
 }

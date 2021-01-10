@@ -25,8 +25,9 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
-#include "Mesh.h"
-
+#include "Spike/Renderer/Mesh.h"
+#include "Texture.h"
+#include <glad/glad.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
@@ -39,8 +40,7 @@ namespace Spike
         aiProcess_Triangulate |
         aiProcess_GenSmoothNormals |
         aiProcess_OptimizeMeshes |
-        aiProcess_FlipUVs |
-        aiProcess_CalcTangentSpace;
+        aiProcess_FlipUVs;
 
     struct LogStream : public Assimp::LogStream
     {
@@ -59,83 +59,68 @@ namespace Spike
         }
     };
 
-    Mesh::Mesh(const std::string& filename)
-        : m_FilePath(filename)
+    Mesh::Mesh(const std::string& filepath)
+        : m_FilePath(filepath)
     {
         LogStream::Initialize();
 
-        SPK_CORE_LOG_INFO("Loading mesh: {0}", filename.c_str());
+        SPK_CORE_LOG_INFO("Loading mesh: {0}", filepath.c_str());
+        m_Importer = CreateScope<Assimp::Importer>();
 
-        Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(filename, s_MeshImportFlags);
-
+        const aiScene* scene = m_Importer->ReadFile(filepath, s_MeshImportFlags);
         if (!scene || !scene->HasMeshes())
-            SPK_CORE_LOG_ERROR("Failed to load mesh file: {0}", filename);
+            SPK_CORE_LOG_ERROR("Failed to load mesh file: {0}", filepath);
 
         aiMesh* mesh = scene->mMeshes[0];
 
         SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
         SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
 
-
         // Extract vertices from model
+        m_Vertices.reserve(mesh->mNumVertices);
         for (size_t i = 0; i < mesh->mNumVertices; i++)
         {
             Vertex vertex;
             vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
             vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
-            //if (mesh->HasTextureCoords(0))
-            //    vertex.Texcoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+            if (mesh->HasTextureCoords(0))
+                vertex.Texcoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             m_Vertices.push_back(vertex);
         }
 
         // Extract indices from model
-        for (size_t i = 0; i < mesh->mNumFaces; i++)
+        m_Indices.reserve(mesh->mNumFaces);
+        for (uint32_t i = 0; i < mesh->mNumFaces; i++)
         {
-            SPK_CORE_ASSERT(mesh->mFaces[i].mNumIndices == 3, "Must have 3 indices.");
-            m_Indices.push_back({ mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] });
+            aiFace face = mesh->mFaces[i];
+            for (uint32_t j = 0; j < face.mNumIndices; j++)
+                m_Indices.push_back(face.mIndices[j]);
         }
 
         m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
-        m_VertexArray = VertexArray::Create();
-        m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
 
-        VertexBufferLayout layout = {
+        VertexBufferLayout layout =
+        {
             { ShaderDataType::Float3, "a_Position" },
             { ShaderDataType::Float3, "a_Normal" },
+            { ShaderDataType::Float2, "a_TexCoord" },
         };
 
+        m_VertexArray = VertexArray::Create();
+
+        m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
         m_VertexBuffer->SetLayout(layout);
-        m_VertexBuffer->Bind();
 
-        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size() * sizeof(Index));
-        m_IndexBuffer->Bind();
-
-
-
+        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), std::size(m_Indices));
 
         m_VertexArray->AddVertexBuffer(m_VertexBuffer);
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-        m_VertexArray->Bind();
-        DumpVertexBuffer();
+        //DumpVertexBuffer();
     }
 
     Mesh::~Mesh()
     {
-
-    }
-
-    void Mesh::OnUpdate(Timestep ts)
-    {
-
-    }
-
-    void Mesh::Draw(const glm::mat4& transform)
-    {
-        m_VertexBuffer->Bind();
-        m_IndexBuffer->Bind();
-        Renderer::Submit(m_MeshShader, m_VertexArray, transform);
     }
 
     void Mesh::DumpVertexBuffer()
@@ -153,7 +138,7 @@ namespace Spike
             SPK_CORE_LOG_INFO("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
             //SPK_CORE_LOG_INFO("Binormal: {0}, {1}, {2}", vertex.Binormal.x, vertex.Binormal.y, vertex.Binormal.z);
             //SPK_CORE_LOG_INFO("Tangent: {0}, {1}, {2}", vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z);
-            //SPK_CORE_LOG_INFO("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
+            SPK_CORE_LOG_INFO("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
             SPK_CORE_LOG_INFO("--");
         }
 

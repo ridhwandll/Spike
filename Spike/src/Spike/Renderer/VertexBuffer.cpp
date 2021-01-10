@@ -36,8 +36,8 @@ namespace Spike
     {
         switch (Renderer::GetAPI())
         {
-        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size);
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
@@ -49,13 +49,11 @@ namespace Spike
     {
         switch (Renderer::GetAPI())
         {
-        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size);
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
-
-
 }

@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Renderer/Texture.h"
+#include "Spike/Renderer/Mesh.h"
 #include "Panels/ConsolePanel.h"
 #include "SceneCamera.h"
 #include <glm/glm.hpp>
@@ -116,6 +117,19 @@ namespace Spike
             FixedAspectRatio = false;
         }
         const char* GetName() { return ICON_FK_CAMERA" Camera"; }
+    };
+
+    struct MeshComponent
+    {
+        Ref<Spike::Mesh> Mesh;
+        MeshComponent() = default;
+        MeshComponent(const MeshComponent&) = default;
+
+        void Reset()
+        {
+            //TODO
+        }
+        const char* GetName() { return "Mesh"; }
     };
 
     struct NativeScriptComponent

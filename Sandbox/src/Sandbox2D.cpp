@@ -21,11 +21,13 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Spike/Renderer/Mesh.h"
+
 
 Sandbox2D::Sandbox2D()
-    :Layer("Sandbox2D"), m_CameraController(30.0f, 1.778f, 0.1f, 1000.0f), m_Mesh(Spike::Mesh("Spike-Editor/assets/meshes/i.fbx"))
+    :Layer("Sandbox2D"), m_CameraController(30.0f, 1.778f, 0.1f, 1000.0f), m_Mesh(Spike::Ref<Spike::Mesh>::Create("Spike-Editor/assets/meshes/i.fbx")),
+    m_Mesh2(Spike::Ref<Spike::Mesh>::Create("Spike-Editor/assets/meshes/i.fbx"))
 {
-
 }
 
 void Sandbox2D::OnAttach()
@@ -54,7 +56,8 @@ void Sandbox2D::OnUpdate(Spike::Timestep ts)
 
     {
         Spike::Renderer::BeginScene(m_CameraController);
-        m_Mesh.Draw(glm::translate(glm::mat4(4.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+        Spike::Renderer::SubmitMesh(m_Mesh, glm::translate(glm::mat4(1.0f), m_Position));
+        Spike::Renderer::SubmitMesh(m_Mesh2, glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 10.0f, 1.0f)));
         Spike::Renderer::EndScene();
     }
 }
@@ -64,15 +67,8 @@ void Sandbox2D::OnImGuiRender()
     LE_PROFILE_FUNCTION();
 
     ImGui::Begin("Settings");
-    auto stats = Spike::Renderer2D::GetStats();
-    ImGui::Text("Renderer2D Stats:");
-    ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-    ImGui::Text("Quads: %d", stats.QuadCount);
-    ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-    ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-    ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+    ImGui::DragFloat3("Position", glm::value_ptr(m_Position));
     ImGui::End();
-
 }
 
 void Sandbox2D::OnEvent(Spike::Event& e)

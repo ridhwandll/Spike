@@ -37,9 +37,10 @@ private:
     Spike::EditorCamera m_CameraController;
 
     // TODO: These are temporary
-    Spike::Mesh m_Mesh;
+    Spike::Ref<Spike::Mesh> m_Mesh;
+    Spike::Ref<Spike::Mesh> m_Mesh2;
     Spike::Ref<Spike::Shader> m_FlatColorShader;
     Spike::Ref<Spike::VertexArray> m_SquareVA;
     Spike::Ref < Spike::Texture2D > m_CheckerboardTexture;
-    glm::vec4 m_SquareColor = { 0.9f, 0.2f, 0.1f, 1.0f };
+    glm::vec3 m_Position = { 1.0f, 1.0f, 1.0f };
 };

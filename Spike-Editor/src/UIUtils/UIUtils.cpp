@@ -226,6 +226,14 @@ namespace Spike
                     Console::Get()->Print("This entity already has Sprite Renderer component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
+            if (ImGui::MenuItem("Mesh"))
+            {
+                if (!entity.HasComponent<MeshComponent>())
+                    entity.AddComponent<MeshComponent>();
+                else
+                    Console::Get()->Print("This entity already has Mesh component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
             ImGui::EndPopup();
         }
         ImGui::PopItemWidth();
@@ -332,6 +340,16 @@ namespace Spike
 
             // Tiling Factor
             DrawFloatControl("Tiling Factor", &component.TilingFactor, 120);
+        });
+
+        DrawComponent<MeshComponent>(entity, [](auto& component)
+        {
+            if (ImGui::Button("Open Mesh", ImVec2(100, 20)))
+            {
+                std::string file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj)\0*.fbx; *.obj\0");
+                if (!file.empty())
+                    component.Mesh = Ref<Mesh>::Create(file);
+            }
         });
     }
 }

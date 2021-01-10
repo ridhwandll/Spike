@@ -33,51 +33,41 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/IndexBuffer.h"
 #include <glm/glm.hpp>
 
+namespace Assimp {
+    class Importer;
+}
+
 namespace Spike
 {
     class Mesh : public RefCounted
     {
     public:
+        Mesh(const std::string& filepath);
+        ~Mesh();
+
         struct Vertex
         {
             glm::vec3 Position;
             glm::vec3 Normal;
-            //glm::vec2 Texcoord;
+            glm::vec2 Texcoord;
         };
-        static_assert(sizeof(Vertex) == 6 * sizeof(float));
-        static const int NumAttributes = 5;
-
-        struct Index
-        {
-            uint32_t V1, V2, V3;
-        };
-
-        static_assert(sizeof(Index) == 3 * sizeof(uint32_t));
-
-        Mesh(const std::string& filename);
-        ~Mesh();
-
-        void OnUpdate(Timestep ts);
-        void Draw(const glm::mat4& transform);
+        static_assert(sizeof(Vertex) == 8 * sizeof(float));
 
         const std::string& GetFilePath() const { return m_FilePath; }
-        Ref<VertexArray> GetVertexArray() const { return m_VertexArray; }
-        Ref<VertexBuffer> GetVertexBuffer() const { return m_VertexBuffer; }
-        Ref<IndexBuffer> GetIndexBuffer() const { return m_IndexBuffer; }
-
-    private:
-        void DumpVertexBuffer();
-    private:
-        std::vector<Vertex> m_Vertices;
-        std::vector<Index> m_Indices;
-
+    public:
         Ref<VertexArray> m_VertexArray;
         Ref<VertexBuffer> m_VertexBuffer;
         Ref<IndexBuffer> m_IndexBuffer;
         Ref<Shader> m_MeshShader;
 
+    private:
+        void DumpVertexBuffer();
+    private:
+        Scope<Assimp::Importer> m_Importer;
+
+        std::vector<Vertex> m_Vertices = {};
+        std::vector<uint32_t> m_Indices = {};
+
         std::string m_FilePath;
     };
-
-
 }

@@ -34,7 +34,6 @@ namespace Spike
     public:
         static void Init()
         {
-            LE_PROFILE_FUNCTION();
             s_RendererAPI->Init();
         }
 

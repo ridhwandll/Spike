@@ -27,6 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "spkpch.h"
 #include "Scene.h"
 #include "Spike/Renderer/Renderer2D.h"
+#include "Spike/Renderer/Renderer.h"
 #include <glm/glm.hpp>
 #include "Spike/Scene/Components.h"
 #include "Entity.h"
@@ -116,16 +117,32 @@ namespace Spike
     void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
     {
         {
-            Renderer2D::BeginScene(camera);
+            {
+                Renderer2D::BeginScene(camera);
 
-            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-            for (auto entity : group) {
-                auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+                auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+                for (auto entity : group) {
+                    auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                    Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                }
+
+                Renderer2D::EndScene();
             }
 
-            Renderer2D::EndScene();
+            {
+                Renderer::BeginScene(camera);
+
+                auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+                for (auto entity : group) {
+                    auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
+                    if (mesh.Mesh)
+                    {
+                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
+                    }
+                }
+                Renderer::EndScene();
+            }
         }
 
     }
@@ -206,6 +223,11 @@ namespace Spike
 
     template<>
     void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+    {
+    }
+
+    template<>
+    void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
     {
     }
 
