@@ -55,10 +55,10 @@ namespace Spike
         fbSpec.Width = 1280;
         fbSpec.Height = 720;
         m_Framebuffer = Framebuffer::Create(fbSpec);
-        m_IDFramebuffer = Framebuffer::Create(fbSpec);
+        //m_IDFramebuffer = Framebuffer::Create(fbSpec); //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
 
         m_ActiveScene = Ref<Scene>::Create();
-        m_EditorCamera = EditorCamera(60.0f, 1.778f, 0.1f, 1000.0f);
+        m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
 #if 0
         // Entity
         auto square = m_ActiveScene->CreateEntity("Green Square");
@@ -121,14 +121,14 @@ namespace Spike
     void EditorLayer::OnUpdate(Timestep ts)
     {
         LE_PROFILE_FUNCTION();
-
+        m_FrameTime = ts;
         // Resize
         if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
             m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
             (spec.Width != m_ViewportSize.x || spec.Height != m_ViewportSize.y))
         {
             m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            m_IDFramebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            //m_IDFramebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y); //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
             m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
             m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
@@ -144,26 +144,28 @@ namespace Spike
         m_Framebuffer->Bind();
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
-        m_Framebuffer->Bind();
 
-        // Update scene
-        m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
-
-        auto [mx, my] = ImGui::GetMousePos();
-        mx -= m_ViewportBounds[0].x;
-        my -= m_ViewportBounds[0].y;
-        auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
-        auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
-        my = viewportHeight - my;
-
-        int mouseX = (int)mx;
-        int mouseY = (int)my;
-
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < viewportWidth && mouseY < viewportHeight)
-        {
-            int pixel = m_ActiveScene->Pixel(mx, my);
-            m_HoveredEntity = pixel == -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.Raw());
-        }
+        //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
+        //m_Framebuffer->Bind();
+        //
+        //// Update scene
+        //m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+        //
+        //auto [mx, my] = ImGui::GetMousePos();
+        //mx -= m_ViewportBounds[0].x;
+        //my -= m_ViewportBounds[0].y;
+        //auto viewportWidth = m_ViewportBounds[1].x - m_ViewportBounds[0].x;
+        //auto viewportHeight = m_ViewportBounds[1].y - m_ViewportBounds[0].y;
+        //my = viewportHeight - my;
+        //
+        //int mouseX = (int)mx;
+        //int mouseY = (int)my;
+        //
+        //if (mouseX >= 0 && mouseY >= 0 && mouseX < viewportWidth && mouseY < viewportHeight)
+        //{
+        //    int pixel = m_ActiveScene->Pixel(mx, my);
+        //    m_HoveredEntity = pixel == -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.Raw());
+        //}
 
         m_Framebuffer->Unbind();
     }
@@ -245,11 +247,24 @@ namespace Spike
 
         ImGui::Begin("Stats");
         auto stats = Renderer2D::GetStats();
-        ImGui::Text("Renderer2D Stats:");
-        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        ImGui::Text("Quads: %d", stats.QuadCount);
-        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+        //ImGui::Text("Renderer2D Stats:");
+        //ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+        //ImGui::Text("Quads: %d", stats.QuadCount);
+        //ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+        //ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+        static float frameTimeRefreshTimer = 0.0f;
+        static float ft = 0.0f;
+        static float frameRate = 0.0f;
+        frameTimeRefreshTimer += m_FrameTime;
+        if (frameTimeRefreshTimer >= 0.25f)
+        {
+            ft = m_FrameTime;
+            frameRate = 1.0f / m_FrameTime;
+            frameTimeRefreshTimer = 0.0f;
+        }
+        ImGui::Text("FrameTime: %.3f ms", ft);
+        ImGui::Text("FPS: %d", (int)frameRate);
+
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -344,7 +359,7 @@ namespace Spike
         m_EditorCamera.OnEvent(e);
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-        dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
+        //dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed)); //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
     }
 
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -409,14 +424,15 @@ namespace Spike
         return false;
     }
 
-    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-    {
-        if (e.GetMouseButton() == Mouse::ButtonLeft && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-        {
-            m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
-        }
-        return false;
-    }
+    //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
+    //bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+    //{
+    //    if (e.GetMouseButton() == Mouse::ButtonLeft && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
+    //    {
+    //        m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+    //    }
+    //    return false;
+    //}
 
     void EditorLayer::NewScene()
     {

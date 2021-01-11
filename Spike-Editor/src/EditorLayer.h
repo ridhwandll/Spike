@@ -46,7 +46,7 @@ namespace Spike
 
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
-        bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+        //bool OnMouseButtonPressed(MouseButtonPressedEvent& e); //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
 
         void NewScene();
         void OpenScene();
@@ -57,7 +57,7 @@ namespace Spike
         Ref<VertexArray> m_SquareVA;
         Ref<Shader> m_FlatColorShader;
         Ref<Framebuffer> m_Framebuffer;
-        Ref<Framebuffer> m_IDFramebuffer;
+        //Ref<Framebuffer> m_IDFramebuffer; //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
 
         Ref<Scene> m_ActiveScene;
 
@@ -67,7 +67,7 @@ namespace Spike
         Entity m_SecondSquareEntity;
         Entity m_CameraEntity;
         Entity m_SecondCameraEntity;
-        Entity m_HoveredEntity;
+        //Entity m_HoveredEntity; //Uncomment for MousePicking (Disabled because it crashes the engine sometimes)
 
         bool m_PrimaryCamera = true;
         EditorCamera m_EditorCamera;
@@ -81,7 +81,7 @@ namespace Spike
 
         int m_GizmoType = -1;
         bool m_GizmoInUse = false;
-
+        float m_FrameTime = 0.0f;
         //Panels
         SceneHierarchyPanel m_SceneHierarchyPanel;
     };

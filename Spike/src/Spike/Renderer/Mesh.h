@@ -43,13 +43,13 @@ namespace Spike
     class Submesh
     {
     public:
-        uint32_t BaseVertex;
-        uint32_t BaseIndex;
-        //uint32_t MaterialIndex;
-        uint32_t IndexCount;
+        uint32_t BaseVertex = 0;
+        uint32_t BaseIndex = 0;
+        //uint32_t MaterialIndex = 0;
+        uint32_t IndexCount = 0;
 
-        glm::mat4 Transform;
-        std::string NodeName, MeshName;
+        glm::mat4 Transform = glm::mat4(1.0f);
+        std::string NodeName = "", MeshName = "";
     };
 
     class Mesh : public RefCounted
@@ -74,15 +74,14 @@ namespace Spike
         Ref<VertexBuffer> m_VertexBuffer;
         Ref<IndexBuffer> m_IndexBuffer;
         Ref<Shader> m_MeshShader;
+        std::vector<Submesh> m_Submeshes;
 
     private:
-        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
         void DumpVertexBuffer();
 
     private:
         Scope<Assimp::Importer> m_Importer;
 
-        std::vector<Submesh> m_Submeshes;
         std::vector<Vertex> m_Vertices = {};
         std::vector<uint32_t> m_Indices = {};
         std::string m_FilePath;

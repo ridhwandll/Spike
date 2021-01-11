@@ -59,18 +59,6 @@ namespace Spike
         }
     };
 
-
-    glm::mat4 Mat4FromAssimpMat4(const aiMatrix4x4& matrix)
-    {
-        glm::mat4 result;
-        //the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
-        result[0][0] = matrix.a1; result[1][0] = matrix.a2; result[2][0] = matrix.a3; result[3][0] = matrix.a4;
-        result[0][1] = matrix.b1; result[1][1] = matrix.b2; result[2][1] = matrix.b3; result[3][1] = matrix.b4;
-        result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
-        result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
-        return result;
-    }
-
     Mesh::Mesh(const std::string& filepath)
         : m_FilePath(filepath)
     {
@@ -82,11 +70,6 @@ namespace Spike
         const aiScene* scene = m_Importer->ReadFile(filepath, s_MeshImportFlags);
         if (!scene || !scene->HasMeshes())
             SPK_CORE_LOG_ERROR("Failed to load mesh file: {0}", filepath);
-
-        aiMesh* mesh = scene->mMeshes[0];
-
-        SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
-        SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
 
         uint32_t vertexCount = 0;
         uint32_t indexCount = 0;
@@ -132,8 +115,6 @@ namespace Spike
             }
         }
 
-        TraverseNodes(scene->mRootNode);
-
         m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
 
         VertexBufferLayout layout =
@@ -158,23 +139,6 @@ namespace Spike
 
     Mesh::~Mesh()
     {
-    }
-
-    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
-    {
-        glm::mat4 transform = parentTransform * Mat4FromAssimpMat4(node->mTransformation);
-        for (uint32_t i = 0; i < node->mNumMeshes; i++)
-        {
-            uint32_t mesh = node->mMeshes[i];
-            auto& submesh = m_Submeshes[mesh];
-            submesh.NodeName = node->mName.C_Str();
-            submesh.Transform = transform;
-        }
-
-        // SPK_CORE_LOG_INFO("{0} {1}", LevelToSpaces(level), node->mName.C_Str());
-
-        for (uint32_t i = 0; i < node->mNumChildren; i++)
-            TraverseNodes(node->mChildren[i], transform, level + 1);
     }
 
     void Mesh::DumpVertexBuffer()

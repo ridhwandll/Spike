@@ -128,7 +128,7 @@ namespace Spike
 
         void SetFilePath(std::string& path) { MeshFilepath = path; }
         void Reset() { Mesh = nullptr; }
-        const char* GetName() { return "Mesh"; }
+        const char* GetName() { return ICON_FK_CUBE " Mesh"; }
     };
 
     struct NativeScriptComponent
