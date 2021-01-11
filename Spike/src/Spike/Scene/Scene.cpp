@@ -138,7 +138,8 @@ namespace Spike
                     auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                     if (mesh.Mesh)
                     {
-                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
+                        // BIG TODO: Sort this out. Make mousepicking work with 3D
+                        Renderer::SubmitMesh(mesh.Mesh, (uint32_t)entity ,transform.GetTransform());
                     }
                 }
                 Renderer::EndScene();

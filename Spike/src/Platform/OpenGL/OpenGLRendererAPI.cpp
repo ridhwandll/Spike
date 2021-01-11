@@ -92,4 +92,9 @@ namespace Spike
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    void OpenGLRendererAPI::DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex)
+    {
+        glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * baseIndex), baseVertex);
+    }
+
 }

@@ -56,6 +56,7 @@ namespace Spike
     {
     public:
         Mesh(const std::string& filepath);
+        Mesh(const std::string& filepath, uint32_t entityID); //BIG TODO: Sort this out. Make mousepicking work with 3D!
         ~Mesh();
 
         struct Vertex
@@ -63,9 +64,11 @@ namespace Spike
             glm::vec3 Position;
             glm::vec3 Normal;
             glm::vec2 Texcoord;
+            int ObjectID;
         };
-        static_assert(sizeof(Vertex) == 8 * sizeof(float));
+        static_assert(sizeof(Vertex) == 9 * sizeof(float));
 
+        int m_ObjectID;
         const std::string& GetFilePath() const { return m_FilePath; }
         std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
         const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
@@ -77,6 +80,7 @@ namespace Spike
         std::vector<Submesh> m_Submeshes;
 
     private:
+        void Generate(const std::string& filepath, uint32_t entityID = 0);
         void DumpVertexBuffer();
 
     private:

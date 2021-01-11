@@ -67,6 +67,16 @@ namespace Spike
             m_Scene->m_Registry.remove<T>(m_EntityHandle);
         }
 
+        entt::entity Raw()
+        {
+            return m_EntityHandle;
+        }
+
+        bool IsValid()
+        {
+            return m_Scene->m_Registry.valid(m_EntityHandle);
+        }
+
         void RemoveAllComponent()
         {
             m_Scene->m_Registry.remove_all(m_EntityHandle);

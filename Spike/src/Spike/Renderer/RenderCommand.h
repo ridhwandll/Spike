@@ -55,6 +55,12 @@ namespace Spike
         {
             s_RendererAPI->DrawIndexed(vertexArray, count);
         }
+
+        static void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex)
+        {
+            s_RendererAPI->DrawIndexedMesh(indexCount, baseIndex, baseVertex);
+        }
+
     private:
         static Scope<RendererAPI> s_RendererAPI;
     };

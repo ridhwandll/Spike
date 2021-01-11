@@ -47,6 +47,7 @@ namespace Spike
         virtual void Clear() = 0;
 
         virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
+        virtual void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex) = 0;
         static API GetAPI() { return s_API; }
     private:
         static API s_API;

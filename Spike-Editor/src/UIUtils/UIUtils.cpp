@@ -26,9 +26,9 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "UIUtils.h"
 #include "Spike/Scene/Components.h"
-#include "../Panels/SceneHierarchyPanel.h"
+#include "Panels/SceneHierarchyPanel.h"
 #include "Spike/Utility/PlatformUtils.h"
-#include "../Panels/ConsolePanel.h"
+#include "Panels/ConsolePanel.h"
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <stb_image/stb_image.h>

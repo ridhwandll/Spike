@@ -37,5 +37,6 @@ namespace Spike
         virtual void SetClearColor(const glm::vec4& color) override;
         virtual void Clear() override;
         virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
+        virtual void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex) override;
     };
 }

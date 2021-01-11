@@ -98,7 +98,7 @@ namespace Spike
             Color = { 1.0f, 1.0f, 1.0f, 1.0f };
             RemoveTexture();
         }
-        const char* GetName() { return "Sprite Renderer"; }
+        const char* GetName() { return ICON_FK_SQUARE" Sprite Renderer"; }
     };
 
     struct CameraComponent
@@ -128,7 +128,7 @@ namespace Spike
 
         void SetFilePath(std::string& path) { MeshFilepath = path; }
         void Reset() { Mesh = nullptr; }
-        const char* GetName() { return ICON_FK_CUBE " Mesh"; }
+        const char* GetName() { return ICON_FK_CUBE" Mesh"; }
     };
 
     struct NativeScriptComponent

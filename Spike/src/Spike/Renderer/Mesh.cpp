@@ -62,6 +62,21 @@ namespace Spike
     Mesh::Mesh(const std::string& filepath)
         : m_FilePath(filepath)
     {
+        Generate(filepath);
+    }
+
+    Mesh::Mesh(const std::string& filepath, uint32_t entityID)
+        :m_FilePath(filepath), m_ObjectID(entityID)
+    {
+        Generate(filepath, entityID);
+    }
+
+    Mesh::~Mesh()
+    {
+    }
+
+    void Mesh::Generate(const std::string& filepath, uint32_t entityID)
+    {
         LogStream::Initialize();
 
         SPK_CORE_LOG_INFO("Loading mesh: {0}", filepath.c_str());
@@ -99,6 +114,7 @@ namespace Spike
                 Vertex vertex;
                 vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
                 vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+                vertex.ObjectID = entityID;
 
                 if (mesh->HasTextureCoords(0))
                     vertex.Texcoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
@@ -122,6 +138,7 @@ namespace Spike
             { ShaderDataType::Float3, "a_Position" },
             { ShaderDataType::Float3, "a_Normal" },
             { ShaderDataType::Float2, "a_TexCoord" },
+            { ShaderDataType::Int, "a_ObjectID" }
         };
 
         m_VertexArray = VertexArray::Create();
@@ -135,10 +152,6 @@ namespace Spike
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
         m_VertexArray->Bind();
         //DumpVertexBuffer();
-    }
-
-    Mesh::~Mesh()
-    {
     }
 
     void Mesh::DumpVertexBuffer()

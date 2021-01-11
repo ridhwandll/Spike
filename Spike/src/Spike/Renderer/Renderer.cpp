@@ -74,13 +74,27 @@ namespace Spike
     {
         mesh->m_MeshShader->Bind();
         mesh->m_MeshShader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-        //mesh->m_MeshShader->SetMat4("u_Transform", transform);
 
         mesh->m_VertexArray->Bind();
         for (Submesh& submesh : mesh->m_Submeshes)
         {
             mesh->m_MeshShader->SetMat4("u_Transform", transform);
-            glDrawElementsBaseVertex(GL_TRIANGLES, submesh.IndexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.BaseIndex), submesh.BaseVertex);
+            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
         }
     }
+
+    void Renderer::SubmitMesh(Ref<Mesh> mesh, uint32_t entityID, const glm::mat4& transform)
+    {
+        mesh->m_MeshShader->Bind();
+        mesh->m_MeshShader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+        mesh->m_ObjectID; //BIG TODO: Sort this out. Make the mousepicking work with 3D;
+
+        mesh->m_VertexArray->Bind();
+        for (Submesh& submesh : mesh->m_Submeshes)
+        {
+            mesh->m_MeshShader->SetMat4("u_Transform", transform);
+            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
+        }
+    }
+
 }

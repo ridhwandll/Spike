@@ -350,6 +350,7 @@ namespace Spike
             s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
             s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
             s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr->ObjectID = (int)entityID;
             s_Data.QuadVertexBufferPtr++;
         }
 
