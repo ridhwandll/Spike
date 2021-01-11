@@ -171,6 +171,16 @@ namespace Spike
             out << YAML::EndMap; // SpriteRendererComponent
         }
 
+        if (entity.HasComponent<MeshComponent>())
+        {
+            out << YAML::Key << "MeshComponent";
+            out << YAML::BeginMap; // MeshComponent
+
+            auto& meshComponent = entity.GetComponent<MeshComponent>();
+            out << YAML::Key << "MeshFilepath" << YAML::Value << meshComponent.MeshFilepath;
+            out << YAML::EndMap; // MeshComponent
+        }
+
         out << YAML::EndMap; // Entity
     }
 
@@ -276,6 +286,22 @@ namespace Spike
                     auto tilingFactor = spriteRendererComponent["TilingFactor"];
                     if (tilingFactor)
                         src.TilingFactor = tilingFactor.as<float>();
+                }
+
+                auto meshComponent = entity["MeshComponent"];
+                if (meshComponent)
+                {
+                    auto& src = deserializedEntity.AddComponent<MeshComponent>();
+                    auto meshFilePath = meshComponent["MeshFilepath"];
+                    if (meshFilePath)
+                    {
+                        std::string meshFilepath = meshFilePath.as<std::string>();
+                        if (!meshFilepath.empty())
+                        {
+                            src.Mesh = Ref<Mesh>::Create(meshFilepath);
+                            src.SetFilePath(meshFilepath);
+                        }
+                    }
                 }
             }
         }

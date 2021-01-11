@@ -59,6 +59,18 @@ namespace Spike
         }
     };
 
+
+    glm::mat4 Mat4FromAssimpMat4(const aiMatrix4x4& matrix)
+    {
+        glm::mat4 result;
+        //the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
+        result[0][0] = matrix.a1; result[1][0] = matrix.a2; result[2][0] = matrix.a3; result[3][0] = matrix.a4;
+        result[0][1] = matrix.b1; result[1][1] = matrix.b2; result[2][1] = matrix.b3; result[3][1] = matrix.b4;
+        result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
+        result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
+        return result;
+    }
+
     Mesh::Mesh(const std::string& filepath)
         : m_FilePath(filepath)
     {
@@ -76,27 +88,51 @@ namespace Spike
         SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
         SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
 
-        // Extract vertices from model
-        m_Vertices.reserve(mesh->mNumVertices);
-        for (size_t i = 0; i < mesh->mNumVertices; i++)
-        {
-            Vertex vertex;
-            vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-            vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+        uint32_t vertexCount = 0;
+        uint32_t indexCount = 0;
 
-            if (mesh->HasTextureCoords(0))
-                vertex.Texcoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
-            m_Vertices.push_back(vertex);
+        m_Submeshes.reserve(scene->mNumMeshes);
+        for (size_t m = 0; m < scene->mNumMeshes; m++)
+        {
+            aiMesh* mesh = scene->mMeshes[m];
+
+            Submesh& submesh = m_Submeshes.emplace_back();
+            submesh.BaseVertex = vertexCount;
+            submesh.BaseIndex = indexCount;
+            //submesh.MaterialIndex = mesh->mMaterialIndex;
+            submesh.IndexCount = mesh->mNumFaces * 3;
+            submesh.MeshName = mesh->mName.C_Str();
+
+            vertexCount += mesh->mNumVertices;
+            indexCount += submesh.IndexCount;
+
+            SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
+            SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
+
+            // Extract vertices from mesh
+            m_Vertices.reserve(mesh->mNumVertices);
+            for (size_t i = 0; i < mesh->mNumVertices; i++)
+            {
+                Vertex vertex;
+                vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+                vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+
+                if (mesh->HasTextureCoords(0))
+                    vertex.Texcoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+                m_Vertices.push_back(vertex);
+            }
+
+            // Extract indices from mesh
+            m_Indices.reserve(mesh->mNumFaces);
+            for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+            {
+                aiFace face = mesh->mFaces[i];
+                for (uint32_t j = 0; j < face.mNumIndices; j++)
+                    m_Indices.push_back(face.mIndices[j]);
+            }
         }
 
-        // Extract indices from model
-        m_Indices.reserve(mesh->mNumFaces);
-        for (uint32_t i = 0; i < mesh->mNumFaces; i++)
-        {
-            aiFace face = mesh->mFaces[i];
-            for (uint32_t j = 0; j < face.mNumIndices; j++)
-                m_Indices.push_back(face.mIndices[j]);
-        }
+        TraverseNodes(scene->mRootNode);
 
         m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
 
@@ -116,6 +152,7 @@ namespace Spike
 
         m_VertexArray->AddVertexBuffer(m_VertexBuffer);
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+        m_VertexArray->Bind();
         //DumpVertexBuffer();
     }
 
@@ -123,9 +160,25 @@ namespace Spike
     {
     }
 
+    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
+    {
+        glm::mat4 transform = parentTransform * Mat4FromAssimpMat4(node->mTransformation);
+        for (uint32_t i = 0; i < node->mNumMeshes; i++)
+        {
+            uint32_t mesh = node->mMeshes[i];
+            auto& submesh = m_Submeshes[mesh];
+            submesh.NodeName = node->mName.C_Str();
+            submesh.Transform = transform;
+        }
+
+        // SPK_CORE_LOG_INFO("{0} {1}", LevelToSpaces(level), node->mName.C_Str());
+
+        for (uint32_t i = 0; i < node->mNumChildren; i++)
+            TraverseNodes(node->mChildren[i], transform, level + 1);
+    }
+
     void Mesh::DumpVertexBuffer()
     {
-        // TODO: Convert to ImGui
         SPK_CORE_LOG_INFO("------------------------------------------------------");
         SPK_CORE_LOG_INFO("Vertex Buffer Dump");
         SPK_CORE_LOG_INFO("Mesh: {0}", m_FilePath);

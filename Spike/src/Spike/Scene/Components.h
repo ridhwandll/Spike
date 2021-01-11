@@ -89,10 +89,9 @@ namespace Spike
         {
             Texture = Texture2D::Create(filepath);
             TextureFilepath = filepath;
-            SPK_CORE_LOG_INFO("Successfully loaded Texture from: {0}", filepath);
         }
 
-        void RemoveTexture() { Texture = nullptr; Console::Get()->Print("Successfully removed the Texture!", Console::LogLevel::LVL_INFO); }
+        void RemoveTexture() { Texture = nullptr; }
 
         void Reset()
         {
@@ -122,13 +121,13 @@ namespace Spike
     struct MeshComponent
     {
         Ref<Spike::Mesh> Mesh;
+        std::string MeshFilepath;
+
         MeshComponent() = default;
         MeshComponent(const MeshComponent&) = default;
 
-        void Reset()
-        {
-            //TODO
-        }
+        void SetFilePath(std::string& path) { MeshFilepath = path; }
+        void Reset() { Mesh = nullptr; }
         const char* GetName() { return "Mesh"; }
     };
 

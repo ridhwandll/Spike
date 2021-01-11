@@ -33,12 +33,25 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/IndexBuffer.h"
 #include <glm/glm.hpp>
 
+struct aiNode;
 namespace Assimp {
     class Importer;
 }
 
 namespace Spike
 {
+    class Submesh
+    {
+    public:
+        uint32_t BaseVertex;
+        uint32_t BaseIndex;
+        //uint32_t MaterialIndex;
+        uint32_t IndexCount;
+
+        glm::mat4 Transform;
+        std::string NodeName, MeshName;
+    };
+
     class Mesh : public RefCounted
     {
     public:
@@ -54,6 +67,8 @@ namespace Spike
         static_assert(sizeof(Vertex) == 8 * sizeof(float));
 
         const std::string& GetFilePath() const { return m_FilePath; }
+        std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
+        const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
     public:
         Ref<VertexArray> m_VertexArray;
         Ref<VertexBuffer> m_VertexBuffer;
@@ -61,13 +76,15 @@ namespace Spike
         Ref<Shader> m_MeshShader;
 
     private:
+        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
         void DumpVertexBuffer();
+
     private:
         Scope<Assimp::Importer> m_Importer;
 
+        std::vector<Submesh> m_Submeshes;
         std::vector<Vertex> m_Vertices = {};
         std::vector<uint32_t> m_Indices = {};
-
         std::string m_FilePath;
     };
 }

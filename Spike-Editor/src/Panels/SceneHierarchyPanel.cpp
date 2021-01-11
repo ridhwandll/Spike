@@ -64,19 +64,24 @@ namespace Spike
         //Right Click on a blank space
         if (ImGui::BeginPopupContextWindow(0, 1, false))
         {
-            if (ImGui::MenuItem("Create Empty Entity"))
+            if (ImGui::MenuItem("Empty Entity"))
             {
-                m_SelectionContext = m_Context->CreateEntity("Empty Entity");
+                m_SelectionContext = m_Context->CreateEntity("Entity");
             }
-            if (ImGui::MenuItem("Create Camera"))
+            if (ImGui::MenuItem("Camera"))
             {
                 m_SelectionContext = m_Context->CreateEntity("Camera");
                 m_SelectionContext.AddComponent<CameraComponent>();
             }
-            if (ImGui::MenuItem("Create Sprite"))
+            if (ImGui::MenuItem("Sprite"))
             {
                 m_SelectionContext = m_Context->CreateEntity("Sprite");
                 m_SelectionContext.AddComponent<SpriteRendererComponent>();
+            }
+            if (ImGui::MenuItem("Mesh"))
+            {
+                m_SelectionContext = m_Context->CreateEntity("Mesh");
+                m_SelectionContext.AddComponent<MeshComponent>();
             }
             ImGui::EndPopup();
         }

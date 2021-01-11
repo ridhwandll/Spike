@@ -58,7 +58,7 @@ namespace Spike
         m_IDFramebuffer = Framebuffer::Create(fbSpec);
 
         m_ActiveScene = Ref<Scene>::Create();
-        m_EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+        m_EditorCamera = EditorCamera(60.0f, 1.778f, 0.1f, 1000.0f);
 #if 0
         // Entity
         auto square = m_ActiveScene->CreateEntity("Green Square");

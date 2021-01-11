@@ -344,12 +344,32 @@ namespace Spike
 
         DrawComponent<MeshComponent>(entity, [](auto& component)
         {
+            ImGui::Text("File Path");
+            ImGui::SameLine();
             if (ImGui::Button("Open Mesh", ImVec2(100, 20)))
             {
-                std::string file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj)\0*.fbx; *.obj\0");
+                std::string file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
                 if (!file.empty())
+                {
                     component.Mesh = Ref<Mesh>::Create(file);
+                    component.SetFilePath(file);
+                }
             }
+            ImGui::SameLine();
+
+            if (ImGui::Button("Remove Mesh", ImVec2(100, 20)))
+            {
+                if (component.Mesh)
+                    component.Reset();
+            }
+
+            ImGui::PushItemWidth(ImGui::GetWindowWidth() - 50);
+
+            if (component.Mesh)
+                ImGui::InputText("##meshfilepath", (char*)component.Mesh->GetFilePath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+            else
+                ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
+            ImGui::PopItemWidth();
         });
     }
 }

@@ -2,7 +2,7 @@
                                SPIKE ENGINE
                This file is licensed under the SPIKE LICENSE
                           --Spike Source Code--
-
+-------------------------SPIKE ENGINE MESH SHADER------------------------------
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
 File Name      : MeshShader
@@ -24,6 +24,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
+
 #type vertex
 #version 430 core
 

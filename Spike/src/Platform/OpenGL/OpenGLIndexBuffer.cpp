@@ -35,7 +35,6 @@ namespace Spike
     {
         LE_PROFILE_FUNCTION();
         glCreateBuffers(1, &m_RendererID);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
         glNamedBufferData(m_RendererID, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
     }
 
