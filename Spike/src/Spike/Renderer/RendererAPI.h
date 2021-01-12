@@ -31,6 +31,17 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    struct RenderAPICapabilities
+    {
+        std::string Vendor;
+        std::string Renderer;
+        std::string Version;
+
+        float MaxAnisotropy = 0.0f;
+        int MaxTextureUnits = 0;
+        int MaxSamples = 0;
+    };
+
     class RendererAPI
     {
     public:
@@ -40,6 +51,12 @@ namespace Spike
             OpenGL = 1
         };
     public:
+        static RenderAPICapabilities& GetCapabilities()
+        {
+            static RenderAPICapabilities capabilities;
+            return capabilities;
+        }
+
         virtual ~RendererAPI() = default;
         virtual void Init() = 0;
         virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;

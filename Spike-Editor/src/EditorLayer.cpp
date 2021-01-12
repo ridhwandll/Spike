@@ -259,6 +259,10 @@ namespace Spike
             frameRate = 1.0f / m_FrameTime;
             frameTimeRefreshTimer = 0.0f;
         }
+        auto& caps = RendererAPI::GetCapabilities();
+
+        ImGui::Text("Vendor: %s", caps.Vendor.c_str());
+        ImGui::Text("Renderer: %s", caps.Renderer.c_str());
 
         ImGui::Text("FrameTime: %.3f ms", ft);
         ImGui::Text("FPS: %d", (int)frameRate);
@@ -343,7 +347,6 @@ namespace Spike
                 m_GizmoInUse = false;
             }
         }
-        //ImGuizmo::DrawGrid(glm::value_ptr(m_EditorCamera.GetViewMatrix()), glm::value_ptr(m_EditorCamera.GetProjection()), glm::value_ptr(glm::mat4(1.0f)), 50.0f);
 
         ImGui::End();
         ImGui::PopStyleVar();

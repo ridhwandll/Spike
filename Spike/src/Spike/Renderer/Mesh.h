@@ -80,6 +80,7 @@ namespace Spike
         std::vector<Submesh> m_Submeshes;
 
     private:
+        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
         void Generate(const std::string& filepath, uint32_t entityID = 0);
         void DumpVertexBuffer();
 

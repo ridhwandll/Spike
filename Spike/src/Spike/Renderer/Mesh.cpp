@@ -36,6 +36,17 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    glm::mat4 Mat4FromAssimpMat4(const aiMatrix4x4& matrix)
+    {
+        glm::mat4 result;
+        //the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
+        result[0][0] = matrix.a1; result[1][0] = matrix.a2; result[2][0] = matrix.a3; result[3][0] = matrix.a4;
+        result[0][1] = matrix.b1; result[1][1] = matrix.b2; result[2][1] = matrix.b3; result[3][1] = matrix.b4;
+        result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
+        result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
+        return result;
+    }
+
     static const uint32_t s_MeshImportFlags =
         aiProcess_Triangulate |
         aiProcess_GenSmoothNormals |
@@ -62,6 +73,7 @@ namespace Spike
     Mesh::Mesh(const std::string& filepath)
         : m_FilePath(filepath)
     {
+        LogStream::Initialize();
         Generate(filepath);
     }
 
@@ -77,8 +89,6 @@ namespace Spike
 
     void Mesh::Generate(const std::string& filepath, uint32_t entityID)
     {
-        LogStream::Initialize();
-
         SPK_CORE_LOG_INFO("Loading mesh: {0}", filepath.c_str());
         m_Importer = CreateScope<Assimp::Importer>();
 
@@ -130,6 +140,7 @@ namespace Spike
                     m_Indices.push_back(face.mIndices[j]);
             }
         }
+        TraverseNodes(scene->mRootNode);
 
         m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
 
@@ -152,6 +163,21 @@ namespace Spike
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
         m_VertexArray->Bind();
         //DumpVertexBuffer();
+    }
+
+    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
+    {
+        glm::mat4 transform = parentTransform * Mat4FromAssimpMat4(node->mTransformation);
+        for (uint32_t i = 0; i < node->mNumMeshes; i++)
+        {
+            uint32_t mesh = node->mMeshes[i];
+            auto& submesh = m_Submeshes[mesh];
+            submesh.NodeName = node->mName.C_Str();
+            submesh.Transform = transform;
+        }
+
+        for (uint32_t i = 0; i < node->mNumChildren; i++)
+            TraverseNodes(node->mChildren[i], transform, level + 1);
     }
 
     void Mesh::DumpVertexBuffer()

@@ -103,6 +103,7 @@ namespace Spike
         }
     }
 
+    //Engines main RUN loop
     void Application::Run()
     {
         LE_PROFILE_FUNCTION();

@@ -92,7 +92,7 @@ namespace Spike
         mesh->m_VertexArray->Bind();
         for (Submesh& submesh : mesh->m_Submeshes)
         {
-            mesh->m_MeshShader->SetMat4("u_Transform", transform);
+            mesh->m_MeshShader->SetMat4("u_Transform", transform * submesh.Transform);
             RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
         }
     }

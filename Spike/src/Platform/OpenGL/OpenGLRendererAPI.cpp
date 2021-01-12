@@ -62,6 +62,15 @@ namespace Spike
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
 
+        auto& caps = RendererAPI::GetCapabilities();
+
+        caps.Vendor = (const char*)glGetString(GL_VENDOR);
+        caps.Renderer = (const char*)glGetString(GL_RENDERER);
+        caps.Version = (const char*)glGetString(GL_VERSION);
+
+        glGetIntegerv(GL_MAX_SAMPLES, &caps.MaxSamples);
+        glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &caps.MaxAnisotropy);
+
         GLenum error = glGetError();
         while (error != GL_NO_ERROR)
         {
