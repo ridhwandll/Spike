@@ -87,7 +87,7 @@ namespace Spike
     {
         mesh->m_MeshShader->Bind();
         mesh->m_MeshShader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-        mesh->m_ObjectID; //BIG TODO: Sort this out. Make the mousepicking work with 3D;
+        mesh->m_ObjectID = entityID; //BIG TODO: Sort this out. Make the mousepicking work with 3D;
 
         mesh->m_VertexArray->Bind();
         for (Submesh& submesh : mesh->m_Submeshes)

@@ -83,6 +83,38 @@ namespace Spike
         Generate(filepath, entityID);
     }
 
+    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform)
+        :m_Vertices(vertices), m_Indices(indices)
+    {
+        Submesh submesh;
+        submesh.BaseVertex = 0;
+        submesh.BaseIndex = 0;
+        submesh.IndexCount = indices.size() * 3;
+        submesh.Transform = transform;
+        m_Submeshes.push_back(submesh);
+
+        m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
+
+        VertexBufferLayout layout =
+        {
+            { ShaderDataType::Float3, "a_Position" },
+            { ShaderDataType::Float3, "a_Normal" },
+            { ShaderDataType::Float2, "a_TexCoord" },
+            { ShaderDataType::Int, "a_ObjectID" }
+        };
+
+        m_VertexArray = VertexArray::Create();
+
+        m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
+        m_VertexBuffer->SetLayout(layout);
+
+        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size() * sizeof(Index));
+
+        m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+        m_VertexArray->SetIndexBuffer(m_IndexBuffer);
+        m_VertexArray->Bind();
+    }
+
     Mesh::~Mesh()
     {
     }
@@ -132,12 +164,11 @@ namespace Spike
             }
 
             // Extract indices from mesh
-            m_Indices.reserve(mesh->mNumFaces);
-            for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+            for (size_t i = 0; i < mesh->mNumFaces; i++)
             {
-                aiFace face = mesh->mFaces[i];
-                for (uint32_t j = 0; j < face.mNumIndices; j++)
-                    m_Indices.push_back(face.mIndices[j]);
+                SPK_CORE_ASSERT(mesh->mFaces[i].mNumIndices == 3, "Must have 3 indices.");
+                Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
+                m_Indices.push_back(index);
             }
         }
         TraverseNodes(scene->mRootNode);
@@ -157,7 +188,7 @@ namespace Spike
         m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
         m_VertexBuffer->SetLayout(layout);
 
-        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), std::size(m_Indices));
+        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size() * sizeof(Index));
 
         m_VertexArray->AddVertexBuffer(m_VertexBuffer);
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);

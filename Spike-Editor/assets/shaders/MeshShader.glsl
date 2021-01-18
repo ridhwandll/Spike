@@ -55,13 +55,13 @@ layout(location = 0) out vec4 FragColor;
 layout(location = 1) out int o_IDBuffer;
 
 in vec3 v_Normal;
-in vec2 TexCoords;
+in vec2 v_TexCoord;
 in flat int v_ObjectID;
 
-uniform sampler2D textureDiffuse;
+uniform sampler2D u_AlbedoTexture;
 
 void main()
 {
-    FragColor = vec4((v_Normal * 0.5 + 0.5), 1.0);/*vec4(1.0f, 0.5f, 0.0f, 1.0f);*///texture(textureDiffuse, TexCoords);
+    FragColor = /*texture(u_AlbedoTexture, v_TexCoord);*/vec4((v_Normal * 0.5 + 0.5), 1.0);/*vec4(1.0f, 0.5f, 0.0f, 1.0f);*///texture(textureDiffuse, TexCoords);
     o_IDBuffer = v_ObjectID;
 }

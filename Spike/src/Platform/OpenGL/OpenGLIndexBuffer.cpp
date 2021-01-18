@@ -30,12 +30,12 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    OpenGLIndexBuffer::OpenGLIndexBuffer(void* indices, uint32_t count)
-        : m_Count(count)
+    OpenGLIndexBuffer::OpenGLIndexBuffer(void* indices, uint32_t size)
+        : m_Size(size)
     {
         LE_PROFILE_FUNCTION();
         glCreateBuffers(1, &m_RendererID);
-        glNamedBufferData(m_RendererID, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+        glNamedBufferData(m_RendererID, size, indices, GL_STATIC_DRAW);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()

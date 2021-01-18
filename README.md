@@ -79,10 +79,6 @@ It is a **Game engine** written in **C++**
 
 ![Spike](Resources/Screenshots/Demo.png)
 
-# In Action
-
-![SpikeEngine](https://s8.gifyu.com/images/Demoaa758ed2fadc5ba8.gif)
-
 # Main features to come
 
 - Fast 2D rendering (UI, particles, sprites, etc.)
@@ -127,6 +123,7 @@ It is a **Game engine** written in **C++**
 - **[EnTT](https://github.com/skypjack/entt)** for Entity component system
 - **[spdlog](https://github.com/gabime/spdlog)** for fast Logging
 - **[yaml-cpp](https://github.com/FahimFuad/yaml-cpp)** for scene serialization
+- **[ASSIMP](https://github.com/FahimFuad/assimp)** for model loading
 
 ## Contributing [![GitHub contributors](https://img.shields.io/github/contributors/FahimFuad/Spike.svg)](https://GitHub.com/FahimFuad/Spike/graphs/contributors/)
 

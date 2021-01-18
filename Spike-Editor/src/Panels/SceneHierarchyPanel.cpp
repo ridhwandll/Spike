@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "../UIUtils/UIUtils.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
+#include "Spike/Renderer/MeshGenerator.h"
 #include <imgui/imgui.h>
 #include <FontAwesome.h>
 
@@ -82,6 +83,16 @@ namespace Spike
             {
                 m_SelectionContext = m_Context->CreateEntity("Mesh");
                 m_SelectionContext.AddComponent<MeshComponent>();
+            }
+            if (ImGui::MenuItem("Cube"))
+            {
+                m_SelectionContext = m_Context->CreateEntity("Cube");
+                m_SelectionContext.AddComponent<MeshComponent>().Mesh = MeshGenerator::CreateCube({ 1.0f, 1.0f, 1.0f });
+            }
+            if (ImGui::MenuItem("Sphere"))
+            {
+                m_SelectionContext = m_Context->CreateEntity("Sphere");
+                m_SelectionContext.AddComponent<MeshComponent>().Mesh = MeshGenerator::CreateSphere(1.0f);
             }
             ImGui::EndPopup();
         }

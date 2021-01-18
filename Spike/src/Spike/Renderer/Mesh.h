@@ -55,10 +55,6 @@ namespace Spike
     class Mesh : public RefCounted
     {
     public:
-        Mesh(const std::string& filepath);
-        Mesh(const std::string& filepath, uint32_t entityID); //BIG TODO: Sort this out. Make mousepicking work with 3D!
-        ~Mesh();
-
         struct Vertex
         {
             glm::vec3 Position;
@@ -67,6 +63,18 @@ namespace Spike
             int ObjectID;
         };
         static_assert(sizeof(Vertex) == 9 * sizeof(float));
+
+        struct Index
+        {
+            uint32_t V1, V2, V3;
+        };
+        static_assert(sizeof(Index) == 3 * sizeof(uint32_t));
+
+
+        Mesh(const std::string& filepath);
+        Mesh(const std::string& filepath, uint32_t entityID); //BIG TODO: Sort this out. Make mousepicking work with 3D!
+        Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform);
+        ~Mesh();
 
         int m_ObjectID;
         const std::string& GetFilePath() const { return m_FilePath; }
@@ -88,7 +96,7 @@ namespace Spike
         Scope<Assimp::Importer> m_Importer;
 
         std::vector<Vertex> m_Vertices = {};
-        std::vector<uint32_t> m_Indices = {};
+        std::vector<Index> m_Indices = {};
         std::string m_FilePath;
     };
 }

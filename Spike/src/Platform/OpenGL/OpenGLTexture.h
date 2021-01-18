@@ -44,13 +44,14 @@ namespace Spike
 
         virtual void Bind(uint32_t slot = 0) const override;
         virtual void Unbind() const override;
-
+        virtual bool Loaded() override { return m_Loaded; }
         bool operator==(const Texture& other) const override
         {
             return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID;
         }
 
     private:
+        bool m_Loaded = false;
         std::string m_Path;
         uint32_t m_Width, m_Height;
         RendererID m_RendererID;
