@@ -31,6 +31,13 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    enum class MousePointerMode
+    {
+        Normal = 0,
+        Hidden = 1,
+        Locked = 2
+    };
+
     class Input
     {
     public:
@@ -39,6 +46,8 @@ namespace Spike
         static glm::vec2 GetMousePosition();
         static float GetMouseX();
         static float GetMouseY();
+        static void SetCursorMode(MousePointerMode mode);
+        static MousePointerMode GetCursorMode();
     };
 
 }

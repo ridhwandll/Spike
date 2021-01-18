@@ -28,14 +28,16 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Scene.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Renderer.h"
-#include <glm/glm.hpp>
 #include "Spike/Scene/Components.h"
+#include "Spike/Core/Input.h"
 #include "Entity.h"
-
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 namespace Spike
 {
+    std::unordered_map<UUID, Scene*> s_ActiveScenes;
+
     Scene::Scene()
     {
     }
@@ -46,11 +48,30 @@ namespace Spike
 
     Entity Scene::CreateEntity(const std::string& name)
     {
-        Entity entity( m_Registry.create(), this );
-        entity.AddComponent<TransformComponent>();
-        auto& tag = entity.AddComponent<TagComponent>();
+        auto entity = Entity{ m_Registry.create(), this };
+        auto& idComponent = entity.AddComponent<IDComponent>();
+        idComponent.ID = {};
 
-        tag.Tag = name.empty() ? "Entity" : name;
+        entity.AddComponent<TransformComponent>();
+        if (!name.empty())
+            entity.AddComponent<TagComponent>(name);
+
+        m_EntityIDMap[idComponent.ID] = entity;
+        return entity;
+    }
+
+    Entity Scene::CreateEntityWithID(UUID uuid, const std::string& name, bool runtimeMap)
+    {
+        auto entity = Entity{ m_Registry.create(), this };
+        auto& idComponent = entity.AddComponent<IDComponent>();
+        idComponent.ID = uuid;
+
+        entity.AddComponent<TransformComponent>();
+        if (!name.empty())
+            entity.AddComponent<TagComponent>(name);
+
+        SPK_CORE_ASSERT(m_EntityIDMap.find(uuid) == m_EntityIDMap.end(), "Entity with the given id already exists!");
+        m_EntityIDMap[uuid] = entity;
         return entity;
     }
 
@@ -59,23 +80,16 @@ namespace Spike
         m_Registry.destroy(entity);
     }
 
+
+    void Scene::OnUpdate(Timestep ts)
+    {
+        SPK_CORE_LOG_TRACE("Into the runtime!");
+    }
+
     void Scene::OnUpdateRuntime(Timestep ts)
     {
         // Update scripts
         {
-            m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-                {
-                    // TODO: Move to Scene::OnScenePlay
-                    if (!nsc.Instance)
-                    {
-                        nsc.Instance = nsc.InstantiateScript();
-                        nsc.Instance->m_Entity = Entity{ entity, this };
-                        nsc.Instance->OnCreate();
-                    }
-
-                    //TODO: The OnDestroy() function!
-                    nsc.Instance->OnUpdate(ts);
-                });
         }
 
         //Render 2D
@@ -149,6 +163,19 @@ namespace Spike
         Renderer2D::EndScene();
     }
 
+    template<typename T>
+    static void CopyComponent(entt::registry& dstRegistry, entt::registry& srcRegistry, const std::unordered_map<UUID, entt::entity>& enttMap)
+    {
+        auto components = srcRegistry.view<T>();
+        for (auto srcEntity : components)
+        {
+            entt::entity destEntity = enttMap.at(srcRegistry.get<IDComponent>(srcEntity).ID);
+
+            auto& srcComponent = srcRegistry.get<T>(srcEntity);
+            auto& destComponent = dstRegistry.emplace_or_replace<T>(destEntity, srcComponent);
+        }
+    }
+
     void Scene::OnViewportResize(uint32_t width, uint32_t height)
     {
         m_ViewportWidth = width;
@@ -161,6 +188,46 @@ namespace Spike
             if (!cameraComponent.FixedAspectRatio)
                 cameraComponent.Camera.SetViewportSize(width, height);
         }
+    }
+
+    void Scene::OnEvent(Event& e)
+    {
+        if (Input::IsKeyPressed(Key::Escape) && m_IsPlaying == true)
+        {
+            OnRuntimeStop();
+            SPK_CORE_LOG_INFO("Runtime stopped by pressing escape!");
+        }
+    }
+
+    void Scene::OnRuntimeStart()
+    {
+        //Do physics and other runtime stuff (TODO)
+        m_IsPlaying = true;
+    }
+
+    void Scene::OnRuntimeStop()
+    {
+        Input::SetCursorMode(MousePointerMode::Normal);
+        //Cleanup physics stuff (TODO)
+        m_IsPlaying = false;
+    }
+
+    void Scene::CopySceneTo(Ref<Scene>& target)
+    {
+        std::unordered_map<UUID, entt::entity> enttMap;
+        auto idComponents = m_Registry.view<IDComponent>();
+        for (auto entity : idComponents)
+        {
+            auto uuid = m_Registry.get<IDComponent>(entity).ID;
+            Entity e = target->CreateEntityWithID(uuid, "", true);
+            enttMap[uuid] = e.Raw();
+        }
+
+        CopyComponent<TagComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<TransformComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<MeshComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<CameraComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<SpriteRendererComponent>(target->m_Registry, m_Registry, enttMap);
     }
 
     Entity Scene::GetPrimaryCameraEntity()
@@ -179,6 +246,14 @@ namespace Spike
     void Scene::OnComponentAdded(Entity entity, T& component)
     {
         static_assert(false);
+    }
+
+    Ref<Scene> Scene::GetScene(UUID uuid)
+    {
+        if (s_ActiveScenes.find(uuid) != s_ActiveScenes.end())
+            return s_ActiveScenes.at(uuid);
+
+        return {};
     }
 
     void Scene::DrawIDBuffer(Ref<Framebuffer> target, EditorCamera& camera)
@@ -208,6 +283,11 @@ namespace Spike
     }
 
     template<>
+    void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+    {
+    }
+
+    template<>
     void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
     {
     }
@@ -230,11 +310,6 @@ namespace Spike
 
     template<>
     void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
-    {
-    }
-
-    template<>
-    void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
     {
     }
 }

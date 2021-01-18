@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
+#include "Spike/Core/UUID.h"
 #include "Spike/Renderer/Texture.h"
 #include "Spike/Renderer/Mesh.h"
 #include "Panels/ConsolePanel.h"
@@ -34,10 +35,15 @@ Github repository : https://github.com/FahimFuad/Spike
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <FontAwesome.h>
-#include "ScriptableEntity.h"
 
 namespace Spike
 {
+    struct IDComponent
+    {
+        UUID ID = 0;
+        const char* GetName() { return "ID"; }
+    };
+
     struct TagComponent
     {
         std::string Tag;
@@ -129,21 +135,5 @@ namespace Spike
         void SetFilePath(std::string& path) { MeshFilepath = path; }
         void Reset() { Mesh = nullptr; }
         const char* GetName() { return ICON_FK_CUBE" Mesh"; }
-    };
-
-    struct NativeScriptComponent
-    {
-        ScriptableEntity* Instance = nullptr;
-
-        ScriptableEntity* (*InstantiateScript)();
-        void (*DestroyScript)(NativeScriptComponent*);
-
-        template<typename T>
-        void Bind()
-        {
-            InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-            DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
-        }
-        const char* GetName() { return "Native Script"; };
     };
 }

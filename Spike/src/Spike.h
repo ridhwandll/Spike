@@ -46,7 +46,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/Scene.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Scene/Entity.h"
-#include "Spike/Scene/ScriptableEntity.h"
 
 //******Renderer**********
 #include "Spike/Renderer/Renderer.h"

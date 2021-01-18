@@ -77,7 +77,6 @@ namespace Spike
         ~Mesh();
 
         int m_ObjectID;
-        const std::string& GetFilePath() const { return m_FilePath; }
         std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
         const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
     public:
@@ -86,7 +85,7 @@ namespace Spike
         Ref<IndexBuffer> m_IndexBuffer;
         Ref<Shader> m_MeshShader;
         std::vector<Submesh> m_Submeshes;
-
+        std::string m_FilePath;
     private:
         void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
         void Generate(const std::string& filepath, uint32_t entityID = 0);
@@ -97,6 +96,5 @@ namespace Spike
 
         std::vector<Vertex> m_Vertices = {};
         std::vector<Index> m_Indices = {};
-        std::string m_FilePath;
     };
 }

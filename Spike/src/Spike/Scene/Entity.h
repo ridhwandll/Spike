@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Scene.h"
 #include "entt.hpp"
 #include "Spike/Core/Log.h"
+#include "Components.h"
 
 namespace Spike
 {
@@ -35,7 +36,9 @@ namespace Spike
     {
     public:
         Entity() = default;
-        Entity(entt::entity handle, Scene* scene);
+        Entity(entt::entity handle, Scene* scene)
+            :m_EntityHandle(handle), m_Scene(scene) {}
+
         Entity(const Entity& other) = default;
 
         template<typename T, typename... Args>
@@ -82,18 +85,15 @@ namespace Spike
             m_Scene->m_Registry.remove_all(m_EntityHandle);
         }
 
-        template<typename T>
-        void AddNativeScript()
-        {
-            AddComponent<NativeScriptComponent>().Bind<T>();
-        }
-
         operator bool() const { return m_EntityHandle != entt::null; }
         operator entt::entity() const { return m_EntityHandle; }
         operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
         bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
         bool operator!=(const Entity& other) const { return !(*this == other); }
+
+        //UUID GetUUID() { return (GetComponent<IDComponent>().ID); }
+        UUID GetSceneUUID() { return m_Scene->GetUUID(); }
     private:
         entt::entity m_EntityHandle{ entt::null };
         Scene* m_Scene = nullptr;

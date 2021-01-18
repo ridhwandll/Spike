@@ -52,21 +52,23 @@ namespace Spike
         void OpenScene();
         void SaveSceneAs();
         void SaveScene();
+
+        void OnScenePlay();
+        void OnSceneStop();
     private:
-        OrthographicCameraController m_CameraController;
-        Ref<VertexArray> m_SquareVA;
-        Ref<Shader> m_FlatColorShader;
+        enum class SceneState
+        {
+            Edit = 0, Play = 1, Pause = 2
+        };
+        SceneState m_SceneState = SceneState::Edit;
+
         Ref<Framebuffer> m_Framebuffer;
         Ref<Framebuffer> m_IDFramebuffer;
 
-        Ref<Scene> m_ActiveScene;
+        Ref<Scene> m_EditorScene, m_RuntimeScene;
 
         Ref<Texture2D> m_CheckerboardTexture;
 
-        Entity m_SquareEntity;
-        Entity m_SecondSquareEntity;
-        Entity m_CameraEntity;
-        Entity m_SecondCameraEntity;
         Entity m_HoveredEntity;
 
         bool m_PrimaryCamera = true;

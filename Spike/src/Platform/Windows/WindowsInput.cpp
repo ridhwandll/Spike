@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Core/Input.h"
+#include "Platform/Windows/WindowsWindow.h"
 #include "Spike/Core/Application.h"
 #include <GLFW/glfw3.h>
 
@@ -64,4 +65,15 @@ namespace Spike
         return GetMousePosition().y;
     }
 
+    void Input::SetCursorMode(MousePointerMode mode)
+    {
+        auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
+        glfwSetInputMode(static_cast<GLFWwindow*>(window.GetNativeWindow()), GLFW_CURSOR, GLFW_CURSOR_NORMAL + (int)mode);
+    }
+
+    MousePointerMode Input::GetCursorMode()
+    {
+        auto& window = static_cast<WindowsWindow&>(Application::Get().GetWindow());
+        return (MousePointerMode)(glfwGetInputMode(static_cast<GLFWwindow*>(window.GetNativeWindow()), GLFW_CURSOR) - GLFW_CURSOR_NORMAL);
+    }
 }

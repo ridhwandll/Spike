@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : Panel
+File Name      : UUID
 File Type      : h
-File created on: 2021/01/09
+File created on: 2021/01/18
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -25,25 +25,34 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Spike/Scene/Scene.h"
-#include "Spike/Scene/Entity.h"
+#include "Base.h"
+#include <xhash>
 
 namespace Spike
 {
-    class Panel
+    class UUID
     {
     public:
-        virtual ~Panel() = default;
+        UUID();
+        UUID(uint64_t uuid);
+        UUID(const UUID& other);
 
-        static Panel* Get();
+        operator uint64_t () { return m_UUID; }
+        operator const uint64_t() const { return m_UUID; }
+    private:
+        uint64_t m_UUID;
+    };
 
-        virtual Entity GetSelectedEntity() const { return m_SelectionContext; };
-        virtual Ref<Scene> GetCurrentScene() const { return m_Context; };
+}
 
-    protected:
-        Panel() = default;
-        static Panel* m_Instance;
-        Ref<Scene> m_Context;
-        Entity m_SelectionContext;
+namespace std {
+
+    template <>
+    struct hash<Spike::UUID>
+    {
+        std::size_t operator()(const Spike::UUID& uuid) const
+        {
+            return hash<uint64_t>()((uint64_t)uuid);
+        }
     };
 }

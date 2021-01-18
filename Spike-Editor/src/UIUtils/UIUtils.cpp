@@ -200,6 +200,7 @@ namespace Spike
         if (ImGui::Button("Add Component"))
             ImGui::OpenPopup("Add Component");
 
+        ImGui::Text("UUID: %llu", entity.GetComponent<IDComponent>().ID);
         if (ImGui::BeginPopup("Add Component"))
         {
             if (ImGui::MenuItem("Transform"))
@@ -366,7 +367,7 @@ namespace Spike
             ImGui::PushItemWidth(ImGui::GetWindowWidth() - 50);
 
             if (component.Mesh)
-                ImGui::InputText("##meshfilepath", (char*)component.Mesh->GetFilePath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+                ImGui::InputText("##meshfilepath", (char*)component.Mesh->m_FilePath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
             else
                 ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
             ImGui::PopItemWidth();

@@ -86,6 +86,15 @@ namespace YAML
 }
 namespace Spike
 {
+
+    static bool CheckPath(const std::string& path)
+    {
+        FILE* f = fopen(path.c_str(), "rb");
+        if (f)
+            fclose(f);
+        return f != nullptr;
+    }
+
     YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
     {
         out << YAML::Flow;
@@ -107,8 +116,9 @@ namespace Spike
 
     static void SerializeEntity(YAML::Emitter& out, Entity entity)
     {
+        UUID uuid = entity.GetComponent<IDComponent>().ID;
         out << YAML::BeginMap; // Entity
-        out << YAML::Key << "Entity" << YAML::Value << "45692584"; // TODO: Entity ID goes here
+        out << YAML::Key << "Entity" << YAML::Value << uuid;
 
         if (entity.HasComponent<TagComponent>())
         {
@@ -176,8 +186,9 @@ namespace Spike
             out << YAML::Key << "MeshComponent";
             out << YAML::BeginMap; // MeshComponent
 
-            auto& meshComponent = entity.GetComponent<MeshComponent>();
-            out << YAML::Key << "MeshFilepath" << YAML::Value << meshComponent.MeshFilepath;
+            auto mesh = entity.GetComponent<MeshComponent>().Mesh;
+            out << YAML::Key << "AssetPath" << YAML::Value << mesh->m_FilePath;
+
             out << YAML::EndMap; // MeshComponent
         }
 
@@ -212,6 +223,7 @@ namespace Spike
 
     bool SceneSerializer::Deserialize(const std::string& filepath)
     {
+        std::vector<std::string> missingPaths;
         YAML::Node data;
         try { data = YAML::LoadFile(filepath); }
         catch (const YAML::ParserException& ex)
@@ -230,7 +242,7 @@ namespace Spike
         {
             for (auto entity : entities)
             {
-                uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO: Make it take an uuid or a SPIKE id, not a garbage value
+                uint64_t uuid = entity["Entity"].as<uint64_t>();
 
                 std::string name;
                 auto tagComponent = entity["TagComponent"];
@@ -239,7 +251,7 @@ namespace Spike
 
                 SPK_CORE_LOG_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
-                Entity deserializedEntity = m_Scene->CreateEntity(name);
+                Entity deserializedEntity = m_Scene->CreateEntityWithID(uuid, name);
 
                 auto transformComponent = entity["TransformComponent"];
                 if (transformComponent)
@@ -291,19 +303,33 @@ namespace Spike
                 auto meshComponent = entity["MeshComponent"];
                 if (meshComponent)
                 {
-                    auto& src = deserializedEntity.AddComponent<MeshComponent>();
-                    auto meshFilePath = meshComponent["MeshFilepath"];
-                    if (meshFilePath)
+                    std::string meshPath = meshComponent["AssetPath"].as<std::string>();
+
+                    if (!deserializedEntity.HasComponent<MeshComponent>())
                     {
-                        std::string meshFilepath = meshFilePath.as<std::string>();
-                        if (!meshFilepath.empty())
-                        {
-                            src.Mesh = Ref<Mesh>::Create(meshFilepath);
-                            src.SetFilePath(meshFilepath);
-                        }
+                        Ref<Mesh> mesh;
+                        if (!CheckPath(meshPath))
+                            missingPaths.emplace_back(meshPath);
+                        else
+                            mesh = Ref<Mesh>::Create(meshPath);
+
+                        deserializedEntity.AddComponent<MeshComponent>(mesh);
                     }
+
+                    SPK_CORE_LOG_INFO("  Mesh Asset Path: {0}", meshPath);
                 }
             }
+        }
+
+        if (missingPaths.size())
+        {
+            SPK_CORE_LOG_ERROR("The following files could not be loaded:");
+            for (auto& path : missingPaths)
+            {
+                SPK_CORE_LOG_ERROR("  {0}", path);
+            }
+
+            return false;
         }
 
         return true;

@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : ScriptableEntity
-File Type      : h
-File created on: 2021/01/09
+File Name      : UUID
+File Type      : cpp
+File created on: 2021/01/18
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -16,7 +16,7 @@ Github repository : https://github.com/FahimFuad/Spike
   In no event will the authors or contributors be held liable for any damages
   arising from the use of this software.
 
-1.The origin of this software must not be misrepresented; you must not claim
+1.The origin of this software must not be misrepresented; you must not claim/
   that you wrote the original software.
  
 2.You MUST NOT change or alter this file. This excludes the contributions done
@@ -24,28 +24,24 @@ Github repository : https://github.com/FahimFuad/Spike
 
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
-#pragma once
-#include "Entity.h"
+#include "spkpch.h"
+#include "UUID.h"
+
+#include <random>
 
 namespace Spike
 {
-    class ScriptableEntity
-    {
-    public:
-        virtual ~ScriptableEntity() = default;
-        template<typename T>
-        T& GetComponent()
-        {
-            return m_Entity.GetComponent<T>();
-        }
+    static std::random_device s_RandomDevice;
+    static std::mt19937_64 engine(s_RandomDevice());
+    static std::uniform_int_distribution<uint64_t> s_UniformDistribution;
 
-    protected:
-        virtual void OnCreate() {}
-        virtual void OnDestroy() {}
-        virtual void OnUpdate(Timestep ts) {}
+    UUID::UUID()
+        : m_UUID(s_UniformDistribution(engine)){}
 
-    private:
-        Entity m_Entity;
-        friend class Scene;
-    };
+    UUID::UUID(uint64_t uuid)
+        : m_UUID(uuid) {}
+
+    UUID::UUID(const UUID& other)
+        : m_UUID(other.m_UUID) {}
+
 }

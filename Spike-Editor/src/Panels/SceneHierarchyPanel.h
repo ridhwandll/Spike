@@ -25,7 +25,6 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Panel.h"
 #include "Spike/Core/Log.h"
 #include "Spike/Core/Base.h"
 #include "Spike/Scene/Entity.h"
@@ -34,13 +33,17 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    class SceneHierarchyPanel : public Panel
+    class SceneHierarchyPanel
     {
     public:
         SceneHierarchyPanel() = default;
         SceneHierarchyPanel(const Ref<Scene>& context);
         void SetContext(const Ref<Scene>& context);
         void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
+        void ClearSelectedEntity() { m_SelectionContext = {}; }
+
+        Entity GetSelectedEntity() const { return m_SelectionContext; };
+        Ref<Scene> GetCurrentScene() const { return m_Context; };
 
         void OnImGuiRender();
         void OnEvent(Event& e);
@@ -50,5 +53,7 @@ namespace Spike
     private:
         bool m_IsHierarchyFocused = false;
         bool m_IsHierarchyHovered = false;
+        Ref<Scene> m_Context;
+        Entity m_SelectionContext;
     };
 }

@@ -27,13 +27,12 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include <vector>
 #include <string>
-#include "Panels/Panel.h"
 #include <FontAwesome.h>
 #include <imgui.h>
 
 namespace Spike
 {
-    class Console : public Panel
+    class Console
     {
     public:
         ~Console();
@@ -47,8 +46,6 @@ namespace Spike
         void OnImGuiRender();
         void Print(const std::string& message, LogLevel level = LogLevel::LVL_DEBUG);
 
-        virtual Entity GetSelectedEntity() const override { return m_SelectionContext; }
-        virtual Ref<Scene> GetCurrentScene() const override { return m_Context; }
     private:
         Console();
         void ClearLog();

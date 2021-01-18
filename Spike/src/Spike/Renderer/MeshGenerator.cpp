@@ -30,6 +30,9 @@ Github repository : https://github.com/fahimfuad/Spike
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#pragma warning(push)
+#pragma warning (disable : 4244) //Disable ugly 'C4244' "type conversion" warning!
+
 namespace Spike
 {
     Ref<Mesh> MeshGenerator::CreateCube(const glm::vec3& size)
@@ -114,3 +117,4 @@ namespace Spike
         return Ref<Mesh>::Create(vertices, indices, glm::mat4(1.0F));
     }
 }
+#pragma warning (pop)

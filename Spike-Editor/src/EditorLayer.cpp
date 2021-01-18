@@ -42,7 +42,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     EditorLayer::EditorLayer()
-        : Layer("EditorLayer"), m_CameraController(1280.0f / 720.0f)
+        : Layer("EditorLayer")
     {
     }
 
@@ -57,65 +57,40 @@ namespace Spike
         m_Framebuffer = Framebuffer::Create(fbSpec);
         m_IDFramebuffer = Framebuffer::Create(fbSpec);
 
-        m_ActiveScene = Ref<Scene>::Create();
+        m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
-#if 0
-        // Entity
-        auto square = m_ActiveScene->CreateEntity("Green Square");
-        square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-
-        auto redSquare = m_ActiveScene->CreateEntity("Red Square");
-        redSquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-
-        m_SquareEntity = square;
-
-        m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
-        m_CameraEntity.AddComponent<CameraComponent>();
-
-        m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-        auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-        cc.Primary = false;
-
-        class CameraController : public ScriptableEntity
-        {
-        public:
-            virtual void OnCreate() override
-            {
-                auto& translation = GetComponent<TransformComponent>().Translation;
-                translation.x = rand() % 10 - 5.0f;
-            }
-
-            virtual void OnDestroy() override
-            {
-            }
-
-            virtual void OnUpdate(Timestep ts) override
-            {
-                auto& translation = GetComponent<TransformComponent>().Translation;
-
-                float speed = 5.0f;
-
-                if (Input::IsKeyPressed(Key::A))
-                    translation.x -= speed * ts;
-                if (Input::IsKeyPressed(Key::D))
-                    translation.x += speed * ts;
-                if (Input::IsKeyPressed(Key::W))
-                    translation.y += speed * ts;
-                if (Input::IsKeyPressed(Key::S))
-                    translation.y -= speed * ts;
-            }
-        };
-
-        m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-        m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
-
-        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+        m_SceneHierarchyPanel.SetContext(m_EditorScene);
     }
 
     void EditorLayer::OnDetach()
     {
         LE_PROFILE_FUNCTION();
+    }
+
+
+    void EditorLayer::OnScenePlay()
+    {
+        m_SceneHierarchyPanel.ClearSelectedEntity();
+
+        m_SceneState = SceneState::Play;
+
+        m_RuntimeScene = Ref<Scene>::Create();
+        m_EditorScene->CopySceneTo(m_RuntimeScene);
+
+        m_RuntimeScene->OnRuntimeStart();
+        m_SceneHierarchyPanel.SetContext(m_RuntimeScene);
+    }
+
+    void EditorLayer::OnSceneStop()
+    {
+        m_RuntimeScene->OnRuntimeStop();
+        m_SceneState = SceneState::Edit;
+
+        // Unload runtime scene
+        m_RuntimeScene = nullptr;
+
+        m_SceneHierarchyPanel.ClearSelectedEntity();
+        m_SceneHierarchyPanel.SetContext(m_EditorScene);
     }
 
     void EditorLayer::OnUpdate(Timestep ts)
@@ -129,15 +104,10 @@ namespace Spike
         {
             m_Framebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_IDFramebuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            m_CameraController.OnResize(m_ViewportSize.x, m_ViewportSize.y);
             m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
-            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
-        // Update
-        if (m_ViewportFocused)
-            m_CameraController.OnUpdate(ts);
 
-        m_EditorCamera.OnUpdate(ts);
 
         // Render
         Renderer2D::ResetStats();
@@ -145,9 +115,33 @@ namespace Spike
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         RenderCommand::Clear();
         m_Framebuffer->Bind();
-        
-        // Update scene
-        m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
+
+        switch (m_SceneState)
+        {
+        case EditorLayer::SceneState::Edit:
+            {
+                m_EditorCamera.OnUpdate(ts);
+                m_EditorScene->OnUpdateEditor(ts, m_EditorCamera);
+                break;
+            }
+        case EditorLayer::SceneState::Play:
+            {
+                if (m_ViewportFocused)
+                    m_EditorCamera.OnUpdate(ts);
+
+                m_RuntimeScene->OnUpdate(ts);
+                m_RuntimeScene->OnUpdateRuntime(ts);
+                break;
+            }
+        case EditorLayer::SceneState::Pause:
+            {
+                if (m_ViewportFocused)
+                    m_EditorCamera.OnUpdate(ts);
+
+                m_RuntimeScene->OnUpdateRuntime(ts);
+                break;
+            }
+        }
 
         auto [mx, my] = ImGui::GetMousePos();
         mx -= m_ViewportBounds[0].x;
@@ -161,8 +155,8 @@ namespace Spike
         
         if (mouseX >= 0 && mouseY >= 0 && mouseX < viewportWidth && mouseY < viewportHeight)
         {
-            int pixel = m_ActiveScene->Pixel(mx, my);
-            m_HoveredEntity = pixel == -1 ? Entity() : Entity((entt::entity)pixel, m_ActiveScene.Raw());
+            int pixel = m_EditorScene->Pixel(mx, my);
+            m_HoveredEntity = pixel == -1 ? Entity() : Entity((entt::entity)pixel, m_EditorScene.Raw());
         }
         m_Framebuffer->Unbind();
     }
@@ -266,12 +260,30 @@ namespace Spike
 
         ImGui::Text("FrameTime: %.3f ms", ft);
         ImGui::Text("FPS: %d", (int)frameRate);
+        ImGui::End();
 
+        bool show = true;
+        ImGui::Begin("ToolBar", &show, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
+        if (m_SceneState == SceneState::Edit)
+        {
+            if (ImGui::Button("Play"))
+            {
+                OnScenePlay();
+            }
+        }
+        else if (m_SceneState == SceneState::Play)
+        {
+            if (ImGui::Button("Stop"))
+            {
+                OnSceneStop();
+            }
+        }
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-
         ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
+
         auto viewportOffset = ImGui::GetCursorPos();
 
         m_ViewportFocused = ImGui::IsWindowFocused();
@@ -356,9 +368,9 @@ namespace Spike
 
     void EditorLayer::OnEvent(Event& e)
     {
-        m_CameraController.OnEvent(e);
         m_SceneHierarchyPanel.OnEvent(e);
         m_EditorCamera.OnEvent(e);
+        m_EditorScene->OnEvent(e);
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
         dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
@@ -437,9 +449,9 @@ namespace Spike
 
     void EditorLayer::NewScene()
     {
-        m_ActiveScene = Ref<Scene>::Create();
-        m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-        m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+        m_EditorScene = Ref<Scene>::Create();
+        m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+        m_SceneHierarchyPanel.SetContext(m_EditorScene);
         m_FirstTimeSave = true;
         Console::Get()->Print("Successfully created new scene!", Console::LogLevel::LVL_INFO);
     }
@@ -451,11 +463,11 @@ namespace Spike
         {
             m_FirstTimeSave = false;
             m_ActiveFilepath = filepath;
-            m_ActiveScene = Ref<Scene>::Create();
-            m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-            m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+            m_EditorScene = Ref<Scene>::Create();
+            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_SceneHierarchyPanel.SetContext(m_EditorScene);
 
-            SceneSerializer serializer(m_ActiveScene);
+            SceneSerializer serializer(m_EditorScene);
             serializer.Deserialize(filepath);
             Console::Get()->Print("Succesfully deserialized scene!", Console::LogLevel::LVL_INFO);
         }
@@ -467,7 +479,7 @@ namespace Spike
         if (!filepath.empty())
         {
             m_FirstTimeSave = false;
-            SceneSerializer serializer(m_ActiveScene);
+            SceneSerializer serializer(m_EditorScene);
             serializer.Serialize(filepath);
             Console::Get()->Print("Scene serialized succesfully!", Console::LogLevel::LVL_INFO);
         }
@@ -481,11 +493,10 @@ namespace Spike
         }
         else
         {
-            SceneSerializer serializer(m_ActiveScene);
+            SceneSerializer serializer(m_EditorScene);
             serializer.Serialize(m_ActiveFilepath);
             Console::Get()->Print("Scene Saved!", Console::LogLevel::LVL_INFO);
         }
     }
-
 }
 #pragma warning (pop) // Pop the warning

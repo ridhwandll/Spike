@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Core/Ref.h"
+#include "Spike/Core/UUID.h"
 #include "Spike/Renderer/EditorCamera.h"
 #include "Spike/Core/Timestep.h"
 #include "Spike/Renderer/Framebuffer.h"
@@ -37,6 +38,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     class Entity;
+    using EntityMap = std::unordered_map<UUID, Entity>;
 
     class Scene : public RefCounted
     {
@@ -45,12 +47,21 @@ namespace Spike
         ~Scene();
 
         Entity CreateEntity(const std::string& name = std::string());
+        Entity CreateEntityWithID(UUID uuid, const std::string& name = "", bool runtimeMap = false);
         void DestroyEntity(Entity entity);
 
+        void OnUpdate(Timestep ts);
         void OnUpdateRuntime(Timestep ts);
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);
         void OnViewportResize(uint32_t width, uint32_t height);
+        void OnEvent(Event& e);
+        // Runtime Stuff
+        void OnRuntimeStart();
+        void OnRuntimeStop();
+        void CopySceneTo(Ref<Scene>& target);
 
+        UUID GetUUID() const { return m_SceneID; }
+        static Ref<Scene> GetScene(UUID uuid);
         void DrawIDBuffer(Ref<Framebuffer> target, EditorCamera& camera);
         int Pixel(int x, int y);
 
@@ -59,8 +70,10 @@ namespace Spike
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
     private:
+        UUID m_SceneID;
+        EntityMap m_EntityIDMap;
         uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
-
+        bool m_IsPlaying = false;
         entt::registry m_Registry;
         friend class Entity;
         friend class SceneSerializer;
