@@ -92,7 +92,6 @@ namespace Spike
         {
         }
 
-        //Render 2D
         Camera* mainCamera = nullptr;
         glm::mat4 cameraTransform;
 
@@ -111,20 +110,35 @@ namespace Spike
         }
         if (mainCamera)
         {
-            Renderer2D::BeginScene(*mainCamera, cameraTransform);
-
-            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-            for (auto entity : group)
             {
-                auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                if (sprite.Texture)
-                    Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
-                else
-                    Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
+                Renderer2D::BeginScene(*mainCamera, cameraTransform);
+
+                auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+                for (auto entity : group)
+                {
+                    auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+                    if (sprite.Texture)
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                    else
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
+                }
+
+                Renderer2D::EndScene();
             }
+            {
+                Renderer::BeginScene(*mainCamera, cameraTransform);
 
-            Renderer2D::EndScene();
-
+                auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+                for (auto entity : group) {
+                    auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
+                    if (mesh.Mesh)
+                    {
+                        // BIG TODO: Sort this out. Make mousepicking work with 3D
+                        Renderer::SubmitMesh(mesh.Mesh, (uint32_t)entity, transform.GetTransform());
+                    }
+                }
+                Renderer::EndScene();
+            }
         }
     }
 

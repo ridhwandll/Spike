@@ -56,6 +56,11 @@ namespace Spike
         s_SceneData->ViewProjectionMatrix = camera.GetViewProjection();
     }
 
+    void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
+    {
+        s_SceneData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
+    }
+
     void Renderer::EndScene()
     {
     }

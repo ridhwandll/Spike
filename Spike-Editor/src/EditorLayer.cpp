@@ -163,8 +163,6 @@ namespace Spike
 
     void EditorLayer::OnImGuiRender()
     {
-        LE_PROFILE_FUNCTION();
-
         static bool dockspaceOpen = true;
         static bool opt_fullscreen_persistant = true;
         bool opt_fullscreen = opt_fullscreen_persistant;
@@ -263,26 +261,39 @@ namespace Spike
         ImGui::End();
 
         bool show = true;
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
         ImGui::Begin("ToolBar", &show, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
         ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
         if (m_SceneState == SceneState::Edit)
         {
-            if (ImGui::Button("Play"))
+            if (ImGui::ArrowButton("Play", ImGuiDir_Right))
             {
                 OnScenePlay();
             }
         }
         else if (m_SceneState == SceneState::Play)
         {
-            if (ImGui::Button("Stop"))
+            if (ImGui::ArrowButton("Stop", ImGuiDir_Right))
             {
                 OnSceneStop();
             }
         }
         ImGui::End();
+        ImGui::PopStyleColor(3);
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
         ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
+
+        if (m_SceneState == SceneState::Play)
+        {
+            ImVec2 windowMin = ImGui::GetWindowPos();
+            ImVec2 windowSize = ImGui::GetWindowSize();
+            ImVec2 windowMax = { windowMin.x + windowSize.x, windowMin.y + windowSize.y };
+            ImGui::GetForegroundDrawList()->AddRect(windowMin, windowMax, ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 0.0f, 1.0f)));
+        }
 
         auto viewportOffset = ImGui::GetCursorPos();
 
@@ -316,15 +327,20 @@ namespace Spike
             float windowHeight = (float)ImGui::GetWindowHeight();
             ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
-            // Camera
-            // auto cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-            // const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-            // const glm::mat4& cameraProjection = camera.GetProjection();
-            // glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+            glm::mat4 cameraView, cameraProjection;
+            if (m_SceneState == SceneState::Play)
+            {
+                auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
+                const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+                cameraProjection = camera.GetProjection();
+                cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+            }
 
-            // Editor camera
-            const glm::mat4& cameraProjection = m_EditorCamera.GetProjection();
-            glm::mat4 cameraView = m_EditorCamera.GetViewMatrix();
+            if (m_SceneState == SceneState::Edit)
+            {
+                cameraProjection = m_EditorCamera.GetProjection();
+                cameraView = m_EditorCamera.GetViewMatrix();
+            }
 
             // Entity transform
             auto& tc = selectedEntity.GetComponent<TransformComponent>();
@@ -369,8 +385,18 @@ namespace Spike
     void EditorLayer::OnEvent(Event& e)
     {
         m_SceneHierarchyPanel.OnEvent(e);
-        m_EditorCamera.OnEvent(e);
-        m_EditorScene->OnEvent(e);
+
+        if (m_SceneState == SceneState::Edit)
+        {
+            if (m_ViewportHovered)
+                m_EditorCamera.OnEvent(e);
+            m_EditorScene->OnEvent(e);
+        }
+        else if (m_SceneState == SceneState::Play)
+        {
+            m_RuntimeScene->OnEvent(e);
+        }
+
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
         dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));

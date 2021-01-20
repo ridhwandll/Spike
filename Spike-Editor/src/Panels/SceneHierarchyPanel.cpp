@@ -43,6 +43,15 @@ namespace Spike
     {
         m_Context = context;
         m_SelectionContext = {};
+
+        if (m_SelectionContext && false)
+        {
+            // Try to find same entity in new scene
+            auto& entityMap = m_Context->GetEntityMap();
+            UUID selectedEntityID = m_SelectionContext.GetUUID();
+            if (entityMap.find(selectedEntityID) != entityMap.end())
+                m_SelectionContext = entityMap.at(selectedEntityID);
+        }
     }
 
     void SceneHierarchyPanel::OnImGuiRender()

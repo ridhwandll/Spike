@@ -55,11 +55,13 @@ namespace Spike
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);
         void OnViewportResize(uint32_t width, uint32_t height);
         void OnEvent(Event& e);
+
         // Runtime Stuff
         void OnRuntimeStart();
         void OnRuntimeStop();
         void CopySceneTo(Ref<Scene>& target);
 
+        EntityMap GetEntityMap() { return m_EntityIDMap; }
         UUID GetUUID() const { return m_SceneID; }
         static Ref<Scene> GetScene(UUID uuid);
         void DrawIDBuffer(Ref<Framebuffer> target, EditorCamera& camera);

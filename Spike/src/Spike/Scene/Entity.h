@@ -92,7 +92,7 @@ namespace Spike
         bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
         bool operator!=(const Entity& other) const { return !(*this == other); }
 
-        //UUID GetUUID() { return (GetComponent<IDComponent>().ID); }
+        UUID GetUUID() { return (GetComponent<IDComponent>().ID); }
         UUID GetSceneUUID() { return m_Scene->GetUUID(); }
     private:
         entt::entity m_EntityHandle{ entt::null };
