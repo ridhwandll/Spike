@@ -26,10 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 
-
-
 //For use by Spike Applications
-#include "Spike/Debug/Instrumentor.h"
 #include "Spike/Core/Application.h"
 #include "Spike/Core/Layer.h"
 #include "Spike/Core/Log.h"
@@ -41,7 +38,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/KeyCodes.h"
 #include "Spike/Core/MouseCodes.h"
 
-#include "Spike/Renderer/OrthographicCameraController.h"
 #include "Spike/ImGui/ImGuiLayer.h"
 #include "Spike/Scene/Scene.h"
 #include "Spike/Scene/Components.h"

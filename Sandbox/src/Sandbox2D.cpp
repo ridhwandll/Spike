@@ -32,24 +32,20 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::OnAttach()
 {
-    LE_PROFILE_FUNCTION();
     m_CheckerboardTexture = Spike::Texture2D::Create("Spike-Editor/assets/textures/Checkerboard.png");
 
 }
 void Sandbox2D::OnDetach()
 {
-    LE_PROFILE_FUNCTION();
 }
 
 void Sandbox2D::OnUpdate(Spike::Timestep ts)
 {
-    LE_PROFILE_FUNCTION();
     // Update
      m_CameraController.OnUpdate(ts);
     // Render
      Spike::Renderer2D::ResetStats();
     {
-        LE_PROFILE_SCOPE("Renderer Preparation");
         Spike::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
         Spike::RenderCommand::Clear();
     }
@@ -64,8 +60,6 @@ void Sandbox2D::OnUpdate(Spike::Timestep ts)
 
 void Sandbox2D::OnImGuiRender()
 {
-    LE_PROFILE_FUNCTION();
-
     ImGui::Begin("Settings");
     ImGui::DragFloat3("Position", glm::value_ptr(m_Position));
     ImGui::End();

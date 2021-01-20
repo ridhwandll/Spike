@@ -15,6 +15,7 @@ cmake-build-debug/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+**.csproj
 
 # CLion files
 .idea/

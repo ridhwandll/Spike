@@ -36,7 +36,7 @@ namespace Spike
 
     void Renderer::Init()
     {
-        LE_PROFILE_FUNCTION();
+
         RenderCommand::Init();
         Renderer2D::Init();
     }

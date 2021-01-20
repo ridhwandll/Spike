@@ -223,8 +223,6 @@ namespace Spike
             SPK_CORE_LOG_INFO("Vertex: {0}", i);
             SPK_CORE_LOG_INFO("Position: {0}, {1}, {2}", vertex.Position.x, vertex.Position.y, vertex.Position.z);
             SPK_CORE_LOG_INFO("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
-            //SPK_CORE_LOG_INFO("Binormal: {0}, {1}, {2}", vertex.Binormal.x, vertex.Binormal.y, vertex.Binormal.z);
-            //SPK_CORE_LOG_INFO("Tangent: {0}, {1}, {2}", vertex.Tangent.x, vertex.Tangent.y, vertex.Tangent.z);
             SPK_CORE_LOG_INFO("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
             SPK_CORE_LOG_INFO("--");
         }

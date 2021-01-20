@@ -52,8 +52,6 @@ namespace Spike
 
     void OpenGLRendererAPI::Init()
     {
-        LE_PROFILE_FUNCTION();
-
         glDebugMessageCallback(OpenGLLogErrorMessage, nullptr);
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);

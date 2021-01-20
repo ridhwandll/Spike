@@ -48,7 +48,6 @@ namespace Spike
 
     void EditorLayer::OnAttach()
     {
-        LE_PROFILE_FUNCTION();
         m_CheckerboardTexture = Texture2D::Create("Spike/assets/textures/Checkerboard.png");
 
         FramebufferSpecification fbSpec;
@@ -64,7 +63,7 @@ namespace Spike
 
     void EditorLayer::OnDetach()
     {
-        LE_PROFILE_FUNCTION();
+
     }
 
 
@@ -95,7 +94,6 @@ namespace Spike
 
     void EditorLayer::OnUpdate(Timestep ts)
     {
-        LE_PROFILE_FUNCTION();
         m_FrameTime = ts;
         // Resize
         if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();

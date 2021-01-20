@@ -33,17 +33,9 @@ extern Spike::Application* Spike::CreateApplication();
 int main(int argc, char** argv)
 {
     Spike::Log::Init();
-    LE_PROFILE_BEGIN_SESSION("Startup", "SpikeProfile-Startup.json");
     auto app = Spike::CreateApplication();
-    LE_PROFILE_END_SESSION();
-
-    LE_PROFILE_BEGIN_SESSION("Runtime", "SpikeProfile-Runtime.json");
     app->Run();
-    LE_PROFILE_END_SESSION();
-
-    LE_PROFILE_BEGIN_SESSION("Shutdown", "SpikeProfile-Shutdown.json");
     delete app;
-    LE_PROFILE_END_SESSION();
 }
 
 #endif // SPK_PLATFORM_WINDOWS
