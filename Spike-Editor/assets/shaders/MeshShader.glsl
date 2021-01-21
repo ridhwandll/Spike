@@ -31,37 +31,31 @@ Github repository : https://github.com/FahimFuad/Spike
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec3 a_Normal;
 layout(location = 2) in vec2 a_TexCoord;
-layout(location = 3) in int a_ObjectID; //BIG TODO: Make it work! (mousepicking) this doesn't give error. The shader is fine!
 
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Transform;
 
 out vec3 v_Normal;
 out vec2 v_TexCoord;
-out flat int v_ObjectID;
 
 void main()
 {
     gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
     v_TexCoord = a_TexCoord;
     v_Normal = a_Normal;
-    v_ObjectID = a_ObjectID;
 }
 
 #type fragment
 #version 430 core
 
 layout(location = 0) out vec4 FragColor;
-layout(location = 1) out int o_IDBuffer;
 
 in vec3 v_Normal;
 in vec2 v_TexCoord;
-in flat int v_ObjectID;
 
 uniform sampler2D u_AlbedoTexture;
 
 void main()
 {
     FragColor = /*texture(u_AlbedoTexture, v_TexCoord);*/vec4((v_Normal * 0.5 + 0.5), 1.0);/*vec4(1.0f, 0.5f, 0.0f, 1.0f);*///texture(textureDiffuse, TexCoords);
-    o_IDBuffer = v_ObjectID;
 }

@@ -57,13 +57,13 @@ namespace Spike
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-        io.Fonts->AddFontFromFileTTF("Spike/assets/fonts/JetBrains Mono/JetBrainsMono-ExtraBold.ttf", 17.0f);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF("Spike/assets/fonts/JetBrains Mono/JetBrainsMono-Bold.ttf", 17.0f);
+        io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/JetBrains Mono/JetBrainsMono-ExtraBold.ttf", 17.0f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/JetBrains Mono/JetBrainsMono-Bold.ttf", 17.0f);
 
         ImFontConfig config;
         config.MergeMode = true;
         static const ImWchar icon_ranges[] = { ICON_MIN_FK, ICON_MAX_FK, 0 };
-        io.Fonts->AddFontFromFileTTF("Spike/assets/fonts/fontawesome-webfont.ttf", 14.0f, &config, icon_ranges);
+        io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/fontawesome-webfont.ttf", 14.0f, &config, icon_ranges);
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
 

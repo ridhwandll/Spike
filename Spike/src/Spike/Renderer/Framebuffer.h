@@ -30,11 +30,48 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+
+    enum class FramebufferTextureFormat
+    {
+        None = 0,
+
+        // Color
+        RGBA8 = 1,
+        RGBA16F = 2,
+        RGBA32F = 3,
+        RG32F = 4,
+
+        // Depth/stencil
+        DEPTH32F = 5,
+        DEPTH24STENCIL8 = 6,
+
+        // Defaults
+        Depth = DEPTH24STENCIL8
+    };
+
+    struct FramebufferTextureSpecification
+    {
+        FramebufferTextureSpecification() = default;
+        FramebufferTextureSpecification(FramebufferTextureFormat format) : TextureFormat(format) {}
+
+        FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
+        // TODO: filtering/wrap
+    };
+
+    struct FramebufferAttachmentSpecification
+    {
+        FramebufferAttachmentSpecification() = default;
+        FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
+            : Attachments(attachments) {}
+
+        std::vector<FramebufferTextureSpecification> Attachments;
+    };
+
     struct FramebufferSpecification
     {
         uint32_t Width = 0, Height = 0;
         uint32_t Samples = 1;
-
+        FramebufferAttachmentSpecification Attachments;
         bool SwapChainTarget = false;
     };
 
@@ -47,7 +84,7 @@ namespace Spike
 
         virtual void Resize(const uint32_t width, const uint32_t height) = 0;
 
-        virtual uint32_t GetColorAttachmentRendererID() const = 0;
+        virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
         virtual const FramebufferSpecification& GetSpecification() const = 0;
         static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
     };

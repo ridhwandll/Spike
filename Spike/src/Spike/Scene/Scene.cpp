@@ -117,10 +117,11 @@ namespace Spike
                 for (auto entity : group)
                 {
                     auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
                     if (sprite.Texture)
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, sprite.TilingFactor, sprite.Color);
                     else
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
                 }
 
                 Renderer2D::EndScene();
@@ -129,12 +130,12 @@ namespace Spike
                 Renderer::BeginScene(*mainCamera, cameraTransform);
 
                 auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
-                for (auto entity : group) {
+                for (auto entity : group)
+                {
                     auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                     if (mesh.Mesh)
                     {
-                        // BIG TODO: Sort this out. Make mousepicking work with 3D
-                        Renderer::SubmitMesh(mesh.Mesh, (uint32_t)entity, transform.GetTransform());
+                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
                     }
                 }
                 Renderer::EndScene();
@@ -149,10 +150,14 @@ namespace Spike
                 Renderer2D::BeginScene(camera);
 
                 auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-                for (auto entity : group) {
+                for (auto entity : group)
+                {
                     auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-                    Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, (uint32_t)entity, sprite.TilingFactor, sprite.Color);
+                    if (sprite.Texture)
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, sprite.TilingFactor, sprite.Color);
+                    else
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
                 }
 
                 Renderer2D::EndScene();
@@ -162,12 +167,12 @@ namespace Spike
                 Renderer::BeginScene(camera);
 
                 auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
-                for (auto entity : group) {
+                for (auto entity : group)
+                {
                     auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                     if (mesh.Mesh)
                     {
-                        // BIG TODO: Sort this out. Make mousepicking work with 3D
-                        Renderer::SubmitMesh(mesh.Mesh, (uint32_t)entity ,transform.GetTransform());
+                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
                     }
                 }
                 Renderer::EndScene();
@@ -268,32 +273,6 @@ namespace Spike
             return s_ActiveScenes.at(uuid);
 
         return {};
-    }
-
-    void Scene::DrawIDBuffer(Ref<Framebuffer> target, EditorCamera& camera)
-    {
-        target->Bind();
-        // Render to ID buffer
-        {
-            Renderer2D::BeginScene(camera);
-
-            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-            for (auto entity : group) {
-                auto[transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-                Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
-            }
-
-            Renderer2D::EndScene();
-        }
-    }
-
-    int Scene::Pixel(int x, int y)
-    {
-        glReadBuffer(GL_COLOR_ATTACHMENT1);
-        int pixelData;
-        glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
-        return pixelData;
     }
 
     template<>

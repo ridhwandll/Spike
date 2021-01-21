@@ -45,7 +45,6 @@ namespace Spike
         static void EndScene();
 
         static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform);
-        static void SubmitMesh(Ref<Mesh> mesh, uint32_t entityID, const glm::mat4& transform); //BIG TODO: mousepicking on 3D
         static void Submit(Ref<Shader> shader, Ref<VertexArray> vertexArray, const glm::mat4& transform);
 
         static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }

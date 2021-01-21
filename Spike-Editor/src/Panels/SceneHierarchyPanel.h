@@ -39,7 +39,6 @@ namespace Spike
         SceneHierarchyPanel() = default;
         SceneHierarchyPanel(const Ref<Scene>& context);
         void SetContext(const Ref<Scene>& context);
-        void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
         void ClearSelectedEntity() { m_SelectionContext = {}; }
 
         Entity GetSelectedEntity() const { return m_SelectionContext; };

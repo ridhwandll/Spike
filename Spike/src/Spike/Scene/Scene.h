@@ -64,8 +64,6 @@ namespace Spike
         EntityMap GetEntityMap() { return m_EntityIDMap; }
         UUID GetUUID() const { return m_SceneID; }
         static Ref<Scene> GetScene(UUID uuid);
-        void DrawIDBuffer(Ref<Framebuffer> target, EditorCamera& camera);
-        int Pixel(int x, int y);
 
         Entity GetPrimaryCameraEntity();
     private:
