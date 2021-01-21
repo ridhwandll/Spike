@@ -46,12 +46,12 @@ namespace Spike
         void IncRefCount() const
         {
             m_RefCount++;
-            SPK_REF_LOG_INCREMENT("REF incremented!");                //removeable
+            SPK_REF_LOG_INCREMENT("REF incremented!");
         }
         void DecRefCount() const
         {
             m_RefCount--;
-            SPK_REF_LOG_DECREMENT("REF decremented!");                //removeable
+            SPK_REF_LOG_DECREMENT("REF decremented!");
         }
 
         uint32_t GetRefCount() const { return m_RefCount; }
