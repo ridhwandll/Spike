@@ -41,7 +41,6 @@ namespace Spike
     struct IDComponent
     {
         UUID ID = 0;
-        const char* GetName() { return "ID"; }
     };
 
     struct TagComponent
@@ -52,7 +51,7 @@ namespace Spike
         TagComponent(const std::string tag)
             :Tag(tag) {}
 
-        const char* GetName() { return "Tag"; }
+        const char* GetUITitle() { return "Tag"; }
     };
     struct TransformComponent
     {
@@ -71,7 +70,7 @@ namespace Spike
             Rotation = { 0.0f, 0.0f, 0.0f };
             Scale = { 1.0f, 1.0f, 1.0f };
         }
-        const char* GetName() { return ICON_FK_WRENCH" Transform"; }
+        const char* GetUITitle() { return ICON_FK_WRENCH" Transform"; }
         glm::mat4 GetTransform() const
         {
             glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
@@ -104,7 +103,7 @@ namespace Spike
             Color = { 1.0f, 1.0f, 1.0f, 1.0f };
             RemoveTexture();
         }
-        const char* GetName() { return ICON_FK_SQUARE" Sprite Renderer"; }
+        const char* GetUITitle() { return ICON_FK_SQUARE" Sprite Renderer"; }
     };
 
     struct CameraComponent
@@ -121,7 +120,7 @@ namespace Spike
             Primary = true;
             FixedAspectRatio = false;
         }
-        const char* GetName() { return ICON_FK_CAMERA" Camera"; }
+        const char* GetUITitle() { return ICON_FK_CAMERA" Camera"; }
     };
 
     struct MeshComponent
@@ -134,6 +133,72 @@ namespace Spike
 
         void SetFilePath(std::string& path) { MeshFilepath = path; }
         void Reset() { Mesh = nullptr; }
-        const char* GetName() { return ICON_FK_CUBE" Mesh"; }
+        const char* GetUITitle() { return ICON_FK_CUBE" Mesh"; }
     };
+
+    //// 2D Physics //////////////////////////////////////////////////////////////////////
+    struct RigidBody2DComponent
+    {
+        enum class Type { Static, Dynamic, Kinematic };
+
+        Type BodyType;
+        bool FixedRotation = false;
+
+        void* RuntimeBody = nullptr; //Needed at runtime
+
+        RigidBody2DComponent() = default;
+        RigidBody2DComponent(const RigidBody2DComponent & other) = default;
+
+        void Reset() { BodyType = Type::Static; }
+        const char* GetUITitle() { return "RigidBody2D"; }
+    };
+
+    struct BoxCollider2DComponent
+    {
+        glm::vec2 Offset = { 0.0f, 0.0f };
+        glm::vec2 Size = { 1.0f, 1.0f };
+
+        float Density = 1.0f;
+        float Friction = 1.0f;
+
+        void* RuntimeFixture = nullptr; //Needed at runtime
+
+        BoxCollider2DComponent() = default;
+        BoxCollider2DComponent(const BoxCollider2DComponent & other) = default;
+
+        void Reset()
+        {
+            Offset = { 0.0f, 0.0f };
+            Size = { 1.0f, 1.0f };
+
+            Density = 1.0f;
+            Friction = 1.0f;
+        }
+        const char* GetUITitle() { return "BoxCollider2D"; }
+    };
+
+    struct CircleCollider2DComponent
+    {
+        glm::vec2 Offset = { 0.0f, 0.0f };
+        float Radius = 1.0f;
+
+        float Density = 1.0f;
+        float Friction = 1.0f;
+
+        void* RuntimeFixture = nullptr;
+
+        CircleCollider2DComponent() = default;
+        CircleCollider2DComponent(const CircleCollider2DComponent& other) = default;
+
+        void Reset()
+        {
+            Offset = { 0.0f, 0.0f };
+            Radius = 1.0f;
+
+            Density = 1.0f;
+            Friction = 1.0f;
+        }
+        const char* GetUITitle() { return "CircleCollider2D"; }
+    };
+    /////2D Physics End///////////////////////////////////////////////////////////////////
 }

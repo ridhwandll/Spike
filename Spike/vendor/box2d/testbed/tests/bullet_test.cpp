@@ -35,7 +35,7 @@ public:
 
 			b2EdgeShape edge;
 
-			edge.SetTwoSided(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
+			edge.Set(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
 			body->CreateFixture(&edge, 0.0f);
 
 			b2PolygonShape shape;
@@ -79,9 +79,9 @@ public:
 		m_bullet->SetLinearVelocity(b2Vec2(0.0f, -50.0f));
 		m_bullet->SetAngularVelocity(0.0f);
 
-		extern B2_API int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
-		extern B2_API int32 b2_toiCalls, b2_toiIters, b2_toiMaxIters;
-		extern B2_API int32 b2_toiRootIters, b2_toiMaxRootIters;
+		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
+		extern int32 b2_toiCalls, b2_toiIters, b2_toiMaxIters;
+		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
 
 		b2_gjkCalls = 0;
 		b2_gjkIters = 0;
@@ -98,9 +98,9 @@ public:
 	{
 		Test::Step(settings);
 
-		extern B2_API int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
-		extern B2_API int32 b2_toiCalls, b2_toiIters;
-		extern B2_API int32 b2_toiRootIters, b2_toiMaxRootIters;
+		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
+		extern int32 b2_toiCalls, b2_toiIters;
+		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
 
 		if (b2_gjkCalls > 0)
 		{

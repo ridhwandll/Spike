@@ -23,7 +23,6 @@
 #ifndef B2_JOINT_H
 #define B2_JOINT_H
 
-#include "b2_api.h"
 #include "b2_math.h"
 
 class b2Body;
@@ -48,7 +47,15 @@ enum b2JointType
 	e_motorJoint
 };
 
-struct B2_API b2Jacobian
+enum b2LimitState
+{
+	e_inactiveLimit,
+	e_atLowerLimit,
+	e_atUpperLimit,
+	e_equalLimits
+};
+
+struct b2Jacobian
 {
 	b2Vec2 linear;
 	float angularA;
@@ -60,7 +67,7 @@ struct B2_API b2Jacobian
 /// is an edge. A joint edge belongs to a doubly linked list
 /// maintained in each attached body. Each joint has two joint
 /// nodes, one for each attached body.
-struct B2_API b2JointEdge
+struct b2JointEdge
 {
 	b2Body* other;			///< provides quick access to the other body attached.
 	b2Joint* joint;			///< the joint
@@ -69,11 +76,12 @@ struct B2_API b2JointEdge
 };
 
 /// Joint definitions are used to construct joints.
-struct B2_API b2JointDef
+struct b2JointDef
 {
 	b2JointDef()
 	{
 		type = e_unknownJoint;
+		userData = nullptr;
 		bodyA = nullptr;
 		bodyB = nullptr;
 		collideConnected = false;
@@ -83,7 +91,7 @@ struct B2_API b2JointDef
 	b2JointType type;
 
 	/// Use this to attach application specific data to your joints.
-	b2JointUserData userData;
+	void* userData;
 
 	/// The first attached body.
 	b2Body* bodyA;
@@ -95,19 +103,9 @@ struct B2_API b2JointDef
 	bool collideConnected;
 };
 
-/// Utility to compute linear stiffness values from frequency and damping ratio
-B2_API void b2LinearStiffness(float& stiffness, float& damping,
-	float frequencyHertz, float dampingRatio,
-	const b2Body* bodyA, const b2Body* bodyB);
-
-/// Utility to compute rotational stiffness values frequency and damping ratio
-B2_API void b2AngularStiffness(float& stiffness, float& damping,
-	float frequencyHertz, float dampingRatio,
-	const b2Body* bodyA, const b2Body* bodyB);
-
 /// The base joint class. Joints are used to constraint two bodies together in
 /// various fashions. Some joints also feature limits and motors.
-class B2_API b2Joint
+class b2Joint
 {
 public:
 
@@ -137,7 +135,10 @@ public:
 	const b2Joint* GetNext() const;
 
 	/// Get the user data pointer.
-	b2JointUserData& GetUserData();
+	void* GetUserData() const;
+
+	/// Set the user data pointer.
+	void SetUserData(void* data);
 
 	/// Short-cut function to determine if either body is enabled.
 	bool IsEnabled() const;
@@ -187,7 +188,7 @@ protected:
 	bool m_islandFlag;
 	bool m_collideConnected;
 
-	b2JointUserData m_userData;
+	void* m_userData;
 };
 
 inline b2JointType b2Joint::GetType() const
@@ -215,9 +216,14 @@ inline const b2Joint* b2Joint::GetNext() const
 	return m_next;
 }
 
-inline b2JointUserData& b2Joint::GetUserData()
+inline void* b2Joint::GetUserData() const
 {
 	return m_userData;
+}
+
+inline void b2Joint::SetUserData(void* data)
+{
+	m_userData = data;
 }
 
 inline bool b2Joint::GetCollideConnected() const

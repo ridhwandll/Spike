@@ -23,9 +23,8 @@
 #ifndef B2_GROWABLE_STACK_H
 #define B2_GROWABLE_STACK_H
 
-#include <string.h>
-
 #include "b2_settings.h"
+#include <string.h>
 
 /// This is a growable LIFO stack with an initial capacity of N.
 /// If the stack size exceeds the initial capacity, the heap is used

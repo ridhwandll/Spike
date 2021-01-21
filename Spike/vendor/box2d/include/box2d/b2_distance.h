@@ -23,14 +23,13 @@
 #ifndef B2_DISTANCE_H
 #define B2_DISTANCE_H
 
-#include "b2_api.h"
 #include "b2_math.h"
 
 class b2Shape;
 
 /// A distance proxy is used by the GJK algorithm.
 /// It encapsulates any shape.
-struct B2_API b2DistanceProxy
+struct b2DistanceProxy
 {
 	b2DistanceProxy() : m_vertices(nullptr), m_count(0), m_radius(0.0f) {}
 
@@ -62,7 +61,7 @@ struct B2_API b2DistanceProxy
 
 /// Used to warm start b2Distance.
 /// Set count to zero on first call.
-struct B2_API b2SimplexCache
+struct b2SimplexCache
 {
 	float metric;		///< length or area
 	uint16 count;
@@ -72,8 +71,8 @@ struct B2_API b2SimplexCache
 
 /// Input for b2Distance.
 /// You have to option to use the shape radii
-/// in the computation. Even
-struct B2_API b2DistanceInput
+/// in the computation. Even 
+struct b2DistanceInput
 {
 	b2DistanceProxy proxyA;
 	b2DistanceProxy proxyB;
@@ -83,7 +82,7 @@ struct B2_API b2DistanceInput
 };
 
 /// Output for b2Distance.
-struct B2_API b2DistanceOutput
+struct b2DistanceOutput
 {
 	b2Vec2 pointA;		///< closest point on shapeA
 	b2Vec2 pointB;		///< closest point on shapeB
@@ -94,12 +93,12 @@ struct B2_API b2DistanceOutput
 /// Compute the closest points between two shapes. Supports any combination of:
 /// b2CircleShape, b2PolygonShape, b2EdgeShape. The simplex cache is input/output.
 /// On the first call set b2SimplexCache.count to zero.
-B2_API void b2Distance(b2DistanceOutput* output,
-				b2SimplexCache* cache,
+void b2Distance(b2DistanceOutput* output,
+				b2SimplexCache* cache, 
 				const b2DistanceInput* input);
 
 /// Input parameters for b2ShapeCast
-struct B2_API b2ShapeCastInput
+struct b2ShapeCastInput
 {
 	b2DistanceProxy proxyA;
 	b2DistanceProxy proxyB;
@@ -109,7 +108,7 @@ struct B2_API b2ShapeCastInput
 };
 
 /// Output results for b2ShapeCast
-struct B2_API b2ShapeCastOutput
+struct b2ShapeCastOutput
 {
 	b2Vec2 point;
 	b2Vec2 normal;
@@ -118,8 +117,7 @@ struct B2_API b2ShapeCastOutput
 };
 
 /// Perform a linear shape cast of shape B moving and shape A fixed. Determines the hit point, normal, and translation fraction.
-/// @returns true if hit, false if there is no hit or an initial overlap
-B2_API bool b2ShapeCast(b2ShapeCastOutput* output, const b2ShapeCastInput* input);
+bool b2ShapeCast(b2ShapeCastOutput* output, const b2ShapeCastInput* input);
 
 //////////////////////////////////////////////////////////////////////////
 

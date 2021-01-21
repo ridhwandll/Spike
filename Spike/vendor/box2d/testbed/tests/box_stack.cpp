@@ -22,7 +22,7 @@
 
 #include "test.h"
 
-extern B2_API bool g_blockSolve;
+extern bool g_blockSolve;
 
 class BoxStack : public Test
 {
@@ -43,10 +43,10 @@ public:
 			b2Body* ground = m_world->CreateBody(&bd);
 
 			b2EdgeShape shape;
-			shape.SetTwoSided(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+			shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
 			ground->CreateFixture(&shape, 0.0f);
 
-			shape.SetTwoSided(b2Vec2(20.0f, 0.0f), b2Vec2(20.0f, 20.0f));
+			shape.Set(b2Vec2(20.0f, 0.0f), b2Vec2(20.0f, 20.0f));
 			ground->CreateFixture(&shape, 0.0f);
 		}
 
@@ -70,7 +70,7 @@ public:
 				int32 n = j * e_rowCount + i;
 				b2Assert(n < e_rowCount * e_columnCount);
 				m_indices[n] = n;
-				bd.userData.pointer = n;
+				bd.userData = m_indices + n;
 
 				float x = 0.0f;
 				//float x = RandomFloat(-0.02f, 0.02f);

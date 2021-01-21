@@ -27,8 +27,7 @@
 
 /// Gear joint definition. This definition requires two existing
 /// revolute or prismatic joints (any combination will work).
-/// @warning bodyB on the input joints must both be dynamic
-struct B2_API b2GearJointDef : public b2JointDef
+struct b2GearJointDef : public b2JointDef
 {
 	b2GearJointDef()
 	{
@@ -58,7 +57,7 @@ struct B2_API b2GearJointDef : public b2JointDef
 /// of length or units of 1/length.
 /// @warning You have to manually destroy the gear joint if joint1 or joint2
 /// is destroyed.
-class B2_API b2GearJoint : public b2Joint
+class b2GearJoint : public b2Joint
 {
 public:
 	b2Vec2 GetAnchorA() const override;

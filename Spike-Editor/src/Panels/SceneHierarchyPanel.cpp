@@ -62,7 +62,8 @@ namespace Spike
         m_Context->m_Registry.each([&](auto entityID)
         {
             Entity entity{ entityID, m_Context.Raw() };
-            DrawEntityNode(entity);
+            if (entity.HasComponent<IDComponent>())
+                DrawEntityNode(entity);
         });
 
         m_IsHierarchyFocused = ImGui::IsWindowFocused();
@@ -119,6 +120,7 @@ namespace Spike
 
     void SceneHierarchyPanel::DrawEntityNode(Entity entity)
     {
+
         auto& tag = entity.GetComponent<TagComponent>().Tag;
 
         ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;

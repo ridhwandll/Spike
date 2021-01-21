@@ -23,14 +23,13 @@
 #ifndef B2_DYNAMIC_TREE_H
 #define B2_DYNAMIC_TREE_H
 
-#include "b2_api.h"
 #include "b2_collision.h"
 #include "b2_growable_stack.h"
 
 #define b2_nullNode (-1)
 
 /// A node in the dynamic tree. The client does not interact with this directly.
-struct B2_API b2TreeNode
+struct b2TreeNode
 {
 	bool IsLeaf() const
 	{
@@ -65,7 +64,7 @@ struct B2_API b2TreeNode
 /// object to move by small amounts without triggering a tree update.
 ///
 /// Nodes are pooled and relocatable, so we use node indices rather than pointers.
-class B2_API b2DynamicTree
+class b2DynamicTree
 {
 public:
 	/// Constructing the tree initializes the node pool.
@@ -156,6 +155,9 @@ private:
 	int32 m_nodeCapacity;
 
 	int32 m_freeList;
+
+	/// This is used to incrementally traverse the tree for re-balancing.
+	uint32 m_path;
 
 	int32 m_insertionCount;
 };

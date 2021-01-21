@@ -23,7 +23,6 @@
 #ifndef B2_FIXTURE_H
 #define B2_FIXTURE_H
 
-#include "b2_api.h"
 #include "b2_body.h"
 #include "b2_collision.h"
 #include "b2_shape.h"
@@ -34,7 +33,7 @@ class b2BroadPhase;
 class b2Fixture;
 
 /// This holds contact filtering data.
-struct B2_API b2Filter
+struct b2Filter
 {
 	b2Filter()
 	{
@@ -58,15 +57,15 @@ struct B2_API b2Filter
 
 /// A fixture definition is used to create a fixture. This class defines an
 /// abstract fixture definition. You can reuse fixture definitions safely.
-struct B2_API b2FixtureDef
+struct b2FixtureDef
 {
 	/// The constructor sets the default fixture definition values.
 	b2FixtureDef()
 	{
 		shape = nullptr;
+		userData = nullptr;
 		friction = 0.2f;
 		restitution = 0.0f;
-		restitutionThreshold = 1.0f * b2_lengthUnitsPerMeter;
 		density = 0.0f;
 		isSensor = false;
 	}
@@ -76,17 +75,13 @@ struct B2_API b2FixtureDef
 	const b2Shape* shape;
 
 	/// Use this to store application specific fixture data.
-	b2FixtureUserData userData;
+	void* userData;
 
 	/// The friction coefficient, usually in the range [0,1].
 	float friction;
 
 	/// The restitution (elasticity) usually in the range [0,1].
 	float restitution;
-
-	/// Restitution velocity threshold, usually in m/s. Collisions above this
-	/// speed have restitution applied (will bounce).
-	float restitutionThreshold;
 
 	/// The density, usually in kg/m^2.
 	float density;
@@ -100,7 +95,7 @@ struct B2_API b2FixtureDef
 };
 
 /// This proxy is used internally to connect fixtures to the broad-phase.
-struct B2_API b2FixtureProxy
+struct b2FixtureProxy
 {
 	b2AABB aabb;
 	b2Fixture* fixture;
@@ -113,7 +108,7 @@ struct B2_API b2FixtureProxy
 /// such as friction, collision filters, etc.
 /// Fixtures are created via b2Body::CreateFixture.
 /// @warning you cannot reuse fixtures.
-class B2_API b2Fixture
+class b2Fixture
 {
 public:
 	/// Get the type of the child shape. You can use this to down cast to the concrete shape.
@@ -156,7 +151,10 @@ public:
 
 	/// Get the user data that was assigned in the fixture definition. Use this to
 	/// store your application specific data.
-	b2FixtureUserData& GetUserData();
+	void* GetUserData() const;
+
+	/// Set the user data. Use this to store your application specific data.
+	void SetUserData(void* data);
 
 	/// Test a point for containment in this fixture.
 	/// @param p a point in world coordinates.
@@ -193,13 +191,6 @@ public:
 	/// Set the coefficient of restitution. This will _not_ change the restitution of
 	/// existing contacts.
 	void SetRestitution(float restitution);
-
-	/// Get the restitution velocity threshold.
-	float GetRestitutionThreshold() const;
-
-	/// Set the restitution threshold. This will _not_ change the restitution threshold of
-	/// existing contacts.
-	void SetRestitutionThreshold(float threshold);
 
 	/// Get the fixture's AABB. This AABB may be enlarge and/or stale.
 	/// If you need a more accurate AABB, compute it using the shape and
@@ -238,7 +229,6 @@ protected:
 
 	float m_friction;
 	float m_restitution;
-	float m_restitutionThreshold;
 
 	b2FixtureProxy* m_proxies;
 	int32 m_proxyCount;
@@ -247,7 +237,7 @@ protected:
 
 	bool m_isSensor;
 
-	b2FixtureUserData m_userData;
+	void* m_userData;
 };
 
 inline b2Shape::Type b2Fixture::GetType() const
@@ -275,9 +265,14 @@ inline const b2Filter& b2Fixture::GetFilterData() const
 	return m_filter;
 }
 
-inline b2FixtureUserData& b2Fixture::GetUserData()
+inline void* b2Fixture::GetUserData() const
 {
 	return m_userData;
+}
+
+inline void b2Fixture::SetUserData(void* data)
+{
+	m_userData = data;
 }
 
 inline b2Body* b2Fixture::GetBody()
@@ -329,16 +324,6 @@ inline float b2Fixture::GetRestitution() const
 inline void b2Fixture::SetRestitution(float restitution)
 {
 	m_restitution = restitution;
-}
-
-inline float b2Fixture::GetRestitutionThreshold() const
-{
-	return m_restitutionThreshold;
-}
-
-inline void b2Fixture::SetRestitutionThreshold(float threshold)
-{
-	m_restitutionThreshold = threshold;
 }
 
 inline bool b2Fixture::TestPoint(const b2Vec2& p) const

@@ -23,14 +23,13 @@
 #ifndef B2_SHAPE_H
 #define B2_SHAPE_H
 
-#include "b2_api.h"
 #include "b2_math.h"
 #include "b2_collision.h"
 
 class b2BlockAllocator;
 
 /// This holds the mass data computed for a shape.
-struct B2_API b2MassData
+struct b2MassData
 {
 	/// The mass of the shape, usually in kilograms.
 	float mass;
@@ -45,10 +44,10 @@ struct B2_API b2MassData
 /// A shape is used for collision detection. You can create a shape however you like.
 /// Shapes used for simulation in b2World are created automatically when a b2Fixture
 /// is created. Shapes may encapsulate a one or more child shapes.
-class B2_API b2Shape
+class b2Shape
 {
 public:
-
+	
 	enum Type
 	{
 		e_circle = 0,

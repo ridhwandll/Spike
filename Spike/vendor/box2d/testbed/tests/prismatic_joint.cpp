@@ -36,7 +36,7 @@ public:
 			ground = m_world->CreateBody(&bd);
 
 			b2EdgeShape shape;
-			shape.SetTwoSided(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+			shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
 			ground->CreateFixture(&shape, 0.0f);
 		}
 
@@ -72,6 +72,14 @@ public:
 		}
 	}
 
+	void Step(Settings& settings) override
+	{
+		Test::Step(settings);
+		float force = m_joint->GetMotorForce(settings.m_hertz);
+		g_debugDraw.DrawString(5, m_textLine, "Motor Force = %4.0f", (float) force);
+		m_textLine += m_textIncrement;
+	}
+
 	void UpdateUI() override
 	{
 		ImGui::SetNextWindowPos(ImVec2(10.0f, 100.0f));
@@ -94,14 +102,6 @@ public:
 		}
 
 		ImGui::End();
-	}
-
-	void Step(Settings& settings) override
-	{
-		Test::Step(settings);
-		float force = m_joint->GetMotorForce(settings.m_hertz);
-		g_debugDraw.DrawString(5, m_textLine, "Motor Force = %4.0f", force);
-		m_textLine += m_textIncrement;
 	}
 
 	static Test* Create()

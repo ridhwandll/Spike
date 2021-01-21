@@ -36,7 +36,7 @@ public:
 			ground = m_world->CreateBody(&bd);
 
 			b2EdgeShape shape;
-			shape.SetTwoSided(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+			shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
 			ground->CreateFixture(&shape, 0.0f);
 		}
 
@@ -55,6 +55,11 @@ public:
 			b2Body* body = m_world->CreateBody(&bd);
 			body->CreateFixture(&shape, 5.0f);
 
+			float mass = body->GetMass();
+			float hertz = 1.0f;
+			float dampingRatio = 0.7f;
+			float omega = 2.0f * b2_pi * hertz;
+
 			b2WheelJointDef jd;
 
 			// Horizontal
@@ -63,13 +68,11 @@ public:
 			jd.motorSpeed = m_motorSpeed;
 			jd.maxMotorTorque = 10000.0f;
 			jd.enableMotor = m_enableMotor;
+			jd.stiffness = mass * omega * omega;
+			jd.damping = 2.0f * mass * dampingRatio * omega;
 			jd.lowerTranslation = -3.0f;
 			jd.upperTranslation = 3.0f;
 			jd.enableLimit = m_enableLimit;
-
-			float hertz = 1.0f;
-			float dampingRatio = 0.7f;
-			b2LinearStiffness(jd.stiffness, jd.damping, hertz, dampingRatio, ground, body);
 
 			m_joint = (b2WheelJoint*)m_world->CreateJoint(&jd);
 		}
@@ -78,13 +81,8 @@ public:
 	void Step(Settings& settings) override
 	{
 		Test::Step(settings);
-
 		float torque = m_joint->GetMotorTorque(settings.m_hertz);
-		g_debugDraw.DrawString(5, m_textLine, "Motor Torque = %4.0f", torque);
-		m_textLine += m_textIncrement;
-
-		b2Vec2 F = m_joint->GetReactionForce(settings.m_hertz);
-		g_debugDraw.DrawString(5, m_textLine, "Reaction Force = (%4.1f, %4.1f)", F.x, F.y);
+		g_debugDraw.DrawString(5, m_textLine, "Motor Torque = %4.0f", (float)torque);
 		m_textLine += m_textIncrement;
 	}
 

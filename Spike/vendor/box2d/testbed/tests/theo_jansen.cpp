@@ -93,37 +93,30 @@ public:
 		body1->CreateFixture(&fd1);
 		body2->CreateFixture(&fd2);
 
-		{
-			b2DistanceJointDef jd;
+		b2DistanceJointDef djd;
 
-			// Using a soft distance constraint can reduce some jitter.
-			// It also makes the structure seem a bit more fluid by
-			// acting like a suspension system.
-			float dampingRatio = 0.5f;
-			float frequencyHz = 10.0f;
+		// Using a soft distance constraint can reduce some jitter.
+		// It also makes the structure seem a bit more fluid by
+		// acting like a suspension system.
+		djd.dampingRatio = 0.5f;
+		djd.frequencyHz = 10.0f;
 
-			jd.Initialize(body1, body2, p2 + m_offset, p5 + m_offset);
-			b2LinearStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-			m_world->CreateJoint(&jd);
+		djd.Initialize(body1, body2, p2 + m_offset, p5 + m_offset);
+		m_world->CreateJoint(&djd);
 
-			jd.Initialize(body1, body2, p3 + m_offset, p4 + m_offset);
-			b2LinearStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-			m_world->CreateJoint(&jd);
+		djd.Initialize(body1, body2, p3 + m_offset, p4 + m_offset);
+		m_world->CreateJoint(&djd);
 
-			jd.Initialize(body1, m_wheel, p3 + m_offset, wheelAnchor + m_offset);
-			b2LinearStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-			m_world->CreateJoint(&jd);
+		djd.Initialize(body1, m_wheel, p3 + m_offset, wheelAnchor + m_offset);
+		m_world->CreateJoint(&djd);
 
-			jd.Initialize(body2, m_wheel, p6 + m_offset, wheelAnchor + m_offset);
-			b2LinearStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-			m_world->CreateJoint(&jd);
-		}
+		djd.Initialize(body2, m_wheel, p6 + m_offset, wheelAnchor + m_offset);
+		m_world->CreateJoint(&djd);
 
-		{
-			b2RevoluteJointDef jd;
-			jd.Initialize(body2, m_chassis, p4 + m_offset);
-			m_world->CreateJoint(&jd);
-		}
+		b2RevoluteJointDef rjd;
+
+		rjd.Initialize(body2, m_chassis, p4 + m_offset);
+		m_world->CreateJoint(&rjd);
 	}
 
 	TheoJansen()
@@ -139,13 +132,13 @@ public:
 			b2Body* ground = m_world->CreateBody(&bd);
 
 			b2EdgeShape shape;
-			shape.SetTwoSided(b2Vec2(-50.0f, 0.0f), b2Vec2(50.0f, 0.0f));
+			shape.Set(b2Vec2(-50.0f, 0.0f), b2Vec2(50.0f, 0.0f));
 			ground->CreateFixture(&shape, 0.0f);
 
-			shape.SetTwoSided(b2Vec2(-50.0f, 0.0f), b2Vec2(-50.0f, 10.0f));
+			shape.Set(b2Vec2(-50.0f, 0.0f), b2Vec2(-50.0f, 10.0f));
 			ground->CreateFixture(&shape, 0.0f);
 
-			shape.SetTwoSided(b2Vec2(50.0f, 0.0f), b2Vec2(50.0f, 10.0f));
+			shape.Set(b2Vec2(50.0f, 0.0f), b2Vec2(50.0f, 10.0f));
 			ground->CreateFixture(&shape, 0.0f);
 		}
 

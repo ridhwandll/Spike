@@ -43,7 +43,7 @@ public:
 			ground = m_world->CreateBody(&bd);
 
 			b2EdgeShape shape;
-			shape.SetTwoSided(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
+			shape.Set(b2Vec2(-40.0f, 0.0f), b2Vec2(40.0f, 0.0f));
 			ground->CreateFixture(&shape, 0.0f);
 		}
 
@@ -83,8 +83,8 @@ public:
 			fd.density = 20.0f;
 
 			b2WeldJointDef jd;
-			float frequencyHz = 5.0f;
-			float dampingRatio = 0.7f;
+			jd.frequencyHz = 5.0f;
+			jd.dampingRatio = 0.7f;
 
 			b2Body* prevBody = ground;
 			for (int32 i = 0; i < 3; ++i)
@@ -97,7 +97,6 @@ public:
 
 				b2Vec2 anchor(-15.0f + 2.0f * i, 15.0f);
 				jd.Initialize(prevBody, body, anchor);
-				b2AngularStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
 				m_world->CreateJoint(&jd);
 
 				prevBody = body;
@@ -143,8 +142,8 @@ public:
 			fd.density = 20.0f;
 
 			b2WeldJointDef jd;
-			float frequencyHz = 8.0f;
-			float dampingRatio = 0.7f;
+			jd.frequencyHz = 8.0f;
+			jd.dampingRatio = 0.7f;
 
 			b2Body* prevBody = ground;
 			for (int32 i = 0; i < e_count; ++i)
@@ -159,9 +158,6 @@ public:
 				{
 					b2Vec2 anchor(5.0f + 1.0f * i, 10.0f);
 					jd.Initialize(prevBody, body, anchor);
-
-					b2AngularStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, prevBody, body);
-
 					m_world->CreateJoint(&jd);
 				}
 

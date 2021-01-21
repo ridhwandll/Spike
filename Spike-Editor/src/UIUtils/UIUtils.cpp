@@ -36,6 +36,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    static uint32_t s_Counter = 0;
+    static char s_IDBuffer[16];
     static void DrawFloatControl(const char* label, float* value, float columnWidth)
     {
         ImGui::PushID(label);
@@ -46,6 +48,21 @@ namespace Spike
         ImGui::NextColumn();
 
         ImGui::DragFloat("##value", value, 0.1f);
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+    }
+
+    void DrawFloat2Control(const char* label, glm::vec2& value, float columnWidth)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::DragFloat2("##value", glm::value_ptr(value), 0.1f);
 
         ImGui::Columns(1);
         ImGui::PopID();
@@ -81,7 +98,7 @@ namespace Spike
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 1.0f, 1.0f });
             float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 
-            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, component.GetName());
+            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, component.GetUITitle());
             ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 
             if (ImGui::Button(ICON_FK_PLUS_CIRCLE, ImVec2{ lineHeight, lineHeight }))
@@ -200,7 +217,7 @@ namespace Spike
         if (ImGui::Button("Add Component"))
             ImGui::OpenPopup("Add Component");
 
-        ImGui::Text("UUID: %llu", entity.GetComponent<IDComponent>().ID);
+        ImGui::TextDisabled("%llx", entity.GetComponent<IDComponent>().ID);
         if (ImGui::BeginPopup("Add Component"))
         {
             if (ImGui::MenuItem("Transform"))
@@ -233,6 +250,30 @@ namespace Spike
                     entity.AddComponent<MeshComponent>();
                 else
                     Console::Get()->Print("This entity already has Mesh component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("RigidBody2D"))
+            {
+                if (!entity.HasComponent<RigidBody2DComponent>())
+                    entity.AddComponent<RigidBody2DComponent>();
+                else
+                    Console::Get()->Print("This entity already has RigidBody2D component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("BoxCollider2D"))
+            {
+                if (!entity.HasComponent<BoxCollider2DComponent>())
+                    entity.AddComponent<BoxCollider2DComponent>();
+                else
+                    Console::Get()->Print("This entity already has BoxCollider2D component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("CircleCollider2D"))
+            {
+                if (!entity.HasComponent<CircleCollider2DComponent>())
+                    entity.AddComponent<CircleCollider2DComponent>();
+                else
+                    Console::Get()->Print("This entity already has CircleCollider2D component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -371,6 +412,46 @@ namespace Spike
             else
                 ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
             ImGui::PopItemWidth();
+        });
+
+        DrawComponent<RigidBody2DComponent>(entity, [](auto& component)
+        {
+            const char* rb2dTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
+            const char* currentType = rb2dTypeStrings[(int)component.BodyType];
+            if (ImGui::BeginCombo("Type", currentType))
+            {
+                for (int type = 0; type < 3; type++)
+                {
+                    bool is_selected = (currentType == rb2dTypeStrings[type]);
+                    if (ImGui::Selectable(rb2dTypeStrings[type], is_selected))
+                    {
+                        currentType = rb2dTypeStrings[type];
+                        component.BodyType = (RigidBody2DComponent::Type)type;
+                    }
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+
+            if (component.BodyType == RigidBody2DComponent::Type::Dynamic)
+            {
+                ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+            }
+        });
+        DrawComponent<BoxCollider2DComponent>(entity, [](auto& component)
+        {
+            DrawFloat2Control("Offset",   component.Offset);
+            DrawFloat2Control("Size",     component.Size);
+            DrawFloatControl("Density",  &component.Density);
+            DrawFloatControl("Friction", &component.Friction);
+        });
+        DrawComponent<CircleCollider2DComponent>(entity, [](auto& component)
+        {
+            DrawFloat2Control("Offset",  component.Offset);
+            DrawFloatControl("Radius",   &component.Radius);
+            DrawFloatControl("Density",  &component.Density);
+            DrawFloatControl("Friction", &component.Friction);
         });
     }
 }

@@ -29,9 +29,9 @@
 
 #include <stdio.h>
 
-B2_API float b2_toiTime, b2_toiMaxTime;
-B2_API int32 b2_toiCalls, b2_toiIters, b2_toiMaxIters;
-B2_API int32 b2_toiRootIters, b2_toiMaxRootIters;
+float b2_toiTime, b2_toiMaxTime;
+int32 b2_toiCalls, b2_toiIters, b2_toiMaxIters;
+int32 b2_toiRootIters, b2_toiMaxRootIters;
 
 //
 struct b2SeparationFunction

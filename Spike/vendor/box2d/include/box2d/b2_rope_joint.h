@@ -20,26 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef B2_FRICTION_JOINT_H
-#define B2_FRICTION_JOINT_H
+#ifndef B2_ROPE_JOINT_H
+#define B2_ROPE_JOINT_H
 
 #include "b2_joint.h"
 
-/// Friction joint definition.
-struct b2FrictionJointDef : public b2JointDef
+/// Rope joint definition. This requires two body anchor points and
+/// a maximum lengths.
+/// Note: by default the connected objects will not collide.
+/// see collideConnected in b2JointDef.
+struct b2RopeJointDef : public b2JointDef
 {
-	b2FrictionJointDef()
+	b2RopeJointDef()
 	{
-		type = e_frictionJoint;
-		localAnchorA.SetZero();
-		localAnchorB.SetZero();
-		maxForce = 0.0f;
-		maxTorque = 0.0f;
+		type = e_ropeJoint;
+		localAnchorA.Set(-1.0f, 0.0f);
+		localAnchorB.Set(1.0f, 0.0f);
+		maxLength = 0.0f;
 	}
-
-	/// Initialize the bodies, anchors, axis, and reference angle using the world
-	/// anchor and world axis.
-	void Initialize(b2Body* bodyA, b2Body* bodyB, const b2Vec2& anchor);
 
 	/// The local anchor point relative to bodyA's origin.
 	b2Vec2 localAnchorA;
@@ -47,16 +45,21 @@ struct b2FrictionJointDef : public b2JointDef
 	/// The local anchor point relative to bodyB's origin.
 	b2Vec2 localAnchorB;
 
-	/// The maximum friction force in N.
-	float maxForce;
-
-	/// The maximum friction torque in N-m.
-	float maxTorque;
+	/// The maximum length of the rope.
+	/// Warning: this must be larger than b2_linearSlop or
+	/// the joint will have no effect.
+	float maxLength;
 };
 
-/// Friction joint. This is used for top-down friction.
-/// It provides 2D translational friction and angular friction.
-class b2FrictionJoint : public b2Joint
+/// A rope joint enforces a maximum distance between two points
+/// on two bodies. It has no other effect.
+/// Warning: if you attempt to change the maximum length during
+/// the simulation you will get some non-physical behavior.
+/// A model that would allow you to dynamically modify the length
+/// would have some sponginess, so I chose not to implement it
+/// that way. See b2DistanceJoint if you want to dynamically
+/// control length.
+class b2RopeJoint : public b2Joint
 {
 public:
 	b2Vec2 GetAnchorA() const override;
@@ -71,17 +74,12 @@ public:
 	/// The local anchor point relative to bodyB's origin.
 	const b2Vec2& GetLocalAnchorB() const  { return m_localAnchorB; }
 
-	/// Set the maximum friction force in N.
-	void SetMaxForce(float force);
+	/// Set/Get the maximum length of the rope.
+	void SetMaxLength(float length) { m_maxLength = length; }
+	float GetMaxLength() const;
 
-	/// Get the maximum friction force in N.
-	float GetMaxForce() const;
-
-	/// Set the maximum friction torque in N*m.
-	void SetMaxTorque(float torque);
-
-	/// Get the maximum friction torque in N*m.
-	float GetMaxTorque() const;
+	// Get current length
+	float GetLength() const;
 
 	/// Dump joint to dmLog
 	void Dump() override;
@@ -89,25 +87,23 @@ public:
 protected:
 
 	friend class b2Joint;
-
-	b2FrictionJoint(const b2FrictionJointDef* def);
+	b2RopeJoint(const b2RopeJointDef* data);
 
 	void InitVelocityConstraints(const b2SolverData& data) override;
 	void SolveVelocityConstraints(const b2SolverData& data) override;
 	bool SolvePositionConstraints(const b2SolverData& data) override;
 
+	// Solver shared
 	b2Vec2 m_localAnchorA;
 	b2Vec2 m_localAnchorB;
-
-	// Solver shared
-	b2Vec2 m_linearImpulse;
-	float m_angularImpulse;
-	float m_maxForce;
-	float m_maxTorque;
+	float m_maxLength;
+	float m_length;
+	float m_impulse;
 
 	// Solver temp
 	int32 m_indexA;
 	int32 m_indexB;
+	b2Vec2 m_u;
 	b2Vec2 m_rA;
 	b2Vec2 m_rB;
 	b2Vec2 m_localCenterA;
@@ -116,8 +112,7 @@ protected:
 	float m_invMassB;
 	float m_invIA;
 	float m_invIB;
-	b2Mat22 m_linearMass;
-	float m_angularMass;
+	float m_mass;
 };
 
 #endif

@@ -23,11 +23,10 @@
 #ifndef B2_CIRCLE_SHAPE_H
 #define B2_CIRCLE_SHAPE_H
 
-#include "b2_api.h"
 #include "b2_shape.h"
 
 /// A solid circle shape
-class B2_API b2CircleShape : public b2Shape
+class b2CircleShape : public b2Shape
 {
 public:
 	b2CircleShape();

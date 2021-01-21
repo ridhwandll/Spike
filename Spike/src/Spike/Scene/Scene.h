@@ -61,11 +61,22 @@ namespace Spike
         void OnRuntimeStop();
         void CopySceneTo(Ref<Scene>& target);
 
+        //Physics 2D
+        float GetPhysics2DGravity() const;
+        void SetPhysics2DGravity(float gravity);
+
         EntityMap GetEntityMap() { return m_EntityIDMap; }
         UUID GetUUID() const { return m_SceneID; }
         static Ref<Scene> GetScene(UUID uuid);
 
         Entity GetPrimaryCameraEntity();
+
+        template<typename T>
+        auto GetAllEntitiesWith()
+        {
+            return m_Registry.view<T>();
+        }
+
     private:
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
@@ -74,6 +85,10 @@ namespace Spike
         EntityMap m_EntityIDMap;
         uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
         bool m_IsPlaying = false;
+
+        Entity* m_Physics2DBodyEntityBuffer = nullptr;
+
+        entt::entity m_SceneEntity;
         entt::registry m_Registry;
         friend class Entity;
         friend class SceneSerializer;

@@ -163,18 +163,13 @@ void Test::MouseDown(const b2Vec2& p)
 
 	if (callback.m_fixture)
 	{
-		float frequencyHz = 5.0f;
-		float dampingRatio = 0.7f;
-
 		b2Body* body = callback.m_fixture->GetBody();
-		b2MouseJointDef jd;
-		jd.bodyA = m_groundBody;
-		jd.bodyB = body;
-		jd.target = p;
-		jd.maxForce = 1000.0f * body->GetMass();
-		b2LinearStiffness(jd.stiffness, jd.damping, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-
-		m_mouseJoint = (b2MouseJoint*)m_world->CreateJoint(&jd);
+		b2MouseJointDef md;
+		md.bodyA = m_groundBody;
+		md.bodyB = body;
+		md.target = p;
+		md.maxForce = 1000.0f * body->GetMass();
+		m_mouseJoint = (b2MouseJoint*)m_world->CreateJoint(&md);
 		body->SetAwake(true);
 	}
 }
@@ -295,10 +290,10 @@ void Test::Step(Settings& settings)
 	}
 
 	uint32 flags = 0;
-	flags += settings.m_drawShapes * b2Draw::e_shapeBit;
-	flags += settings.m_drawJoints * b2Draw::e_jointBit;
-	flags += settings.m_drawAABBs * b2Draw::e_aabbBit;
-	flags += settings.m_drawCOMs * b2Draw::e_centerOfMassBit;
+	flags += settings.m_drawShapes			* b2Draw::e_shapeBit;
+	flags += settings.m_drawJoints			* b2Draw::e_jointBit;
+	flags += settings.m_drawAABBs			* b2Draw::e_aabbBit;
+	flags += settings.m_drawCOMs				* b2Draw::e_centerOfMassBit;
 	g_debugDraw.SetFlags(flags);
 
 	m_world->SetAllowSleeping(settings.m_enableSleep);

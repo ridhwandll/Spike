@@ -35,7 +35,7 @@ public:
 
 			b2EdgeShape edge;
 
-			edge.SetTwoSided(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
+			edge.Set(b2Vec2(-10.0f, 0.0f), b2Vec2(10.0f, 0.0f));
 			body->CreateFixture(&edge, 0.0f);
 
 			b2PolygonShape shape;
@@ -81,10 +81,10 @@ public:
 		}
 #endif
 
-		extern B2_API int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
-		extern B2_API int32 b2_toiCalls, b2_toiIters;
-		extern B2_API int32 b2_toiRootIters, b2_toiMaxRootIters;
-		extern B2_API float b2_toiTime, b2_toiMaxTime;
+		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
+		extern int32 b2_toiCalls, b2_toiIters;
+		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
+		extern float b2_toiTime, b2_toiMaxTime;
 
 		b2_gjkCalls = 0; b2_gjkIters = 0; b2_gjkMaxIters = 0;
 		b2_toiCalls = 0; b2_toiIters = 0;
@@ -94,10 +94,10 @@ public:
 
 	void Launch()
 	{
-		extern B2_API int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
-		extern B2_API int32 b2_toiCalls, b2_toiIters;
-		extern B2_API int32 b2_toiRootIters, b2_toiMaxRootIters;
-		extern B2_API float b2_toiTime, b2_toiMaxTime;
+		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
+		extern int32 b2_toiCalls, b2_toiIters;
+		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
+		extern float b2_toiTime, b2_toiMaxTime;
 
 		b2_gjkCalls = 0; b2_gjkIters = 0; b2_gjkMaxIters = 0;
 		b2_toiCalls = 0; b2_toiIters = 0;
@@ -114,7 +114,7 @@ public:
 	{
 		Test::Step(settings);
 
-		extern B2_API int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
+		extern int32 b2_gjkCalls, b2_gjkIters, b2_gjkMaxIters;
 
 		if (b2_gjkCalls > 0)
 		{
@@ -123,9 +123,9 @@ public:
 			m_textLine += m_textIncrement;
 		}
 
-		extern B2_API int32 b2_toiCalls, b2_toiIters;
-		extern B2_API int32 b2_toiRootIters, b2_toiMaxRootIters;
-		extern B2_API float b2_toiTime, b2_toiMaxTime;
+		extern int32 b2_toiCalls, b2_toiIters;
+		extern int32 b2_toiRootIters, b2_toiMaxRootIters;
+		extern float b2_toiTime, b2_toiMaxTime;
 
 		if (b2_toiCalls > 0)
 		{
