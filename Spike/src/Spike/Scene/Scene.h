@@ -49,7 +49,7 @@ namespace Spike
         Entity CreateEntity(const std::string& name = std::string());
         Entity CreateEntityWithID(UUID uuid, const std::string& name = "", bool runtimeMap = false);
         void DestroyEntity(Entity entity);
-
+        void DuplicateEntity(Entity entity);
         void OnUpdate(Timestep ts);
         void OnUpdateRuntime(Timestep ts);
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);

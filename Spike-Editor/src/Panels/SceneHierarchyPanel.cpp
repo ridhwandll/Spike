@@ -171,6 +171,11 @@ namespace Spike
             m_SelectionContext = {};
             return false;
         }
+        if ((Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl)) && Input::IsKeyPressed(Key::D) && m_IsHierarchyFocused)
+        {
+            m_Context->DuplicateEntity(m_SelectionContext);
+        }
+
         return false;
     }
 }

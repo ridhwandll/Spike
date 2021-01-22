@@ -51,6 +51,7 @@ namespace Spike
         void OpenScene();
         void SaveSceneAs();
         void SaveScene();
+        void UpdateWindowTitle(const std::string& sceneName);
 
         void OnScenePlay();
         void OnSceneStop();

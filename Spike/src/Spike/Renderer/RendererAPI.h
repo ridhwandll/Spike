@@ -48,7 +48,10 @@ namespace Spike
         enum class API
         {
             None = 0,
-            OpenGL = 1
+            OpenGL = 1,
+            Vulkan = 2,
+            DX11 = 3,
+            Metal = 4
         };
     public:
         static RenderAPICapabilities& GetCapabilities()

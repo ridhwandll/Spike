@@ -256,6 +256,33 @@ namespace Spike
         CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
     }
 
+    template<typename T>
+    static void CopyComponentIfExists(entt::entity dst, entt::entity src, entt::registry& registry)
+    {
+        if (registry.has<T>(src))
+        {
+            auto& srcComponent = registry.get<T>(src);
+            registry.emplace_or_replace<T>(dst, srcComponent);
+        }
+    }
+
+    void Scene::DuplicateEntity(Entity entity)
+    {
+        Entity newEntity;
+        if (entity.HasComponent<TagComponent>())
+            newEntity = CreateEntity(entity.GetComponent<TagComponent>().Tag);
+        else
+            newEntity = CreateEntity();
+
+        CopyComponentIfExists<TransformComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<MeshComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<CameraComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<SpriteRendererComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<RigidBody2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<BoxCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<CircleCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+    }
+
     Entity Scene::GetPrimaryCameraEntity()
     {
         auto view = m_Registry.view<CameraComponent>();

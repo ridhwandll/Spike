@@ -57,6 +57,7 @@ namespace Spike
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
+        NewScene();
     }
 
     void EditorLayer::OnDetach()
@@ -214,11 +215,11 @@ namespace Spike
 
         ImGui::Begin("Stats");
         auto stats = Renderer2D::GetStats();
-        //ImGui::Text("Renderer2D Stats:");
-        //ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        //ImGui::Text("Quads: %d", stats.QuadCount);
-        //ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        //ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+        ImGui::Text("Renderer2D Stats:");
+        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+        ImGui::Text("Quads: %d", stats.QuadCount);
+        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
         static float frameTimeRefreshTimer = 0.0f;
         static float ft = 0.0f;
         static float frameRate = 0.0f;
@@ -436,6 +437,8 @@ namespace Spike
         m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
         m_FirstTimeSave = true;
+        m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
+        UpdateWindowTitle("Untitled Scene");
         Console::Get()->Print("Successfully created new scene!", Console::LogLevel::LVL_INFO);
     }
 
@@ -481,5 +484,12 @@ namespace Spike
             Console::Get()->Print("Scene Saved!", Console::LogLevel::LVL_INFO);
         }
     }
+
+    void EditorLayer::UpdateWindowTitle(const std::string& sceneName)
+    {
+        std::string title = "Spike |" + sceneName + "| " + Application::GetPlatformName() + " - " + Application::GetConfigurationName() + " <" + Application::CurrentGraphicsAPI() + "> ";
+        Application::Get().GetWindow().SetTitle(title);
+    }
+
 }
 #pragma warning (pop) // Pop the warning
