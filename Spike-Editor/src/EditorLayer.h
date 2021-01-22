@@ -62,11 +62,7 @@ namespace Spike
         SceneState m_SceneState = SceneState::Edit;
 
         Ref<Framebuffer> m_Framebuffer;
-
         Ref<Scene> m_EditorScene, m_RuntimeScene;
-
-        Ref<Texture2D> m_CheckerboardTexture;
-        bool m_PrimaryCamera = true;
         EditorCamera m_EditorCamera;
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
@@ -78,7 +74,8 @@ namespace Spike
         int m_GizmoType = -1;
         bool m_GizmoInUse = false;
         float m_FrameTime = 0.0f;
-        //Panels
+
+        //Panel(s)
         SceneHierarchyPanel m_SceneHierarchyPanel;
     };
 

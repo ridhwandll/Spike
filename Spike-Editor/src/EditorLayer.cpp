@@ -48,8 +48,6 @@ namespace Spike
 
     void EditorLayer::OnAttach()
     {
-        m_CheckerboardTexture = Texture2D::Create("Spike/assets/textures/Checkerboard.png");
-
         FramebufferSpecification fbSpec;
         fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
         fbSpec.Width = 1280;
