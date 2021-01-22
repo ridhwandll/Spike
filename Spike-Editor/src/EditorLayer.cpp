@@ -61,9 +61,7 @@ namespace Spike
 
     void EditorLayer::OnDetach()
     {
-
     }
-
 
     void EditorLayer::OnScenePlay()
     {

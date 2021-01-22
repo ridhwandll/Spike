@@ -30,27 +30,19 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
+#include "Spike/Physics/2D/Physics2D.h"
 #include "Entity.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-#include <box2d/box2d.h> //TEMP: Should go to it's own physics file (TODO)
 
 namespace Spike
 {
     std::unordered_map<UUID, Scene*> s_ActiveScenes;
 
-    struct Box2DWorldComponent
-    {
-        Box2DWorldComponent() = default;
-        Scope<b2World> World;
-    };
-
-
     Scene::Scene()
     {
         m_SceneEntity = m_Registry.create();
-
-        Box2DWorldComponent& box2DWorld = m_Registry.emplace<Box2DWorldComponent>(m_SceneEntity, CreateScope<b2World>(b2Vec2{ 0.0f, -9.8f }));
+        Physics2D::CreateScene(this);
         s_ActiveScenes[m_SceneID] = this;
     }
 
@@ -98,28 +90,7 @@ namespace Spike
     void Scene::OnUpdate(Timestep ts)
     {
         //2D Physics
-        auto scene = m_Registry.view<Box2DWorldComponent>();
-        auto& box2DWorld = m_Registry.get<Box2DWorldComponent>(scene.front()).World;
-        int32_t velocityIterations = 6;
-        int32_t positionIterations = 2;
-        box2DWorld->Step(ts, velocityIterations, positionIterations);
-
-        {
-            auto view = m_Registry.view<RigidBody2DComponent>();
-            for (auto entity : view)
-            {
-                Entity e = { entity, this };
-                auto& rb2d = e.GetComponent<RigidBody2DComponent>();
-                b2Body* body = static_cast<b2Body*>(rb2d.RuntimeBody);
-
-                auto& position = body->GetPosition();
-                auto& transform = e.GetComponent<TransformComponent>();
-                transform.Translation.x = position.x;
-                transform.Translation.y = position.y;
-                transform.Rotation.z = body->GetAngle();
-            }
-        }
-
+        Physics2D::Simulate(ts);
     }
 
     void Scene::OnUpdateRuntime(Timestep ts)
@@ -255,101 +226,13 @@ namespace Spike
 
     void Scene::OnRuntimeStart()
     {
-        // Box2D physics
-        auto sceneView = m_Registry.view<Box2DWorldComponent>();
-        auto& world = m_Registry.get<Box2DWorldComponent>(sceneView.front()).World;
-
-        {
-            auto view = m_Registry.view<RigidBody2DComponent>();
-            m_Physics2DBodyEntityBuffer = new Entity[view.size()];
-            uint32_t physicsBodyEntityBufferIndex = 0;
-            for (auto entity : view)
-            {
-                Entity e = { entity, this };
-                UUID entityID = e.GetComponent<IDComponent>().ID;
-                TransformComponent& transform = e.GetComponent<TransformComponent>();
-                auto& rigidBody2D = m_Registry.get<RigidBody2DComponent>(entity);
-
-                b2BodyDef bodyDef;
-                if (rigidBody2D.BodyType == RigidBody2DComponent::Type::Static)
-                    bodyDef.type = b2_staticBody;
-                else if (rigidBody2D.BodyType == RigidBody2DComponent::Type::Dynamic)
-                    bodyDef.type = b2_dynamicBody;
-                else if (rigidBody2D.BodyType == RigidBody2DComponent::Type::Kinematic)
-                    bodyDef.type = b2_kinematicBody;
-                bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
-
-                bodyDef.angle = transform.Rotation.z;
-
-                b2Body* body = world->CreateBody(&bodyDef);
-                body->SetFixedRotation(rigidBody2D.FixedRotation);
-                Entity* entityStorage = &m_Physics2DBodyEntityBuffer[physicsBodyEntityBufferIndex++];
-                *entityStorage = e;
-                body->SetUserData((void*)entityStorage);
-                rigidBody2D.RuntimeBody = body;
-            }
-        }
-
-        {
-            auto view = m_Registry.view<BoxCollider2DComponent>();
-            for (auto entity : view)
-            {
-                Entity e = { entity, this };
-                auto& transform = e.Transform();
-
-                auto& boxCollider2D = m_Registry.get<BoxCollider2DComponent>(entity);
-                if (e.HasComponent<RigidBody2DComponent>())
-                {
-                    auto& rigidBody2D = e.GetComponent<RigidBody2DComponent>();
-                    SPK_CORE_ASSERT(rigidBody2D.RuntimeBody, "Body doesn't exist!");
-                    b2Body* body = static_cast<b2Body*>(rigidBody2D.RuntimeBody);
-
-                    b2PolygonShape polygonShape;
-                    polygonShape.SetAsBox(boxCollider2D.Size.x, boxCollider2D.Size.y);
-
-                    b2FixtureDef fixtureDef;
-                    fixtureDef.shape = &polygonShape;
-                    fixtureDef.density = boxCollider2D.Density;
-                    fixtureDef.friction = boxCollider2D.Friction;
-                    body->CreateFixture(&fixtureDef);
-                }
-            }
-        }
-
-        {
-            auto view = m_Registry.view<CircleCollider2DComponent>();
-            for (auto entity : view)
-            {
-                Entity e = { entity, this };
-                auto& transform = e.Transform();
-
-                auto& circleCollider2D = m_Registry.get<CircleCollider2DComponent>(entity);
-                if (e.HasComponent<RigidBody2DComponent>())
-                {
-                    auto& rigidBody2D = e.GetComponent<RigidBody2DComponent>();
-                    SPK_CORE_ASSERT(rigidBody2D.RuntimeBody, "Body doesn't exist!");
-                    b2Body* body = static_cast<b2Body*>(rigidBody2D.RuntimeBody);
-
-                    b2CircleShape circleShape;
-                    circleShape.m_radius = circleCollider2D.Radius;
-
-                    b2FixtureDef fixtureDef;
-                    fixtureDef.shape = &circleShape;
-                    fixtureDef.density = circleCollider2D.Density;
-                    fixtureDef.friction = circleCollider2D.Friction;
-                    body->CreateFixture(&fixtureDef);
-                }
-            }
-        }
-
+        Physics2D::Init();
         m_IsPlaying = true;
     }
 
     void Scene::OnRuntimeStop()
     {
-        Input::SetCursorMode(MousePointerMode::Normal);
-
-        delete[] m_Physics2DBodyEntityBuffer;
+        Physics2D::Shutdown();
         m_IsPlaying = false;
     }
 
@@ -372,8 +255,6 @@ namespace Spike
         CopyComponent<RigidBody2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<BoxCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
-
-        target->SetPhysics2DGravity(GetPhysics2DGravity());
     }
 
     Entity Scene::GetPrimaryCameraEntity()
