@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/Components.h"
 #include "Panels/SceneHierarchyPanel.h"
 #include "Spike/Utility/PlatformUtils.h"
+#include "Spike/Physics/2D/Physics2D.h"
 #include "Panels/ConsolePanel.h"
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -36,8 +37,21 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    static uint32_t s_Counter = 0;
-    static char s_IDBuffer[16];
+    void DrawBoolControl(const char* label, bool* boolean, float columnWidth)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("##value", boolean);
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+    }
+
     static void DrawFloatControl(const char* label, float* value, float columnWidth)
     {
         ImGui::PushID(label);
@@ -416,28 +430,91 @@ namespace Spike
 
         DrawComponent<RigidBody2DComponent>(entity, [](auto& component)
         {
-            const char* rb2dTypeStrings[] = { "Static", "Dynamic", "Kinematic" };
+            const char* rb2dTypeStrings[3] = { "Static", "Dynamic", "Kinematic" };
             const char* currentType = rb2dTypeStrings[(int)component.BodyType];
-            if (ImGui::BeginCombo("Type", currentType))
             {
-                for (int type = 0; type < 3; type++)
+                ImGui::Columns(2);
+                ImGui::Text("Type");
+                ImGui::SetColumnWidth(0, 160.0f);
+                ImGui::NextColumn();
+                if (ImGui::BeginCombo("##type", currentType))
                 {
-                    bool is_selected = (currentType == rb2dTypeStrings[type]);
-                    if (ImGui::Selectable(rb2dTypeStrings[type], is_selected))
+                    for (int type = 0; type < 3; type++)
                     {
-                        currentType = rb2dTypeStrings[type];
-                        component.BodyType = (RigidBody2DComponent::Type)type;
+                        bool is_selected = (currentType == rb2dTypeStrings[type]);
+                        if (ImGui::Selectable(rb2dTypeStrings[type], is_selected))
+                        {
+                            currentType = rb2dTypeStrings[type];
+                            component.BodyType = (RigidBody2DComponent::Type)type;
+                        }
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
                     }
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
+                    ImGui::EndCombo();
                 }
-                ImGui::EndCombo();
+                ImGui::Columns(1);
             }
 
             if (component.BodyType == RigidBody2DComponent::Type::Dynamic)
             {
-                ImGui::Checkbox("Fixed Rotation", &component.FixedRotation);
+                DrawFloatControl("Gravity Scale", &component.Gravity, 160.0f);
+                DrawBoolControl("Fixed Rotation", &component.FixedRotation, 160.0f);
             }
+
+            {
+                if (component.BodyType == RigidBody2DComponent::Type::Dynamic || component.BodyType == RigidBody2DComponent::Type::Kinematic)
+                {
+                    ImGui::Columns(2);
+                    ImGui::SetColumnWidth(0, 160.0f);
+                    ImGui::Text("Collision Detection");
+                    ImGui::NextColumn();
+                    const char* rb2dCollisionTypeStrings[2] = { "Discrete", "Continuous" };
+                    const char* current_item = rb2dCollisionTypeStrings[(int)component.CollisionDetection];
+                    if (ImGui::BeginCombo("##collisiondetection", current_item))
+                    {
+                        for (int type = 0; type < 2; type++)
+                        {
+                            bool is_selected = (current_item == rb2dCollisionTypeStrings[type]);
+                            if (ImGui::Selectable(rb2dCollisionTypeStrings[type], is_selected))
+                            {
+                                current_item = rb2dCollisionTypeStrings[type];
+                                component.CollisionDetection = (CollisionDetectionType)type;
+                            }
+
+                            if (is_selected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
+                    ImGui::Columns(1);
+                    {
+                        ImGui::Columns(2);
+                        ImGui::SetColumnWidth(0, 160.0f);
+                        ImGui::Text("Sleep Type");
+                        ImGui::NextColumn();
+                        const char* rb2dSleepTypeStrings[3] = { "NeverSleep", "StartAwake", "StartAsleep" };
+                        const char* current_item = rb2dSleepTypeStrings[(int)component.Sleeptype];
+                        if (ImGui::BeginCombo("##sleeptype", current_item))
+                        {
+                            for (int type = 0; type < 3; type++)
+                            {
+                                bool is_selected = (current_item == rb2dSleepTypeStrings[type]);
+                                if (ImGui::Selectable(rb2dSleepTypeStrings[type], is_selected))
+                                {
+                                    current_item = rb2dSleepTypeStrings[type];
+                                    component.Sleeptype = (SleepType)type;
+                                }
+
+                                if (is_selected)
+                                    ImGui::SetItemDefaultFocus();
+                            }
+                            ImGui::EndCombo();
+                        }
+                        ImGui::Columns(1);
+                    }
+                }
+            }
+
         });
         DrawComponent<BoxCollider2DComponent>(entity, [](auto& component)
         {
@@ -448,7 +525,7 @@ namespace Spike
         });
         DrawComponent<CircleCollider2DComponent>(entity, [](auto& component)
         {
-            DrawFloat2Control("Offset",  component.Offset);
+            DrawFloat2Control("Offset",   component.Offset);
             DrawFloatControl("Radius",   &component.Radius);
             DrawFloatControl("Density",  &component.Density);
             DrawFloatControl("Friction", &component.Friction);

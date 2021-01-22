@@ -86,7 +86,6 @@ namespace Spike
         m_Registry.destroy(entity);
     }
 
-
     void Scene::OnUpdate(Timestep ts)
     {
         //2D Physics
@@ -283,16 +282,6 @@ namespace Spike
         return {};
     }
 
-    float Scene::GetPhysics2DGravity() const
-    {
-        return m_Registry.get<Box2DWorldComponent>(m_SceneEntity).World->GetGravity().y;
-    }
-
-    void Scene::SetPhysics2DGravity(float gravity)
-    {
-        m_Registry.get<Box2DWorldComponent>(m_SceneEntity).World->SetGravity({ 0.0f, gravity });
-    }
-
     template<>
     void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)
     {
@@ -339,8 +328,8 @@ namespace Spike
     {
     }
 
-    template<>
-    void Scene::OnComponentAdded<Box2DWorldComponent>(Entity entity, Box2DWorldComponent& component)
-    {
-    }
+    //template<>
+    //void Scene::OnComponentAdded<Box2DWorldComponent>(Entity entity, Box2DWorldComponent& component)
+    //{
+    //}
 }

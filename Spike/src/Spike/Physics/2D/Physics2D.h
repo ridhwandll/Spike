@@ -29,14 +29,17 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Base.h"
 #include "Spike/Scene/Scene.h"
 #include "Spike/Core/Timestep.h"
-#include <box2D/box2D.h>
 
 namespace Spike
 {
-    struct Box2DWorldComponent
+    enum class CollisionDetectionType
     {
-        Box2DWorldComponent() = default;
-        Scope<b2World> World;
+        Discrete = 0, Continuous = 1
+    };
+
+    enum class SleepType
+    {
+        NeverSleep = 0, StartAwake = 1, StartAsleep = 2
     };
 
     class Physics2D
@@ -49,7 +52,6 @@ namespace Spike
 
         static void SetGravity(float gravity);
         static float GetGravity();
-
     private:
         static Scene* m_Scene;
         static Entity* m_Physics2DBodyEntityBuffer;

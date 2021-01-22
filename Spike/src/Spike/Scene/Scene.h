@@ -61,10 +61,6 @@ namespace Spike
         void OnRuntimeStop();
         void CopySceneTo(Ref<Scene>& target);
 
-        //Physics 2D
-        float GetPhysics2DGravity() const;
-        void SetPhysics2DGravity(float gravity);
-
         EntityMap GetEntityMap() { return m_EntityIDMap; }
 
         UUID GetUUID() const { return m_SceneID; }

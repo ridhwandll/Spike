@@ -26,11 +26,18 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Physics2D.h"
+#include <box2D/box2D.h>
 
 namespace Spike
 {
     Entity* Physics2D::m_Physics2DBodyEntityBuffer = nullptr;
     Scene* Physics2D::m_Scene = nullptr;
+
+    struct Box2DWorldComponent
+    {
+        Box2DWorldComponent() = default;
+        Scope<b2World> World;
+    };
 
     void Physics2D::CreateScene(Scene* scene)
     {
@@ -43,10 +50,11 @@ namespace Spike
     {
         auto scene = m_Scene->m_Registry.view<Box2DWorldComponent>();
         auto& box2DWorld = m_Scene->m_Registry.get<Box2DWorldComponent>(scene.front()).World;
-        int32_t velocityIterations = 6;
+        int32_t velocityIterations = 8;
         int32_t positionIterations = 2;
         box2DWorld->Step(ts, velocityIterations, positionIterations);
 
+        // Update all the Rigidbody2D's
         {
             auto view = m_Scene->m_Registry.view<RigidBody2DComponent>();
             for (auto entity : view)
@@ -60,6 +68,7 @@ namespace Spike
                 transform.Translation.x = position.x;
                 transform.Translation.y = position.y;
                 transform.Rotation.z = body->GetAngle();
+                body->SetGravityScale(rb2d.Gravity);
             }
         }
     }
@@ -97,6 +106,44 @@ namespace Spike
                 *entityStorage = e;
                 body->SetUserData((void*)entityStorage);
                 rigidBody2D.RuntimeBody = body;
+
+                //CollisionDetectionType switches
+                switch (rigidBody2D.CollisionDetection)
+                {
+                    case CollisionDetectionType::Discrete:
+                    {
+                        body->SetBullet(false);
+                        break;
+                    }
+                    case CollisionDetectionType::Continuous:
+                    {
+                        body->SetBullet(true);
+                        break;
+                    }
+                }
+
+                //SleepType switches
+                switch (rigidBody2D.Sleeptype)
+                {
+                    case SleepType::NeverSleep:
+                    {
+                        body->SetSleepingAllowed(false);
+                        body->SetAwake(true);
+                        break;
+                    }
+                    case SleepType::StartAsleep:
+                    {
+                        body->SetSleepingAllowed(true);
+                        body->SetAwake(false);
+                        break;
+                    }
+                    case SleepType::StartAwake:
+                    {
+                        body->SetSleepingAllowed(true);
+                        body->SetAwake(true);
+                        break;
+                    }
+                }
             }
         }
 
@@ -115,7 +162,7 @@ namespace Spike
                     b2Body* body = static_cast<b2Body*>(rigidBody2D.RuntimeBody);
 
                     b2PolygonShape polygonShape;
-                    polygonShape.SetAsBox(boxCollider2D.Size.x, boxCollider2D.Size.y);
+                    polygonShape.SetAsBox(boxCollider2D.Size.x / 2, boxCollider2D.Size.y / 2);
 
                     b2FixtureDef fixtureDef;
                     fixtureDef.shape = &polygonShape;

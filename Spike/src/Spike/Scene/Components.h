@@ -137,19 +137,28 @@ namespace Spike
     };
 
     //// 2D Physics //////////////////////////////////////////////////////////////////////
+    enum class CollisionDetectionType;
+    enum class SleepType;
+
     struct RigidBody2DComponent
     {
         enum class Type { Static, Dynamic, Kinematic };
 
         Type BodyType;
         bool FixedRotation = false;
+        float Gravity = 1.0f;
 
         void* RuntimeBody = nullptr; //Needed at runtime
+        CollisionDetectionType CollisionDetection;
+        SleepType Sleeptype;
 
         RigidBody2DComponent() = default;
         RigidBody2DComponent(const RigidBody2DComponent & other) = default;
 
-        void Reset() { BodyType = Type::Static; }
+        void Reset()
+        {
+            BodyType = Type::Static; Gravity = 1.0f;
+        }
         const char* GetUITitle() { return "RigidBody2D"; }
     };
 
