@@ -30,9 +30,30 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Components.h"
 #include "Panels/ConsolePanel.h"
 #include <yaml-cpp/yaml.h>
+namespace YAML {
 
-namespace YAML
-{
+    template<>
+    struct convert<glm::vec2>
+    {
+        static Node encode(const glm::vec2& rhs)
+        {
+            Node node;
+            node.push_back(rhs.x);
+            node.push_back(rhs.y);
+            return node;
+        }
+
+        static bool decode(const Node& node, glm::vec2& rhs)
+        {
+            if (!node.IsSequence() || node.size() != 2)
+                return false;
+
+            rhs.x = node[0].as<float>();
+            rhs.y = node[1].as<float>();
+            return true;
+        }
+    };
+
     template<>
     struct convert<glm::vec3>
     {
@@ -83,7 +104,33 @@ namespace YAML
         }
     };
 
+    template<>
+    struct convert<glm::quat>
+    {
+        static Node encode(const glm::quat& rhs)
+        {
+            Node node;
+            node.push_back(rhs.w);
+            node.push_back(rhs.x);
+            node.push_back(rhs.y);
+            node.push_back(rhs.z);
+            return node;
+        }
+
+        static bool decode(const Node& node, glm::quat& rhs)
+        {
+            if (!node.IsSequence() || node.size() != 4)
+                return false;
+
+            rhs.w = node[0].as<float>();
+            rhs.x = node[1].as<float>();
+            rhs.y = node[2].as<float>();
+            rhs.z = node[3].as<float>();
+            return true;
+        }
+    };
 }
+
 namespace Spike
 {
 
@@ -93,6 +140,13 @@ namespace Spike
         if (f)
             fclose(f);
         return f != nullptr;
+    }
+
+    YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
+    {
+        out << YAML::Flow;
+        out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+        return out;
     }
 
     YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
@@ -106,6 +160,13 @@ namespace Spike
     {
         out << YAML::Flow;
         out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
+        return out;
+    }
+
+    YAML::Emitter& operator<<(YAML::Emitter& out, const glm::quat& v)
+    {
+        out << YAML::Flow;
+        out << YAML::BeginSeq << v.w << v.x << v.y << v.z << YAML::EndSeq;
         return out;
     }
 
@@ -192,6 +253,52 @@ namespace Spike
                 out << YAML::Key << "AssetPath" << YAML::Value << mesh->m_FilePath;
 
                 out << YAML::EndMap; // MeshComponent
+            }
+
+            if (entity.HasComponent<RigidBody2DComponent>())
+            {
+                out << YAML::Key << "RigidBody2DComponent";
+                out << YAML::BeginMap; // RigidBody2D
+
+                auto& rb2D = entity.GetComponent<RigidBody2DComponent>();
+
+                out << YAML::Key << "BodyType" << YAML::Value           << (int)rb2D.BodyType;
+                out << YAML::Key << "FixedRotation" << YAML::Value      << rb2D.FixedRotation;
+                out << YAML::Key << "Gravity" << YAML::Value            << rb2D.Gravity;
+                out << YAML::Key << "CollisionDetection" << YAML::Value << (int)rb2D.CollisionDetection;
+                out << YAML::Key << "Sleeptype" << YAML::Value          << (int)rb2D.Sleeptype;
+
+                out << YAML::EndMap; // RigidBody2D
+            }
+
+            if (entity.HasComponent<BoxCollider2DComponent>())
+            {
+                out << YAML::Key << "BoxCollider2DComponent";
+                out << YAML::BeginMap; // BoxCollider2D
+
+                auto& boxCollider2D = entity.GetComponent<BoxCollider2DComponent>();
+
+                out << YAML::Key << "Offset" << YAML::Value   << boxCollider2D.Offset;
+                out << YAML::Key << "Size" << YAML::Value     << boxCollider2D.Size;
+                out << YAML::Key << "Density" << YAML::Value  << boxCollider2D.Density;
+                out << YAML::Key << "Friction" << YAML::Value << boxCollider2D.Friction;
+
+                out << YAML::EndMap; // BoxCollider2D
+            }
+
+            if (entity.HasComponent<CircleCollider2DComponent>())
+            {
+                out << YAML::Key << "CircleCollider2DComponent";
+                out << YAML::BeginMap; // CircleCollider2D
+
+                auto& circleCollider2D = entity.GetComponent<CircleCollider2DComponent>();
+
+                out << YAML::Key << "Offset" << YAML::Value   << circleCollider2D.Offset;
+                out << YAML::Key << "Radius" << YAML::Value   << circleCollider2D.Radius;
+                out << YAML::Key << "Density" << YAML::Value  << circleCollider2D.Density;
+                out << YAML::Key << "Friction" << YAML::Value << circleCollider2D.Friction;
+
+                out << YAML::EndMap; // CircleCollider2D
             }
 
             out << YAML::EndMap; // Entity
@@ -320,6 +427,46 @@ namespace Spike
                     }
 
                     SPK_CORE_LOG_INFO("  Mesh Asset Path: {0}", meshPath);
+                }
+
+                auto rigidBody2DComponent = entity["RigidBody2DComponent"];
+                if (rigidBody2DComponent)
+                {
+                    if (!deserializedEntity.HasComponent<RigidBody2DComponent>())
+                    {
+                        auto& component = deserializedEntity.AddComponent<RigidBody2DComponent>();
+                        component.BodyType = (RigidBody2DComponent::Type)rigidBody2DComponent["BodyType"].as<int>();
+                        component.FixedRotation = rigidBody2DComponent["FixedRotation"] ? rigidBody2DComponent["FixedRotation"].as<bool>() : false;
+                        component.Gravity = rigidBody2DComponent["Gravity"].as<float>();
+                        component.CollisionDetection = (CollisionDetectionType)rigidBody2DComponent["CollisionDetection"].as<int>();
+                        component.Sleeptype = (SleepType)rigidBody2DComponent["Sleeptype"].as<int>();
+                    }
+                }
+
+                auto boxCollider2DComponent = entity["BoxCollider2DComponent"];
+                if (boxCollider2DComponent)
+                {
+                    if (!deserializedEntity.HasComponent<BoxCollider2DComponent>())
+                    {
+                        auto& component = deserializedEntity.AddComponent<BoxCollider2DComponent>();
+                        component.Offset = boxCollider2DComponent["Offset"].as<glm::vec2>();
+                        component.Size = boxCollider2DComponent["Size"].as<glm::vec2>();
+                        component.Density = boxCollider2DComponent["Density"] ? boxCollider2DComponent["Density"].as<float>() : 1.0f;
+                        component.Friction = boxCollider2DComponent["Friction"] ? boxCollider2DComponent["Friction"].as<float>() : 1.0f;
+                    }
+                }
+
+                auto circleCollider2DComponent = entity["CircleCollider2DComponent"];
+                if (circleCollider2DComponent)
+                {
+                    if (!deserializedEntity.HasComponent<CircleCollider2DComponent>())
+                    {
+                        auto& component = deserializedEntity.AddComponent<CircleCollider2DComponent>();
+                        component.Offset = circleCollider2DComponent["Offset"].as<glm::vec2>();
+                        component.Radius = circleCollider2DComponent["Radius"].as<float>();
+                        component.Density = circleCollider2DComponent["Density"] ? circleCollider2DComponent["Density"].as<float>() : 1.0f;
+                        component.Friction = circleCollider2DComponent["Friction"] ? circleCollider2DComponent["Friction"].as<float>() : 1.0f;
+                    }
                 }
             }
         }

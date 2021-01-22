@@ -231,7 +231,7 @@ namespace Spike
         if (ImGui::Button("Add Component"))
             ImGui::OpenPopup("Add Component");
 
-        ImGui::TextDisabled("%llx", entity.GetComponent<IDComponent>().ID);
+        ImGui::TextDisabled("UUID: %llx", entity.GetComponent<IDComponent>().ID);
         if (ImGui::BeginPopup("Add Component"))
         {
             if (ImGui::MenuItem("Transform"))
