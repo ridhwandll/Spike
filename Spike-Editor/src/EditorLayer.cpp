@@ -57,7 +57,7 @@ namespace Spike
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
-        NewScene();
+        LaunchReadymadeScene();
     }
 
     void EditorLayer::OnDetach()
@@ -87,6 +87,16 @@ namespace Spike
 
         m_SceneHierarchyPanel.ClearSelectedEntity();
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
+    }
+
+    void EditorLayer::OnScenePause()
+    {
+        m_SceneState = SceneState::Pause;
+    }
+
+    void EditorLayer::OnSceneResume()
+    {
+        m_SceneState = SceneState::Play;
     }
 
     void EditorLayer::OnUpdate(Timestep ts)
@@ -252,14 +262,37 @@ namespace Spike
             {
                 OnScenePlay();
             }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FK_PAUSE))
+            {
+                Console::Get()->Print("You need to be in play mode to pause the scene!", Console::LogLevel::LVL_WARN);
+            }
         }
         else if (m_SceneState == SceneState::Play)
         {
-            if (ImGui::ArrowButton("Stop", ImGuiDir_Right))
+            if (ImGui::Button(ICON_FK_STOP))
             {
                 OnSceneStop();
             }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FK_PAUSE))
+            {
+                OnScenePause();
+            }
         }
+        else if (m_SceneState == SceneState::Pause)
+        {
+            if (ImGui::Button(ICON_FK_STOP))
+            {
+                OnSceneStop();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FK_PAUSE))
+            {
+                OnSceneResume();
+            }
+        }
+
         ImGui::End();
         ImGui::PopStyleColor(3);
 
@@ -268,10 +301,11 @@ namespace Spike
 
         if (m_SceneState == SceneState::Play)
         {
-            ImVec2 windowMin = ImGui::GetWindowPos();
-            ImVec2 windowSize = ImGui::GetWindowSize();
-            ImVec2 windowMax = { windowMin.x + windowSize.x, windowMin.y + windowSize.y };
-            ImGui::GetForegroundDrawList()->AddRect(windowMin, windowMax, ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 0.0f, 1.0f)));
+            DrawRectAroundWindow({ 1.0f, 1.0f, 0.0f, 1.0f });
+        }
+        else if (m_SceneState == SceneState::Pause)
+        {
+            DrawRectAroundWindow({ 0.0f, 0.0f, 1.0f, 1.0f });
         }
 
         m_ViewportFocused = ImGui::IsWindowFocused();
@@ -442,6 +476,14 @@ namespace Spike
         Console::Get()->Print("Successfully created new scene!", Console::LogLevel::LVL_INFO);
     }
 
+    void EditorLayer::LaunchReadymadeScene()
+    {
+        NewScene();
+        m_StartupCameraEntity = m_EditorScene->CreateEntity(ICON_FK_CAMERA" Main Camera");
+        m_StartupCameraEntity.AddComponent<CameraComponent>();
+        m_StartupCameraEntity.GetComponent<TransformComponent>().Translation.z = 0.9f;
+    }
+
     void EditorLayer::OpenScene()
     {
         std::string filepath = FileDialogs::OpenFile("Spike Scene (*.spike)\0*.spike\0");
@@ -489,6 +531,14 @@ namespace Spike
     {
         std::string title = "Spike |" + sceneName + "| " + Application::GetPlatformName() + " - " + Application::GetConfigurationName() + " <" + Application::CurrentGraphicsAPI() + "> ";
         Application::Get().GetWindow().SetTitle(title);
+    }
+
+    void EditorLayer::DrawRectAroundWindow(const glm::vec4& color)
+    {
+        ImVec2 windowMin = ImGui::GetWindowPos();
+        ImVec2 windowSize = ImGui::GetWindowSize();
+        ImVec2 windowMax = { windowMin.x + windowSize.x, windowMin.y + windowSize.y };
+        ImGui::GetForegroundDrawList()->AddRect(windowMin, windowMax, ImGui::ColorConvertFloat4ToU32(ImVec4(color.x, color.y, color.z, color.w)));
     }
 
 }
