@@ -166,6 +166,18 @@ namespace Spike
                         Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
                 }
 
+                auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
+                const glm::vec4 debugColor(0.5f, 0.9f, 0.5f, 0.25f);
+                for (auto entity : view)
+                {
+                    auto[transformComponent, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+                    glm::mat4 trans = transformComponent.GetTransform() *
+                        glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.0f)) * 
+                        glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
+
+                    Renderer2D::DrawQuad(trans, debugColor);
+                }
+
                 Renderer2D::EndScene();
             }
 
