@@ -9,7 +9,7 @@ File Name      : Random
 File Type      : h
 File created on: 2021/01/09
 File created by: Fahim Fuad
-Other editors  : None
+Other editors  : Spectrum76
 Github repository : https://github.com/FahimFuad/Spike
  
 0.This software is provided 'AS-IS', without any express or implied warranty.

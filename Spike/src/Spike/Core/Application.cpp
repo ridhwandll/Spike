@@ -78,6 +78,48 @@ namespace Spike
         stbi_image_free(icons[0].pixels);
     }
 
+    const char* Application::GetPlatformName()
+    {
+        #if defined SPK_PLATFORM_WINDOWS
+                return "Windows x64";
+        #elif defined SPK_PLATFORM_MACOS
+                return "MacOS";
+        #elif defined SPK_PLATFORM_LINUX
+                return "Linux";
+        #endif
+                return "Undefined PlatformName";
+    }
+
+    const char* Application::GetConfigurationName()
+    {
+        #if defined SPK_DEBUG
+                return "Debug";
+        #elif defined SPK_RELEASE
+                return "Release";
+        #elif defined SPK_DIST
+                return "Dist";
+        #endif
+                return "Undefined ConfigurationName";
+    }
+
+    const char* Application::CurrentGraphicsAPI()
+    {
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::None:
+                return "None";
+            case RendererAPI::API::OpenGL:
+                return "OpenGL 4.5";
+            case RendererAPI::API::DX11:
+                return "DX11";
+            case RendererAPI::API::Vulkan:
+                return "Vulkan";
+            case RendererAPI::API::Metal:
+                return "Metal";
+        }
+        return "RendererAPI not found!";
+    }
+
     void Application::Close()
     {
         m_Running = false;

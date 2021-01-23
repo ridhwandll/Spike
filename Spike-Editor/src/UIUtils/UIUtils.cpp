@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/Components.h"
 #include "Panels/SceneHierarchyPanel.h"
 #include "Spike/Utility/PlatformUtils.h"
+#include "Spike/Physics/2D/Physics2D.h"
 #include "Panels/ConsolePanel.h"
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -36,6 +37,21 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    void DrawBoolControl(const char* label, bool* boolean, float columnWidth)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("##value", boolean);
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+    }
+
     static void DrawFloatControl(const char* label, float* value, float columnWidth)
     {
         ImGui::PushID(label);
@@ -46,6 +62,21 @@ namespace Spike
         ImGui::NextColumn();
 
         ImGui::DragFloat("##value", value, 0.1f);
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+    }
+
+    void DrawFloat2Control(const char* label, glm::vec2& value, float columnWidth)
+    {
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::DragFloat2("##value", glm::value_ptr(value), 0.1f);
 
         ImGui::Columns(1);
         ImGui::PopID();
@@ -81,7 +112,7 @@ namespace Spike
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 1.0f, 1.0f });
             float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
 
-            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, component.GetName());
+            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, component.GetUITitle());
             ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
 
             if (ImGui::Button(ICON_FK_PLUS_CIRCLE, ImVec2{ lineHeight, lineHeight }))
@@ -200,7 +231,7 @@ namespace Spike
         if (ImGui::Button("Add Component"))
             ImGui::OpenPopup("Add Component");
 
-        ImGui::Text("UUID: %llu", entity.GetComponent<IDComponent>().ID);
+        ImGui::TextDisabled("UUID: %llx", entity.GetComponent<IDComponent>().ID);
         if (ImGui::BeginPopup("Add Component"))
         {
             if (ImGui::MenuItem("Transform"))
@@ -233,6 +264,30 @@ namespace Spike
                     entity.AddComponent<MeshComponent>();
                 else
                     Console::Get()->Print("This entity already has Mesh component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("RigidBody2D"))
+            {
+                if (!entity.HasComponent<RigidBody2DComponent>())
+                    entity.AddComponent<RigidBody2DComponent>();
+                else
+                    Console::Get()->Print("This entity already has RigidBody2D component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("BoxCollider2D"))
+            {
+                if (!entity.HasComponent<BoxCollider2DComponent>())
+                    entity.AddComponent<BoxCollider2DComponent>();
+                else
+                    Console::Get()->Print("This entity already has BoxCollider2D component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("CircleCollider2D"))
+            {
+                if (!entity.HasComponent<CircleCollider2DComponent>())
+                    entity.AddComponent<CircleCollider2DComponent>();
+                else
+                    Console::Get()->Print("This entity already has CircleCollider2D component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -371,6 +426,109 @@ namespace Spike
             else
                 ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
             ImGui::PopItemWidth();
+        });
+
+        DrawComponent<RigidBody2DComponent>(entity, [](auto& component)
+        {
+            const char* rb2dTypeStrings[3] = { "Static", "Dynamic", "Kinematic" };
+            const char* currentType = rb2dTypeStrings[(int)component.BodyType];
+            {
+                ImGui::Columns(2);
+                ImGui::Text("Type");
+                ImGui::SetColumnWidth(0, 160.0f);
+                ImGui::NextColumn();
+                if (ImGui::BeginCombo("##type", currentType))
+                {
+                    for (int type = 0; type < 3; type++)
+                    {
+                        bool is_selected = (currentType == rb2dTypeStrings[type]);
+                        if (ImGui::Selectable(rb2dTypeStrings[type], is_selected))
+                        {
+                            currentType = rb2dTypeStrings[type];
+                            component.BodyType = (RigidBody2DComponent::Type)type;
+                        }
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+                ImGui::Columns(1);
+            }
+
+            if (component.BodyType == RigidBody2DComponent::Type::Dynamic)
+            {
+                DrawFloatControl("Gravity Scale", &component.Gravity, 160.0f);
+                DrawBoolControl("Fixed Rotation", &component.FixedRotation, 160.0f);
+            }
+
+            {
+                if (component.BodyType == RigidBody2DComponent::Type::Dynamic || component.BodyType == RigidBody2DComponent::Type::Kinematic)
+                {
+                    ImGui::Columns(2);
+                    ImGui::SetColumnWidth(0, 160.0f);
+                    ImGui::Text("Collision Detection");
+                    ImGui::NextColumn();
+                    const char* rb2dCollisionTypeStrings[2] = { "Discrete", "Continuous" };
+                    const char* current_item = rb2dCollisionTypeStrings[(int)component.CollisionDetection];
+                    if (ImGui::BeginCombo("##collisiondetection", current_item))
+                    {
+                        for (int type = 0; type < 2; type++)
+                        {
+                            bool is_selected = (current_item == rb2dCollisionTypeStrings[type]);
+                            if (ImGui::Selectable(rb2dCollisionTypeStrings[type], is_selected))
+                            {
+                                current_item = rb2dCollisionTypeStrings[type];
+                                component.CollisionDetection = (CollisionDetectionType)type;
+                            }
+
+                            if (is_selected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
+                    ImGui::Columns(1);
+                    {
+                        ImGui::Columns(2);
+                        ImGui::SetColumnWidth(0, 160.0f);
+                        ImGui::Text("Sleep Type");
+                        ImGui::NextColumn();
+                        const char* rb2dSleepTypeStrings[3] = { "NeverSleep", "StartAwake", "StartAsleep" };
+                        const char* current_item = rb2dSleepTypeStrings[(int)component.Sleeptype];
+                        if (ImGui::BeginCombo("##sleeptype", current_item))
+                        {
+                            for (int type = 0; type < 3; type++)
+                            {
+                                bool is_selected = (current_item == rb2dSleepTypeStrings[type]);
+                                if (ImGui::Selectable(rb2dSleepTypeStrings[type], is_selected))
+                                {
+                                    current_item = rb2dSleepTypeStrings[type];
+                                    component.Sleeptype = (SleepType)type;
+                                }
+
+                                if (is_selected)
+                                    ImGui::SetItemDefaultFocus();
+                            }
+                            ImGui::EndCombo();
+                        }
+                        ImGui::Columns(1);
+                    }
+                }
+            }
+
+        });
+        DrawComponent<BoxCollider2DComponent>(entity, [](auto& component)
+        {
+            DrawFloat2Control("Offset",   component.Offset);
+            DrawFloat2Control("Size",     component.Size);
+            DrawFloatControl("Density",  &component.Density);
+            DrawFloatControl("Friction", &component.Friction);
+        });
+        DrawComponent<CircleCollider2DComponent>(entity, [](auto& component)
+        {
+            DrawFloat2Control("Offset",   component.Offset);
+            DrawFloatControl("Radius",   &component.Radius);
+            DrawFloatControl("Density",  &component.Density);
+            DrawFloatControl("Friction", &component.Friction);
         });
     }
 }

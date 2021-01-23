@@ -30,6 +30,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
+#include "Spike/Physics/2D/Physics2D.h"
 #include "Entity.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -40,10 +41,15 @@ namespace Spike
 
     Scene::Scene()
     {
+        m_SceneEntity = m_Registry.create();
+        Physics2D::CreateScene(this);
+        s_ActiveScenes[m_SceneID] = this;
     }
 
     Scene::~Scene()
     {
+        m_Registry.clear();
+        s_ActiveScenes.erase(m_SceneID);
     }
 
     Entity Scene::CreateEntity(const std::string& name)
@@ -80,10 +86,10 @@ namespace Spike
         m_Registry.destroy(entity);
     }
 
-
     void Scene::OnUpdate(Timestep ts)
     {
-        SPK_CORE_LOG_TRACE("Into the runtime!");
+        //2D Physics
+        Physics2D::Simulate(ts);
     }
 
     void Scene::OnUpdateRuntime(Timestep ts)
@@ -214,20 +220,18 @@ namespace Spike
         if (Input::IsKeyPressed(Key::Escape) && m_IsPlaying == true)
         {
             OnRuntimeStop();
-            SPK_CORE_LOG_INFO("Runtime stopped by pressing escape!");
         }
     }
 
     void Scene::OnRuntimeStart()
     {
-        //Do physics and other runtime stuff (TODO)
+        Physics2D::Init();
         m_IsPlaying = true;
     }
 
     void Scene::OnRuntimeStop()
     {
-        Input::SetCursorMode(MousePointerMode::Normal);
-        //Cleanup physics stuff (TODO)
+        Physics2D::Shutdown();
         m_IsPlaying = false;
     }
 
@@ -247,6 +251,36 @@ namespace Spike
         CopyComponent<MeshComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CameraComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<SpriteRendererComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<RigidBody2DComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<BoxCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
+    }
+
+    template<typename T>
+    static void CopyComponentIfExists(entt::entity dst, entt::entity src, entt::registry& registry)
+    {
+        if (registry.has<T>(src))
+        {
+            auto& srcComponent = registry.get<T>(src);
+            registry.emplace_or_replace<T>(dst, srcComponent);
+        }
+    }
+
+    void Scene::DuplicateEntity(Entity entity)
+    {
+        Entity newEntity;
+        if (entity.HasComponent<TagComponent>())
+            newEntity = CreateEntity(entity.GetComponent<TagComponent>().Tag);
+        else
+            newEntity = CreateEntity();
+
+        CopyComponentIfExists<TransformComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<MeshComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<CameraComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<SpriteRendererComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<RigidBody2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<BoxCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<CircleCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
     }
 
     Entity Scene::GetPrimaryCameraEntity()
@@ -305,4 +339,24 @@ namespace Spike
     void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component)
     {
     }
+
+    template<>
+    void Scene::OnComponentAdded<RigidBody2DComponent>(Entity entity, RigidBody2DComponent& component)
+    {
+    }
+
+    template<>
+    void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+    {
+    }
+
+    template<>
+    void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
+    {
+    }
+
+    //template<>
+    //void Scene::OnComponentAdded<Box2DWorldComponent>(Entity entity, Box2DWorldComponent& component)
+    //{
+    //}
 }

@@ -45,6 +45,7 @@ project "Spike"
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Assimp}",
+		"%{IncludeDir.box2D}",
 		"%{IncludeDir.FontAwesome}"
 	}
 
@@ -60,6 +61,7 @@ project "Spike"
 		"ImGui",
 		"yaml-cpp",
 		"assimp-vc142-mt.lib",
+		"box2D",
 		"opengl32.lib"
 	}
 

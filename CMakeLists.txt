@@ -5,16 +5,14 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
-project(Spike
-        VERSION 0.0
-        DESCRIPTION "A Lightning fast Game Engine"
-        LANGUAGES C CXX)
+project(Spike LANGUAGES C CXX)
 
 # vendor
 add_subdirectory(Spike/vendor/GLFW)
 add_subdirectory(Spike/vendor/glad)
 add_subdirectory(Spike/vendor/imgui)
 add_subdirectory(Spike/vendor/yaml-cpp)
+add_subdirectory(Spike/vendor/box2D)
 
 # Spike
 add_subdirectory(Spike)

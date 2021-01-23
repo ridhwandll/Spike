@@ -49,7 +49,7 @@ namespace Spike
         Entity CreateEntity(const std::string& name = std::string());
         Entity CreateEntityWithID(UUID uuid, const std::string& name = "", bool runtimeMap = false);
         void DestroyEntity(Entity entity);
-
+        void DuplicateEntity(Entity entity);
         void OnUpdate(Timestep ts);
         void OnUpdateRuntime(Timestep ts);
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);
@@ -62,19 +62,27 @@ namespace Spike
         void CopySceneTo(Ref<Scene>& target);
 
         EntityMap GetEntityMap() { return m_EntityIDMap; }
+
         UUID GetUUID() const { return m_SceneID; }
         static Ref<Scene> GetScene(UUID uuid);
 
         Entity GetPrimaryCameraEntity();
+
+        template<typename T>
+        auto GetAllEntitiesWith() { return m_Registry.view<T>(); }
     private:
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
+
     private:
         UUID m_SceneID;
         EntityMap m_EntityIDMap;
         uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
         bool m_IsPlaying = false;
+        entt::entity m_SceneEntity;
         entt::registry m_Registry;
+
+        friend class Physics2D;
         friend class Entity;
         friend class SceneSerializer;
         friend class SceneHierarchyPanel;

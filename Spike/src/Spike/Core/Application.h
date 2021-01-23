@@ -47,6 +47,10 @@ namespace Spike
         void PushOverlay(Layer* layer);
         void SetAppIcon(const std::string& imagePath);
 
+        static const char* GetPlatformName();
+        static const char* GetConfigurationName();
+        static const char* CurrentGraphicsAPI();
+
         Window& GetWindow() { return *m_Window; }
         void Close();
 

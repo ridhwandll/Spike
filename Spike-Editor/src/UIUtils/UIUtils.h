@@ -36,7 +36,9 @@ namespace Spike
 {
     void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
     void DrawComponents(Entity entity);
+    void DrawBoolControl(const char* label, bool* boolean, float columnWidth = 100.0f);
     void DrawFloatControl(const char* label, float* value, float columnWidth = 100.0f);
+    void DrawFloat2Control(const char* label, glm::vec2& value, float columnWidth = 100.0f);
     void DrawColorControl(const char* label, glm::vec4& value, float columnWidth = 100.0f);
 
     template<typename UIFunction>

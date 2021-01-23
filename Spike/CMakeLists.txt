@@ -39,6 +39,7 @@ target_include_directories(Spike PRIVATE
     "vendor/GLFW/include"
     "vendor/glad/include"
     "vendor/stb_image"
+    "vendor/box2D/include"
 )
 
 target_include_directories(Spike PUBLIC
@@ -73,8 +74,8 @@ endif()
 
 set_property(TARGET Spike PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
-set(LIB_LOCATION ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib)
-target_link_libraries(Spike PUBLIC ${LIB_LOCATION})
+set(LIB_LOCATION ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib) #assimp
+target_link_libraries(Spike PUBLIC ${LIB_LOCATION} )
 
-target_link_libraries(Spike PRIVATE glfw glad)
+target_link_libraries(Spike PRIVATE glfw glad box2D)
 target_link_libraries(Spike PUBLIC imgui yaml-cpp)

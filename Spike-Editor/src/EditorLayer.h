@@ -48,12 +48,17 @@ namespace Spike
         bool OnKeyPressed(KeyPressedEvent& e);
 
         void NewScene();
+        void LaunchReadymadeScene();
         void OpenScene();
         void SaveSceneAs();
         void SaveScene();
+        void UpdateWindowTitle(const std::string& sceneName);
+        void DrawRectAroundWindow(const glm::vec4& color);
 
         void OnScenePlay();
         void OnSceneStop();
+        void OnScenePause();
+        void OnSceneResume();
     private:
         enum class SceneState
         {
@@ -62,13 +67,9 @@ namespace Spike
         SceneState m_SceneState = SceneState::Edit;
 
         Ref<Framebuffer> m_Framebuffer;
-
         Ref<Scene> m_EditorScene, m_RuntimeScene;
-
-        Ref<Texture2D> m_CheckerboardTexture;
-        bool m_PrimaryCamera = true;
         EditorCamera m_EditorCamera;
-
+        Entity m_StartupCameraEntity;
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
 
@@ -78,7 +79,8 @@ namespace Spike
         int m_GizmoType = -1;
         bool m_GizmoInUse = false;
         float m_FrameTime = 0.0f;
-        //Panels
+
+        //Panel(s)
         SceneHierarchyPanel m_SceneHierarchyPanel;
     };
 
