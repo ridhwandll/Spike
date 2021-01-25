@@ -46,12 +46,8 @@ project "Spike"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.box2D}",
+		"%{LibraryDir.mono}",
 		"%{IncludeDir.FontAwesome}"
-	}
-
-	libdirs
-	{
-		"%{wks.location}/Spike/vendor/assimp/lib"
 	}
 
 	links
@@ -60,8 +56,9 @@ project "Spike"
 		"Glad",
 		"ImGui",
 		"yaml-cpp",
-		"assimp-vc142-mt.lib",
 		"box2D",
+		"%{LibraryDir.Assimp}",
+		"%{LibraryDir.mono}",
 		"opengl32.lib"
 	}
 

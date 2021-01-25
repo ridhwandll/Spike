@@ -1,9 +1,8 @@
 # Binaries
 **/bin/
 bin-int/
-
-# Keep the premake bin
 !vendor/premake/bin/
+!Spike/vendor/mono/bin
 
 # CMake
 build/
