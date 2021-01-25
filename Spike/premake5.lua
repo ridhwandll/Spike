@@ -46,7 +46,7 @@ project "Spike"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.box2D}",
-		"%{LibraryDir.mono}",
+		"%{IncludeDir.mono}",
 		"%{IncludeDir.FontAwesome}"
 	}
 

@@ -18,5 +18,5 @@ add_subdirectory(Spike/vendor/box2D)
 add_subdirectory(Spike)
 add_subdirectory(Spike-Editor)
 add_subdirectory(Sandbox)
-
-set_property( DIRECTORY PROPERTY VS_STARTUP_PROJECT "SpikeEditor" )
+add_subdirectory(Spike-ScriptCore)
+set_property( DIRECTORY PROPERTY VS_STARTUP_PROJECT "SpikeEditor")

@@ -40,6 +40,7 @@ target_include_directories(Spike PRIVATE
     "vendor/glad/include"
     "vendor/stb_image"
     "vendor/box2D/include"
+    "vendor/mono/include"
 )
 
 target_include_directories(Spike PUBLIC
@@ -74,7 +75,7 @@ endif()
 
 set_property(TARGET Spike PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
-set(LIB_LOCATION ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib) #assimp
+set(LIB_LOCATION ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib ${CMAKE_SOURCE_DIR}/Spike/vendor/mono/lib/Debug/mono-2.0-sgen.lib) #assimp
 target_link_libraries(Spike PUBLIC ${LIB_LOCATION} )
 
 target_link_libraries(Spike PRIVATE glfw glad box2D)
