@@ -266,6 +266,14 @@ namespace Spike
                     Console::Get()->Print("This entity already has Mesh component!", Console::LogLevel::LVL_WARN);
                 ImGui::CloseCurrentPopup();
             }
+            if (ImGui::MenuItem("Script"))
+            {
+                if (!entity.HasComponent<ScriptComponent>())
+                    entity.AddComponent<ScriptComponent>();
+                else
+                    Console::Get()->Print("This entity already has Script component!", Console::LogLevel::LVL_WARN);
+                ImGui::CloseCurrentPopup();
+            }
             if (ImGui::MenuItem("RigidBody2D"))
             {
                 if (!entity.HasComponent<RigidBody2DComponent>())
@@ -426,6 +434,23 @@ namespace Spike
             else
                 ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
             ImGui::PopItemWidth();
+        });
+
+        DrawComponent<ScriptComponent>(entity, [](auto& component)
+        {
+            auto& klass = component.ClassName;
+
+            char buffer[256];
+            /* [Spike] TODO: More work on this, make it robust! [Spike] */
+            memset(buffer, 0, sizeof(buffer));
+            strcpy_s(buffer, sizeof(buffer), klass.c_str());
+            /* [Spike] klass = Class Name lol. [Spike] */
+            ImGui::Text("Class Name:");
+            ImGui::SameLine();
+            if (ImGui::InputText("##klass", buffer, sizeof(buffer)))
+            {
+                klass = std::string(buffer);
+            }
         });
 
         DrawComponent<RigidBody2DComponent>(entity, [](auto& component)

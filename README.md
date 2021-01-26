@@ -82,12 +82,12 @@ It is a **Game engine** written in **C++**
 # Main features to come
 
 - Fast 2D rendering (UI, particles, sprites, etc.)
-- High-fidelity Physically-Based 3D rendering (this will be expanded later, 2D to come first)
+- High-fidelity Physically-Based 3D rendering
 - Support for Mac, Android and iOS
 - Native rendering API support (DirectX, Vulkan, Metal)
 - Fully featured viewer and editor applications
-- Fully scripted interaction and behavior
-- Integrated 3rd party 2D and 3D physics engine
+- Fully scripted(C#) interaction and behavior
+- Integrated 3rd party 3D physics engine
 - Procedural terrain and world generation
 - Robust Artificial Intelligence(AI) system
 - Audio system
@@ -111,6 +111,7 @@ It is a **Game engine** written in **C++**
   - Translation, rotation and scale
 - Built in editor console
 - Editor Camera
+- 2D Physics
 
 # Dependencies
 
@@ -124,6 +125,7 @@ It is a **Game engine** written in **C++**
 - **[spdlog](https://github.com/gabime/spdlog)** for fast Logging
 - **[yaml-cpp](https://github.com/FahimFuad/yaml-cpp)** for scene serialization
 - **[ASSIMP](https://github.com/FahimFuad/assimp)** for model loading
+- **[box2D](https://github.com/FahimFuad/box2d)** for 2D Physics
 
 ## Contributing [![GitHub contributors](https://img.shields.io/github/contributors/FahimFuad/Spike.svg)](https://GitHub.com/FahimFuad/Spike/graphs/contributors/)
 

@@ -25,10 +25,10 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Scene.h"
-#include "entt.hpp"
+#include "Spike/Scene/Scene.h"
+#include <entt.hpp>
 #include "Spike/Core/Log.h"
-#include "Components.h"
+#include "Spike/Scene/Components.h"
 
 namespace Spike
 {

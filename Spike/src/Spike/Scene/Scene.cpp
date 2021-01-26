@@ -367,8 +367,8 @@ namespace Spike
     {
     }
 
-    //template<>
-    //void Scene::OnComponentAdded<Box2DWorldComponent>(Entity entity, Box2DWorldComponent& component)
-    //{
-    //}
+    template<>
+    void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
+    {
+    }
 }

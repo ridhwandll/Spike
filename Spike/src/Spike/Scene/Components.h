@@ -136,6 +136,17 @@ namespace Spike
         const char* GetUITitle() { return ICON_FK_CUBE" Mesh"; }
     };
 
+    struct ScriptComponent
+    {
+        std::string ClassName;
+
+        ScriptComponent() = default;
+        ScriptComponent(const ScriptComponent&) = default;
+        void Reset() { ClassName = "[SPIKE]-NONE-[SPIKE]"; }
+        const char* GetUITitle() { return ICON_FK_FILE_CODE_O" Script"; }
+
+    };
+
     //// 2D Physics //////////////////////////////////////////////////////////////////////
     enum class CollisionDetectionType;
     enum class SleepType;
