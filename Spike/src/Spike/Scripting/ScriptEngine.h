@@ -38,6 +38,13 @@ extern "C"
 
 namespace Spike
 {
+    enum class FieldType
+    {
+        None = 0, Float = 1, Int = 2, UnsignedInt = 3, String = 4, Vec2 = 5, Vec3 = 6, Vec4 = 7
+    };
+
+    const char* FieldTypeToString(FieldType type);
+
     struct EntityScriptClass;
     struct EntityInstance
     {
@@ -48,16 +55,107 @@ namespace Spike
         MonoObject* GetInstance();
     };
 
+    struct PublicField
+    {
+        std::string Name;
+        FieldType Type;
+
+        PublicField(const std::string& name, FieldType type);
+        PublicField(const PublicField&) = delete;
+        PublicField(PublicField&& other);
+        ~PublicField();
+
+        void CopyStoredValueToRuntime();
+        bool IsRuntimeAvailable() const;
+
+        template<typename T>
+        T GetStoredValue() const
+        {
+            T value;
+            GetStoredValue_Internal(&value);
+            return value;
+        }
+
+        template<typename T>
+        void SetStoredValue(T value) const
+        {
+            SetStoredValue_Internal(&value);
+        }
+
+        template<typename T>
+        T GetRuntimeValue() const
+        {
+            T value;
+            GetRuntimeValue_Internal(&value);
+            return value;
+        }
+
+        template<typename T>
+        void SetRuntimeValue(T value) const
+        {
+            SetRuntimeValue_Internal(&value);
+        }
+
+        void SetStoredValueRaw(void* src);
+    private:
+        EntityInstance* m_EntityInstance;
+        MonoClassField* m_MonoClassField;
+        uint8_t* m_StoredValueBuffer = nullptr;
+
+        uint8_t* AllocateBuffer(FieldType type);
+        void SetStoredValue_Internal(void* value) const;
+        void GetStoredValue_Internal(void* outValue) const;
+        void SetRuntimeValue_Internal(void* value) const;
+        void GetRuntimeValue_Internal(void* outValue) const;
+
+        friend class ScriptEngine;
+    };
+
+    using ScriptModuleFieldMap = std::unordered_map<std::string, std::unordered_map<std::string, PublicField>>;
+
+    struct EntityInstanceData
+    {
+        EntityInstance Instance;
+        ScriptModuleFieldMap ModuleFieldMap;
+    };
+
+    /* [Spike] Mapped as-> SceneID --- (EntityID - InstanceData) [Spike] */
+    using EntityInstanceMap = std::unordered_map<UUID, std::unordered_map<UUID, EntityInstanceData>>;
+
     /* [Spike] The whole Script Engine, initialized at Application.cpp [Spike] */
     class ScriptEngine
     {
+    public:
         /* [Spike] Initialize the Script Engine [Spike] */
         static void Init(const std::string& assemblyPath);
         static void Shutdown();
-        static void Test(); //TODO: Remove!
+
+        static void OnCreateEntity(Entity entity);
+        static void OnUpdateEntity(Entity entity, Timestep ts);
 
         /* [Spike] Script Engine must have a scene to work on, we set the scene context by this [Spike] */
-        void SetSceneContext(Ref<Scene> scene);
-        Ref<Scene> GetSceneContext();
+        static void SetSceneContext(const Ref<Scene>& scene);
+        static Ref<Scene> GetSceneContext();
+
+        static MonoObject* Construct(const std::string& fullName, bool callConstructor = true, void** parameters = nullptr);
+        static MonoClass* GetCoreClass(const std::string& fullName);
+
+        static bool IsEntityModuleValid(Entity entity);
+        static void OnSceneDestruct(UUID sceneID);
+        static void OnScriptComponentDestroyed(UUID sceneID, UUID entityID);
+        static void LoadSpikeRuntimeAssembly(const std::string& path);
+        static void ReloadAssembly(const std::string& path);
+
+        static bool ModuleExists(const std::string& moduleName);
+        static void InitScriptEntity(Entity entity);
+        static void ShutdownScriptEntity(Entity entity, const std::string& moduleName);
+        static void InstantiateEntityClass(Entity entity);
+        static void CopyEntityScriptData(UUID dst, UUID src);
+
+        static EntityInstanceMap& GetEntityInstanceMap();
+        static EntityInstanceData& GetEntityInstanceData(UUID sceneID, UUID entityID);
+
+        /* [Spike] Debug Only [Spike] */
+        static void OnImGuiRender();
     };
 }

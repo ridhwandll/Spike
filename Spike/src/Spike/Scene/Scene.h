@@ -73,12 +73,13 @@ namespace Spike
     private:
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
+    public:
+        EntityMap m_EntityIDMap;
+        bool m_IsPlaying = false;
 
     private:
         UUID m_SceneID;
-        EntityMap m_EntityIDMap;
         uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
-        bool m_IsPlaying = false;
         entt::entity m_SceneEntity;
         entt::registry m_Registry;
 

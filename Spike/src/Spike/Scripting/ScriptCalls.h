@@ -25,12 +25,13 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
+#include <mono/metadata/object.h>
 
 namespace Spike::Scripting
 {
-    void Spike_LogInfo(const std::string& message);
-    void Spike_LogWarn(const std::string& message);
-    void Spike_LogDebug(const std::string& message);
-    void Spike_LogError(const std::string& message);
-    void Spike_LogCritical(const std::string& message);
+    void Spike_LogInfo(MonoString* message);
+    void Spike_LogWarn(MonoString* message);
+    void Spike_LogDebug(MonoString* message);
+    void Spike_LogError(MonoString* message);
+    void Spike_LogCritical(MonoString* message);
 } 

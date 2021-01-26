@@ -138,11 +138,11 @@ namespace Spike
 
     struct ScriptComponent
     {
-        std::string ClassName;
+        std::string ModuleName;
 
         ScriptComponent() = default;
         ScriptComponent(const ScriptComponent&) = default;
-        void Reset() { ClassName = "[SPIKE]-NONE-[SPIKE]"; }
+        void Reset() { ModuleName = "SpikeNull"; }
         const char* GetUITitle() { return ICON_FK_FILE_CODE_O" Script"; }
 
     };

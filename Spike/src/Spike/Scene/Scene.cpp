@@ -31,6 +31,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
 #include "Spike/Physics/2D/Physics2D.h"
+#include "Spike/Scripting/ScriptEngine.h"
 #include "Entity.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -39,15 +40,50 @@ namespace Spike
 {
     std::unordered_map<UUID, Scene*> s_ActiveScenes;
 
+    struct SceneComponent
+    {
+        UUID SceneID;
+    };
+
+    static void OnScriptComponentConstruct(entt::registry& registry, entt::entity entity)
+    {
+        auto sceneView = registry.view<SceneComponent>();
+        UUID sceneID = registry.get<SceneComponent>(sceneView.front()).SceneID;
+
+        Scene* scene = s_ActiveScenes[sceneID];
+
+        auto entityID = registry.get<IDComponent>(entity).ID;
+        SPK_INTERNAL_ASSERT(scene->m_EntityIDMap.find(entityID) != scene->m_EntityIDMap.end());
+        ScriptEngine::InitScriptEntity(scene->m_EntityIDMap.at(entityID));
+    }
+
+    static void OnScriptComponentDestroy(entt::registry& registry, entt::entity entity)
+    {
+        auto sceneView = registry.view<SceneComponent>();
+        UUID sceneID = registry.get<SceneComponent>(sceneView.front()).SceneID;
+
+        Scene* scene = s_ActiveScenes[sceneID];
+
+        auto entityID = registry.get<IDComponent>(entity).ID;
+        ScriptEngine::OnScriptComponentDestroyed(sceneID, entityID);
+    }
+
     Scene::Scene()
     {
+        m_Registry.on_construct<ScriptComponent>().connect<&OnScriptComponentConstruct>();
+        m_Registry.on_destroy<ScriptComponent>().connect<&OnScriptComponentDestroy>();
+
         m_SceneEntity = m_Registry.create();
+
+        m_Registry.emplace<SceneComponent>(m_SceneEntity, m_SceneID);
         Physics2D::CreateScene(this);
         s_ActiveScenes[m_SceneID] = this;
     }
 
     Scene::~Scene()
     {
+        m_Registry.on_destroy<ScriptComponent>().disconnect();
+        ScriptEngine::OnSceneDestruct(m_SceneID);
         m_Registry.clear();
         s_ActiveScenes.erase(m_SceneID);
     }
@@ -83,6 +119,9 @@ namespace Spike
 
     void Scene::DestroyEntity(Entity entity)
     {
+        if (entity.HasComponent<ScriptComponent>())
+            ScriptEngine::OnScriptComponentDestroyed(m_SceneID, entity.GetUUID());
+
         m_Registry.destroy(entity);
     }
 
@@ -94,10 +133,6 @@ namespace Spike
 
     void Scene::OnUpdateRuntime(Timestep ts)
     {
-        // Update scripts
-        {
-        }
-
         Camera* mainCamera = nullptr;
         glm::mat4 cameraTransform;
 
@@ -145,6 +180,17 @@ namespace Spike
                     }
                 }
                 Renderer::EndScene();
+            }
+        }
+
+        // Update scripts
+        {
+            auto view = m_Registry.view<ScriptComponent>();
+            for (auto entity : view)
+            {
+                Entity e = { entity, this };
+                if (ScriptEngine::ModuleExists(e.GetComponent<ScriptComponent>().ModuleName))
+                    ScriptEngine::OnUpdateEntity(e, ts);
             }
         }
     }
@@ -237,6 +283,16 @@ namespace Spike
 
     void Scene::OnRuntimeStart()
     {
+        ScriptEngine::SetSceneContext(this);
+        {
+            auto view = m_Registry.view<ScriptComponent>();
+            for (auto entity : view)
+            {
+                Entity e = { entity, this };
+                if (ScriptEngine::ModuleExists(e.GetComponent<ScriptComponent>().ModuleName))
+                    ScriptEngine::InstantiateEntityClass(e);
+            }
+        }
         Physics2D::Init();
         m_IsPlaying = true;
     }
@@ -263,9 +319,15 @@ namespace Spike
         CopyComponent<MeshComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CameraComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<SpriteRendererComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<ScriptComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<RigidBody2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<BoxCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
+
+
+        const auto& entityInstanceMap = ScriptEngine::GetEntityInstanceMap();
+        if (entityInstanceMap.find(target->GetUUID()) != entityInstanceMap.end())
+            ScriptEngine::CopyEntityScriptData(target->GetUUID(), m_SceneID);
     }
 
     template<typename T>
@@ -290,6 +352,7 @@ namespace Spike
         CopyComponentIfExists<MeshComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<CameraComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<SpriteRendererComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<ScriptComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<RigidBody2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<CircleCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);

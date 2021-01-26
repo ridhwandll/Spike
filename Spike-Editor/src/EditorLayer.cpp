@@ -29,6 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/SceneSerializer.h"
 #include "Spike/Utility/PlatformUtils.h"
 #include "Spike/Math/Math.h"
+#include "Spike/Scripting/ScriptEngine.h"
 #include "FontAwesome.h"
 
 #include <imgui/imgui.h>
@@ -66,8 +67,12 @@ namespace Spike
 
     void EditorLayer::OnScenePlay()
     {
+        if (m_ReloadScriptOnPlay)
+        {
+            ScriptEngine::SetSceneContext(m_EditorScene);
+            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+        }
         m_SceneHierarchyPanel.ClearSelectedEntity();
-
         m_SceneState = SceneState::Play;
 
         m_RuntimeScene = Ref<Scene>::Create();
@@ -197,7 +202,7 @@ namespace Spike
         style.WindowMinSize.x = minWinSizeX;
 
         Console::Get()->OnImGuiRender();
-
+        ScriptEngine::OnImGuiRender();
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -216,6 +221,11 @@ namespace Spike
 
                 if (ImGui::MenuItem("Exit"))
                     Application::Get().Close();
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Script"))
+            {
+                ImGui::MenuItem("Reload assembly on play", nullptr, &m_ReloadScriptOnPlay);
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -255,6 +265,12 @@ namespace Spike
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
         ImGui::Begin("ToolBar", &show, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+        if (ImGui::Button(ICON_FK_REPEAT))
+        {
+            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+            Console::Get()->Print("ScriptEngine reloaded the C# assembly successfully!", Console::LogLevel::LVL_INFO);
+        }
+        ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
         if (m_SceneState == SceneState::Edit)
         {

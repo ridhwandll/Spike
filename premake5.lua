@@ -45,7 +45,6 @@ group "Dependencies"
 group ""
 
 include "Spike"
-include "Sandbox"
 include "Spike-Editor"
 
 project "Spike-ScriptCore"
@@ -60,3 +59,45 @@ project "Spike-ScriptCore"
     {
         "%{prj.name}/src/**.cs",
     }
+
+workspace "Sandbox"
+    architecture "x64"
+    targetdir "build"
+
+    configurations 
+    { 
+        "Debug", 
+        "Release",
+        "Dist"
+    }
+
+project "Spike-ScriptCore"
+    location "Spike-ScriptCore"
+    kind "SharedLib"
+    language "C#"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files 
+    {
+        "%{prj.name}/src/**.cs", 
+    }
+
+project "ExampleApp"
+    location "ExampleApp"
+    kind "SharedLib"
+    language "C#"
+
+    targetdir ("%{wks.location}/Spike-Editor/assets/scripts")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files 
+    {
+        "%{prj.name}/src/**.cs", 
+    }
+
+	links
+	{
+		"Spike-ScriptCore"
+	}

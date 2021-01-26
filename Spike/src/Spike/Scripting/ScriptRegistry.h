@@ -30,6 +30,7 @@ namespace Spike
 {
     class ScriptRegistry
     {
+    public:
         static void RegisterAll();
     };
 }

@@ -52,4 +52,5 @@ Github repository : https://github.com/FahimFuad/Spike
 
 #ifdef SPK_PLATFORM_WINDOWS
     #include <Windows.h>
+    #include <winioctl.h>
 #endif 

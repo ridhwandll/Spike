@@ -28,38 +28,45 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "ScriptCalls.h"
 #include "Panels/ConsolePanel.h"
 
-
 namespace Spike::Scripting
 {
-    void Spike_LogInfo(const std::string& message)
+    std::string ConvertMonoString(MonoString* message)
     {
-        SPK_CORE_LOG_INFO(message);
-        Console::Get()->Print(message, Console::LogLevel::LVL_INFO);
+        /* [Spike] Any way to make this efficient? we are doing 2 copies here! [Spike] */
+        char* ptr = mono_string_to_utf8(message);
+        std::string s { ptr };
+        mono_free(ptr);
+        return s;
     }
 
-    void Spike_LogWarn(const std::string& message)
+    void Spike_LogInfo(MonoString* message)
     {
-        SPK_CORE_LOG_WARN(message);
-        Console::Get()->Print(message, Console::LogLevel::LVL_WARN);
+        SPK_CORE_LOG_INFO(ConvertMonoString(message));
+        Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_INFO);
     }
 
-    void Spike_LogDebug(const std::string& message)
+    void Spike_LogWarn(MonoString* message)
     {
-        SPK_CORE_LOG_DEBUG(message);
-        Console::Get()->Print(message, Console::LogLevel::LVL_DEBUG);
+        SPK_CORE_LOG_WARN(ConvertMonoString(message));
+        Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_WARN);
     }
 
-    void Spike_LogError(const std::string& message)
+    void Spike_LogDebug(MonoString* message)
     {
-        SPK_CORE_LOG_ERROR(message);
-        Console::Get()->Print(message, Console::LogLevel::LVL_ERROR);
-
+        SPK_CORE_LOG_DEBUG(ConvertMonoString(message));
+        Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_DEBUG);
     }
 
-    void Spike_LogCritical(const std::string& message)
+    void Spike_LogError(MonoString* message)
     {
-        SPK_CORE_LOG_CRITICAL(message);
-        Console::Get()->Print(message, Console::LogLevel::LVL_CRITICAL);
+        SPK_CORE_LOG_ERROR(ConvertMonoString(message));
+        Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_ERROR);
+    }
+
+    void Spike_LogCritical(MonoString* message)
+    {
+        SPK_CORE_LOG_CRITICAL(ConvertMonoString(message));
+        Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_CRITICAL);
     }
 
 }

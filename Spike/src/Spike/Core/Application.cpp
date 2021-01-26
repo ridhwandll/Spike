@@ -30,8 +30,9 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Input.h"
-#include "GLFW/glfw3.h"
-#include "stb_image.h"
+#include "Spike/Scripting/ScriptEngine.h"
+#include <GLFW/glfw3.h>
+#include <stb_image.h>
 
 namespace Spike
 {
@@ -46,7 +47,7 @@ namespace Spike
 
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
-
+        ScriptEngine::Init("Spike-Editor/assets/scripts/ExampleApp.dll");
         Renderer::Init();
         Renderer2D::Init();
         m_ImGuiLayer = new ImGuiLayer();
@@ -56,6 +57,7 @@ namespace Spike
     Application::~Application()
     {
         Renderer::Shutdown();
+        ScriptEngine::Shutdown();
     }
 
     void Application::PushLayer(Layer* layer)

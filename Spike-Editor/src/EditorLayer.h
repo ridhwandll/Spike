@@ -72,7 +72,7 @@ namespace Spike
         Entity m_StartupCameraEntity;
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
-
+        bool m_ReloadScriptOnPlay;
         std::string m_ActiveFilepath = std::string();
         bool m_FirstTimeSave = false;
 

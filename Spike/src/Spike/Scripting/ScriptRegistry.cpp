@@ -40,10 +40,10 @@ namespace Spike
 {
     void ScriptRegistry::RegisterAll()
     {
-        mono_add_internal_call("Spike.Console::LogInfo", Spike::Scripting::Spike_LogInfo);
-        mono_add_internal_call("Spike.Console::LogWarn", Spike::Scripting::Spike_LogWarn);
-        mono_add_internal_call("Spike.Console::LogDebug", Spike::Scripting::Spike_LogDebug);
-        mono_add_internal_call("Spike.Console::LogError", Spike::Scripting::Spike_LogError);
-        mono_add_internal_call("Spike.Console::LogFatal", Spike::Scripting::Spike_LogCritical);
+        mono_add_internal_call("Spike.Console::LogInfo_Native", Spike::Scripting::Spike_LogInfo);
+        mono_add_internal_call("Spike.Console::LogWarn_Native", Spike::Scripting::Spike_LogWarn);
+        mono_add_internal_call("Spike.Console::LogDebug_Native", Spike::Scripting::Spike_LogDebug);
+        mono_add_internal_call("Spike.Console::LogError_Native", Spike::Scripting::Spike_LogError);
+        mono_add_internal_call("Spike.Console::LogFatal_Native", Spike::Scripting::Spike_LogCritical);
     }
 }

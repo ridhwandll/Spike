@@ -66,13 +66,13 @@ namespace Spike
         ImGui::SameLine();
 
         //TODO: Button Shows effects if they are toggled on
-        DrawToggleButton(ICON_FK_INFO_CIRCLE, m_InfoColor, [this]() { m_InfoEnabled ^= true; });               //Info
+        GUI::DrawToggleButton(ICON_FK_INFO_CIRCLE, m_InfoColor, [this]() { m_InfoEnabled ^= true; });               //Info
         ImGui::SameLine();
-        DrawToggleButton(ICON_FK_BUG, m_DebugColor, [this]() { m_DebugEnabled ^= true; });                     //Bug
+        GUI::DrawToggleButton(ICON_FK_BUG, m_DebugColor, [this]() { m_DebugEnabled ^= true; });                     //Bug
         ImGui::SameLine();
-        DrawToggleButton(ICON_FK_EXCLAMATION_TRIANGLE, m_WarnColor, [this]() { m_WarningEnabled ^= true; });   //Warn
+        GUI::DrawToggleButton(ICON_FK_EXCLAMATION_TRIANGLE, m_WarnColor, [this]() { m_WarningEnabled ^= true; });   //Warn
         ImGui::SameLine();
-        DrawToggleButton(ICON_FK_EXCLAMATION_CIRCLE, m_ErrorColor, [this]() { m_ErrorEnabled ^= true; });      //Error
+        GUI::DrawToggleButton(ICON_FK_EXCLAMATION_CIRCLE, m_ErrorColor, [this]() { m_ErrorEnabled ^= true; });      //Error
 
         ImGui::BeginChild(ICON_FK_LIST" Console", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 

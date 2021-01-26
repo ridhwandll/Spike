@@ -25,121 +25,215 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "UIUtils.h"
-#include "Spike/Scene/Components.h"
-#include "Panels/SceneHierarchyPanel.h"
-#include "Spike/Utility/PlatformUtils.h"
-#include "Spike/Physics/2D/Physics2D.h"
-#include "Panels/ConsolePanel.h"
+#include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <stb_image/stb_image.h>
 #include <string>
+#include <FontAwesome.h>
 
-namespace Spike
+namespace Spike::GUI
 {
-    void DrawBoolControl(const char* label, bool* boolean, float columnWidth)
+    bool DrawScriptTextControl(const char* label, std::string& value, float columnWidth, bool foundScript)
     {
+        bool modified = false;
+        ImGui::PushID(label);
+
+        if (!foundScript && value != "SpikeNull")
+            ImGui::TextColored({ 0.9, 0.1f, 0.1f, 1.0f }, ICON_FK_TIMES" Not Connected with ScriptEngine");
+        if (value == "SpikeNull")
+            ImGui::TextColored({ 1.0, 1.0f, 0.0f, 1.0f }, "SpikeNull is used");
+        if (foundScript && value != "SpikeNull")
+            ImGui::TextColored({ 0.1f, 0.9f, 0.1f, 1.0f }, "Connected with ScriptEngine");
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
+
+        if (!foundScript && value != "SpikeNull")
+            ImGui::PushStyleColor(ImGuiCol_Text, { 0.9f, 0.1f, 0.1f, 1.0f });
+        if (value == "SpikeNull")
+            ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 1.0f, 0.0f, 1.0f });
+        if (foundScript && value != "SpikeNull")
+            ImGui::PushStyleColor(ImGuiCol_Text, { 0.1f, 0.9f, 0.1f, 1.0f });
+
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, sizeof(buffer), value.c_str());
+
+        if (ImGui::InputText("##value", buffer, sizeof(buffer)))
+        {
+            value = buffer;
+            modified = true;
+        }
+
+        ImGui::PopStyleColor();
+        ImGui::Columns(1);
+        ImGui::PopID();
+
+        return modified;
+    }
+
+    bool DrawTextControl(const char* label, char* value, float columnWidth)
+    {
+        bool modified = false;
+
         ImGui::PushID(label);
 
         ImGui::Columns(2);
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
 
-        ImGui::Checkbox("##value", boolean);
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, sizeof(buffer), value);
+
+        if (ImGui::InputText("##value", buffer, sizeof(buffer)))
+        {
+            value = buffer;
+            modified = true;
+        }
 
         ImGui::Columns(1);
         ImGui::PopID();
+        return modified;
     }
 
-    static void DrawFloatControl(const char* label, float* value, float columnWidth)
+    bool DrawBoolControl(const char* label, bool* boolean, float columnWidth)
     {
+        bool modified = false;
         ImGui::PushID(label);
 
         ImGui::Columns(2);
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
 
-        ImGui::DragFloat("##value", value, 0.1f);
+        if (ImGui::Checkbox("##value", boolean))
+            modified = true;
 
         ImGui::Columns(1);
         ImGui::PopID();
+        return modified;
     }
 
-    void DrawFloat2Control(const char* label, glm::vec2& value, float columnWidth)
+    bool DrawIntControl(const char* label, int* value, float columnWidth)
     {
+        bool modified = false;
         ImGui::PushID(label);
 
         ImGui::Columns(2);
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
 
-        ImGui::DragFloat2("##value", glm::value_ptr(value), 0.1f);
+        if (ImGui::DragInt("##value", value, 0.1f))
+            modified = true;
 
         ImGui::Columns(1);
         ImGui::PopID();
+        return modified;
     }
 
-    void DrawColorControl(const char* label, glm::vec4& value, float columnWidth)
+    bool DrawFloatControl(const char* label, float* value, float columnWidth)
     {
+        bool modified = false;
         ImGui::PushID(label);
 
         ImGui::Columns(2);
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
+
+        if (ImGui::DragFloat("##value", value, 0.1f))
+            modified = true;
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+        return modified;
+    }
+
+    bool DrawFloat2Control(const char* label, glm::vec2& value, float columnWidth)
+    {
+        bool modified = false;
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
+
+        if (ImGui::DragFloat2("##value", glm::value_ptr(value), 0.1f))
+            modified = true;
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+        return modified;
+    }
+
+    bool DrawFloat3Control(const char* label, glm::vec3& value, float columnWidth)
+    {
+        bool modified = false;
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
+
+        if (ImGui::DragFloat3("##value", glm::value_ptr(value), 0.1f))
+            modified = true;
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+        return modified;
+    }
+
+    bool DrawFloat4Control(const char* label, glm::vec4& value, float columnWidth)
+    {
+        bool modified = false;
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
+
+        if (ImGui::DragFloat4("##value", glm::value_ptr(value), 0.1f))
+            modified = true;
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+        return modified;
+    }
+
+    bool DrawColorControl(const char* label, glm::vec4& value, float columnWidth)
+    {
+        bool modified = false;
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(-1);
 
         ImGui::PushItemWidth(-std::numeric_limits<float>::min());
-        ImGui::ColorEdit4("##value", glm::value_ptr(value));
+        if (ImGui::ColorEdit4("##value", glm::value_ptr(value)))
+            modified = true;
 
         ImGui::Columns(1);
         ImGui::PopID();
-    }
-
-    template<typename ComponentType, typename UIFunction>
-    static void DrawComponent(Entity entity, UIFunction uiFunction)
-    {
-        if (entity.HasComponent<ComponentType>())
-        {
-            const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed |
-                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
-
-            auto& component = entity.GetComponent<ComponentType>();
-            ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
-
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 1.0f, 1.0f });
-            float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-
-            bool open = ImGui::TreeNodeEx((void*)typeid(ComponentType).hash_code(), treeNodeFlags, component.GetUITitle());
-            ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-
-            if (ImGui::Button(ICON_FK_PLUS_CIRCLE, ImVec2{ lineHeight, lineHeight }))
-                ImGui::OpenPopup("Component Settings");
-
-            ImGui::PopStyleVar();
-
-            bool removeComponent = false;
-            if (ImGui::BeginPopup("Component Settings"))
-            {
-                if (ImGui::MenuItem("Reset"))
-                    component.Reset();
-                if (ImGui::MenuItem("Remove Component"))
-                    removeComponent = true;
-
-                ImGui::EndPopup();
-            }
-
-            if (open)
-            {
-                uiFunction(component);
-                ImGui::TreePop();
-            }
-
-            if (removeComponent)
-                entity.RemoveComponent<ComponentType>();
-        }
+        return modified;
     }
 
     void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue, float columnWidth)
@@ -207,353 +301,5 @@ namespace Spike
         ImGui::Columns(1);
 
         ImGui::PopID();
-    }
-
-    void DrawComponents(Entity entity)
-    {
-        if (entity.HasComponent<TagComponent>())
-        {
-            auto& tag = entity.GetComponent<TagComponent>().Tag;
-
-            char buffer[256];
-            memset(buffer, 0, sizeof(buffer));
-            strcpy_s(buffer, sizeof(buffer), tag.c_str());
-
-            if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-            {
-                tag = std::string(buffer);
-            }
-        }
-
-        ImGui::SameLine();
-        ImGui::PushItemWidth(-1);
-
-        if (ImGui::Button("Add Component"))
-            ImGui::OpenPopup("Add Component");
-
-        ImGui::TextDisabled("UUID: %llx", entity.GetComponent<IDComponent>().ID);
-        if (ImGui::BeginPopup("Add Component"))
-        {
-            if (ImGui::MenuItem("Transform"))
-            {
-                if (!entity.HasComponent<TransformComponent>())
-                    entity.AddComponent<TransformComponent>();
-                else
-                    Console::Get()->Print("This entity already has Transform component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Camera"))
-            {
-                if (!entity.HasComponent<CameraComponent>())
-                    entity.AddComponent<CameraComponent>();
-                else
-                    Console::Get()->Print("This entity already has Camera component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Sprite Renderer"))
-            {
-                if (!entity.HasComponent<SpriteRendererComponent>())
-                    entity.AddComponent<SpriteRendererComponent>();
-                else
-                    Console::Get()->Print("This entity already has Sprite Renderer component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Mesh"))
-            {
-                if (!entity.HasComponent<MeshComponent>())
-                    entity.AddComponent<MeshComponent>();
-                else
-                    Console::Get()->Print("This entity already has Mesh component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Script"))
-            {
-                if (!entity.HasComponent<ScriptComponent>())
-                    entity.AddComponent<ScriptComponent>();
-                else
-                    Console::Get()->Print("This entity already has Script component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("RigidBody2D"))
-            {
-                if (!entity.HasComponent<RigidBody2DComponent>())
-                    entity.AddComponent<RigidBody2DComponent>();
-                else
-                    Console::Get()->Print("This entity already has RigidBody2D component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("BoxCollider2D"))
-            {
-                if (!entity.HasComponent<BoxCollider2DComponent>())
-                    entity.AddComponent<BoxCollider2DComponent>();
-                else
-                    Console::Get()->Print("This entity already has BoxCollider2D component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("CircleCollider2D"))
-            {
-                if (!entity.HasComponent<CircleCollider2DComponent>())
-                    entity.AddComponent<CircleCollider2DComponent>();
-                else
-                    Console::Get()->Print("This entity already has CircleCollider2D component!", Console::LogLevel::LVL_WARN);
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-        ImGui::PopItemWidth();
-
-        DrawComponent<TransformComponent>(entity, [](auto& component)
-        {
-            DrawVec3Control("Translation", component.Translation);
-            glm::vec3 rotation = glm::degrees(component.Rotation);
-            DrawVec3Control("Rotation", rotation);
-            component.Rotation = glm::radians(rotation);
-            DrawVec3Control("Scale", component.Scale, 1.0f);
-        });
-
-        DrawComponent<CameraComponent>(entity, [](auto& component)
-        {
-            auto& camera = component.Camera;
-
-            ImGui::Checkbox("Primary", &component.Primary);
-
-            const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-            const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
-            if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
-                    if (ImGui::Selectable(projectionTypeStrings[i], isSelected))
-                    {
-                        currentProjectionTypeString = projectionTypeStrings[i];
-                        camera.SetProjectionType((SceneCamera::ProjectionType)i);
-                    }
-                    if (isSelected)
-                        ImGui::SetItemDefaultFocus();
-                }
-
-                ImGui::EndCombo();
-            }
-
-            if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
-            {
-                float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
-                if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
-                    camera.SetPerspectiveVerticalFOV(glm::radians(verticalFOV));
-
-                float nearClip = camera.GetPerspectiveNearClip();
-                if (ImGui::DragFloat("Near Clip", &nearClip))
-                    camera.SetPerspectiveNearClip(nearClip);
-
-                float farClip = camera.GetPerspectiveFarClip();
-                if (ImGui::DragFloat("Far Clip", &farClip))
-                    camera.SetPerspectiveFarClip(farClip);
-            }
-
-            if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
-            {
-                float orthoSize = camera.GetOrthographicSize();
-                if (ImGui::DragFloat("Size", &orthoSize))
-                    camera.SetOrthographicSize(orthoSize);
-
-                float nearClip = camera.GetOrthographicNearClip();
-                if (ImGui::DragFloat("Near Clip", &nearClip))
-                    camera.SetOrthographicNearClip(nearClip);
-
-                float farClip = camera.GetOrthographicFarClip();
-                if (ImGui::DragFloat("Far Clip", &farClip))
-                    camera.SetOrthographicFarClip(farClip);
-
-                ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
-            }
-        });
-
-        DrawComponent<SpriteRendererComponent>(entity, [](auto& component)
-        {
-            DrawColorControl("Color", component.Color);
-
-            const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-            stbi_set_flip_vertically_on_load(1);
-
-            ImGui::Text("Texture");
-            const float cursorPos = ImGui::GetCursorPosY();
-            const ImVec2 buttonSize = { 65, 65 };
-            ImGui::SameLine(ImGui::GetWindowWidth() * 0.8f);
-
-            if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
-            {
-                std::string filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
-                if (!filepath.empty())
-                    component.SetTexture(filepath);
-            }
-
-            ImGui::SetCursorPosY(cursorPos + 5);
-
-            if (ImGui::Button("Add Texture"))
-            {
-                std::string filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
-                if (!filepath.empty())
-                    component.SetTexture(filepath);
-            }
-
-            ImGui::SameLine();
-
-            if (ImGui::Button("Remove Texture"))
-                component.RemoveTexture();
-
-            // Tiling Factor
-            DrawFloatControl("Tiling Factor", &component.TilingFactor, 120);
-        });
-
-        DrawComponent<MeshComponent>(entity, [](auto& component)
-        {
-            ImGui::Text("File Path");
-            ImGui::SameLine();
-            if (ImGui::Button("Open Mesh", ImVec2(100, 20)))
-            {
-                std::string file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
-                if (!file.empty())
-                {
-                    component.Mesh = Ref<Mesh>::Create(file);
-                    component.SetFilePath(file);
-                }
-            }
-            ImGui::SameLine();
-
-            if (ImGui::Button("Remove Mesh", ImVec2(100, 20)))
-            {
-                if (component.Mesh)
-                    component.Reset();
-            }
-
-            ImGui::PushItemWidth(ImGui::GetWindowWidth() - 50);
-
-            if (component.Mesh)
-                ImGui::InputText("##meshfilepath", (char*)component.Mesh->m_FilePath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-            else
-                ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
-            ImGui::PopItemWidth();
-        });
-
-        DrawComponent<ScriptComponent>(entity, [](auto& component)
-        {
-            auto& klass = component.ClassName;
-
-            char buffer[256];
-            /* [Spike] TODO: More work on this, make it robust! [Spike] */
-            memset(buffer, 0, sizeof(buffer));
-            strcpy_s(buffer, sizeof(buffer), klass.c_str());
-            /* [Spike] klass = Class Name lol. [Spike] */
-            ImGui::Text("Class Name:");
-            ImGui::SameLine();
-            if (ImGui::InputText("##klass", buffer, sizeof(buffer)))
-            {
-                klass = std::string(buffer);
-            }
-        });
-
-        DrawComponent<RigidBody2DComponent>(entity, [](auto& component)
-        {
-            const char* rb2dTypeStrings[3] = { "Static", "Dynamic", "Kinematic" };
-            const char* currentType = rb2dTypeStrings[(int)component.BodyType];
-            {
-                ImGui::Columns(2);
-                ImGui::Text("Type");
-                ImGui::SetColumnWidth(0, 160.0f);
-                ImGui::NextColumn();
-                if (ImGui::BeginCombo("##type", currentType))
-                {
-                    for (int type = 0; type < 3; type++)
-                    {
-                        bool is_selected = (currentType == rb2dTypeStrings[type]);
-                        if (ImGui::Selectable(rb2dTypeStrings[type], is_selected))
-                        {
-                            currentType = rb2dTypeStrings[type];
-                            component.BodyType = (RigidBody2DComponent::Type)type;
-                        }
-                        if (is_selected)
-                            ImGui::SetItemDefaultFocus();
-                    }
-                    ImGui::EndCombo();
-                }
-                ImGui::Columns(1);
-            }
-
-            if (component.BodyType == RigidBody2DComponent::Type::Dynamic)
-            {
-                DrawFloatControl("Gravity Scale", &component.Gravity, 160.0f);
-                DrawBoolControl("Fixed Rotation", &component.FixedRotation, 160.0f);
-            }
-
-            {
-                if (component.BodyType == RigidBody2DComponent::Type::Dynamic || component.BodyType == RigidBody2DComponent::Type::Kinematic)
-                {
-                    ImGui::Columns(2);
-                    ImGui::SetColumnWidth(0, 160.0f);
-                    ImGui::Text("Collision Detection");
-                    ImGui::NextColumn();
-                    const char* rb2dCollisionTypeStrings[2] = { "Discrete", "Continuous" };
-                    const char* current_item = rb2dCollisionTypeStrings[(int)component.CollisionDetection];
-                    if (ImGui::BeginCombo("##collisiondetection", current_item))
-                    {
-                        for (int type = 0; type < 2; type++)
-                        {
-                            bool is_selected = (current_item == rb2dCollisionTypeStrings[type]);
-                            if (ImGui::Selectable(rb2dCollisionTypeStrings[type], is_selected))
-                            {
-                                current_item = rb2dCollisionTypeStrings[type];
-                                component.CollisionDetection = (CollisionDetectionType)type;
-                            }
-
-                            if (is_selected)
-                                ImGui::SetItemDefaultFocus();
-                        }
-                        ImGui::EndCombo();
-                    }
-                    ImGui::Columns(1);
-                    {
-                        ImGui::Columns(2);
-                        ImGui::SetColumnWidth(0, 160.0f);
-                        ImGui::Text("Sleep Type");
-                        ImGui::NextColumn();
-                        const char* rb2dSleepTypeStrings[3] = { "NeverSleep", "StartAwake", "StartAsleep" };
-                        const char* current_item = rb2dSleepTypeStrings[(int)component.Sleeptype];
-                        if (ImGui::BeginCombo("##sleeptype", current_item))
-                        {
-                            for (int type = 0; type < 3; type++)
-                            {
-                                bool is_selected = (current_item == rb2dSleepTypeStrings[type]);
-                                if (ImGui::Selectable(rb2dSleepTypeStrings[type], is_selected))
-                                {
-                                    current_item = rb2dSleepTypeStrings[type];
-                                    component.Sleeptype = (SleepType)type;
-                                }
-
-                                if (is_selected)
-                                    ImGui::SetItemDefaultFocus();
-                            }
-                            ImGui::EndCombo();
-                        }
-                        ImGui::Columns(1);
-                    }
-                }
-            }
-
-        });
-        DrawComponent<BoxCollider2DComponent>(entity, [](auto& component)
-        {
-            DrawFloat2Control("Offset",   component.Offset);
-            DrawFloat2Control("Size",     component.Size);
-            DrawFloatControl("Density",  &component.Density);
-            DrawFloatControl("Friction", &component.Friction);
-        });
-        DrawComponent<CircleCollider2DComponent>(entity, [](auto& component)
-        {
-            DrawFloat2Control("Offset",   component.Offset);
-            DrawFloatControl("Radius",   &component.Radius);
-            DrawFloatControl("Density",  &component.Density);
-            DrawFloatControl("Friction", &component.Friction);
-        });
     }
 }
