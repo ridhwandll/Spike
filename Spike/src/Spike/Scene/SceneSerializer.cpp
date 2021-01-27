@@ -255,6 +255,16 @@ namespace Spike
                 out << YAML::EndMap; // MeshComponent
             }
 
+            if (entity.HasComponent<ScriptComponent>())
+            {
+                out << YAML::Key << "ScriptComponent";
+                out << YAML::BeginMap; // ScriptComponent
+
+                auto moduleName = entity.GetComponent<ScriptComponent>().ModuleName;
+                out << YAML::Key << "ModuleName" << moduleName;
+
+                out << YAML::EndMap; // ScriptComponent
+            }
             if (entity.HasComponent<RigidBody2DComponent>())
             {
                 out << YAML::Key << "RigidBody2DComponent";
@@ -427,6 +437,17 @@ namespace Spike
                     }
 
                     SPK_CORE_LOG_INFO("  Mesh Asset Path: {0}", meshPath);
+                }
+
+                auto scriptComponent = entity["ScriptComponent"];
+                if (scriptComponent)
+                {
+                    std::string moduleName = scriptComponent["ModuleName"].as<std::string>();
+
+                    if (!deserializedEntity.HasComponent<ScriptComponent>())
+                    {
+                        deserializedEntity.AddComponent<ScriptComponent>(moduleName);
+                    }
                 }
 
                 auto rigidBody2DComponent = entity["RigidBody2DComponent"];

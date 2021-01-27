@@ -177,6 +177,7 @@ namespace Spike
     {
         glm::vec2 Offset = { 0.0f, 0.0f };
         glm::vec2 Size = { 1.0f, 1.0f };
+        glm::vec2 Scale = { 1.0f, 1.0f };
 
         float Density = 1.0f;
         float Friction = 1.0f;
@@ -188,6 +189,7 @@ namespace Spike
 
         void Reset()
         {
+            Scale = { 1.0f, 1.0f };
             Offset = { 0.0f, 0.0f };
             Size = { 1.0f, 1.0f };
 

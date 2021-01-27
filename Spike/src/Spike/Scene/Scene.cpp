@@ -293,6 +293,15 @@ namespace Spike
                     ScriptEngine::InstantiateEntityClass(e);
             }
         }
+
+        {
+            auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
+            for (auto entity : view)
+            {
+                auto [transform, boxCollider2D] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+                boxCollider2D.Scale = transform.Scale;
+            }
+        }
         Physics2D::Init();
         m_IsPlaying = true;
     }
@@ -365,6 +374,18 @@ namespace Spike
         {
             const auto& camera = view.get<CameraComponent>(entity);
             if (camera.Primary)
+                return Entity{ entity, this };
+        }
+        return {};
+    }
+
+    Entity Scene::FindEntityByTag(const std::string& tag)
+    {
+        auto view = m_Registry.view<TagComponent>();
+        for (auto entity : view)
+        {
+            const auto& theRealTag = view.get<TagComponent>(entity).Tag;
+            if (theRealTag == tag)
                 return Entity{ entity, this };
         }
         return {};

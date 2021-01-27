@@ -67,6 +67,7 @@ namespace Spike
         static Ref<Scene> GetScene(UUID uuid);
 
         Entity GetPrimaryCameraEntity();
+        Entity FindEntityByTag(const std::string& tag);
 
         template<typename T>
         auto GetAllEntitiesWith() { return m_Registry.view<T>(); }

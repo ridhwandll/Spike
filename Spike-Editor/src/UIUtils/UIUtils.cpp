@@ -43,7 +43,7 @@ namespace Spike::GUI
         if (value == "SpikeNull")
             ImGui::TextColored({ 1.0, 1.0f, 0.0f, 1.0f }, "SpikeNull is used");
         if (foundScript && value != "SpikeNull")
-            ImGui::TextColored({ 0.1f, 0.9f, 0.1f, 1.0f }, "Connected with ScriptEngine");
+            ImGui::TextColored({ 0.1f, 0.9f, 0.1f, 1.0f }, ICON_FK_CHECK" Connected with ScriptEngine");
 
         ImGui::Columns(2);
         ImGui::SetColumnWidth(0, columnWidth);
@@ -111,7 +111,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         if (ImGui::Checkbox("##value", boolean))
             modified = true;
@@ -130,7 +129,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         if (ImGui::DragInt("##value", value, 0.1f))
             modified = true;
@@ -149,7 +147,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         if (ImGui::DragFloat("##value", value, 0.1f))
             modified = true;
@@ -168,7 +165,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         if (ImGui::DragFloat2("##value", glm::value_ptr(value), 0.1f))
             modified = true;
@@ -187,7 +183,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         if (ImGui::DragFloat3("##value", glm::value_ptr(value), 0.1f))
             modified = true;
@@ -206,7 +201,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         if (ImGui::DragFloat4("##value", glm::value_ptr(value), 0.1f))
             modified = true;
@@ -225,7 +219,6 @@ namespace Spike::GUI
         ImGui::SetColumnWidth(0, columnWidth);
         ImGui::Text(label);
         ImGui::NextColumn();
-        ImGui::PushItemWidth(-1);
 
         ImGui::PushItemWidth(-std::numeric_limits<float>::min());
         if (ImGui::ColorEdit4("##value", glm::value_ptr(value)))

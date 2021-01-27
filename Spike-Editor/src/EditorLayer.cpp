@@ -36,7 +36,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <ImGuizmo.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include "Spike/Core/Application.h"
 #pragma warning(push)
 #pragma warning(disable : 4244) //Disable ugly 'C4244' "type conversion" warning!
 
@@ -49,6 +49,7 @@ namespace Spike
 
     void EditorLayer::OnAttach()
     {
+        //Application::Get()->GetWindow().SetVSync(false);
         FramebufferSpecification fbSpec;
         fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
         fbSpec.Width = 1280;
@@ -58,6 +59,7 @@ namespace Spike
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
+
         LaunchReadymadeScene();
     }
 
@@ -270,7 +272,30 @@ namespace Spike
             ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
             Console::Get()->Print("ScriptEngine reloaded the C# assembly successfully!", Console::LogLevel::LVL_INFO);
         }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+            ImGui::TextUnformatted("Reload C#");
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
         ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FK_FLOPPY_O))
+        {
+            SaveScene();
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+            ImGui::TextUnformatted("Save");
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+        ImGui::SameLine();
+
         ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
         if (m_SceneState == SceneState::Edit)
         {
@@ -336,7 +361,8 @@ namespace Spike
 
         // Gizmos
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-        if (selectedEntity && m_GizmoType != -1)
+        /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
+        if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
         {
             ImGuizmo::SetOrthographic(false);
             ImGuizmo::SetDrawlist();
@@ -346,13 +372,14 @@ namespace Spike
             ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
             glm::mat4 cameraView, cameraProjection;
-            if (m_SceneState == SceneState::Play)
-            {
-                auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
-                const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-                cameraProjection = camera.GetProjection();
-                cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-            }
+
+            //if (m_SceneState == SceneState::Play) //TODO
+            //{
+            //    auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
+            //    const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+            //    cameraProjection = camera.GetProjection();
+            //    cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+            //}
 
             if (m_SceneState == SceneState::Edit)
             {

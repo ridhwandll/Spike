@@ -1,28 +1,43 @@
 ﻿using System;
 using Spike;
 
-namespace Example
+class Test : Entity
 {
-    class Test : Entity
+    public int Speed = 2;
+    private TransformComponent m_Transform;
+    private Entity m_Entity;
+
+    public void OnCreate()
     {
-        public int Integer = 80;
-        public void OnCreate()
+        m_Entity = FindEntityByTag("Player");
+        m_Transform = m_Entity.GetComponent<TransformComponent>();
+    }
+
+    public void OnUpdate(float ts)
+    {
+        Vector3 m_Translation = m_Transform.Translation;
+
+        /* Translation */
+        if (Input.IsKeyPressed(KeyCode.D))
         {
-            Spike.Console.LogInfo("Script Logging Test");
-            Spike.Console.LogDebug("Script Logging Test");
-            Spike.Console.LogWarn("Script Logging Test");
-            Spike.Console.LogError("Script Logging Test");
-            Spike.Console.LogFatal("Script Logging Test");
+            m_Translation.X += Speed * ts;
         }
 
-        public void OnUpdate(float ts)
+        if (Input.IsKeyPressed(KeyCode.A))
         {
-            if (Input.IsKeyPressed(KeyCode.Space))
-            {
-                Spike.Console.LogInfo("Space key is pressed!!");
-            }
-
-            Spike.Console.LogInfo(Integer.ToString());
+            m_Translation.X -= Speed * ts;
         }
+
+        if (Input.IsKeyPressed(KeyCode.W))
+        {
+            m_Translation.Y += Speed * ts;
+        }
+
+        if (Input.IsKeyPressed(KeyCode.S))
+        {
+            m_Translation.Y -= Speed * ts;
+        }
+
+        m_Transform.Translation = m_Translation;
     }
 }

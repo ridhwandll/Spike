@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace Spike
 {
@@ -16,5 +13,80 @@ namespace Spike
         {
             ID = id;
         }
+
+        ~Entity() { }
+
+        public Vector3 Translation
+        {
+            get
+            {
+                return GetComponent<TransformComponent>().Translation;
+            }
+            set
+            {
+                GetComponent<TransformComponent>().Translation = value;
+            }
+        }
+
+        public Vector3 Rotation
+        {
+            get
+            {
+                return GetComponent<TransformComponent>().Rotation;
+            }
+            set
+            {
+                GetComponent<TransformComponent>().Rotation = value;
+            }
+        }
+
+        public Vector3 Scale
+        {
+            get
+            {
+                return GetComponent<TransformComponent>().Scale;
+            }
+            set
+            {
+                GetComponent<TransformComponent>().Scale = value;
+            }
+        }
+
+        public T CreateComponent<T>() where T : Component, new()
+        {
+            CreateComponent_Native(ID, typeof(T));
+            T component = new T();
+            component.Entity = this;
+            return component;
+        }
+
+        public bool HasComponent<T>() where T : Component, new()
+        {
+            return HasComponent_Native(ID, typeof(T));
+        }
+
+        public T GetComponent<T>() where T : Component, new()
+        {
+            if (HasComponent<T>())
+            {
+                T component = new T();
+                component.Entity = this;
+                return component;
+            }
+            return null;
+        }
+
+        public Entity FindEntityByTag(string tag)
+        {
+            ulong entityID = FindEntityByTag_Native(tag);
+            return new Entity(entityID);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void CreateComponent_Native(ulong entityID, Type type);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern bool HasComponent_Native(ulong entityID, Type type);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern ulong FindEntityByTag_Native(string tag);
     }
 }

@@ -52,11 +52,10 @@ namespace Spike
         auto& box2DWorld = m_Scene->m_Registry.get<Box2DWorldComponent>(scene.front()).World;
         int32_t velocityIterations = 8;
         int32_t positionIterations = 2;
-        box2DWorld->Step(ts, velocityIterations, positionIterations);
 
         // Update all the Rigidbody2D's
         {
-            auto view = m_Scene->m_Registry.view<RigidBody2DComponent>();
+            auto view = m_Scene->m_Registry.view<TransformComponent, RigidBody2DComponent>();
             for (auto entity : view)
             {
                 Entity e = { entity, m_Scene };
@@ -65,6 +64,19 @@ namespace Spike
 
                 auto& position = body->GetPosition();
                 auto& transform = e.GetComponent<TransformComponent>();
+
+                body->SetTransform({ transform.Translation.x, transform.Translation.y }, transform.Rotation.z);
+            }
+
+            box2DWorld->Step(ts, velocityIterations, positionIterations);
+
+            for (auto entity : view)
+            {
+                auto [transform, rb2d] = view.get<TransformComponent, RigidBody2DComponent>(entity);
+
+                b2Body* body = static_cast<b2Body*>(rb2d.RuntimeBody);
+                auto& position = body->GetPosition();
+
                 transform.Translation.x = position.x;
                 transform.Translation.y = position.y;
                 transform.Rotation.z = body->GetAngle();
@@ -162,7 +174,7 @@ namespace Spike
                     b2Body* body = static_cast<b2Body*>(rigidBody2D.RuntimeBody);
 
                     b2PolygonShape polygonShape;
-                    polygonShape.SetAsBox(boxCollider2D.Size.x / 2, boxCollider2D.Size.y / 2);
+                    polygonShape.SetAsBox(((boxCollider2D.Size.x * boxCollider2D.Scale.x) / 2), ((boxCollider2D.Size.y * boxCollider2D.Scale.y) / 2), (b2Vec2&)boxCollider2D.Offset, 0.0f);
 
                     b2FixtureDef fixtureDef;
                     fixtureDef.shape = &polygonShape;
