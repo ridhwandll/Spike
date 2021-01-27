@@ -25,13 +25,25 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
+#include "Spike/Core/Input.h"
+#include <glm/glm.hpp>
 #include <mono/metadata/object.h>
 
 namespace Spike::Scripting
 {
-    void Spike_LogInfo(MonoString* message);
-    void Spike_LogWarn(MonoString* message);
-    void Spike_LogDebug(MonoString* message);
-    void Spike_LogError(MonoString* message);
-    void Spike_LogCritical(MonoString* message);
+    /* [Spike] Console [Spike] */
+    void Spike_Console_LogInfo(MonoString* message);
+    void Spike_Console_LogWarn(MonoString* message);
+    void Spike_Console_LogDebug(MonoString* message);
+    void Spike_Console_LogError(MonoString* message);
+    void Spike_Console_LogCritical(MonoString* message);
+
+    /* [Spike] Input [Spike] */
+    bool Spike_Input_IsKeyPressed(KeyCode key);
+    bool Spike_Input_IsMouseButtonPressed(MouseCode button);
+    void Spike_Input_GetMousePosition(glm::vec2* outPosition);
+    void Spike_Input_SetCursorMode(MousePointerMode mode);
+    MousePointerMode Spike_Input_GetCursorMode();
+
+
 } 

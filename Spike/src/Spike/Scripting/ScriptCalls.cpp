@@ -39,34 +39,60 @@ namespace Spike::Scripting
         return s;
     }
 
-    void Spike_LogInfo(MonoString* message)
+    void Spike_Console_LogInfo(MonoString* message)
     {
         SPK_CORE_LOG_INFO(ConvertMonoString(message));
         Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_INFO);
     }
 
-    void Spike_LogWarn(MonoString* message)
+    void Spike_Console_LogWarn(MonoString* message)
     {
         SPK_CORE_LOG_WARN(ConvertMonoString(message));
         Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_WARN);
     }
 
-    void Spike_LogDebug(MonoString* message)
+    void Spike_Console_LogDebug(MonoString* message)
     {
         SPK_CORE_LOG_DEBUG(ConvertMonoString(message));
         Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_DEBUG);
     }
 
-    void Spike_LogError(MonoString* message)
+    void Spike_Console_LogError(MonoString* message)
     {
         SPK_CORE_LOG_ERROR(ConvertMonoString(message));
         Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_ERROR);
     }
 
-    void Spike_LogCritical(MonoString* message)
+    void Spike_Console_LogCritical(MonoString* message)
     {
         SPK_CORE_LOG_CRITICAL(ConvertMonoString(message));
         Console::Get()->Print(ConvertMonoString(message), Console::LogLevel::LVL_CRITICAL);
+    }
+
+    bool Spike_Input_IsKeyPressed(KeyCode key)
+    {
+        return Spike::Input::IsKeyPressed(key);
+    }
+
+    bool Spike_Input_IsMouseButtonPressed(MouseCode button)
+    {
+        return Spike::Input::IsMouseButtonPressed(button);
+    }
+
+    void Spike_Input_GetMousePosition(glm::vec2* outPosition)
+    {
+        glm::vec2 result =  Spike::Input::GetMousePosition();
+        *outPosition = result;
+    }
+
+    void Spike_Input_SetCursorMode(MousePointerMode mode)
+    {
+        Spike::Input::SetCursorMode(mode);
+    }
+
+    MousePointerMode Spike_Input_GetCursorMode()
+    {
+        return Spike::Input::GetCursorMode();
     }
 
 }

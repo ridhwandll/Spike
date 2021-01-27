@@ -40,10 +40,18 @@ namespace Spike
 {
     void ScriptRegistry::RegisterAll()
     {
-        mono_add_internal_call("Spike.Console::LogInfo_Native", Spike::Scripting::Spike_LogInfo);
-        mono_add_internal_call("Spike.Console::LogWarn_Native", Spike::Scripting::Spike_LogWarn);
-        mono_add_internal_call("Spike.Console::LogDebug_Native", Spike::Scripting::Spike_LogDebug);
-        mono_add_internal_call("Spike.Console::LogError_Native", Spike::Scripting::Spike_LogError);
-        mono_add_internal_call("Spike.Console::LogFatal_Native", Spike::Scripting::Spike_LogCritical);
+        /* [Spike] Console [Spike] */
+        mono_add_internal_call("Spike.Console::LogInfo_Native",  Spike::Scripting::Spike_Console_LogInfo);
+        mono_add_internal_call("Spike.Console::LogWarn_Native",  Spike::Scripting::Spike_Console_LogWarn);
+        mono_add_internal_call("Spike.Console::LogDebug_Native", Spike::Scripting::Spike_Console_LogDebug);
+        mono_add_internal_call("Spike.Console::LogError_Native", Spike::Scripting::Spike_Console_LogError);
+        mono_add_internal_call("Spike.Console::LogFatal_Native", Spike::Scripting::Spike_Console_LogCritical);
+
+        /* [Spike] Input [Spike] */
+        mono_add_internal_call("Spike.Input::IsKeyPressed_Native",         Spike::Scripting::Spike_Input_IsKeyPressed);
+        mono_add_internal_call("Spike.Input::IsMouseButtonPressed_Native", Spike::Scripting::Spike_Input_IsMouseButtonPressed);
+        mono_add_internal_call("Spike.Input::GetMousePosition_Native",     Spike::Scripting::Spike_Input_GetMousePosition);
+        mono_add_internal_call("Spike.Input::SetCursorMode_Native",        Spike::Scripting::Spike_Input_SetCursorMode);
+        mono_add_internal_call("Spike.Input::GetCursorMode_Native",        Spike::Scripting::Spike_Input_GetCursorMode);
     }
 }
