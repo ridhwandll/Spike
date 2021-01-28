@@ -38,14 +38,14 @@ namespace Spike
     class Application
     {
     public:
-        Application(const std::string& name = "Spike Application");
+        Application(const String& name = "Spike Application");
         virtual ~Application();
         void Run();
         void OnEvent(Event& e);
 
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
-        void SetAppIcon(const std::string& imagePath);
+        void SetAppIcon(const String& imagePath);
 
         static const char* GetPlatformName();
         static const char* GetConfigurationName();

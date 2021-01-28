@@ -33,9 +33,9 @@ namespace Spike
 {
     struct RenderAPICapabilities
     {
-        std::string Vendor;
-        std::string Renderer;
-        std::string Version;
+        String Vendor;
+        String Renderer;
+        String Version;
 
         float MaxAnisotropy = 0.0f;
         int MaxTextureUnits = 0;

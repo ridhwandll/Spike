@@ -29,7 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    Layer::Layer(const std::string& debugName)
+    Layer::Layer(const String& debugName)
         : m_DebugName(debugName)
     {
     }

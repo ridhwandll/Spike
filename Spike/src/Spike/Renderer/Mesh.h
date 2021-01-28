@@ -49,7 +49,7 @@ namespace Spike
         uint32_t IndexCount = 0;
 
         glm::mat4 Transform = glm::mat4(1.0f);
-        std::string NodeName = "", MeshName = "";
+        String NodeName = "", MeshName = "";
     };
 
     class Mesh : public RefCounted
@@ -71,8 +71,8 @@ namespace Spike
         static_assert(sizeof(Index) == 3 * sizeof(uint32_t));
 
 
-        Mesh(const std::string& filepath);
-        Mesh(const std::string& filepath, uint32_t entityID); //BIG TODO: Sort this out. Make mousepicking work with 3D!
+        Mesh(const String& filepath);
+        Mesh(const String& filepath, uint32_t entityID); //BIG TODO: Sort this out. Make mousepicking work with 3D!
         Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform);
         ~Mesh();
 
@@ -85,10 +85,10 @@ namespace Spike
         Ref<IndexBuffer> m_IndexBuffer;
         Ref<Shader> m_MeshShader;
         std::vector<Submesh> m_Submeshes;
-        std::string m_FilePath;
+        String m_FilePath;
     private:
         void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
-        void Generate(const std::string& filepath, uint32_t entityID = 0);
+        void Generate(const String& filepath, uint32_t entityID = 0);
         void DumpVertexBuffer();
 
     private:

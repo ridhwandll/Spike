@@ -34,12 +34,12 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc);
+    static MonoMethod* GetMethod(MonoImage* image, const String& methodDesc);
     MonoAssembly* LoadAssemblyFromFile(const char* filepath);
 
     static MonoDomain* s_MonoDomain = nullptr;
     static Ref<Scene> s_SceneContext;
-    static std::string s_AssemblyPath;
+    static String s_AssemblyPath;
 
     static MonoAssembly* s_CoreAssembly;
     static MonoAssembly* s_AppAssembly;
@@ -49,15 +49,15 @@ namespace Spike
     MonoImage* s_CoreAssemblyImage = nullptr;
 
     static EntityInstanceMap s_EntityInstanceMap;
-    static std::unordered_map<std::string, MonoClass*> s_Classes;
-    static std::unordered_map<std::string, EntityScriptClass> s_EntityClassMap;
+    static std::unordered_map<String, MonoClass*> s_Classes;
+    static std::unordered_map<String, EntityScriptClass> s_EntityClassMap;
 
 
     struct EntityScriptClass
     {
-        std::string FullName;
-        std::string ClassName;
-        std::string NamespaceName;
+        String FullName;
+        String ClassName;
+        String NamespaceName;
 
         /* [Spike] Represents a script class in the C# script [Spike] */
         MonoClass* Class = nullptr;
@@ -110,7 +110,7 @@ namespace Spike
     }
 
     /* [Spike] Gets the Method defined in the C# script [Spike] */
-    static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc)
+    static MonoMethod* GetMethod(MonoImage* image, const String& methodDesc)
     {
         MonoMethodDesc* description = mono_method_desc_new(methodDesc.c_str(), NULL);
         if (!description)
@@ -181,7 +181,7 @@ namespace Spike
     }
 
     /* [Spike] Loads the Assembly [Spike] */
-    static MonoAssembly* LoadAssembly(const std::string& path)
+    static MonoAssembly* LoadAssembly(const String& path)
     {
         MonoAssembly* assembly = LoadAssemblyFromFile(path.c_str());
 
@@ -254,7 +254,7 @@ namespace Spike
         return "Unknown Type";
     }
 
-    void ScriptEngine::Init(const std::string& assemblyPath)
+    void ScriptEngine::Init(const String& assemblyPath)
     {
         s_AssemblyPath = assemblyPath;
         InitMono();
@@ -319,20 +319,20 @@ namespace Spike
     void ScriptEngine::SetSceneContext(const Ref<Scene>& scene) { s_SceneContext = scene; }
     Ref<Spike::Scene> ScriptEngine::GetSceneContext() { return s_SceneContext; }
 
-    MonoObject* ScriptEngine::Construct(const std::string& fullName, bool callConstructor, void** parameters)
+    MonoObject* ScriptEngine::Construct(const String& fullName, bool callConstructor, void** parameters)
     {
-        std::string namespaceName;
-        std::string className;
-        std::string parameterList;
+        String namespaceName;
+        String className;
+        String parameterList;
 
-        if (fullName.find(".") != std::string::npos)
+        if (fullName.find(".") != String::npos)
         {
             namespaceName = fullName.substr(0, fullName.find_first_of('.'));
             className = fullName.substr(fullName.find_first_of('.') + 1, (fullName.find_first_of(':') - fullName.find_first_of('.')) - 1);
 
         }
 
-        if (fullName.find(":") != std::string::npos)
+        if (fullName.find(":") != String::npos)
         {
             parameterList = fullName.substr(fullName.find_first_of(':'));
         }
@@ -351,15 +351,15 @@ namespace Spike
         return obj;
     }
 
-    MonoClass* ScriptEngine::GetCoreClass(const std::string& fullName)
+    MonoClass* ScriptEngine::GetCoreClass(const String& fullName)
     {
         if (s_Classes.find(fullName) != s_Classes.end())
             return s_Classes[fullName];
 
-        std::string namespaceName = "";
-        std::string className;
+        String namespaceName = "";
+        String className;
 
-        if (fullName.find('.') != std::string::npos)
+        if (fullName.find('.') != String::npos)
         {
             namespaceName = fullName.substr(0, fullName.find_last_of('.'));
             className = fullName.substr(fullName.find_last_of('.') + 1);
@@ -388,7 +388,7 @@ namespace Spike
         entityMap.erase(entityID);
     }
 
-    void ScriptEngine::LoadSpikeRuntimeAssembly(const std::string& path)
+    void ScriptEngine::LoadSpikeRuntimeAssembly(const String& path)
     {
         MonoDomain* domain = nullptr;
         bool cleanup = false;
@@ -417,7 +417,7 @@ namespace Spike
         s_AppAssemblyImage = appAssemblyImage;
     }
 
-    void ScriptEngine::ReloadAssembly(const std::string& path)
+    void ScriptEngine::ReloadAssembly(const String& path)
     {
         LoadSpikeRuntimeAssembly(path);
         if (s_EntityInstanceMap.size())
@@ -437,10 +437,10 @@ namespace Spike
         }
     }
 
-    bool ScriptEngine::ModuleExists(const std::string& moduleName)
+    bool ScriptEngine::ModuleExists(const String& moduleName)
     {
-        std::string NamespaceName, ClassName;
-        if (moduleName.find('.') != std::string::npos)
+        String NamespaceName, ClassName;
+        if (moduleName.find('.') != String::npos)
         {
             NamespaceName = moduleName.substr(0, moduleName.find_last_of('.'));
             ClassName = moduleName.substr(moduleName.find_last_of('.') + 1);
@@ -464,7 +464,7 @@ namespace Spike
 
         EntityScriptClass& scriptClass = s_EntityClassMap[moduleName];
         scriptClass.FullName = moduleName;
-        if (moduleName.find('.') != std::string::npos)
+        if (moduleName.find('.') != String::npos)
         {
             scriptClass.NamespaceName = moduleName.substr(0, moduleName.find_last_of('.'));
             scriptClass.ClassName = moduleName.substr(moduleName.find_last_of('.') + 1);
@@ -483,7 +483,7 @@ namespace Spike
         ScriptModuleFieldMap& moduleFieldMap = entityInstanceData.ModuleFieldMap;
         auto& fieldMap = moduleFieldMap[moduleName];
 
-        std::unordered_map<std::string, PublicField> oldFields;
+        std::unordered_map<String, PublicField> oldFields;
         oldFields.reserve(fieldMap.size());
         for (auto& [fieldName, field] : fieldMap)
             oldFields.emplace(fieldName, std::move(field));
@@ -521,7 +521,7 @@ namespace Spike
         }
     }
 
-    void ScriptEngine::ShutdownScriptEntity(Entity entity, const std::string& moduleName)
+    void ScriptEngine::ShutdownScriptEntity(Entity entity, const String& moduleName)
     {
         EntityInstanceData& entityInstanceData = GetEntityInstanceData(entity.GetSceneUUID(), entity.GetUUID());
         ScriptModuleFieldMap& moduleFieldMap = entityInstanceData.ModuleFieldMap;
@@ -627,7 +627,7 @@ namespace Spike
         return 0;
 
     }
-    PublicField::PublicField(const std::string& name, FieldType type)
+    PublicField::PublicField(const String& name, FieldType type)
         :Name(name), Type(type)
     {
         m_StoredValueBuffer = AllocateBuffer(type);
@@ -713,7 +713,7 @@ namespace Spike
                 for (auto& [entityID, entityInstanceData] : entityMap)
                 {
                     Entity entity = scene->GetScene(sceneID)->GetEntityMap().at(entityID);
-                    std::string entityName = "Unnamed Entity";
+                    String entityName = "Unnamed Entity";
                     if (entity.HasComponent<TagComponent>())
                         entityName = entity.GetComponent<TagComponent>().Tag;
                     opened = ImGui::TreeNode((void*)(uint64_t)entityID, "%s (%llx)", entityName.c_str(), entityID);

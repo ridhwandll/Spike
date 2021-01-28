@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
+#include "Spike/Core/Base.h"
 #include "Event.h"
 
 namespace Spike
@@ -39,7 +40,7 @@ namespace Spike
         uint32_t GetWidth() const { return m_Width; }
         uint32_t GetHeight() const { return m_Height; }
 
-        std::string ToString() const override
+        String ToString() const override
         {
             std::stringstream ss;
             ss << "WindowResizeEvent: " << m_Width << ", " << m_Height;

@@ -34,7 +34,7 @@ namespace Spike
     class  Layer
     {
     public:
-        Layer(const std::string& name = "Layer");
+        Layer(const String& name = "Layer");
         virtual ~Layer() = default;
 
         virtual void OnAttach() {}
@@ -43,9 +43,9 @@ namespace Spike
         virtual void OnImGuiRender() {}
         virtual void OnEvent(Event& e) {}
 
-        const std::string& GetName() const { return m_DebugName; }
+        const String& GetName() const { return m_DebugName; }
     protected:
-        std::string m_DebugName;
+        String m_DebugName;
     };
 
 }

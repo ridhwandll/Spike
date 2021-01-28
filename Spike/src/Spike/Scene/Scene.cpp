@@ -88,7 +88,7 @@ namespace Spike
         s_ActiveScenes.erase(m_SceneID);
     }
 
-    Entity Scene::CreateEntity(const std::string& name)
+    Entity Scene::CreateEntity(const String& name)
     {
         auto entity = Entity{ m_Registry.create(), this };
         auto& idComponent = entity.AddComponent<IDComponent>();
@@ -102,7 +102,7 @@ namespace Spike
         return entity;
     }
 
-    Entity Scene::CreateEntityWithID(UUID uuid, const std::string& name, bool runtimeMap)
+    Entity Scene::CreateEntityWithID(UUID uuid, const String& name, bool runtimeMap)
     {
         auto entity = Entity{ m_Registry.create(), this };
         auto& idComponent = entity.AddComponent<IDComponent>();
@@ -383,7 +383,7 @@ namespace Spike
         return {};
     }
 
-    Entity Scene::FindEntityByTag(const std::string& tag)
+    Entity Scene::FindEntityByTag(const String& tag)
     {
         auto view = m_Registry.view<TagComponent>();
         for (auto entity : view)

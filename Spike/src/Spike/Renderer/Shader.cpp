@@ -31,7 +31,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    Ref<Shader> Shader::Create(const std::string& filepath)
+    Ref<Shader> Shader::Create(const String& filepath)
     {
         switch (Renderer::GetAPI())
         {
@@ -42,7 +42,7 @@ namespace Spike
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
-    Ref<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+    Ref<Shader> Shader::Create(const String& name, const String& vertexSrc, const String& fragmentSrc)
     {
         switch (Renderer::GetAPI())
         {
@@ -54,7 +54,7 @@ namespace Spike
         return nullptr;
     }
 
-    void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
+    void ShaderLibrary::Add(const String& name, const Ref<Shader>& shader)
     {
         SPK_CORE_ASSERT(!Exists(name), "Shader already exists!");
         m_Shaders[name] = shader;
@@ -66,27 +66,27 @@ namespace Spike
         Add(name, shader);
     }
 
-    Ref<Shader> ShaderLibrary::Load(const std::string& filepath)
+    Ref<Shader> ShaderLibrary::Load(const String& filepath)
     {
         auto shader = Shader::Create(filepath);
         Add(shader);
         return shader;
     }
 
-    Ref<Shader> ShaderLibrary::Load(const std::string& name, const std::string& filepath)
+    Ref<Shader> ShaderLibrary::Load(const String& name, const String& filepath)
     {
         auto shader = Shader::Create(filepath);
         Add(name, shader);
         return shader;
     }
 
-    Ref<Shader> ShaderLibrary::Get(const std::string& name)
+    Ref<Shader> ShaderLibrary::Get(const String& name)
     {
         SPK_CORE_ASSERT(Exists(name), "Shader not found!");
         return m_Shaders[name];
     }
 
-    bool ShaderLibrary::Exists(const std::string& name) const
+    bool ShaderLibrary::Exists(const String& name) const
     {
         return m_Shaders.find(name) != m_Shaders.end();
     }

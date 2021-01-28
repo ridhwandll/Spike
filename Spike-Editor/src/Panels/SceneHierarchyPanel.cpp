@@ -39,7 +39,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     template<typename T, typename UIFunction>
-    static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
+    static void DrawComponent(const String& name, Entity entity, UIFunction uiFunction)
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed |
             ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
@@ -245,7 +245,7 @@ namespace Spike
 
             if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
             {
-                tag = std::string(buffer);
+                tag = String(buffer);
             }
         }
 
@@ -407,7 +407,7 @@ namespace Spike
 
             if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
             {
-                std::string filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
+                String filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
                 if (!filepath.empty())
                     component.SetTexture(filepath);
             }
@@ -416,7 +416,7 @@ namespace Spike
 
             if (ImGui::Button("Add Texture"))
             {
-                std::string filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
+                String filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
                 if (!filepath.empty())
                     component.SetTexture(filepath);
             }
@@ -436,7 +436,7 @@ namespace Spike
             ImGui::SameLine();
             if (ImGui::Button("Open Mesh", ImVec2(100, 20)))
             {
-                std::string file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
+                String file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
                 if (!file.empty())
                 {
                     component.Mesh = Ref<Mesh>::Create(file);
@@ -463,7 +463,7 @@ namespace Spike
         /* [Spike] Yeah, this needs to be mutable [Spike] */
         DrawComponent<ScriptComponent>(ICON_FK_FILE_CODE_O" Script", entity, [=](ScriptComponent& sc) mutable
         {
-            std::string oldName = sc.ModuleName;
+            String oldName = sc.ModuleName;
             if (GUI::DrawScriptTextControl("Module Name", sc.ModuleName, 100.0f, ScriptEngine::ModuleExists(sc.ModuleName)))
             {
                 // Shutdown old script

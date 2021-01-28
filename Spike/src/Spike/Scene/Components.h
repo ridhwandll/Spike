@@ -45,10 +45,10 @@ namespace Spike
 
     struct TagComponent
     {
-        std::string Tag;
+        String Tag;
         TagComponent() = default;
         TagComponent(const TagComponent&) = default;
-        TagComponent(const std::string tag)
+        TagComponent(const String tag)
             :Tag(tag) {}
 
         const char* GetUITitle() { return "Tag"; }
@@ -82,7 +82,7 @@ namespace Spike
     {
         glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
         Ref<Texture2D> Texture = nullptr;
-        std::string TextureFilepath;
+        String TextureFilepath;
         float TilingFactor = 1.0f;
 
         SpriteRendererComponent() = default;
@@ -90,7 +90,7 @@ namespace Spike
         SpriteRendererComponent(const glm::vec4& color)
             :Color(color) {}
 
-        void SetTexture(const std::string& filepath)
+        void SetTexture(const String& filepath)
         {
             Texture = Texture2D::Create(filepath);
             TextureFilepath = filepath;
@@ -126,19 +126,19 @@ namespace Spike
     struct MeshComponent
     {
         Ref<Spike::Mesh> Mesh;
-        std::string MeshFilepath;
+        String MeshFilepath;
 
         MeshComponent() = default;
         MeshComponent(const MeshComponent&) = default;
 
-        void SetFilePath(std::string& path) { MeshFilepath = path; }
+        void SetFilePath(String& path) { MeshFilepath = path; }
         void Reset() { Mesh = nullptr; }
         const char* GetUITitle() { return ICON_FK_CUBE" Mesh"; }
     };
 
     struct ScriptComponent
     {
-        std::string ModuleName;
+        String ModuleName;
 
         ScriptComponent() = default;
         ScriptComponent(const ScriptComponent&) = default;

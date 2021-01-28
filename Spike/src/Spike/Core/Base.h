@@ -26,6 +26,8 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include <memory>
+#include <string>
+#include <vector>
 #include "Spike/Core/PlatformDetection.h"
 
 #ifdef SPK_DEBUG
@@ -37,7 +39,7 @@ Github repository : https://github.com/FahimFuad/Spike
     #else
         #error "Spike doesn't support debugbreak on this platform!"
     #endif
-    #define SPK_ENABSPK_ASSERTS
+    #define SPK_ENABLE_ASSERTS
 #else
     #define SPK_DEBUGBREAK()
 #endif
@@ -65,5 +67,11 @@ namespace Spike
     {
         return std::make_unique<T>(std::forward<Args>(args)...);
     }
+
+    /* [Spike] Engine TypeDefs & Usings[Spike] */
     typedef uint8_t byte;
+    typedef std::string String;
+
+    template<typename T>
+    using Vector = std::vector<T>;
 }

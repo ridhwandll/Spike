@@ -31,7 +31,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    static GLenum ShaderTypeFromString(const std::string& type)
+    static GLenum ShaderTypeFromString(const String& type)
     {
         if (type == "vertex") return GL_VERTEX_SHADER;
         if (type == "fragment" || type == "pixel") return GL_FRAGMENT_SHADER;
@@ -40,24 +40,24 @@ namespace Spike
         return 0;
     }
 
-    OpenGLShader::OpenGLShader(const std::string& filepath)
+    OpenGLShader::OpenGLShader(const String& filepath)
     {
-        std::string source = ReadFile(filepath);
+        String source = ReadFile(filepath);
         auto shaderSources = PreProcess(source);
         Compile(shaderSources);
 
         // Extract name from the filepath
         auto lastSlash = filepath.find_last_of("/\\");
-        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+        lastSlash = lastSlash == String::npos ? 0 : lastSlash + 1;
         auto lastDot = filepath.rfind('.');
-        auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
+        auto count = lastDot == String::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
         m_Name = filepath.substr(lastSlash, count);
     }
 
-    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
+    OpenGLShader::OpenGLShader(const String& name, const String& vertexSrc, const String& fragmentSrc)
         :m_Name(name)
     {
-        std::unordered_map<GLenum, std::string> sources;
+        std::unordered_map<GLenum, String> sources;
         sources[GL_VERTEX_SHADER] = vertexSrc;
         sources[GL_FRAGMENT_SHADER] = fragmentSrc;
         Compile(sources);
@@ -68,9 +68,9 @@ namespace Spike
         glDeleteProgram(m_RendererID);
     }
 
-    std::string OpenGLShader::ReadFile(const std::string& filepath)
+    String OpenGLShader::ReadFile(const String& filepath)
     {
-        std::string result;
+        String result;
         std::ifstream in(filepath, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
         if (in)
         {
@@ -86,32 +86,32 @@ namespace Spike
         return result;
     }
 
-    std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
+    std::unordered_map<GLenum, String> OpenGLShader::PreProcess(const String& source)
     {
-        std::unordered_map<GLenum, std::string> shaderSources;
+        std::unordered_map<GLenum, String> shaderSources;
 
         const char* typeToken = "#type";
         size_t typeTokenLength = strlen(typeToken);
         size_t pos = source.find(typeToken, 0); //Start of shader type declaration line
-        while (pos != std::string::npos)
+        while (pos != String::npos)
         {
             size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
-            SPK_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+            SPK_CORE_ASSERT(eol != String::npos, "Syntax error");
             size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
-            std::string type = source.substr(begin, eol - begin);
+            String type = source.substr(begin, eol - begin);
             SPK_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
-            SPK_CORE_ASSERT(nextLinePos != std::string::npos, "Syntax error");
+            SPK_CORE_ASSERT(nextLinePos != String::npos, "Syntax error");
             pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
 
-            shaderSources[ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
+            shaderSources[ShaderTypeFromString(type)] = (pos == String::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
         }
 
         return shaderSources;
     }
 
-    void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
+    void OpenGLShader::Compile(const std::unordered_map<GLenum, String>& shaderSources)
     {
         GLuint program = glCreateProgram();
         SPK_CORE_ASSERT(shaderSources.size() <= 2, "We only support two shaders for now.");
@@ -120,7 +120,7 @@ namespace Spike
         for (auto& keyvalue : shaderSources)
         {
             GLenum type = keyvalue.first;
-            const std::string& source = keyvalue.second;
+            const String& source = keyvalue.second;
 
             GLuint shader = glCreateShader(type);
 
@@ -184,84 +184,84 @@ namespace Spike
         glUseProgram(0);
     }
 
-    void OpenGLShader::SetInt(const std::string& name, int value)
+    void OpenGLShader::SetInt(const String& name, int value)
     {
         UploadUniformInt(name, value);
     }
 
-    void OpenGLShader::SetIntArray(const std::string& name, int* value, uint32_t count)
+    void OpenGLShader::SetIntArray(const String& name, int* value, uint32_t count)
     {
         UploadUniformIntArray(name, value, count);
     }
 
-    void OpenGLShader::SetFloat(const std::string& name, float value)
+    void OpenGLShader::SetFloat(const String& name, float value)
     {
         UploadUniformFloat(name, value);
     }
 
-    void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+    void OpenGLShader::SetFloat2(const String& name, const glm::vec2& value)
     {
         UploadUniformFloat2(name, value);
     }
 
-    void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)
+    void OpenGLShader::SetFloat3(const String& name, const glm::vec3& value)
     {
         UploadUniformFloat3(name, value);
     }
 
-    void OpenGLShader::SetFloat4(const std::string& name, const glm::vec4& value)
+    void OpenGLShader::SetFloat4(const String& name, const glm::vec4& value)
     {
         UploadUniformFloat4(name, value);
     }
 
-    void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+    void OpenGLShader::SetMat4(const String& name, const glm::mat4& value)
     {
         UploadUniformMat4(name, value);
     }
 
-    void OpenGLShader::UploadUniformInt(const std::string& name, int value)
+    void OpenGLShader::UploadUniformInt(const String& name, int value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform1i(location, value);
     }
 
-    void OpenGLShader::UploadUniformIntArray(const std::string& name, int* value, uint32_t count)
+    void OpenGLShader::UploadUniformIntArray(const String& name, int* value, uint32_t count)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform1iv(location, count, value);
     }
 
-    void OpenGLShader::UploadUniformFloat(const std::string& name, float value)
+    void OpenGLShader::UploadUniformFloat(const String& name, float value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform1f(location, value);
     }
 
-    void OpenGLShader::UploadUniformFloat2(const std::string& name, const glm::vec2& values)
+    void OpenGLShader::UploadUniformFloat2(const String& name, const glm::vec2& values)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform2f(location, values.x, values.y);
     }
 
-    void OpenGLShader::UploadUniformFloat3(const std::string& name, const glm::vec3& values)
+    void OpenGLShader::UploadUniformFloat3(const String& name, const glm::vec3& values)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform3f(location, values.x, values.y, values.z);
     }
 
-    void OpenGLShader::UploadUniformFloat4(const std::string& name, const glm::vec4& values)
+    void OpenGLShader::UploadUniformFloat4(const String& name, const glm::vec4& values)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniform4f(location, values.x, values.y, values.z, values.w);
     }
 
-    void OpenGLShader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
+    void OpenGLShader::UploadUniformMat3(const String& name, const glm::mat3& matrix)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
-    void OpenGLShader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+    void OpenGLShader::UploadUniformMat4(const String& name, const glm::mat4& matrix)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));

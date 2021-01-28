@@ -131,9 +131,9 @@ namespace Spike
 
     }
 
-    void Console::Print(const std::string& message, LogLevel level)
+    void Console::Print(const String& message, LogLevel level)
     {
-        m_Messages.emplace_back(std::pair <LogLevel, std::string>(level, message));
+        m_Messages.emplace_back(std::pair <LogLevel, String>(level, message));
     }
 
     void Console::ClearLog()

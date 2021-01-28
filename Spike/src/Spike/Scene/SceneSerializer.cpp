@@ -134,7 +134,7 @@ namespace YAML {
 namespace Spike
 {
 
-    static bool CheckPath(const std::string& path)
+    static bool CheckPath(const String& path)
     {
         FILE* f = fopen(path.c_str(), "rb");
         if (f)
@@ -315,7 +315,7 @@ namespace Spike
         }
     }
 
-    void SceneSerializer::Serialize(const std::string& filepath)
+    void SceneSerializer::Serialize(const String& filepath)
     {
         YAML::Emitter out;
         out << YAML::BeginMap;
@@ -336,14 +336,14 @@ namespace Spike
         fout << out.c_str();
     }
 
-    void SceneSerializer::SerializeRuntime(const std::string& filepath)
+    void SceneSerializer::SerializeRuntime(const String& filepath)
     {
         SPK_INTERNAL_ASSERT("Method not implemented yet!");
     }
 
-    bool SceneSerializer::Deserialize(const std::string& filepath)
+    bool SceneSerializer::Deserialize(const String& filepath)
     {
-        std::vector<std::string> missingPaths;
+        std::vector<String> missingPaths;
         YAML::Node data;
         try { data = YAML::LoadFile(filepath); }
         catch (const YAML::ParserException& ex)
@@ -354,7 +354,7 @@ namespace Spike
         if (!data["Scene"])
             return false;
 
-        std::string sceneName = data["Scene"].as<std::string>();
+        String sceneName = data["Scene"].as<String>();
         SPK_CORE_LOG_TRACE("Deserializing scene '{0}'", sceneName);
 
         auto entities = data["Entities"];
@@ -364,10 +364,10 @@ namespace Spike
             {
                 uint64_t uuid = entity["Entity"].as<uint64_t>();
 
-                std::string name;
+                String name;
                 auto tagComponent = entity["TagComponent"];
                 if (tagComponent)
-                    name = tagComponent["Tag"].as<std::string>();
+                    name = tagComponent["Tag"].as<String>();
 
                 SPK_CORE_LOG_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
@@ -411,7 +411,7 @@ namespace Spike
                     auto textureFilePath = spriteRendererComponent["TextureFilepath"];
                     if (textureFilePath)
                     {
-                        std::string textureFilepath = textureFilePath.as<std::string>();
+                        String textureFilepath = textureFilePath.as<String>();
                         if(!textureFilepath.empty())
                             src.SetTexture(textureFilepath);
                     }
@@ -423,7 +423,7 @@ namespace Spike
                 auto meshComponent = entity["MeshComponent"];
                 if (meshComponent)
                 {
-                    std::string meshPath = meshComponent["AssetPath"].as<std::string>();
+                    String meshPath = meshComponent["AssetPath"].as<String>();
 
                     if (!deserializedEntity.HasComponent<MeshComponent>())
                     {
@@ -442,7 +442,7 @@ namespace Spike
                 auto scriptComponent = entity["ScriptComponent"];
                 if (scriptComponent)
                 {
-                    std::string moduleName = scriptComponent["ModuleName"].as<std::string>();
+                    String moduleName = scriptComponent["ModuleName"].as<String>();
 
                     if (!deserializedEntity.HasComponent<ScriptComponent>())
                     {
@@ -506,7 +506,7 @@ namespace Spike
         return true;
     }
 
-    bool SceneSerializer::DeserializeRuntime(const std::string& filepath)
+    bool SceneSerializer::DeserializeRuntime(const String& filepath)
     {
         SPK_INTERNAL_ASSERT("Method not implemented yet!");
         return false;

@@ -70,14 +70,14 @@ namespace Spike
         }
     };
 
-    Mesh::Mesh(const std::string& filepath)
+    Mesh::Mesh(const String& filepath)
         : m_FilePath(filepath)
     {
         LogStream::Initialize();
         Generate(filepath);
     }
 
-    Mesh::Mesh(const std::string& filepath, uint32_t entityID)
+    Mesh::Mesh(const String& filepath, uint32_t entityID)
         :m_FilePath(filepath), m_ObjectID(entityID)
     {
         Generate(filepath, entityID);
@@ -119,7 +119,7 @@ namespace Spike
     {
     }
 
-    void Mesh::Generate(const std::string& filepath, uint32_t entityID)
+    void Mesh::Generate(const String& filepath, uint32_t entityID)
     {
         SPK_CORE_LOG_INFO("Loading mesh: {0}", filepath.c_str());
         m_Importer = CreateScope<Assimp::Importer>();

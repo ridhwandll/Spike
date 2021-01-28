@@ -56,7 +56,7 @@ namespace Spike
 
     struct VertexBufferElement
     {
-        std::string  Name;
+        String  Name;
         ShaderDataType Type;
         uint32_t Size;
         size_t Offset;
@@ -64,7 +64,7 @@ namespace Spike
 
         VertexBufferElement() = default;
 
-        VertexBufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+        VertexBufferElement(ShaderDataType type, const String& name, bool normalized = false)
             :Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
         {
         }

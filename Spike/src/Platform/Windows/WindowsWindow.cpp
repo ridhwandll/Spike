@@ -185,7 +185,7 @@ namespace Spike
         m_Context->SwapBuffers();
     }
 
-    void WindowsWindow::SetTitle(const std::string& title)
+    void WindowsWindow::SetTitle(const String& title)
     {
         m_Data.Title = title;
         glfwSetWindowTitle(m_Window, m_Data.Title.c_str());

@@ -40,8 +40,8 @@ namespace Spike
         uint32_t GetWidth() const override { return m_Data.Width; }
         uint32_t GetHeight() const override { return m_Data.Height; }
 
-        virtual const std::string& GetTitle() const override { return m_Data.Title; }
-        virtual void SetTitle(const std::string& title) override;
+        virtual const String& GetTitle() const override { return m_Data.Title; }
+        virtual void SetTitle(const String& title) override;
 
         void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
         void SetVSync(bool enabled) override;
@@ -56,7 +56,7 @@ namespace Spike
 
         struct WindowData
         {
-            std::string Title;
+            String Title;
             uint32_t Width, Height;
             bool VSync;
             EventCallbackFn EventCallback;

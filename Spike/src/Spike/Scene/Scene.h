@@ -46,8 +46,8 @@ namespace Spike
         Scene();
         ~Scene();
 
-        Entity CreateEntity(const std::string& name = std::string());
-        Entity CreateEntityWithID(UUID uuid, const std::string& name = "", bool runtimeMap = false);
+        Entity CreateEntity(const String& name = String());
+        Entity CreateEntityWithID(UUID uuid, const String& name = "", bool runtimeMap = false);
         void DestroyEntity(Entity entity);
         void DuplicateEntity(Entity entity);
         void OnUpdate(Timestep ts);
@@ -67,7 +67,7 @@ namespace Spike
         static Ref<Scene> GetScene(UUID uuid);
 
         Entity GetPrimaryCameraEntity();
-        Entity FindEntityByTag(const std::string& tag);
+        Entity FindEntityByTag(const String& tag);
 
         template<typename T>
         auto GetAllEntitiesWith() { return m_Registry.view<T>(); }

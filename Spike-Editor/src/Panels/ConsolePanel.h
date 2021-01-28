@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <vector>
 #include <string>
 #include <FontAwesome.h>
+#include "Spike/Core/Base.h"
 #include <imgui.h>
 
 namespace Spike
@@ -44,14 +45,14 @@ namespace Spike
         static Console* Get();
 
         void OnImGuiRender();
-        void Print(const std::string& message, LogLevel level = LogLevel::LVL_DEBUG);
+        void Print(const String& message, LogLevel level = LogLevel::LVL_DEBUG);
 
     private:
         Console();
         void ClearLog();
     private:
         static Console* m_Console;
-        std::vector<std::pair<LogLevel, std::string>> m_Messages{};
+        std::vector<std::pair<LogLevel, String>> m_Messages{};
         bool m_ScrollLockEnabled = true;
 
         //Colors

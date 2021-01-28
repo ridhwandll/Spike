@@ -34,7 +34,7 @@ namespace Spike
     {
     public:
         OpenGLTexture2D(uint32_t width, uint32_t height);
-        OpenGLTexture2D(const std::string& path);
+        OpenGLTexture2D(const String& path);
         virtual ~OpenGLTexture2D();
 
         virtual uint32_t GetWidth() const override { return m_Width; }
@@ -52,7 +52,7 @@ namespace Spike
 
     private:
         bool m_Loaded = false;
-        std::string m_Path;
+        String m_Path;
         uint32_t m_Width, m_Height;
         RendererID m_RendererID;
         GLenum m_InternalFormat, m_DataFormat;

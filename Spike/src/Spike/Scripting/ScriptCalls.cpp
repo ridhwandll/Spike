@@ -41,11 +41,11 @@ namespace Spike
 namespace Spike::Scripting
 {
     /* [Spike] Utils begin [Spike] */
-    std::string ConvertMonoString(MonoString* message)
+    String ConvertMonoString(MonoString* message)
     {
         /* [Spike] Any way to make this efficient? we are doing 2 copies here! [Spike] */
         char* ptr = mono_string_to_utf8(message);
-        std::string s { ptr };
+        String s { ptr };
         mono_free(ptr);
         return s;
     }

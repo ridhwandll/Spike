@@ -33,7 +33,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike::GUI
 {
-    bool DrawScriptTextControl(const char* label, std::string& value, float columnWidth, bool foundScript)
+    bool DrawScriptTextControl(const char* label, String& value, float columnWidth, bool foundScript)
     {
         bool modified = false;
         ImGui::PushID(label);
@@ -229,7 +229,7 @@ namespace Spike::GUI
         return modified;
     }
 
-    void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue, float columnWidth)
+    void DrawVec3Control(const String& label, glm::vec3& values, float resetValue, float columnWidth)
     {
         ImGuiIO& io = ImGui::GetIO();
         auto boldFont = io.Fonts->Fonts[0];

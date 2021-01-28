@@ -529,7 +529,7 @@ namespace Spike
 
     void EditorLayer::OpenScene()
     {
-        std::string filepath = FileDialogs::OpenFile("Spike Scene (*.spike)\0*.spike\0");
+        String filepath = FileDialogs::OpenFile("Spike Scene (*.spike)\0*.spike\0");
         if (!filepath.empty())
         {
             m_FirstTimeSave = false;
@@ -546,7 +546,7 @@ namespace Spike
 
     void EditorLayer::SaveSceneAs()
     {
-        std::string filepath = FileDialogs::SaveFile("Spike Scene (*.spike)\0*.spike\0");
+        String filepath = FileDialogs::SaveFile("Spike Scene (*.spike)\0*.spike\0");
         if (!filepath.empty())
         {
             m_FirstTimeSave = false;
@@ -570,9 +570,9 @@ namespace Spike
         }
     }
 
-    void EditorLayer::UpdateWindowTitle(const std::string& sceneName)
+    void EditorLayer::UpdateWindowTitle(const String& sceneName)
     {
-        std::string title = "Spike |" + sceneName + "| " + Application::GetPlatformName() + " - " + Application::GetConfigurationName() + " <" + Application::CurrentGraphicsAPI() + "> ";
+        String title = "Spike |" + sceneName + "| " + Application::GetPlatformName() + " - " + Application::GetConfigurationName() + " <" + Application::CurrentGraphicsAPI() + "> ";
         Application::Get().GetWindow().SetTitle(title);
     }
 

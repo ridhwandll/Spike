@@ -47,7 +47,7 @@ namespace Spike
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
 
-    OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
+    OpenGLTexture2D::OpenGLTexture2D(const String& path)
         : m_Path(path)
     {
         int width, height, channels;

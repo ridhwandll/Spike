@@ -34,9 +34,9 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike::GUI
 {
-    bool DrawScriptTextControl(const char* label, std::string& value, float columnWidth = 100.0f, bool foundTheScript = false);
+    bool DrawScriptTextControl(const char* label, String& value, float columnWidth = 100.0f, bool foundTheScript = false);
     bool DrawTextControl(const char* label, char* value, float columnWidth = 100.0f);
-    void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
+    void DrawVec3Control(const String& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
     bool DrawBoolControl(const char* label, bool* boolean, float columnWidth = 100.0f);
     bool DrawIntControl(const char* label, int* value, float columnWidth = 100.0f);
     bool DrawFloatControl(const char* label, float* value, float columnWidth = 100.0f);

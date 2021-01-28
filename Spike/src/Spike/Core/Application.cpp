@@ -40,7 +40,7 @@ namespace Spike
 
     Application* Application::s_Instance = nullptr;
 
-    Application::Application(const std::string& name)
+    Application::Application(const String& name)
     {
         SPK_CORE_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
@@ -72,7 +72,7 @@ namespace Spike
         layer->OnAttach();
     }
 
-    void Application::SetAppIcon(const std::string& imagePath)
+    void Application::SetAppIcon(const String& imagePath)
     {
         GLFWimage icons[1];
         icons[0].pixels = stbi_load(imagePath.c_str(), &icons[0].width, &icons[0].height, 0, 4);

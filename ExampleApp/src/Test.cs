@@ -6,11 +6,9 @@ class Test : Entity
     public float HorizontalForce = 10.0f;
     public float JumpForce = 10.0f;
 
-    private TransformComponent m_Transform;
     private RigidBody2DComponent m_Rb2d;
     public void Start()
     {
-        m_Transform = GetComponent<TransformComponent>();
         m_Rb2d = GetComponent<RigidBody2DComponent>();
         AddCollision2DBeginCallback(OnPlayerCollisionBegin);
         AddCollision2DEndCallback(OnPlayerCollisionEnd);
@@ -22,7 +20,6 @@ class Test : Entity
     public void OnPlayerCollisionEnd(float value)
     {
     }
-
 
     public void Update(float ts)
     {

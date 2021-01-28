@@ -40,7 +40,7 @@ namespace Spike
         float GetX() const { return m_MouseX; }
         float GetY() const { return m_MouseY; }
 
-        std::string ToString() const override
+        String ToString() const override
         {
             std::stringstream ss;
             ss << "MouseMovedEvent: " << m_MouseX << ", " << m_MouseY;
@@ -62,7 +62,7 @@ namespace Spike
         float GetXOffset() const { return m_XOffset; }
         float GetYOffset() const { return m_YOffset; }
 
-        std::string ToString() const override
+        String ToString() const override
         {
             std::stringstream ss;
             ss << "MouseScrolledEvent: " << GetXOffset() << ", " << GetYOffset();
@@ -94,7 +94,7 @@ namespace Spike
         MouseButtonPressedEvent(const MouseCode button)
             : MouseButtonEvent(button) {}
 
-        std::string ToString() const override
+        String ToString() const override
         {
             std::stringstream ss;
             ss << "MouseButtonPressedEvent: " << m_Button;
@@ -110,7 +110,7 @@ namespace Spike
         MouseButtonReleasedEvent(const MouseCode button)
             : MouseButtonEvent(button) {}
 
-        std::string ToString() const override
+        String ToString() const override
         {
             std::stringstream ss;
             ss << "MouseButtonReleasedEvent: " << m_Button;

@@ -57,10 +57,10 @@ namespace Spike
 
     struct PublicField
     {
-        std::string Name;
+        String Name;
         FieldType Type;
 
-        PublicField(const std::string& name, FieldType type);
+        PublicField(const String& name, FieldType type);
         PublicField(const PublicField&) = delete;
         PublicField(PublicField&& other);
         ~PublicField();
@@ -111,7 +111,7 @@ namespace Spike
         friend class ScriptEngine;
     };
 
-    using ScriptModuleFieldMap = std::unordered_map<std::string, std::unordered_map<std::string, PublicField>>;
+    using ScriptModuleFieldMap = std::unordered_map<String, std::unordered_map<String, PublicField>>;
 
     struct EntityInstanceData
     {
@@ -127,7 +127,7 @@ namespace Spike
     {
     public:
         /* [Spike] Initialize the Script Engine [Spike] */
-        static void Init(const std::string& assemblyPath);
+        static void Init(const String& assemblyPath);
         static void Shutdown();
 
         static void OnStartEntity(Entity entity);
@@ -140,18 +140,18 @@ namespace Spike
         static void SetSceneContext(const Ref<Scene>& scene);
         static Ref<Scene> GetSceneContext();
 
-        static MonoObject* Construct(const std::string& fullName, bool callConstructor = true, void** parameters = nullptr);
-        static MonoClass* GetCoreClass(const std::string& fullName);
+        static MonoObject* Construct(const String& fullName, bool callConstructor = true, void** parameters = nullptr);
+        static MonoClass* GetCoreClass(const String& fullName);
 
         static bool IsEntityModuleValid(Entity entity);
         static void OnSceneDestruct(UUID sceneID);
         static void OnScriptComponentDestroyed(UUID sceneID, UUID entityID);
-        static void LoadSpikeRuntimeAssembly(const std::string& path);
-        static void ReloadAssembly(const std::string& path);
+        static void LoadSpikeRuntimeAssembly(const String& path);
+        static void ReloadAssembly(const String& path);
 
-        static bool ModuleExists(const std::string& moduleName);
+        static bool ModuleExists(const String& moduleName);
         static void InitScriptEntity(Entity entity);
-        static void ShutdownScriptEntity(Entity entity, const std::string& moduleName);
+        static void ShutdownScriptEntity(Entity entity, const String& moduleName);
         static void InstantiateEntityClass(Entity entity);
         static void CopyEntityScriptData(UUID dst, UUID src);
 

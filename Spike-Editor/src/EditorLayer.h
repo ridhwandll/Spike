@@ -52,7 +52,7 @@ namespace Spike
         void OpenScene();
         void SaveSceneAs();
         void SaveScene();
-        void UpdateWindowTitle(const std::string& sceneName);
+        void UpdateWindowTitle(const String& sceneName);
         void DrawRectAroundWindow(const glm::vec4& color);
 
         void OnScenePlay();
@@ -73,7 +73,7 @@ namespace Spike
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
         bool m_ReloadScriptOnPlay;
-        std::string m_ActiveFilepath = std::string();
+        String m_ActiveFilepath = String();
         bool m_FirstTimeSave = false;
 
         int m_GizmoType = -1;
