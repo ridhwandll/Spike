@@ -295,4 +295,49 @@ namespace Spike::GUI
 
         ImGui::PopID();
     }
+
+    void DrawToggleButton(const char* text, const ImVec4& color, bool* boolToToggle)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
+        if (ImGui::Button(text))
+            *boolToToggle ^= true;
+        ImGui::PopStyleColor();
+    }
+
+    void DrawDynamicToggleButton(const char* offLabel, const char* onLabel, const ImVec4& offColor, const ImVec4& onColor, bool* boolToModify)
+    {
+        if (*boolToModify)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
+            if (ImGui::Button(onLabel))
+                *boolToModify = false;
+        }
+        else if (!*boolToModify)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
+            if (ImGui::Button(offLabel))
+                *boolToModify = true;
+        }
+        ImGui::PopStyleColor();
+    }
+
+    void DrawColorChangingToggleButton(const char* label, const ImVec4& offBgColor, const ImVec4& onBgColor, const ImVec4& textColor, bool* boolToModify)
+    {
+        if (*boolToModify)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, textColor);
+            ImGui::PushStyleColor(ImGuiCol_Button, onBgColor);
+            if (ImGui::Button(label))
+                *boolToModify = false;
+        }
+        else if (!*boolToModify)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, textColor);
+            ImGui::PushStyleColor(ImGuiCol_Button, offBgColor);
+            if (ImGui::Button(label))
+                *boolToModify = true;
+        }
+        ImGui::PopStyleColor(2);
+    }
+
 }

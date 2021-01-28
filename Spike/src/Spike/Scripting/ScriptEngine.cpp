@@ -62,18 +62,27 @@ namespace Spike
         /* [Spike] Represents a script class in the C# script [Spike] */
         MonoClass* Class = nullptr;
         MonoMethod* Constructor = nullptr;
-        MonoMethod* OnCreateMethod = nullptr;
+        MonoMethod* OnStartMethod = nullptr;
         MonoMethod* OnDestroyMethod = nullptr;
         MonoMethod* OnUpdateMethod = nullptr;
+        MonoMethod* OnFixedUpdateMethod = nullptr;
+
+        // Physics stuff
+        MonoMethod* OnCollision2DBeginMethod = nullptr;
+        MonoMethod* OnCollision2DEndMethod = nullptr;
 
         /* [Spike] TODO: Physics methods and Fixed Update [Spike] */
 
         void InitClassMethods(MonoImage* image)
         {
             Constructor = GetMethod(s_CoreAssemblyImage, "Spike.Entity:.ctor(ulong)");
-            OnCreateMethod = GetMethod(image, FullName + ":OnCreate()");
-            OnUpdateMethod = GetMethod(image, FullName + ":OnUpdate(single)");
+            OnStartMethod = GetMethod(image, FullName + ":Start()");
+            OnUpdateMethod = GetMethod(image, FullName + ":Update(single)");
+            OnFixedUpdateMethod = GetMethod(image, FullName + ":FixedUpdate(single)");
             /* [Spike] TODO: On Destroy [Spike] */
+
+            OnCollision2DBeginMethod = GetMethod(s_CoreAssemblyImage, "Spike.Entity:OnCollision2DBegin(single)");
+            OnCollision2DEndMethod = GetMethod(s_CoreAssemblyImage, "Spike.Entity:OnCollision2DEnd(single)");
         }
     };
 
@@ -87,6 +96,7 @@ namespace Spike
         mono_set_dirs("C:\\Program Files\\Mono\\lib", "C:\\Program Files\\Mono\\etc"); //TODO: Remove
         mono_set_assemblies_path("Spike/vendor/mono/lib");
         MonoDomain* domain = mono_jit_init("Spike");
+        mono_jit_set_trace_options("--verbose");
         /* [Spike] Register an app domain [Spike] */
         char* name = (char*)"Spike-Runtime";
         s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
@@ -103,10 +113,12 @@ namespace Spike
     static MonoMethod* GetMethod(MonoImage* image, const std::string& methodDesc)
     {
         MonoMethodDesc* description = mono_method_desc_new(methodDesc.c_str(), NULL);
-        if (!description) SPK_CORE_LOG_ERROR("mono_method_desc_new failed!");
+        if (!description)
+            SPK_CORE_LOG_ERROR("mono_method_desc_new failed!");
 
         MonoMethod* method = mono_method_desc_search_in_image(description, image);
-        if (!method) SPK_CORE_LOG_ERROR("mono_method_desc_search_in_image failed!");
+        if (!method)
+            SPK_CORE_LOG_ERROR("mono_method_desc_search_in_image failed!");
         return method;
     }
 
@@ -255,11 +267,11 @@ namespace Spike
         s_SceneContext = nullptr;
     }
 
-    void ScriptEngine::OnCreateEntity(Entity entity)
+    void ScriptEngine::OnStartEntity(Entity entity)
     {
         EntityInstance& entityInstance = GetEntityInstanceData(entity.GetSceneUUID(), entity.GetUUID()).Instance;
-        if (entityInstance.ScriptClass->OnCreateMethod)
-            CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnCreateMethod);
+        if (entityInstance.ScriptClass->OnStartMethod)
+            CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnStartMethod);
     }
 
     void ScriptEngine::OnUpdateEntity(Entity entity, Timestep ts)
@@ -269,6 +281,38 @@ namespace Spike
         {
             void* args[] = { &ts };
             CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnUpdateMethod, args);
+        }
+    }
+
+    void ScriptEngine::OnFixedUpdateEntity(Entity entity, float fixedTimeStep)
+    {
+        EntityInstance& entityInstance = GetEntityInstanceData(entity.GetSceneUUID(), entity.GetUUID()).Instance;
+        if (entityInstance.ScriptClass->OnFixedUpdateMethod)
+        {
+            void* args[] = { &fixedTimeStep };
+            CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnFixedUpdateMethod, args);
+        }
+    }
+
+    void ScriptEngine::OnCollision2DBegin(Entity entity)
+    {
+        EntityInstance& entityInstance = GetEntityInstanceData(entity.GetSceneUUID(), entity.GetUUID()).Instance;
+        if (entityInstance.ScriptClass->OnCollision2DBeginMethod)
+        {
+            float value = 5.0f;
+            void* args[] = { &value };
+            CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnCollision2DBeginMethod, args);
+        }
+    }
+
+    void ScriptEngine::OnCollision2DEnd(Entity entity)
+    {
+        EntityInstance& entityInstance = GetEntityInstanceData(entity.GetSceneUUID(), entity.GetUUID()).Instance;
+        if (entityInstance.ScriptClass->OnCollision2DEndMethod)
+        {
+            float value = 5.0f;
+            void* args[] = { &value };
+            CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->OnCollision2DEndMethod, args);
         }
     }
 
@@ -416,11 +460,7 @@ namespace Spike
         auto& moduleName = entity.GetComponent<ScriptComponent>().ModuleName;
 
         if (moduleName == "SpikeNull") return;
-        if (!ModuleExists(moduleName))
-        {
-            SPK_CORE_LOG_ERROR("Entity references non-existent script module '{0}'", moduleName);
-            return;
-        }
+        if (!ModuleExists(moduleName)) return;
 
         EntityScriptClass& scriptClass = s_EntityClassMap[moduleName];
         scriptClass.FullName = moduleName;
@@ -461,7 +501,7 @@ namespace Spike
                     continue;
 
                 MonoType* fieldType = mono_field_get_type(iter);
-                FieldType hazelFieldType = MonoTypeToSpikeFieldType(fieldType);
+                FieldType spikeFieldType = MonoTypeToSpikeFieldType(fieldType);
 
                 /* [Spike] TODO: Attributes [Spike] */
                 MonoCustomAttrInfo* attr = mono_custom_attrs_from_field(scriptClass.Class, iter);
@@ -472,7 +512,7 @@ namespace Spike
                 }
                 else
                 {
-                    PublicField field = { name, hazelFieldType };
+                    PublicField field = { name, spikeFieldType };
                     field.m_EntityInstance = &entityInstance;
                     field.m_MonoClassField = iter;
                     fieldMap.emplace(name, std::move(field));
@@ -498,6 +538,7 @@ namespace Spike
         }
     }
 
+    /* [Spike] This is the base class from which all the Scripts will derive 🌵 [Spike] */
     void ScriptEngine::InstantiateEntityClass(Entity entity)
     {
         Scene* scene = entity.m_Scene;
@@ -510,7 +551,7 @@ namespace Spike
         entityInstance.Handle = Instantiate(*entityInstance.ScriptClass);
 
         void* param[] = { &id };
-        //CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->Constructor, param);
+        CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->Constructor, param);
 
         ScriptModuleFieldMap& moduleFieldMap = entityInstanceData.ModuleFieldMap;
         if (moduleFieldMap.find(moduleName) != moduleFieldMap.end())
@@ -519,7 +560,7 @@ namespace Spike
             for (auto& [name, field] : publicFields)
                 field.CopyStoredValueToRuntime();
         }
-        OnCreateEntity(entity);
+        OnStartEntity(entity);
     }
 
     EntityInstanceMap& ScriptEngine::GetEntityInstanceMap()
@@ -529,6 +570,7 @@ namespace Spike
 
     EntityInstanceData& ScriptEngine::GetEntityInstanceData(UUID sceneID, UUID entityID)
     {
+        /* [Spike] TODO: why it crashes on removing script component lol 😅 [Spike] */
         SPK_CORE_ASSERT(s_EntityInstanceMap.find(sceneID) != s_EntityInstanceMap.end(), "Invalid scene ID!");
         auto& entityIDMap = s_EntityInstanceMap.at(sceneID);
         SPK_CORE_ASSERT(entityIDMap.find(entityID) != entityIDMap.end(), "Invalid entity ID!");
@@ -661,7 +703,7 @@ namespace Spike
     /* [Spike] DEBUG ONLY [Spike] */
     void ScriptEngine::OnImGuiRender()
     {
-        ImGui::Begin("Script Engine Debug");
+        ImGui::Begin("ScriptEngine Status");
         for (auto& [sceneID, entityMap] : s_EntityInstanceMap)
         {
             bool opened = ImGui::TreeNode((void*)(uint64_t)sceneID, "Scene (%llx)", sceneID);

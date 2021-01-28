@@ -44,15 +44,12 @@ namespace Spike::GUI
     bool DrawFloat3Control(const char* label, glm::vec3& value, float columnWidth = 100.0f);
     bool DrawFloat4Control(const char* label, glm::vec4& value, float columnWidth = 100.0f);
     bool DrawColorControl(const char* label, glm::vec4& value, float columnWidth = 100.0f);
+    void DrawToggleButton(const char* text, const ImVec4& color, bool* boolToToggle);
 
-    template<typename UIFunction>
-    void DrawToggleButton(const char* text, ImVec4 color, UIFunction uiFunction)
-    {
-        ImGui::PushStyleColor(ImGuiCol_Text, color);
-        if (ImGui::Button(text))
-        {
-            uiFunction();
-        }
-        ImGui::PopStyleColor();
-    }
+    /* [Spike] A dynamic toggle button is a ImGui::Button(...) wrapper that draws label changing button.
+     * This is basically a boolean control. This was made because in ImGui::Checkbox(...) a label is necssary
+     * but in this button, no label is necessary. Making it perfect for oneliners. [Spike] */
+    void DrawDynamicToggleButton(const char* offLabel, const char* onLabel, const ImVec4& offColor, const ImVec4& onColor, bool* boolToModify);
+
+    void DrawColorChangingToggleButton(const char* label, const ImVec4& offBgColor, const ImVec4& onBgColor, const ImVec4& textColor, bool* boolToModify);
 }

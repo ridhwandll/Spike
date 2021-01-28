@@ -29,7 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "ScriptCalls.h"
 #include "Panels/ConsolePanel.h"
 #include "ScriptEngine.h"
-
+#include <box2d/box2d.h>
 #include <mono/jit/jit.h>
 
 namespace Spike
@@ -40,6 +40,7 @@ namespace Spike
 
 namespace Spike::Scripting
 {
+    /* [Spike] Utils begin [Spike] */
     std::string ConvertMonoString(MonoString* message)
     {
         /* [Spike] Any way to make this efficient? we are doing 2 copies here! [Spike] */
@@ -48,6 +49,25 @@ namespace Spike::Scripting
         mono_free(ptr);
         return s;
     }
+
+    EntityMap ValidateSceneAndReturnEntityMap(Ref<Scene>& sceneContext, uint64_t entityID)
+    {
+        SPK_CORE_ASSERT(sceneContext, "No active scene!");
+        const auto& entityMap = sceneContext->GetEntityMap();
+        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
+        return entityMap;
+    }
+
+    RigidBody2DComponent& ValidateSceneAndReturnRigidBody2DComponent(Ref<Scene>& sceneContext, uint64_t entityID)
+    {
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
+        Entity entity = entityMap.at(entityID);
+        SPK_INTERNAL_ASSERT(entity.HasComponent<RigidBody2DComponent>());
+        auto& component = entity.GetComponent<RigidBody2DComponent>();
+        return component;
+    }
+
+    /* [Spike] Utils end [Spike] */
 
     void Spike_Console_LogInfo(MonoString* message)
     {
@@ -109,11 +129,7 @@ namespace Spike::Scripting
     /* [Spike] ENTITY [Spike] */
     void Spike_Entity_CreateComponent(uint64_t entityID, void* type)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity id is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
         s_CreateComponentFuncs[monoType](entity);
@@ -121,11 +137,7 @@ namespace Spike::Scripting
 
     bool Spike_Entity_HasComponent(uint64_t entityID, void* type)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         MonoType* monoType = mono_reflection_type_get_type((MonoReflectionType*)type);
         bool result = s_HasComponentFuncs[monoType](entity);
@@ -137,7 +149,7 @@ namespace Spike::Scripting
         Ref<Scene> scene = ScriptEngine::GetSceneContext();
         SPK_CORE_ASSERT(scene, "No active scene!");
 
-        Entity entity = scene->FindEntityByTag(mono_string_to_utf8(tag));
+        Entity entity = scene->FindEntityByTag(ConvertMonoString(tag));
         if (entity)
             return entity.GetComponent<IDComponent>().ID;
 
@@ -148,90 +160,82 @@ namespace Spike::Scripting
 
     void Spike_TransformComponent_GetTransform(uint64_t entityID, TransformComponent* outTransform)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         *outTransform = entity.GetComponent<TransformComponent>();
     }
 
     void Spike_TransformComponent_SetTransform(uint64_t entityID, TransformComponent* inTransform)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         entity.GetComponent<TransformComponent>() = *inTransform;
     }
 
     void Spike_TransformComponent_GetTranslation(uint64_t entityID, glm::vec3* outTranslation)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         *outTranslation = entity.GetComponent<TransformComponent>().Translation;
     }
 
     void Spike_TransformComponent_SetTranslation(uint64_t entityID, glm::vec3* inTranslation)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         entity.GetComponent<TransformComponent>().Translation = *inTranslation;
     }
 
     void Spike_TransformComponent_GetRotation(uint64_t entityID, glm::vec3* outRotation)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         *outRotation = entity.GetComponent<TransformComponent>().Rotation;
     }
 
     void Spike_TransformComponent_SetRotation(uint64_t entityID, glm::vec3* inRotation)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         entity.GetComponent<TransformComponent>().Rotation = *inRotation;
     }
 
     void Spike_TransformComponent_GetScale(uint64_t entityID, glm::vec3* outScale)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         *outScale = entity.GetComponent<TransformComponent>().Scale;
     }
 
     void Spike_TransformComponent_SetScale(uint64_t entityID, glm::vec3* inScale)
     {
-        Ref<Scene> scene = ScriptEngine::GetSceneContext();
-        SPK_CORE_ASSERT(scene, "No active scene!");
-        const auto& entityMap = scene->GetEntityMap();
-        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity ID is invalid!");
-
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
         entity.GetComponent<TransformComponent>().Scale = *inScale;
     }
 
+    /* [Spike] RIGIDBODY2D COMPONENT [Spike] */
+    void Spike_RigidBody2DComponent_ApplyLinearImpulse(uint64_t entityID, glm::vec2* impulse, glm::vec2* offset, bool wake)
+    {
+        auto& component = ValidateSceneAndReturnRigidBody2DComponent(ScriptEngine::GetSceneContext(), entityID);
+        b2Body* body = (b2Body*)component.RuntimeBody;
+        body->ApplyLinearImpulse(*(const b2Vec2*)impulse, body->GetWorldCenter() + *(const b2Vec2*)offset, wake);
+    }
+
+    void Spike_RigidBody2DComponent_GetLinearVelocity(uint64_t entityID, glm::vec2* outVelocity)
+    {
+        auto& component = ValidateSceneAndReturnRigidBody2DComponent(ScriptEngine::GetSceneContext(), entityID);
+        b2Body* body = (b2Body*)component.RuntimeBody;
+        const auto& velocity = body->GetLinearVelocity();
+        SPK_INTERNAL_ASSERT(outVelocity);
+        *outVelocity = { velocity.x, velocity.y };
+    }
+
+    void Spike_RigidBody2DComponent_SetLinearVelocity(uint64_t entityID, glm::vec2* velocity)
+    {
+        auto& component = ValidateSceneAndReturnRigidBody2DComponent(ScriptEngine::GetSceneContext(), entityID);
+        b2Body* body = (b2Body*)component.RuntimeBody;
+        SPK_INTERNAL_ASSERT(velocity);
+        body->SetLinearVelocity({ velocity->x, velocity->y });
+    }
 }

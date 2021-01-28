@@ -61,5 +61,8 @@ namespace Spike::Scripting
     void Spike_TransformComponent_GetScale(uint64_t entityID, glm::vec3* outScale);
     void Spike_TransformComponent_SetScale(uint64_t entityID, glm::vec3* inScale);
 
-
+    /* [Spike] RigidBody2D Component [Spike] */
+    void Spike_RigidBody2DComponent_ApplyLinearImpulse(uint64_t entityID, glm::vec2* impulse, glm::vec2* offset, bool wake);
+    void Spike_RigidBody2DComponent_GetLinearVelocity(uint64_t entityID, glm::vec2* outVelocity);
+    void Spike_RigidBody2DComponent_SetLinearVelocity(uint64_t entityID, glm::vec2* velocity);
 } 

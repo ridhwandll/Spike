@@ -59,6 +59,7 @@ namespace Spike
     {
         Component_RegisterType(TagComponent);
         Component_RegisterType(TransformComponent);
+        Component_RegisterType(RigidBody2DComponent);
     }
 
     void ScriptRegistry::RegisterAll()
@@ -93,5 +94,11 @@ namespace Spike
         mono_add_internal_call("Spike.TransformComponent::SetRotation_Native",    Spike::Scripting::Spike_TransformComponent_SetRotation);
         mono_add_internal_call("Spike.TransformComponent::GetScale_Native",       Spike::Scripting::Spike_TransformComponent_GetScale);
         mono_add_internal_call("Spike.TransformComponent::SetScale_Native",       Spike::Scripting::Spike_TransformComponent_SetScale);
+
+        /* [Spike] RigidBody2D Component [Spike] */
+        mono_add_internal_call("Spike.RigidBody2DComponent::ApplyLinearImpulse_Native", Spike::Scripting::Spike_RigidBody2DComponent_ApplyLinearImpulse);
+        mono_add_internal_call("Spike.RigidBody2DComponent::GetLinearVelocity_Native",  Spike::Scripting::Spike_RigidBody2DComponent_GetLinearVelocity);
+        mono_add_internal_call("Spike.RigidBody2DComponent::SetLinearVelocity_Native",  Spike::Scripting::Spike_RigidBody2DComponent_SetLinearVelocity);
+
     }
 }

@@ -5,6 +5,9 @@ namespace Spike
 {
     public class Entity
     {
+        private Action<float> m_Collision2DBeginCallbacks;
+        private Action<float> m_Collision2DEndCallbacks;
+
         public ulong ID { get; private set; }
 
         protected Entity() { ID = 0; }
@@ -15,42 +18,6 @@ namespace Spike
         }
 
         ~Entity() { }
-
-        public Vector3 Translation
-        {
-            get
-            {
-                return GetComponent<TransformComponent>().Translation;
-            }
-            set
-            {
-                GetComponent<TransformComponent>().Translation = value;
-            }
-        }
-
-        public Vector3 Rotation
-        {
-            get
-            {
-                return GetComponent<TransformComponent>().Rotation;
-            }
-            set
-            {
-                GetComponent<TransformComponent>().Rotation = value;
-            }
-        }
-
-        public Vector3 Scale
-        {
-            get
-            {
-                return GetComponent<TransformComponent>().Scale;
-            }
-            set
-            {
-                GetComponent<TransformComponent>().Scale = value;
-            }
-        }
 
         public T CreateComponent<T>() where T : Component, new()
         {
@@ -82,6 +49,27 @@ namespace Spike
             return new Entity(entityID);
         }
 
+        public void AddCollision2DBeginCallback(Action<float> callback)
+        {
+            m_Collision2DBeginCallbacks += callback;
+        }
+
+        public void AddCollision2DEndCallback(Action<float> callback)
+        {
+            m_Collision2DEndCallbacks += callback;
+        }
+
+        private void OnCollision2DBegin(float data)
+        {
+            if (m_Collision2DBeginCallbacks != null)
+                m_Collision2DBeginCallbacks.Invoke(data);
+        }
+
+        private void OnCollision2DEnd(float data)
+        {
+            if (m_Collision2DBeginCallbacks != null)
+                m_Collision2DEndCallbacks.Invoke(data);
+        }
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void CreateComponent_Native(ulong entityID, Type type);
         [MethodImpl(MethodImplOptions.InternalCall)]

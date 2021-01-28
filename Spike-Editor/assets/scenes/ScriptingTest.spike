@@ -1,0 +1,90 @@
+Scene: Untitled
+Entities:
+  - Entity: 12389614919645849742
+    TagComponent:
+      Tag: Enemy
+    TransformComponent:
+      Translation: [1.99509251, 1.29909945, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.964601755, 0.46096015, 0, 1]
+      TextureFilepath: ""
+      TilingFactor: 1
+    ScriptComponent:
+      ModuleName: Test2
+    RigidBody2DComponent:
+      BodyType: 1
+      FixedRotation: false
+      Gravity: 1
+      CollisionDetection: 1
+      Sleeptype: 0
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [1, 1]
+      Density: 1
+      Friction: 1
+  - Entity: 11857696782006745494
+    TagComponent:
+      Tag: Ground
+    TransformComponent:
+      Translation: [0.12656492, -1.51603985, 0]
+      Rotation: [0, 0, 0]
+      Scale: [31.3336544, 1, 1]
+    SpriteRendererComponent:
+      Color: [0.519832432, 0.57079649, 0, 1]
+      TextureFilepath: ""
+      TilingFactor: 1
+    RigidBody2DComponent:
+      BodyType: 0
+      FixedRotation: false
+      Gravity: 1
+      CollisionDetection: 0
+      Sleeptype: 0
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [1, 1]
+      Density: 1
+      Friction: 1
+  - Entity: 17531317006855022397
+    TagComponent:
+      Tag: Player
+    TransformComponent:
+      Translation: [-0.724846661, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Color: [0, 0.516876817, 0.730088472, 1]
+      TextureFilepath: ""
+      TilingFactor: 1
+    ScriptComponent:
+      ModuleName: Test
+    RigidBody2DComponent:
+      BodyType: 1
+      FixedRotation: false
+      Gravity: 1
+      CollisionDetection: 0
+      Sleeptype: 0
+    BoxCollider2DComponent:
+      Offset: [0, 0]
+      Size: [1, 1]
+      Density: 1
+      Friction: 1
+  - Entity: 10718837127584730494
+    TagComponent:
+      Tag:  Main Camera
+    TransformComponent:
+      Translation: [0.0429158211, 0, 0.899999976]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false

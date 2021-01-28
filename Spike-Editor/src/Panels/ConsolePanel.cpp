@@ -25,7 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "ConsolePanel.h"
-#include "../UIUtils/UIUtils.h"
+#include "UIUtils/UIUtils.h"
 
 namespace Spike
 {
@@ -51,28 +51,30 @@ namespace Spike
 
         ImGui::Begin(ICON_FK_LIST" Console");
 
-        if (ImGui::Button(ICON_FK_COGS))
-            ImGui::OpenPopup("Console Settings");
+        if (ImGui::Button("Clear"))
+            ClearLog();
 
-        if(ImGui::BeginPopup("Console Settings"))
+        ImGui::SameLine();
+        GUI::DrawDynamicToggleButton(ICON_FK_TIMES, ICON_FK_CHECK, { 0.7f, 0.1f, 0.1f, 1.0f }, { 0.2f, 0.5f, 0.2f, 1.0f }, &m_ScrollLockEnabled);
+
+        if (ImGui::IsItemHovered())
         {
-            if (ImGui::Button("Clear"))
-                ClearLog();
-
-            ImGui::Checkbox("Scroll Lock", &m_ScrollLockEnabled);
-            ImGui::EndPopup();
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+            ImGui::TextUnformatted("Scroll lock");
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
         }
 
         ImGui::SameLine();
 
-        //TODO: Button Shows effects if they are toggled on
-        GUI::DrawToggleButton(ICON_FK_INFO_CIRCLE, m_InfoColor, [this]() { m_InfoEnabled ^= true; });               //Info
+        GUI::DrawColorChangingToggleButton(ICON_FK_INFO_CIRCLE, m_DisabledColor, m_EnabledColor, m_InfoColor, &m_InfoEnabled);
         ImGui::SameLine();
-        GUI::DrawToggleButton(ICON_FK_BUG, m_DebugColor, [this]() { m_DebugEnabled ^= true; });                     //Bug
+        GUI::DrawColorChangingToggleButton(ICON_FK_BUG, m_DisabledColor, m_EnabledColor, m_DebugColor, &m_DebugEnabled);
         ImGui::SameLine();
-        GUI::DrawToggleButton(ICON_FK_EXCLAMATION_TRIANGLE, m_WarnColor, [this]() { m_WarningEnabled ^= true; });   //Warn
+        GUI::DrawColorChangingToggleButton(ICON_FK_EXCLAMATION_TRIANGLE, m_DisabledColor, m_EnabledColor, m_WarnColor, &m_WarningEnabled);
         ImGui::SameLine();
-        GUI::DrawToggleButton(ICON_FK_EXCLAMATION_CIRCLE, m_ErrorColor, [this]() { m_ErrorEnabled ^= true; });      //Error
+        GUI::DrawColorChangingToggleButton(ICON_FK_EXCLAMATION_CIRCLE, m_DisabledColor, m_EnabledColor, m_ErrorColor, &m_ErrorEnabled);
 
         ImGui::BeginChild(ICON_FK_LIST" Console", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 

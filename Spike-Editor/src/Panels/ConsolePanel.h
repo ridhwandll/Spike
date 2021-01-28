@@ -52,14 +52,16 @@ namespace Spike
     private:
         static Console* m_Console;
         std::vector<std::pair<LogLevel, std::string>> m_Messages{};
-        bool m_ScrollLockEnabled = false;
+        bool m_ScrollLockEnabled = true;
 
         //Colors
-        ImVec4 m_InfoColor = { 0.0f, 1.0f, 0.0f, 1.0f };
+        ImVec4 m_InfoColor = { 1.0f, 1.0f, 1.0f, 1.0f };
         ImVec4 m_DebugColor = { 0.0f, 0.5f, 1.0f, 1.0f };
         ImVec4 m_WarnColor = { 1.0f, 0.9f, 0.0f, 1.0f };
         ImVec4 m_ErrorColor = { 1.0f, 0.2f, 0.1f, 1.0f };
         ImVec4 m_CriticalColor = { 0.5f, 0.0f, 0.7f, 1.0f };
+        ImVec4 m_EnabledColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+        ImVec4 m_DisabledColor = { 0.5f, 0.2f, 0.2f, 1.0f };
 
         //Bool switches
         bool m_WarningEnabled = true;

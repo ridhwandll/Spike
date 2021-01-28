@@ -74,10 +74,10 @@ namespace Spike
         m_Registry.on_destroy<ScriptComponent>().connect<&OnScriptComponentDestroy>();
 
         m_SceneEntity = m_Registry.create();
+        s_ActiveScenes[m_SceneID] = this;
 
         m_Registry.emplace<SceneComponent>(m_SceneEntity, m_SceneID);
         Physics2D::CreateScene(this);
-        s_ActiveScenes[m_SceneID] = this;
     }
 
     Scene::~Scene()
@@ -128,7 +128,7 @@ namespace Spike
     void Scene::OnUpdate(Timestep ts)
     {
         //2D Physics
-        Physics2D::Simulate(ts);
+        Physics2D::Simulate();
     }
 
     void Scene::OnUpdateRuntime(Timestep ts)
@@ -190,7 +190,11 @@ namespace Spike
             {
                 Entity e = { entity, this };
                 if (ScriptEngine::ModuleExists(e.GetComponent<ScriptComponent>().ModuleName))
+                {
                     ScriptEngine::OnUpdateEntity(e, ts);
+                    /* [Spike] Maybe not hardcode the fixed timestep and have a settings struct? [Spike] */
+                    ScriptEngine::OnFixedUpdateEntity(e, 0.02f); //0.02f is hardcoded here
+                }
             }
         }
     }

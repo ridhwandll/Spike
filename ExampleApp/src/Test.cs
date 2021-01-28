@@ -1,43 +1,45 @@
-﻿using System;
-using Spike;
+﻿using Spike;
 
 class Test : Entity
 {
     public int Speed = 2;
-    private TransformComponent m_Transform;
-    private Entity m_Entity;
+    public float HorizontalForce = 10.0f;
+    public float JumpForce = 10.0f;
 
-    public void OnCreate()
+    private TransformComponent m_Transform;
+    private RigidBody2DComponent m_Rb2d;
+    public void Start()
     {
-        m_Entity = FindEntityByTag("Player");
-        m_Transform = m_Entity.GetComponent<TransformComponent>();
+        m_Transform = GetComponent<TransformComponent>();
+        m_Rb2d = GetComponent<RigidBody2DComponent>();
+        AddCollision2DBeginCallback(OnPlayerCollisionBegin);
+        AddCollision2DEndCallback(OnPlayerCollisionEnd);
     }
 
-    public void OnUpdate(float ts)
+    public void OnPlayerCollisionBegin(float value)
     {
-        Vector3 m_Translation = m_Transform.Translation;
+    }
+    public void OnPlayerCollisionEnd(float value)
+    {
+    }
 
-        /* Translation */
+
+    public void Update(float ts)
+    {
+        float movementForce = HorizontalForce;
+
         if (Input.IsKeyPressed(KeyCode.D))
-        {
-            m_Translation.X += Speed * ts;
-        }
-
-        if (Input.IsKeyPressed(KeyCode.A))
-        {
-            m_Translation.X -= Speed * ts;
-        }
+            m_Rb2d.ApplyLinearImpulse(new Vector2(movementForce, 0), new Vector2(), true);
+        else if (Input.IsKeyPressed(KeyCode.A))
+            m_Rb2d.ApplyLinearImpulse(new Vector2(-movementForce, 0), new Vector2(), true);
+        else if (Input.IsKeyPressed(KeyCode.S))
+            m_Rb2d.SetLinearVelocity(new Vector2(movementForce, 0));
 
         if (Input.IsKeyPressed(KeyCode.W))
-        {
-            m_Translation.Y += Speed * ts;
-        }
+            m_Rb2d.ApplyLinearImpulse(new Vector2(0, JumpForce), new Vector2(0, 0), true);
+    }
 
-        if (Input.IsKeyPressed(KeyCode.S))
-        {
-            m_Translation.Y -= Speed * ts;
-        }
-
-        m_Transform.Translation = m_Translation;
+    public void FixedUpdate(float ts)
+    {
     }
 }

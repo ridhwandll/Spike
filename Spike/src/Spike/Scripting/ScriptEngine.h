@@ -130,8 +130,11 @@ namespace Spike
         static void Init(const std::string& assemblyPath);
         static void Shutdown();
 
-        static void OnCreateEntity(Entity entity);
+        static void OnStartEntity(Entity entity);
         static void OnUpdateEntity(Entity entity, Timestep ts);
+        static void OnFixedUpdateEntity(Entity entity, float fixedTimeStep);
+        static void OnCollision2DBegin(Entity entity);
+        static void OnCollision2DEnd(Entity entity);
 
         /* [Spike] Script Engine must have a scene to work on, we set the scene context by this [Spike] */
         static void SetSceneContext(const Ref<Scene>& scene);
