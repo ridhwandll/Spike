@@ -66,6 +66,7 @@ namespace Spike
         UUID GetUUID() const { return m_SceneID; }
         static Ref<Scene> GetScene(UUID uuid);
 
+        /* [Spike] Entity stuff [Spike] */
         Entity GetPrimaryCameraEntity();
         Entity FindEntityByTag(const String& tag);
 

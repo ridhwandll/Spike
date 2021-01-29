@@ -65,4 +65,8 @@ namespace Spike::Scripting
     void Spike_RigidBody2DComponent_ApplyLinearImpulse(uint64_t entityID, glm::vec2* impulse, glm::vec2* offset, bool wake);
     void Spike_RigidBody2DComponent_GetLinearVelocity(uint64_t entityID, glm::vec2* outVelocity);
     void Spike_RigidBody2DComponent_SetLinearVelocity(uint64_t entityID, glm::vec2* velocity);
+
+    /* [Spike] SpriteRenderer Component [Spike] */
+    void Spike_SpriteRendererComponent_GetColor(uint64_t entityID, glm::vec4* outColor);
+    void Spike_SpriteRendererComponent_SetColor(uint64_t entityID, glm::vec4* inColor);
 } 

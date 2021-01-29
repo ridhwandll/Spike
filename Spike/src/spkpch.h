@@ -1,4 +1,4 @@
-/*
+﻿/*
                                SPIKE ENGINE
                This file is licensed under the SPIKE LICENSE
                           --Spike Source Code--
@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/PlatformDetection.h"
 
 #ifdef SPK_PLATFORM_WINDOWS
+    #define WIN32_LEAN_AND_MEAN /* [Spike] Should we define this❓ [Spike] */
     #ifndef NOMINMAX
         #define NOMINMAX
     #endif

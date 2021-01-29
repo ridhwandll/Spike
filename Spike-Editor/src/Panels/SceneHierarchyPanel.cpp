@@ -223,10 +223,8 @@ namespace Spike
             m_SelectionContext = {};
             return false;
         }
-        if ((Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl)) && Input::IsKeyPressed(Key::D) && m_IsHierarchyFocused)
-        {
+        if ((Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl)) && Input::IsKeyPressed(Key::D))
             m_Context->DuplicateEntity(m_SelectionContext);
-        }
 
         return false;
     }
@@ -339,11 +337,15 @@ namespace Spike
         {
             auto& camera = component.Camera;
 
-            ImGui::Checkbox("Primary", &component.Primary);
+            GUI::DrawBoolControl("Primary", &component.Primary, 160.0f);
 
             const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
             const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.GetProjectionType()];
-            if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
+            ImGui::Columns(2);
+            ImGui::Text("Projection");
+            ImGui::SetColumnWidth(0, 160.0f);
+            ImGui::NextColumn();
+            if (ImGui::BeginCombo("##Projection", currentProjectionTypeString))
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -356,40 +358,39 @@ namespace Spike
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
                 }
-
                 ImGui::EndCombo();
             }
-
+            ImGui::Columns(1);
             if (camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
             {
                 float verticalFOV = glm::degrees(camera.GetPerspectiveVerticalFOV());
-                if (ImGui::DragFloat("Vertical FOV", &verticalFOV))
+                if (GUI::DrawFloatControl("Vertical FOV", &verticalFOV, 160.0f))
                     camera.SetPerspectiveVerticalFOV(glm::radians(verticalFOV));
 
                 float nearClip = camera.GetPerspectiveNearClip();
-                if (ImGui::DragFloat("Near Clip", &nearClip))
+                if (GUI::DrawFloatControl("Near Clip", &nearClip, 160.0f))
                     camera.SetPerspectiveNearClip(nearClip);
 
                 float farClip = camera.GetPerspectiveFarClip();
-                if (ImGui::DragFloat("Far Clip", &farClip))
+                if (GUI::DrawFloatControl("Far Clip", &farClip, 160.0f))
                     camera.SetPerspectiveFarClip(farClip);
             }
 
             if (camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
             {
                 float orthoSize = camera.GetOrthographicSize();
-                if (ImGui::DragFloat("Size", &orthoSize))
+                if (GUI::DrawFloatControl("Size", &orthoSize, 160.0f))
                     camera.SetOrthographicSize(orthoSize);
 
                 float nearClip = camera.GetOrthographicNearClip();
-                if (ImGui::DragFloat("Near Clip", &nearClip))
+                if (GUI::DrawFloatControl("Near Clip", &nearClip, 160.0f))
                     camera.SetOrthographicNearClip(nearClip);
 
                 float farClip = camera.GetOrthographicFarClip();
-                if (ImGui::DragFloat("Far Clip", &farClip))
+                if (GUI::DrawFloatControl("Far Clip", &farClip, 160.0f))
                     camera.SetOrthographicFarClip(farClip);
 
-                ImGui::Checkbox("Fixed Aspect Ratio", &component.FixedAspectRatio);
+                GUI::DrawBoolControl("Fixed Aspect Ratio", &component.FixedAspectRatio, 160.0f);
             }
         });
 
@@ -461,7 +462,7 @@ namespace Spike
         });
 
         /* [Spike] Yeah, this needs to be mutable [Spike] */
-        DrawComponent<ScriptComponent>(ICON_FK_FILE_CODE_O" Script", entity, [=](ScriptComponent& sc) mutable
+        DrawComponent<ScriptComponent>(ICON_FK_CODE" Script", entity, [=](ScriptComponent& sc) mutable
         {
             String oldName = sc.ModuleName;
             if (GUI::DrawScriptTextControl("Module Name", sc.ModuleName, 100.0f, ScriptEngine::ModuleExists(sc.ModuleName)))

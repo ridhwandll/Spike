@@ -147,7 +147,7 @@ namespace Spike
             case MONO_TYPE_R4: return FieldType::Float;
             case MONO_TYPE_I4: return FieldType::Int;
             case MONO_TYPE_U4: return FieldType::UnsignedInt;
-            case MONO_TYPE_STRING: return FieldType::String;
+            case MONO_TYPE_STRING: return FieldType::_String;
             case MONO_TYPE_VALUETYPE:
             {
                 char* name = mono_type_get_name(monoType);
@@ -246,7 +246,7 @@ namespace Spike
             case FieldType::Float:       return "Float";
             case FieldType::Int:         return "Int";
             case FieldType::UnsignedInt: return "UnsignedInt";
-            case FieldType::String:      return "String";
+            case FieldType::_String:      return "String";
             case FieldType::Vec2:        return "Vec2";
             case FieldType::Vec3:        return "Vec3";
             case FieldType::Vec4:        return "Vec4";
@@ -263,7 +263,7 @@ namespace Spike
 
     void ScriptEngine::Shutdown()
     {
-        //ShutdownMono();
+        ShutdownMono();
         s_SceneContext = nullptr;
     }
 

@@ -213,7 +213,7 @@ namespace Spike
                     if (sprite.Texture)
                         Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, sprite.TilingFactor, sprite.Color);
                     else
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
                 }
 
                 auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();

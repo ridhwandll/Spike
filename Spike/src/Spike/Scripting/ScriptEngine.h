@@ -40,7 +40,7 @@ namespace Spike
 {
     enum class FieldType
     {
-        None = 0, Float = 1, Int = 2, UnsignedInt = 3, String = 4, Vec2 = 5, Vec3 = 6, Vec4 = 7
+        None = 0, Float = 1, Int = 2, UnsignedInt = 3, _String = 4, Vec2 = 5, Vec3 = 6, Vec4 = 7
     };
 
     const char* FieldTypeToString(FieldType type);

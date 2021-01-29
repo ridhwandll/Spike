@@ -50,8 +50,6 @@ namespace Spike
         TagComponent(const TagComponent&) = default;
         TagComponent(const String tag)
             :Tag(tag) {}
-
-        const char* GetUITitle() { return "Tag"; }
     };
     struct TransformComponent
     {
@@ -70,7 +68,6 @@ namespace Spike
             Rotation = { 0.0f, 0.0f, 0.0f };
             Scale = { 1.0f, 1.0f, 1.0f };
         }
-        const char* GetUITitle() { return ICON_FK_WRENCH" Transform"; }
         glm::mat4 GetTransform() const
         {
             glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
@@ -96,14 +93,13 @@ namespace Spike
             TextureFilepath = filepath;
         }
 
-        void RemoveTexture() { Texture = nullptr; }
+        void RemoveTexture() { Texture = nullptr; TextureFilepath = ""; }
 
         void Reset()
         {
             Color = { 1.0f, 1.0f, 1.0f, 1.0f };
             RemoveTexture();
         }
-        const char* GetUITitle() { return ICON_FK_SQUARE" Sprite Renderer"; }
     };
 
     struct CameraComponent
@@ -120,7 +116,6 @@ namespace Spike
             Primary = true;
             FixedAspectRatio = false;
         }
-        const char* GetUITitle() { return ICON_FK_CAMERA" Camera"; }
     };
 
     struct MeshComponent
@@ -133,7 +128,6 @@ namespace Spike
 
         void SetFilePath(String& path) { MeshFilepath = path; }
         void Reset() { Mesh = nullptr; }
-        const char* GetUITitle() { return ICON_FK_CUBE" Mesh"; }
     };
 
     struct ScriptComponent
@@ -143,8 +137,6 @@ namespace Spike
         ScriptComponent() = default;
         ScriptComponent(const ScriptComponent&) = default;
         void Reset() { ModuleName = "SpikeNull"; }
-        const char* GetUITitle() { return ICON_FK_FILE_CODE_O" Script"; }
-
     };
 
     //// 2D Physics //////////////////////////////////////////////////////////////////////
@@ -170,7 +162,6 @@ namespace Spike
         {
             BodyType = Type::Static; Gravity = 1.0f;
         }
-        const char* GetUITitle() { return "RigidBody2D"; }
     };
 
     struct BoxCollider2DComponent
@@ -196,7 +187,6 @@ namespace Spike
             Density = 1.0f;
             Friction = 1.0f;
         }
-        const char* GetUITitle() { return "BoxCollider2D"; }
     };
 
     struct CircleCollider2DComponent
@@ -220,7 +210,6 @@ namespace Spike
             Density = 1.0f;
             Friction = 1.0f;
         }
-        const char* GetUITitle() { return "CircleCollider2D"; }
     };
     /////2D Physics End///////////////////////////////////////////////////////////////////
 }

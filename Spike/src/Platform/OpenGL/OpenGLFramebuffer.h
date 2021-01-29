@@ -39,7 +39,7 @@ namespace Spike
         virtual void Bind() override;
         virtual void Unbind() override;
         virtual void Resize(const uint32_t width, const uint32_t height) override;
-
+        virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
         virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { SPK_CORE_ASSERT(index < m_ColorAttachments.size(), ""); return m_ColorAttachments[index]; }
         virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 

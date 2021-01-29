@@ -59,6 +59,7 @@ namespace Spike
     {
         Component_RegisterType(TagComponent);
         Component_RegisterType(TransformComponent);
+        Component_RegisterType(SpriteRendererComponent);
         Component_RegisterType(RigidBody2DComponent);
     }
 
@@ -100,5 +101,8 @@ namespace Spike
         mono_add_internal_call("Spike.RigidBody2DComponent::GetLinearVelocity_Native",  Spike::Scripting::Spike_RigidBody2DComponent_GetLinearVelocity);
         mono_add_internal_call("Spike.RigidBody2DComponent::SetLinearVelocity_Native",  Spike::Scripting::Spike_RigidBody2DComponent_SetLinearVelocity);
 
+        /* [Spike] SpriteRenderer Component [Spike] */
+        mono_add_internal_call("Spike.SpriteRendererComponent::GetColor_Native", Spike::Scripting::Spike_SpriteRendererComponent_GetColor);
+        mono_add_internal_call("Spike.SpriteRendererComponent::SetColor_Native", Spike::Scripting::Spike_SpriteRendererComponent_SetColor);
     }
 }

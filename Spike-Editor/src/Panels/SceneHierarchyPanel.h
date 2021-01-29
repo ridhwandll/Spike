@@ -42,6 +42,7 @@ namespace Spike
         void ClearSelectedEntity() { m_SelectionContext = {}; }
 
         Entity GetSelectedEntity() const { return m_SelectionContext; };
+        void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
         Ref<Scene> GetCurrentScene() const { return m_Context; };
 
         void OnImGuiRender();

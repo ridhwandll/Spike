@@ -36,14 +36,13 @@ namespace Spike
         None = 0,
 
         // Color
-        RGBA8 = 1,
-        RGBA16F = 2,
-        RGBA32F = 3,
-        RG32F = 4,
+        RGBA8,
+        RED_INTEGER,
+
 
         // Depth/stencil
-        DEPTH32F = 5,
-        DEPTH24STENCIL8 = 6,
+        DEPTH32F,
+        DEPTH24STENCIL8,
 
         // Defaults
         Depth = DEPTH24STENCIL8
@@ -83,7 +82,7 @@ namespace Spike
         virtual void Unbind() = 0;
 
         virtual void Resize(const uint32_t width, const uint32_t height) = 0;
-
+        virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
         virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
         virtual const FramebufferSpecification& GetSpecification() const = 0;
         static Ref<Framebuffer> Create(const FramebufferSpecification& spec);

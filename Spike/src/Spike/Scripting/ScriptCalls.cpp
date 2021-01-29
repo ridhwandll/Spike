@@ -67,6 +67,14 @@ namespace Spike::Scripting
         return component;
     }
 
+    SpriteRendererComponent& ValidateSceneAndReturnSpriteRendererComponent(Ref<Scene>& sceneContext, uint64_t entityID)
+    {
+        auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
+        Entity entity = entityMap.at(entityID);
+        SPK_INTERNAL_ASSERT(entity.HasComponent<SpriteRendererComponent>());
+        auto& component = entity.GetComponent<SpriteRendererComponent>();
+        return component;
+    }
     /* [Spike] Utils end [Spike] */
 
     void Spike_Console_LogInfo(MonoString* message)
@@ -238,4 +246,18 @@ namespace Spike::Scripting
         SPK_INTERNAL_ASSERT(velocity);
         body->SetLinearVelocity({ velocity->x, velocity->y });
     }
+
+    /* [Spike] SPRITE RENDERER COMPONENT [Spike] */
+    void Spike_SpriteRendererComponent_GetColor(uint64_t entityID, glm::vec4* outColor)
+    {
+        auto& component = ValidateSceneAndReturnSpriteRendererComponent(ScriptEngine::GetSceneContext(), entityID);
+        *outColor = component.Color;
+    }
+
+    void Spike_SpriteRendererComponent_SetColor(uint64_t entityID, glm::vec4* inColor)
+    {
+        auto& component = ValidateSceneAndReturnSpriteRendererComponent(ScriptEngine::GetSceneContext(), entityID);
+        component.Color = *inColor;
+    }
+
 }

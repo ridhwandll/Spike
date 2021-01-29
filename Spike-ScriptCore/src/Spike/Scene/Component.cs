@@ -131,4 +131,22 @@ namespace Spike
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetLinearVelocity_Native(ulong entityID, ref Vector2 velocity);
     }
+
+    public class SpriteRendererComponent : Component
+    {
+        public Vector4 GetColor()
+        {
+            GetColor_Native(Entity.ID, out Vector4 color);
+            return color;
+        }
+        public void SetColor(Vector4 color)
+        {
+            SetColor_Native(Entity.ID, ref color);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void GetColor_Native(ulong entityID, out Vector4 color);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void SetColor_Native(ulong entityID, ref Vector4 color);
+    }
 }
