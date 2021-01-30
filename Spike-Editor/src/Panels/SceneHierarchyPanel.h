@@ -47,6 +47,8 @@ namespace Spike
 
         void OnImGuiRender();
         void OnEvent(Event& e);
+      
+        void DockIds(uint32_t dockIdHiearchy, uint32_t dockIdInspector);
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
         void DrawEntityNode(Entity entity);
@@ -57,5 +59,7 @@ namespace Spike
         bool m_IsHierarchyFocused = false;
         bool m_IsHierarchyHovered = false;
         Entity m_SelectionContext;
+      
+        uint32_t m_HiearchyDockId, m_InspectorDockId;
     };
 }
