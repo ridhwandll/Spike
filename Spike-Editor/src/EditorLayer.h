@@ -110,6 +110,7 @@ namespace Spike
             uint32_t center = 0;
             uint32_t left_bottom = 0;
             uint32_t right_bottom = 0;
+            uint32_t top = 0;
         };
 
         DockIds m_DockIds;
