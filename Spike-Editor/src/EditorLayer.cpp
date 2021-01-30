@@ -31,7 +31,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Math/Math.h"
 #include "Spike/Scripting/ScriptEngine.h"
 #include <FontAwesome.h>
-#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 #include <ImGuizmo.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -50,7 +50,7 @@ namespace Spike
     {
         //Application::Get()->GetWindow().SetVSync(false);
         FramebufferSpecification fbSpec;
-        fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+        fbSpec.Attachments = {FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth};
         fbSpec.Width = 1280;
         fbSpec.Height = 720;
         m_Framebuffer = Framebuffer::Create(fbSpec);
@@ -118,39 +118,38 @@ namespace Spike
             m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
 
-
         // Render
         Renderer2D::ResetStats();
         m_Framebuffer->Bind();
-        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1});
         RenderCommand::Clear();
         m_Framebuffer->Bind();
 
         switch (m_SceneState)
         {
         case EditorLayer::SceneState::Edit:
-            {
-                m_EditorCamera.OnUpdate(ts);
-                m_EditorScene->OnUpdateEditor(ts, m_EditorCamera);
-                break;
-            }
+        {
+            m_EditorCamera.OnUpdate(ts);
+            m_EditorScene->OnUpdateEditor(ts, m_EditorCamera);
+            break;
+        }
         case EditorLayer::SceneState::Play:
-            {
-                if (m_ViewportFocused)
-                    m_EditorCamera.OnUpdate(ts);
+        {
+            if (m_ViewportFocused)
+                m_EditorCamera.OnUpdate(ts);
 
-                m_RuntimeScene->OnUpdate(ts);
-                m_RuntimeScene->OnUpdateRuntime(ts);
-                break;
-            }
+            m_RuntimeScene->OnUpdate(ts);
+            m_RuntimeScene->OnUpdateRuntime(ts);
+            break;
+        }
         case EditorLayer::SceneState::Pause:
-            {
-                if (m_ViewportFocused)
-                    m_EditorCamera.OnUpdate(ts);
+        {
+            if (m_ViewportFocused)
+                m_EditorCamera.OnUpdate(ts);
 
-                m_RuntimeScene->OnUpdateRuntime(ts);
-                break;
-            }
+            m_RuntimeScene->OnUpdateRuntime(ts);
+            break;
+        }
         }
 
         auto [mx, my] = ImGui::GetMousePos();
@@ -161,7 +160,7 @@ namespace Spike
         int mouseX = (int)mx;
         int mouseY = (int)my;
 
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x && 
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x &&
             mouseY < (int)m_ViewportSize.y && Input::IsMouseButtonPressed(Mouse::Button0) && !ImGuizmo::IsUsing())
         {
             int pixelData = 9999999; //TODO: Remove this!! (Come up with a proper way to clear the frame buffer with a value of -1)
@@ -176,52 +175,43 @@ namespace Spike
 
     void EditorLayer::OnImGuiRender()
     {
-        static bool dockspaceOpen = true;
-        static bool opt_fullscreen_persistant = true;
-        bool opt_fullscreen = opt_fullscreen_persistant;
+        SetLayout();
+
+        auto id = ImGui::GetID("Root_Dockspace");
+
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
         // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
         // because it would be confusing to have two docking targets within each others.
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-        if (opt_fullscreen)
-        {
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImGui::SetNextWindowPos(viewport->Pos);
-            ImGui::SetNextWindowSize(viewport->Size);
-            ImGui::SetNextWindowViewport(viewport->ID);
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-            window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-        }
+        ImGuiViewport *viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 
         // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
         if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-            window_flags |= ImGuiWindowFlags_NoBackground;
+            m_FullscreenWindowFlags |= ImGuiWindowFlags_NoBackground;
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+        ImGui::Begin("Spike Dockspace", (bool *)0, m_FullscreenWindowFlags | ImGuiWindowFlags_MenuBar);
         ImGui::PopStyleVar();
 
-        if (opt_fullscreen)
-            ImGui::PopStyleVar(2);
+        ImGui::PopStyleVar(2);
 
         // DockSpace
-        ImGuiIO& io = ImGui::GetIO();
-        ImGuiStyle& style = ImGui::GetStyle();
+        ImGuiIO &io = ImGui::GetIO();
+        ImGuiStyle &style = ImGui::GetStyle();
         float minWinSizeX = style.WindowMinSize.x;
         style.WindowMinSize.x = 270.0f;
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
         {
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+            ImGui::DockSpace(id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
 
         style.WindowMinSize.x = minWinSizeX;
 
-        Console::Get()->OnImGuiRender();
-        ScriptEngine::OnImGuiRender();
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -250,212 +240,210 @@ namespace Spike
             ImGui::EndMenuBar();
         }
 
-        m_SceneHierarchyPanel.OnImGuiRender();
+        ImGui::SetNextWindowDockID(m_DockIds.bottom, ImGuiCond_Appearing);
+        Console::Get()->OnImGuiRender();
 
-        ImGui::Begin("Stats");
-        auto stats = Renderer2D::GetStats();
-        ImGui::Text("Renderer2D Stats:");
-        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        ImGui::Text("Quads: %d", stats.QuadCount);
-        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-        static float frameTimeRefreshTimer = 0.0f;
-        static float ft = 0.0f;
-        static float frameRate = 0.0f;
-        frameTimeRefreshTimer += m_FrameTime;
-        if (frameTimeRefreshTimer >= 0.25f)
+        if (!m_MakeViewportFullscreen)
         {
-            ft = m_FrameTime;
-            frameRate = 1.0f / m_FrameTime;
-            frameTimeRefreshTimer = 0.0f;
-        }
-        auto& caps = RendererAPI::GetCapabilities();
+            m_SceneHierarchyPanel.DockIds(m_DockIds.left, m_DockIds.right);
+            m_SceneHierarchyPanel.OnImGuiRender();
 
-        ImGui::Text("Vendor: %s", caps.Vendor.c_str());
-        ImGui::Text("Renderer: %s", caps.Renderer.c_str());
+            ImGui::SetNextWindowDockID(m_DockIds.right_bottom, ImGuiCond_Appearing);
+            ScriptEngine::OnImGuiRender();
 
-        ImGui::Text("FrameTime: %.3f ms", ft);
-        ImGui::Text("FPS: %d", (int)frameRate);
-        ImGui::End();
-
-        bool show = true;
-
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
-        ImGui::Begin("ToolBar", &show, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
-        if (ImGui::Button(ICON_FK_REPEAT))
-        {
-            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
-            Console::Get()->Print("ScriptEngine reloaded the C# assembly successfully!", Console::LogLevel::LVL_INFO);
-        }
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::BeginTooltip();
-            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
-            ImGui::TextUnformatted("Reload C#");
-            ImGui::PopTextWrapPos();
-            ImGui::EndTooltip();
-        }
-        ImGui::SameLine();
-
-        if (ImGui::Button(ICON_FK_FLOPPY_O))
-        {
-            SaveScene();
-        }
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::BeginTooltip();
-            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
-            ImGui::TextUnformatted("Save");
-            ImGui::PopTextWrapPos();
-            ImGui::EndTooltip();
-        }
-        ImGui::SameLine();
-
-        ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
-        if (m_SceneState == SceneState::Edit)
-        {
-            if (ImGui::ArrowButton("Play", ImGuiDir_Right))
+            ImGui::SetNextWindowDockID(m_DockIds.left_bottom, ImGuiCond_Appearing);
+            ImGui::Begin("Stats");
+            auto stats = Renderer2D::GetStats();
+            ImGui::Text("Renderer2D Stats:");
+            ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+            ImGui::Text("Quads: %d", stats.QuadCount);
+            ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+            ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+            static float frameTimeRefreshTimer = 0.0f;
+            static float ft = 0.0f;
+            static float frameRate = 0.0f;
+            frameTimeRefreshTimer += m_FrameTime;
+            if (frameTimeRefreshTimer >= 0.25f)
             {
-                OnScenePlay();
+                ft = m_FrameTime;
+                frameRate = 1.0f / m_FrameTime;
+                frameTimeRefreshTimer = 0.0f;
+            }
+            auto &caps = RendererAPI::GetCapabilities();
+
+            ImGui::Text("Vendor: %s", caps.Vendor.c_str());
+            ImGui::Text("Renderer: %s", caps.Renderer.c_str());
+
+            ImGui::Text("FrameTime: %.3f ms", ft);
+            ImGui::Text("FPS: %d", (int)frameRate);
+            ImGui::End();
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
+            ImGui::SetNextWindowDockId(m_DockIds.top, ImGuiCond_Appearing);
+            ImGui::Begin("ToolBar", (bool *)0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+            if (ImGui::Button(ICON_FK_REPEAT))
+            {
+                ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+                Console::Get()->Print("ScriptEngine reloaded the C# assembly successfully!", Console::LogLevel::LVL_INFO);
+            }
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+                ImGui::TextUnformatted("Reload C#");
+                ImGui::PopTextWrapPos();
+                ImGui::EndTooltip();
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FK_PAUSE))
+
+            if (ImGui::Button(ICON_FK_FLOPPY_O))
             {
-                Console::Get()->Print("You need to be in play mode to pause the scene!", Console::LogLevel::LVL_WARN);
+                SaveScene();
             }
-        }
-        else if (m_SceneState == SceneState::Play)
-        {
-            if (ImGui::Button(ICON_FK_STOP))
+            if (ImGui::IsItemHovered())
             {
-                OnSceneStop();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button(ICON_FK_PAUSE))
-            {
-                OnScenePause();
-            }
-        }
-        else if (m_SceneState == SceneState::Pause)
-        {
-            if (ImGui::Button(ICON_FK_STOP))
-            {
-                OnSceneStop();
+                ImGui::BeginTooltip();
+                ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+                ImGui::TextUnformatted("Save");
+                ImGui::PopTextWrapPos();
+                ImGui::EndTooltip();
             }
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FK_PAUSE))
-            {
-                OnSceneResume();
-            }
-        }
 
-        ImGui::End();
-        ImGui::PopStyleColor(3);
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-        ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
-        auto viewportOffset = ImGui::GetCursorPos();
-
-
-        if (m_SceneState == SceneState::Play)
-        {
-            DrawRectAroundWindow({ 1.0f, 1.0f, 0.0f, 1.0f });
-        }
-        else if (m_SceneState == SceneState::Pause)
-        {
-            DrawRectAroundWindow({ 0.0f, 0.0f, 1.0f, 1.0f });
-        }
-
-        m_ViewportFocused = ImGui::IsWindowFocused();
-        m_ViewportHovered = ImGui::IsWindowHovered();
-        Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-
-        ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-        m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-
-        uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-        ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-        auto windowSize = ImGui::GetWindowSize();
-        ImVec2 minBound = ImGui::GetWindowPos();
-        minBound.x += viewportOffset.x;
-        minBound.y += viewportOffset.y;
-
-        ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-        m_ViewportBounds[0] = { minBound.x, minBound.y };
-        m_ViewportBounds[1] = { maxBound.x, maxBound.y };
-
-        // Gizmos
-        Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-        /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
-        if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
-        {
-            ImGuizmo::SetOrthographic(false);
-            ImGuizmo::SetDrawlist();
-
-            float windowWidth = (float)ImGui::GetWindowWidth();
-            float windowHeight = (float)ImGui::GetWindowHeight();
-            ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-            glm::mat4 cameraView, cameraProjection;
-
-            //if (m_SceneState == SceneState::Play) //TODO
-            //{
-            //    auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
-            //    const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-            //    cameraProjection = camera.GetProjection();
-            //    cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-            //}
-
+            ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
             if (m_SceneState == SceneState::Edit)
             {
-                cameraProjection = m_EditorCamera.GetProjection();
-                cameraView = m_EditorCamera.GetViewMatrix();
+                if (ImGui::ArrowButton("Play", ImGuiDir_Right))
+                {
+                    OnScenePlay();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FK_PAUSE))
+                {
+                    Console::Get()->Print("You need to be in play mode to pause the scene!", Console::LogLevel::LVL_WARN);
+                }
             }
-
-            // Entity transform
-            auto& tc = selectedEntity.GetComponent<TransformComponent>();
-            glm::mat4 transform = tc.GetTransform();
-
-            // Snapping
-            bool snap = Input::IsKeyPressed(Key::LeftControl);
-            float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-            // Snap to 45 degrees for rotation
-            if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-                snapValue = 45.0f;
-
-            float snapValues[3] = { snapValue, snapValue, snapValue };
-
-            ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
-                nullptr, snap ? snapValues : nullptr);
-
-            if (ImGuizmo::IsUsing())
+            else if (m_SceneState == SceneState::Play)
             {
-                m_GizmoInUse = true;
-                glm::vec3 translation, rotation, scale;
-                Math::DecomposeTransform(transform, translation, rotation, scale);
-
-                glm::vec3 deltaRotation = rotation - tc.Rotation;
-                tc.Translation = translation;
-                tc.Rotation += deltaRotation;
-                tc.Scale = scale;
+                if (ImGui::Button(ICON_FK_STOP))
+                {
+                    OnSceneStop();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FK_PAUSE))
+                {
+                    OnScenePause();
+                }
             }
-            else
+            else if (m_SceneState == SceneState::Pause)
             {
-                m_GizmoInUse = false;
+                if (ImGui::Button(ICON_FK_STOP))
+                {
+                    OnSceneStop();
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(ICON_FK_PAUSE))
+                {
+                    OnSceneResume();
+                }
             }
+
+            ImGui::End();
+            ImGui::PopStyleColor(3);
+
+            ImGui::SetNextWindowDockID(m_DockIds.root, ImGuiCond_Appearing);
+            ImGui::Begin(ICON_FK_GAMEPAD " Viewport");
+
+            m_DockIds.root = ImGui::GetWindowDockID();
+
+            auto viewportOffset = ImGui::GetCursorPos();
+
+            if (m_SceneState == SceneState::Play)
+            {
+                DrawRectAroundWindow({1.0f, 1.0f, 0.0f, 1.0f});
+            }
+            else if (m_SceneState == SceneState::Pause)
+            {
+                DrawRectAroundWindow({0.0f, 0.0f, 1.0f, 1.0f});
+            }
+
+            m_ViewportFocused = ImGui::IsWindowFocused();
+            m_ViewportHovered = ImGui::IsWindowHovered();
+            Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
+            ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+            m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+
+            uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+            ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
+            auto windowSize = ImGui::GetWindowSize();
+            ImVec2 minBound = ImGui::GetWindowPos();
+            minBound.x += viewportOffset.x;
+            minBound.y += viewportOffset.y;
+
+            ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
+            m_ViewportBounds[0] = {minBound.x, minBound.y};
+            m_ViewportBounds[1] = {maxBound.x, maxBound.y};
+            Gizmos();
+
+            ImGui::End();
+            ImGui::PopStyleVar();
+        }
+        else
+        {
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(viewport->Size);
+            ImGui::SetNextWindowViewport(viewport->ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
+            ImGui::SetNextWindowDockID(m_DockIds.root, ImGuiCond_Appearing);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
+            ImGui::Begin(ICON_FK_GAMEPAD " Viewport", (bool *)0, m_FullscreenWindowFlags);
+            auto viewportOffset = ImGui::GetCursorPos();
+
+            if (m_SceneState == SceneState::Play)
+            {
+                DrawRectAroundWindow({1.0f, 1.0f, 0.0f, 1.0f});
+            }
+            else if (m_SceneState == SceneState::Pause)
+            {
+                DrawRectAroundWindow({0.0f, 0.0f, 1.0f, 1.0f});
+            }
+
+            m_ViewportFocused = ImGui::IsWindowFocused();
+            m_ViewportHovered = ImGui::IsWindowHovered();
+            Application::Get().GetImGuiLayer()->BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
+
+            ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+            m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
+
+            uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
+            ImGui::Image(reinterpret_cast<void *>(textureID), ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+
+            auto windowSize = ImGui::GetWindowSize();
+            ImVec2 minBound = ImGui::GetWindowPos();
+            minBound.x += viewportOffset.x;
+            minBound.y += viewportOffset.y;
+
+            ImVec2 maxBound = {minBound.x + windowSize.x, minBound.y + windowSize.y};
+            m_ViewportBounds[0] = {minBound.x, minBound.y};
+            m_ViewportBounds[1] = {maxBound.x, maxBound.y};
+
+            Gizmos();
+
+            ImGui::End();
+            ImGui::PopStyleVar();
+            ImGui::PopStyleVar(2);
         }
 
         ImGui::End();
-        ImGui::PopStyleVar();
-        ImGui::End();
-
     }
 
-    void EditorLayer::OnEvent(Event& e)
+    void EditorLayer::OnEvent(Event &e)
     {
         m_SceneHierarchyPanel.OnEvent(e);
 
@@ -475,7 +463,7 @@ namespace Spike
         dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
     }
 
-    bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent &e)
     {
         // Shortcuts
         if (e.GetRepeatCount() > 0)
@@ -485,59 +473,72 @@ namespace Spike
         bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
         switch (e.GetKeyCode())
         {
-            case Key::N:
-            {
-                if (control)
-                    NewScene();
+        case Key::N:
+        {
+            if (control)
+                NewScene();
 
-                break;
-            }
-            case Key::O:
-            {
-                if (control)
-                    OpenScene();
+            break;
+        }
+        case Key::O:
+        {
+            if (control)
+                OpenScene();
 
-                break;
-            }
-            case Key::S:
-            {
-                if (control && shift)
-                    SaveSceneAs();
-                if (control)
-                    SaveScene();
-                break;
-            }
+            break;
+        }
+        case Key::S:
+        {
+            if (control && shift)
+                SaveSceneAs();
+            if (control)
+                SaveScene();
+            break;
+        }
 
-            // Gizmos
-            case Key::Q:
-                if (!m_GizmoInUse)
-                {
-                    m_GizmoType = -1;
-                }
-                break;
-            case Key::W:
-                if (!m_GizmoInUse)
-                {
-                    m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-                }
-                break;
-            case Key::E:
-                if (!m_GizmoInUse)
-                {
-                    m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-                }
-                break;
-            case Key::R:
-                if (!m_GizmoInUse)
-                {
-                    m_GizmoType = ImGuizmo::OPERATION::SCALE;
-                }
-                break;
+        // Gizmos
+        case Key::Q:
+            if (!m_GizmoInUse)
+            {
+                m_GizmoType = -1;
+            }
+            break;
+        case Key::W:
+            if (!m_GizmoInUse)
+            {
+                m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            }
+            break;
+        case Key::E:
+            if (!m_GizmoInUse)
+            {
+                m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+            }
+            break;
+        case Key::R:
+            if (!m_GizmoInUse)
+            {
+                m_GizmoType = ImGuizmo::OPERATION::SCALE;
+            }
+            break;
+        case Key::F11:
+            if (!m_MakeViewportFullscreen)
+            {
+                m_MakeViewportFullscreen = true;
+            }
+            break;
+
+        case Key::Escape:
+            if (m_MakeViewportFullscreen)
+            {
+                m_MakeViewportFullscreen = false;
+            }
+            break;
         }
         return false;
     }
 
-    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent &e)
     {
         if (e.GetMouseButton() == Mouse::ButtonLeft && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
         {
@@ -560,7 +561,7 @@ namespace Spike
     void EditorLayer::LaunchReadymadeScene()
     {
         NewScene();
-        m_StartupCameraEntity = m_EditorScene->CreateEntity(ICON_FK_CAMERA" Main Camera");
+        m_StartupCameraEntity = m_EditorScene->CreateEntity(ICON_FK_CAMERA " Main Camera");
         m_StartupCameraEntity.AddComponent<CameraComponent>();
         m_StartupCameraEntity.GetComponent<TransformComponent>().Translation.z = 0.9f;
     }
@@ -608,19 +609,120 @@ namespace Spike
         }
     }
 
-    void EditorLayer::UpdateWindowTitle(const String& sceneName)
+    void EditorLayer::UpdateWindowTitle(const String &sceneName)
     {
         String title = "Spike |" + sceneName + "| " + Application::GetPlatformName() + " - " + Application::GetConfigurationName() + " <" + Application::CurrentGraphicsAPI() + "> ";
         Application::Get().GetWindow().SetTitle(title);
     }
 
-    void EditorLayer::DrawRectAroundWindow(const glm::vec4& color)
+    void EditorLayer::DrawRectAroundWindow(const glm::vec4 &color)
     {
         ImVec2 windowMin = ImGui::GetWindowPos();
         ImVec2 windowSize = ImGui::GetWindowSize();
-        ImVec2 windowMax = { windowMin.x + windowSize.x, windowMin.y + windowSize.y };
+        ImVec2 windowMax = {windowMin.x + windowSize.x, windowMin.y + windowSize.y};
         ImGui::GetForegroundDrawList()->AddRect(windowMin, windowMax, ImGui::ColorConvertFloat4ToU32(ImVec4(color.x, color.y, color.z, color.w)));
     }
 
-}
-#pragma warning (pop) // Pop the warning
+    void EditorLayer::SetLayout()
+    {
+        if (ImGui::DockBuilderGetNode(m_DockIds.root) == NULL)
+        {
+            m_DockIds.root = ImGui::GetID("Root_Dockspace");
+
+            ImGui::DockBuilderRemoveNode(m_DockIds.root); // Clear out existing layout
+            ImGui::DockBuilderAddNode(m_DockIds.root,
+                                      ImGuiDockNodeFlags_DockSpace); // Add empty node
+            ImGui::DockBuilderSetNodeSize(m_DockIds.root, ImVec2(Application::Get().GetWindow().GetWidth(),
+                                                                 Application::Get().GetWindow().GetHeight()));
+
+            m_DockIds.right = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Right,
+                                                          0.2f, NULL, &m_DockIds.root);
+            m_DockIds.left = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Left,
+                                                         0.2f, NULL, &m_DockIds.root);
+            m_DockIds.bottom = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Down,
+                                                           0.3f, NULL, &m_DockIds.root);
+            m_DockIds.left_bottom = ImGui::DockBuilderSplitNode(m_DockIds.left, ImGuiDir_Down,
+                                                                0.3f, NULL, &m_DockIds.left);
+            m_DockIds.right_bottom = ImGui::DockBuilderSplitNode(m_DockIds.right, ImGuiDir_Down,
+                                                                 0.3f, NULL, &m_DockIds.right);
+            m_DockIds.top = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Up,
+                                                        0.2f, NULL, &m_DockIds.root);
+
+            ImGui::DockBuilderDockWindow(ICON_FK_GAMEPAD " Viewport", m_DockIds.root);
+            ImGui::DockBuilderDockWindow(ICON_FK_LIST " Console", m_DockIds.bottom);
+            ImGui::DockBuilderDockWindow("Hierarchy", m_DockIds.left);
+            ImGui::DockBuilderDockWindow(ICON_FK_INFO_CIRCLE " Inspector", m_DockIds.right);
+            ImGui::DockBuilderDockWindow("Stats", m_DockIds.left_bottom);
+            ImGui::DockBuilderDockWindow("ScriptEngine Status", m_DockIds.right_bottom);
+            ImGui::DockBuilderDockWindow("Toolbar", m_DockIds.top);
+            ImGui::DockBuilderFinish(m_DockIds.root);
+        }
+    }
+
+    void EditorLayer::Gizmos()
+    {
+        // Gizmos
+        Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+        /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
+        if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
+        {
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetDrawlist();
+
+            float windowWidth = (float)ImGui::GetWindowWidth();
+            float windowHeight = (float)ImGui::GetWindowHeight();
+            ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+            glm::mat4 cameraView, cameraProjection;
+
+            //if (m_SceneState == SceneState::Play) //TODO
+            //{
+            //    auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
+            //    const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+            //    cameraProjection = camera.GetProjection();
+            //    cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+            //}
+
+            if (m_SceneState == SceneState::Edit)
+            {
+                cameraProjection = m_EditorCamera.GetProjection();
+                cameraView = m_EditorCamera.GetViewMatrix();
+            }
+
+            // Entity transform
+            auto &tc = selectedEntity.GetComponent<TransformComponent>();
+            glm::mat4 transform = tc.GetTransform();
+
+            // Snapping
+            bool snap = Input::IsKeyPressed(Key::LeftControl);
+            float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+            // Snap to 45 degrees for rotation
+            if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+                snapValue = 45.0f;
+
+            float snapValues[3] = {snapValue, snapValue, snapValue};
+
+            ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+                                 (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+                                 nullptr, snap ? snapValues : nullptr);
+
+            if (ImGuizmo::IsUsing())
+            {
+                m_GizmoInUse = true;
+                glm::vec3 translation, rotation, scale;
+                Math::DecomposeTransform(transform, translation, rotation, scale);
+
+                glm::vec3 deltaRotation = rotation - tc.Rotation;
+                tc.Translation = translation;
+                tc.Rotation += deltaRotation;
+                tc.Scale = scale;
+            }
+            else
+            {
+                m_GizmoInUse = false;
+            }
+        }
+    }
+
+} // namespace Spike
+#pragma warning(pop) // Pop the warning
