@@ -96,7 +96,7 @@ namespace Spike
         mono_set_dirs("C:\\Program Files\\Mono\\lib", "C:\\Program Files\\Mono\\etc"); //TODO: Remove
         mono_set_assemblies_path("Spike/vendor/mono/lib");
         MonoDomain* domain = mono_jit_init("Spike");
-        mono_jit_set_trace_options("--verbose");
+
         /* [Spike] Register an app domain [Spike] */
         char* name = (char*)"Spike-Runtime";
         s_MonoDomain = mono_domain_create_appdomain(name, nullptr);
@@ -118,7 +118,7 @@ namespace Spike
 
         MonoMethod* method = mono_method_desc_search_in_image(description, image);
         if (!method)
-            SPK_CORE_LOG_ERROR("mono_method_desc_search_in_image failed!");
+            SPK_CORE_LOG_WARN("mono_method_desc_search_in_image failed!");
         return method;
     }
 
@@ -175,7 +175,7 @@ namespace Spike
     {
         MonoImage* image = mono_assembly_get_image(assembly);
         if (!image)
-            std::cout << "mono_assembly_get_image failed" << std::endl;
+            SPK_CORE_LOG_ERROR("mono_assembly_get_image failed");
 
         return image;
     }
@@ -186,9 +186,9 @@ namespace Spike
         MonoAssembly* assembly = LoadAssemblyFromFile(path.c_str());
 
         if (!assembly)
-            std::cout << "Could not load assembly: " << path << std::endl;
+            SPK_CORE_LOG_CRITICAL("Could not load assembly: {0}", path);
         else
-            std::cout << "Successfully loaded assembly: " << path << std::endl;
+            SPK_CORE_LOG_INFO("Successfully loaded assembly: {0}", path);
 
         return assembly;
     }
@@ -242,11 +242,11 @@ namespace Spike
     {
         switch (type)
         {
-            case FieldType::None:       return "None";
+            case FieldType::None:        return "None";
             case FieldType::Float:       return "Float";
             case FieldType::Int:         return "Int";
             case FieldType::UnsignedInt: return "UnsignedInt";
-            case FieldType::_String:      return "String";
+            case FieldType::_String:     return "String";
             case FieldType::Vec2:        return "Vec2";
             case FieldType::Vec3:        return "Vec3";
             case FieldType::Vec4:        return "Vec4";
@@ -633,7 +633,7 @@ namespace Spike
         m_StoredValueBuffer = AllocateBuffer(type);
     }
 
-    PublicField::PublicField(PublicField&& other)
+    PublicField::PublicField(PublicField && other)
     {
         Name = std::move(other.Name);
         Type = other.Type;

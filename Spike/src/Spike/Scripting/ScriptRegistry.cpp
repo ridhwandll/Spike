@@ -59,6 +59,7 @@ namespace Spike
     {
         Component_RegisterType(TagComponent);
         Component_RegisterType(TransformComponent);
+        Component_RegisterType(CameraComponent);
         Component_RegisterType(SpriteRendererComponent);
         Component_RegisterType(RigidBody2DComponent);
     }
@@ -86,6 +87,10 @@ namespace Spike
         mono_add_internal_call("Spike.Entity::HasComponent_Native",    Spike::Scripting::Spike_Entity_HasComponent);
         mono_add_internal_call("Spike.Entity::FindEntityByTag_Native", Spike::Scripting::Spike_Entity_FindEntityByTag);
 
+        /* [Spike] Tag Component [Spike] */
+        mono_add_internal_call("Spike.TagComponent::GetTag_Native", Spike::Scripting::Spike_TagComponent_GetTag);
+        mono_add_internal_call("Spike.TagComponent::SetTag_Native", Spike::Scripting::Spike_TagComponent_SetTag);
+
         /* [Spike] Transform Component [Spike] */
         mono_add_internal_call("Spike.TransformComponent::GetTransform_Native",   Spike::Scripting::Spike_TransformComponent_GetTransform);
         mono_add_internal_call("Spike.TransformComponent::SetTransform_Native",   Spike::Scripting::Spike_TransformComponent_SetTransform);
@@ -104,5 +109,11 @@ namespace Spike
         /* [Spike] SpriteRenderer Component [Spike] */
         mono_add_internal_call("Spike.SpriteRendererComponent::GetColor_Native", Spike::Scripting::Spike_SpriteRendererComponent_GetColor);
         mono_add_internal_call("Spike.SpriteRendererComponent::SetColor_Native", Spike::Scripting::Spike_SpriteRendererComponent_SetColor);
+
+        /* [Spike] Camera Component [Spike] */
+        mono_add_internal_call("Spike.CameraComponent::IsPrimary_Native", Spike::Scripting::Spike_CameraComponent_IsPrimary);
+        mono_add_internal_call("Spike.CameraComponent::SetAsPrimary_Native", Spike::Scripting::Spike_CameraComponent_SetAsPrimary);
+        mono_add_internal_call("Spike.CameraComponent::IsFixedAspectRatio_Native", Spike::Scripting::Spike_CameraComponent_IsFixedAspectRatio);
+        mono_add_internal_call("Spike.CameraComponent::SetFixedAspectRatio_Native", Spike::Scripting::Spike_CameraComponent_SetFixedAspectRatio);
     }
 }

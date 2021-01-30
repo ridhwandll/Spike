@@ -1,63 +1,23 @@
 Scene: Untitled
 Entities:
-  - Entity: 10718837127584730494
+  - Entity: 10230136601327689765
     TagComponent:
-      Tag:  Main Camera
+      Tag: Enemy
     TransformComponent:
-      Translation: [0.0429158211, 0, 21.2453766]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 17531317006855022397
-    TagComponent:
-      Tag: Player
-    TransformComponent:
-      Translation: [-0.724846661, 0.000132761896, 0]
+      Translation: [-9.65908337, 7.30728769, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0, 0.516876817, 0.730088472, 1]
-      TextureFilepath: ""
+      Color: [0.964601755, 0.46096015, 0, 1]
+      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
       TilingFactor: 1
     ScriptComponent:
-      ModuleName: Test
+      ModuleName: Test2
     RigidBody2DComponent:
       BodyType: 1
       FixedRotation: false
       Gravity: 1
-      CollisionDetection: 0
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 11857696782006745494
-    TagComponent:
-      Tag: Ground
-    TransformComponent:
-      Translation: [0.12656492, -1.51603985, 0]
-      Rotation: [0, 0, 0]
-      Scale: [79.3952255, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.519832432, 0.57079649, 0, 1]
-      TextureFilepath: ""
-      TilingFactor: 1
-    RigidBody2DComponent:
-      BodyType: 0
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 0
+      CollisionDetection: 1
       Sleeptype: 0
     BoxCollider2DComponent:
       Offset: [0, 0]
@@ -88,555 +48,69 @@ Entities:
       Size: [1, 1]
       Density: 1
       Friction: 1
-  - Entity: 10230136601327689765
+  - Entity: 11857696782006745494
     TagComponent:
-      Tag: Enemy
+      Tag: Ground
     TransformComponent:
-      Translation: [-9.65908337, 7.30728769, 0]
+      Translation: [0.12656492, -1.51603985, 0]
       Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Scale: [79.3952255, 1, 1]
     SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
+      Color: [0.519832432, 0.57079649, 0, 1]
+      TextureFilepath: ""
       TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
     RigidBody2DComponent:
-      BodyType: 1
+      BodyType: 0
       FixedRotation: false
       Gravity: 1
-      CollisionDetection: 1
+      CollisionDetection: 0
       Sleeptype: 0
     BoxCollider2DComponent:
       Offset: [0, 0]
       Size: [1, 1]
       Density: 1
       Friction: 1
-  - Entity: 6989063505963350558
+  - Entity: 17531317006855022397
     TagComponent:
-      Tag: Enemy
+      Tag: Player
     TransformComponent:
-      Translation: [-2.60977769, 5.96398735, -1.20020676]
+      Translation: [-0.724846661, 0.000132761896, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
+      Color: [0, 0.516876817, 0.730088472, 1]
+      TextureFilepath: ""
       TilingFactor: 1
     ScriptComponent:
-      ModuleName: Test2
+      ModuleName: Test
     RigidBody2DComponent:
       BodyType: 1
       FixedRotation: false
       Gravity: 1
-      CollisionDetection: 1
+      CollisionDetection: 0
       Sleeptype: 0
     BoxCollider2DComponent:
       Offset: [0, 0]
       Size: [1, 1]
       Density: 1
       Friction: 1
-  - Entity: 15800101956430848793
+  - Entity: 10718837127584730494
     TagComponent:
-      Tag: Enemy
+      Tag:  Main Camera
     TransformComponent:
-      Translation: [4.95837498, 9.83383846, -2.16853714]
+      Translation: [0.0429158211, 0, 21.2453766]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
     ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 2293201749236256983
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-5.15555525, 6.54425859, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 4043937399492597674
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-3.99713778, 10.8267069, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 13803667429041519949
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-1.77764785, 12.8966522, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 1830062792976124468
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [0.00511908531, 8.36913109, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 5233432907006806866
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [4.0349102, 5.57419109, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 11656990751862739403
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [1.99509251, 11.0541859, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 4202928538512569291
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [0.781782031, 5.81467199, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 16219824800235257845
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [1.99509251, 13.7969255, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 9999292708180235762
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [1.99509251, 6.90412235, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 1645216324935491999
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-4.60531712, 8.52886677, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 13805732036344681848
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-8.99179649, 10.8850327, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 2180302477977530627
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-6.23413467, 10.8850327, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 4186029804668349018
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-6.23413467, 14.3823004, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 9529850149114433590
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-3.69072151, 14.3823004, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 1634675250193222072
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-0.701227188, 14.3823004, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 6531538253484743249
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [4.29877281, 14.3823004, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 3955922209679682372
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [6.82652426, 14.3823004, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 9708417315177301914
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [6.82652426, 11.782074, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 17337298926746344624
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [4.48847342, 11.782074, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 17345369611990045103
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-0.237598419, 11.782074, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
+      ModuleName: CameraController

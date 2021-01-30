@@ -30,9 +30,10 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Mesh.h"
 #include "Panels/ConsolePanel.h"
 #include "SceneCamera.h"
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #include <FontAwesome.h>
 
@@ -51,6 +52,7 @@ namespace Spike
         TagComponent(const String tag)
             :Tag(tag) {}
     };
+
     struct TransformComponent
     {
         glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };

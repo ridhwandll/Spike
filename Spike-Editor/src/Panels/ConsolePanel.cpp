@@ -51,7 +51,7 @@ namespace Spike
 
         ImGui::Begin(ICON_FK_LIST" Console");
 
-        if (ImGui::Button("Clear"))
+        if (ImGui::Button("Clear") || m_Messages.size() > 9999)
             ClearLog();
 
         ImGui::SameLine();

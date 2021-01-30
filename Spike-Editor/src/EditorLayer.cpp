@@ -378,6 +378,7 @@ namespace Spike
         uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
         ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
+        DrawGizmos();
         auto windowSize = ImGui::GetWindowSize();
         ImVec2 minBound = ImGui::GetWindowPos();
         minBound.x += viewportOffset.x;
@@ -387,72 +388,9 @@ namespace Spike
         m_ViewportBounds[0] = { minBound.x, minBound.y };
         m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
-        // Gizmos
-        Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-        /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
-        if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
-        {
-            ImGuizmo::SetOrthographic(false);
-            ImGuizmo::SetDrawlist();
-
-            float windowWidth = (float)ImGui::GetWindowWidth();
-            float windowHeight = (float)ImGui::GetWindowHeight();
-            ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-
-            glm::mat4 cameraView, cameraProjection;
-
-            //if (m_SceneState == SceneState::Play) //TODO
-            //{
-            //    auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
-            //    const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
-            //    cameraProjection = camera.GetProjection();
-            //    cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
-            //}
-
-            if (m_SceneState == SceneState::Edit)
-            {
-                cameraProjection = m_EditorCamera.GetProjection();
-                cameraView = m_EditorCamera.GetViewMatrix();
-            }
-
-            // Entity transform
-            auto& tc = selectedEntity.GetComponent<TransformComponent>();
-            glm::mat4 transform = tc.GetTransform();
-
-            // Snapping
-            bool snap = Input::IsKeyPressed(Key::LeftControl);
-            float snapValue = 0.5f; // Snap to 0.5m for translation/scale
-            // Snap to 45 degrees for rotation
-            if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
-                snapValue = 45.0f;
-
-            float snapValues[3] = { snapValue, snapValue, snapValue };
-
-            ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-                (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
-                nullptr, snap ? snapValues : nullptr);
-
-            if (ImGuizmo::IsUsing())
-            {
-                m_GizmoInUse = true;
-                glm::vec3 translation, rotation, scale;
-                Math::DecomposeTransform(transform, translation, rotation, scale);
-
-                glm::vec3 deltaRotation = rotation - tc.Rotation;
-                tc.Translation = translation;
-                tc.Rotation += deltaRotation;
-                tc.Scale = scale;
-            }
-            else
-            {
-                m_GizmoInUse = false;
-            }
-        }
-
         ImGui::End();
         ImGui::PopStyleVar();
         ImGui::End();
-
     }
 
     void EditorLayer::OnEvent(Event& e)
@@ -533,6 +471,11 @@ namespace Spike
                     m_GizmoType = ImGuizmo::OPERATION::SCALE;
                 }
                 break;
+            case Key::Escape:
+                if (m_SceneState == SceneState::Play)
+                {
+                    m_SceneState = SceneState::Edit;
+                }
         }
         return false;
     }
@@ -620,6 +563,71 @@ namespace Spike
         ImVec2 windowSize = ImGui::GetWindowSize();
         ImVec2 windowMax = { windowMin.x + windowSize.x, windowMin.y + windowSize.y };
         ImGui::GetForegroundDrawList()->AddRect(windowMin, windowMax, ImGui::ColorConvertFloat4ToU32(ImVec4(color.x, color.y, color.z, color.w)));
+    }
+
+    void EditorLayer::DrawGizmos()
+    {
+        // Gizmos
+        Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+        /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
+        if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
+        {
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetDrawlist();
+
+            float windowWidth = (float)ImGui::GetWindowWidth();
+            float windowHeight = (float)ImGui::GetWindowHeight();
+            ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+            glm::mat4 cameraView, cameraProjection;
+
+            //if (m_SceneState == SceneState::Play) //TODO
+            //{
+            //    auto cameraEntity = m_EditorScene->GetPrimaryCameraEntity();
+            //    const auto& camera = cameraEntity.GetComponent<CameraComponent>().Camera;
+            //    cameraProjection = camera.GetProjection();
+            //    cameraView = glm::inverse(cameraEntity.GetComponent<TransformComponent>().GetTransform());
+            //}
+
+            if (m_SceneState == SceneState::Edit)
+            {
+                cameraProjection = m_EditorCamera.GetProjection();
+                cameraView = m_EditorCamera.GetViewMatrix();
+            }
+
+            // Entity transform
+            auto& tc = selectedEntity.GetComponent<TransformComponent>();
+            glm::mat4 transform = tc.GetTransform();
+
+            // Snapping
+            bool snap = Input::IsKeyPressed(Key::LeftControl);
+            float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+            // Snap to 45 degrees for rotation
+            if (m_GizmoType == ImGuizmo::OPERATION::ROTATE)
+                snapValue = 45.0f;
+
+            float snapValues[3] = { snapValue, snapValue, snapValue };
+
+            ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+                (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+                nullptr, snap ? snapValues : nullptr);
+
+            if (ImGuizmo::IsUsing())
+            {
+                m_GizmoInUse = true;
+                glm::vec3 translation, rotation, scale;
+                Math::DecomposeTransform(transform, translation, rotation, scale);
+
+                glm::vec3 deltaRotation = rotation - tc.Rotation;
+                tc.Translation = translation;
+                tc.Rotation += deltaRotation;
+                tc.Scale = scale;
+            }
+            else
+            {
+                m_GizmoInUse = false;
+            }
+        }
     }
 
 }

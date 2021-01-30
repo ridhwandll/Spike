@@ -4,6 +4,8 @@ using Spike;
 class Test2 : Entity
 {
     private SpriteRendererComponent m_SpriteRenderer;
+    private TagComponent m_TagComponent;
+
     public Vector4 m_Color;
     public void Start()
     {
@@ -11,6 +13,10 @@ class Test2 : Entity
         m_SpriteRenderer = GetComponent<SpriteRendererComponent>();
         m_Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         m_SpriteRenderer.SetColor(m_Color);
+
+        m_TagComponent = GetComponent<TagComponent>();
+        m_TagComponent.Tag = "Hello World!";
+
         AddCollision2DBeginCallback(CollisionOoof);
         AddCollision2DEndCallback(CollisionOoof);
     }

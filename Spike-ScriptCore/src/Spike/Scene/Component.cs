@@ -11,21 +11,15 @@ namespace Spike
     {
         public string Tag
         {
-            get
-            {
-                return GetTag_Native(Entity.ID);
-            }
-            set
-            {
-                SetTag_Native(value);
-            }
+            get => GetTag_Native(Entity.ID);
+            set => SetTag_Native(Entity.ID, value);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern string GetTag_Native(ulong entityID);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetTag_Native(string tag);
+        public static extern void SetTag_Native(ulong entityID, string tag);
 
     }
 
@@ -130,6 +124,48 @@ namespace Spike
         internal static extern void GetLinearVelocity_Native(ulong entityID, out Vector2 velocity);
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void SetLinearVelocity_Native(ulong entityID, ref Vector2 velocity);
+    }
+
+    public enum CameraType
+    {
+
+    }
+
+    /*TODO: Make this work fully, extend the API so that it can control every thing like a camara component has*/
+    public class CameraComponent : Component
+    {
+        public bool IsPrimary()
+        {
+            return IsPrimary_Native(Entity.ID);
+        }
+
+        public void SetAsPrimary(bool isPrimary)
+        {
+            SetAsPrimary_Native(Entity.ID, isPrimary);
+        }
+
+        public bool IsFixedAspectRatio()
+        {
+            return IsFixedAspectRatio_Native(Entity.ID);
+        }
+
+        public void SetFixedAspectRatio(bool isFixedAspectRatio)
+        {
+            SetFixedAspectRatio_Native(Entity.ID, isFixedAspectRatio);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool IsPrimary_Native(ulong entityID);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void SetAsPrimary_Native(ulong entityID, bool isPrimary);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern void SetFixedAspectRatio_Native(ulong entityID, bool isFixedAspectRatio);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern bool IsFixedAspectRatio_Native(ulong entityID);
+
     }
 
     public class SpriteRendererComponent : Component

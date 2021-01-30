@@ -57,5 +57,5 @@ uniform sampler2D u_AlbedoTexture;
 
 void main()
 {
-    FragColor = /*texture(u_AlbedoTexture, v_TexCoord);*/vec4((v_Normal * 0.5 + 0.5), 1.0);/*vec4(1.0f, 0.5f, 0.0f, 1.0f);*///texture(textureDiffuse, TexCoords);
+    FragColor = texture(u_AlbedoTexture, v_TexCoord);//vec4((v_Normal * 0.5 + 0.5), 1.0);/*vec4(1.0f, 0.5f, 0.0f, 1.0f);*///texture(textureDiffuse, TexCoords);
 }

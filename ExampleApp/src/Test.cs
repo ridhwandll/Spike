@@ -36,7 +36,7 @@ class Test : Entity
             m_Rb2d.ApplyLinearImpulse(new Vector2(0, JumpForce), new Vector2(0, 0), true);
     }
 
-    public void FixedUpdate(float ts)
+    public void FixedUpdate(float fixedTimestep)
     {
     }
 }

@@ -71,7 +71,6 @@ namespace Spike
     Scene::Scene()
     {
         m_Registry.on_construct<ScriptComponent>().connect<&OnScriptComponentConstruct>();
-        m_Registry.on_destroy<ScriptComponent>().connect<&OnScriptComponentDestroy>();
 
         m_SceneEntity = m_Registry.create();
         s_ActiveScenes[m_SceneID] = this;
@@ -127,7 +126,6 @@ namespace Spike
 
     void Scene::OnUpdate(Timestep ts)
     {
-        //2D Physics
         Physics2D::Simulate();
     }
 
@@ -277,13 +275,7 @@ namespace Spike
         }
     }
 
-    void Scene::OnEvent(Event& e)
-    {
-        if (Input::IsKeyPressed(Key::Escape) && m_IsPlaying == true)
-        {
-            OnRuntimeStop();
-        }
-    }
+    void Scene::OnEvent(Event& e) { }
 
     void Scene::OnRuntimeStart()
     {
@@ -458,5 +450,6 @@ namespace Spike
     template<>
     void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
     {
+
     }
 }

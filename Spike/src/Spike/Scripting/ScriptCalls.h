@@ -51,6 +51,10 @@ namespace Spike::Scripting
     bool Spike_Entity_HasComponent(uint64_t entityID, void* type);
     uint64_t Spike_Entity_FindEntityByTag(MonoString* tag);
 
+    /* [Spike] Tag Component [Spike] */
+    MonoString* Spike_TagComponent_GetTag(uint64_t entityID);
+    void Spike_TagComponent_SetTag(uint64_t entityID, MonoString* inTag);
+
     /* [Spike] Transform Component [Spike] */
     void Spike_TransformComponent_GetTransform(uint64_t entityID, TransformComponent* outTransform);
     void Spike_TransformComponent_SetTransform(uint64_t entityID, TransformComponent* inTransform);
@@ -69,4 +73,10 @@ namespace Spike::Scripting
     /* [Spike] SpriteRenderer Component [Spike] */
     void Spike_SpriteRendererComponent_GetColor(uint64_t entityID, glm::vec4* outColor);
     void Spike_SpriteRendererComponent_SetColor(uint64_t entityID, glm::vec4* inColor);
+
+    /* [Spike] Camera Component [Spike] */
+    void Spike_CameraComponent_SetAsPrimary(uint64_t entityID, bool* isPrimary);
+    bool Spike_CameraComponent_IsPrimary(uint64_t entityID);
+    void Spike_CameraComponent_SetFixedAspectRatio(uint64_t entityID, bool isAspectRatioFixed);
+    bool Spike_CameraComponent_IsFixedAspectRatio(uint64_t entityID);
 } 
