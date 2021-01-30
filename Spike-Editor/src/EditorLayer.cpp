@@ -354,6 +354,7 @@ namespace Spike
             ImGui::PopStyleColor(3);
 
             ImGui::SetNextWindowDockID(m_DockIds.root, ImGuiCond_Appearing);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
             ImGui::Begin(ICON_FK_GAMEPAD " Viewport");
 
             m_DockIds.root = ImGui::GetWindowDockID();
@@ -635,18 +636,13 @@ namespace Spike
             ImGui::DockBuilderSetNodeSize(m_DockIds.root, ImVec2(Application::Get().GetWindow().GetWidth(),
                                                                  Application::Get().GetWindow().GetHeight()));
 
-            m_DockIds.right = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Right,
-                                                          0.2f, NULL, &m_DockIds.root);
-            m_DockIds.left = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Left,
-                                                         0.2f, NULL, &m_DockIds.root);
-            m_DockIds.bottom = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Down,
-                                                           0.3f, NULL, &m_DockIds.root);
-            m_DockIds.left_bottom = ImGui::DockBuilderSplitNode(m_DockIds.left, ImGuiDir_Down,
-                                                                0.3f, NULL, &m_DockIds.left);
-            m_DockIds.right_bottom = ImGui::DockBuilderSplitNode(m_DockIds.right, ImGuiDir_Down,
-                                                                 0.3f, NULL, &m_DockIds.right);
-            m_DockIds.top = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Up,
-                                                        0.2f, NULL, &m_DockIds.root);
+            m_DockIds.right = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Right, 0.2f, NULL, &m_DockIds.root);                                            
+            m_DockIds.left = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Left, 0.2f, NULL, &m_DockIds.root);                                             
+            m_DockIds.bottom = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Down, 0.3f, NULL, &m_DockIds.root);                                                 
+            m_DockIds.left_bottom = ImGui::DockBuilderSplitNode(m_DockIds.left, ImGuiDir_Down, 0.3f, NULL, &m_DockIds.left);                                                    
+            m_DockIds.right_bottom = ImGui::DockBuilderSplitNode(m_DockIds.right, ImGuiDir_Down, 0.3f, NULL, &m_DockIds.right);                                               
+            m_DockIds.top = ImGui::DockBuilderSplitNode(m_DockIds.root, ImGuiDir_Up, 0.2f, NULL, &m_DockIds.root);
+                                                       
 
             ImGui::DockBuilderDockWindow(ICON_FK_GAMEPAD " Viewport", m_DockIds.root);
             ImGui::DockBuilderDockWindow(ICON_FK_LIST " Console", m_DockIds.bottom);
