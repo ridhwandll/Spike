@@ -105,10 +105,17 @@ namespace Spike
                 m_SelectionContext = entityMap.at(selectedEntityID);
         }
     }
+  
+    void SceneHierarchyPanel::DockIds(uint32_t dockIdHiearchy, uint32_t dockIdInspector)
+    {
+        m_HiearchyDockId = dockIdHiearchy;
+        m_InspectorDockId = dockIdInspector;
+    }
 
     void SceneHierarchyPanel::OnImGuiRender()
     {
         // Hierarchy
+        ImGui::SetNextWindowDockID(m_HiearchyDockId, ImGuiCond_Appearing);
         ImGui::Begin("Hierarchy");
 
         m_Context->m_Registry.each([&](auto entityID)
@@ -162,6 +169,7 @@ namespace Spike
 
 
         // Inspector
+        ImGui::SetNextWindowDockID(m_InspectorDockId, ImGuiCond_Appearing);
         ImGui::Begin(ICON_FK_INFO_CIRCLE" Inspector");
         if (m_SelectionContext)
         {
