@@ -281,7 +281,7 @@ namespace Spike
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
-            ImGui::SetNextWindowDockId(m_DockIds.top, ImGuiCond_Appearing);
+            ImGui::SetNextWindowDockID(m_DockIds.top, ImGuiCond_Appearing);
             ImGui::Begin("ToolBar", (bool *)0, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
             if (ImGui::Button(ICON_FK_REPEAT))
             {
