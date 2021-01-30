@@ -29,6 +29,8 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Panels/SceneHierarchyPanel.h"
 #include "Spike/Renderer/EditorCamera.h"
 
+#include <imgui/imgui.h>
+
 namespace Spike
 {
     class EditorLayer : public Layer
@@ -60,6 +62,9 @@ namespace Spike
         void OnSceneStop();
         void OnScenePause();
         void OnSceneResume();
+        
+        void SetLayout();
+        void Gizmos();
     private:
         enum class SceneState
         {
@@ -86,6 +91,29 @@ namespace Spike
 
         //Panel(s)
         SceneHierarchyPanel m_SceneHierarchyPanel;
+    private:
+        ImGuiWindowFlags m_FullscreenWindowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus |
+                                                   ImGuiWindowFlags_NoCollapse |
+                                                   ImGuiWindowFlags_NoDocking |
+                                                   ImGuiWindowFlags_NoFocusOnAppearing |
+                                                   ImGuiWindowFlags_NoMove |
+                                                   ImGuiWindowFlags_NoNavFocus |
+                                                   ImGuiWindowFlags_NoResize |
+                                                   ImGuiWindowFlags_NoScrollbar |
+                                                   ImGuiWindowFlags_NoTitleBar;
+        struct DockIds
+        {
+            uint32_t root = 0;
+            uint32_t left = 0;
+            uint32_t bottom = 0;
+            uint32_t right = 0;
+            uint32_t center = 0;
+            uint32_t left_bottom = 0;
+            uint32_t right_bottom = 0;
+        };
+
+        DockIds m_DockIds;
+        bool m_MakeViewportFullscreen = false;
     };
 
 }
