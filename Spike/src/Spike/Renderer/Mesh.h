@@ -25,8 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Spike/Core/Timestep.h"
-#include "Spike/Renderer/Renderer.h"
+#include "Spike/Renderer/Texture.h"
 #include "Spike/Renderer/Shader.h"
 #include "Spike/Renderer/VertexArray.h"
 #include "Spike/Renderer/VertexBuffer.h"
@@ -34,67 +33,61 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <glm/glm.hpp>
 
 struct aiNode;
-namespace Assimp {
-    class Importer;
-}
+struct aiMesh;
+struct aiMaterial;
+struct aiScene;
+enum aiTextureType;
 
 namespace Spike
 {
+    struct Vertex
+    {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoords;
+    };
+
+    struct TextureStruct
+    {
+        uint32_t ID;
+        String Type;
+        String Path;
+    };
+
     class Submesh
     {
     public:
-        uint32_t BaseVertex = 0;
-        uint32_t BaseIndex = 0;
-        //uint32_t MaterialIndex = 0;
-        uint32_t IndexCount = 0;
+        Submesh(Vector<Vertex> vertices, Vector<uint32_t> indices, Vector<TextureStruct> textures);
+        void Draw(Ref<Shader>& shader);
 
-        glm::mat4 Transform = glm::mat4(1.0f);
-        String NodeName = "", MeshName = "";
+    public:
+        Vector<Vertex>        m_Vertices;
+        Vector<uint32_t>      m_Indices;
+        Vector<TextureStruct> m_Textures;
+
+    private:
+        Ref<VertexArray> m_VertexArray;
+        Ref<VertexBuffer> m_VertexBuffer;
+        Ref<IndexBuffer> m_IndexBuffer;
+        void SetupMesh();
     };
 
     class Mesh : public RefCounted
     {
     public:
-        struct Vertex
-        {
-            glm::vec3 Position;
-            glm::vec3 Normal;
-            glm::vec2 Texcoord;
-            int ObjectID;
-        };
-        static_assert(sizeof(Vertex) == 9 * sizeof(float));
-
-        struct Index
-        {
-            uint32_t V1, V2, V3;
-        };
-        static_assert(sizeof(Index) == 3 * sizeof(uint32_t));
-
-
-        Mesh(const String& filepath);
-        Mesh(const String& filepath, uint32_t entityID); //BIG TODO: Sort this out. Make mousepicking work with 3D!
-        Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform);
-        ~Mesh();
-
-        int m_ObjectID;
-        std::vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
-        const std::vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
-    public:
-        Ref<VertexArray> m_VertexArray;
-        Ref<VertexBuffer> m_VertexBuffer;
-        Ref<IndexBuffer> m_IndexBuffer;
-        Ref<Shader> m_MeshShader;
-        std::vector<Submesh> m_Submeshes;
+        Mesh(const String& path);
+        void Draw();
         String m_FilePath;
-    private:
-        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
-        void Generate(const String& filepath, uint32_t entityID = 0);
-        void DumpVertexBuffer();
 
+        Ref<Shader>& GetShader() { return m_Shader; }
     private:
-        Scope<Assimp::Importer> m_Importer;
+        Vector<Submesh> m_Meshes;
+        Vector<TextureStruct> m_TexturesLoaded;
+        Ref<Shader> m_Shader;
 
-        std::vector<Vertex> m_Vertices = {};
-        std::vector<Index> m_Indices = {};
+        void LoadMesh(String path);
+        void ProcessNode(aiNode* node, const aiScene* scene);
+        Submesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        Vector<TextureStruct> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const String& typeName);
     };
 }

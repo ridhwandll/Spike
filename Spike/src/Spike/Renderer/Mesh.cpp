@@ -26,207 +26,231 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Renderer/Mesh.h"
-#include "Texture.h"
+#include <stb_image.h>
 #include <glad/glad.h>
+#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <assimp/Importer.hpp>
-#include <assimp/DefaultLogger.hpp>
-#include <assimp/LogStream.hpp>
+#include <filesystem>
 
 namespace Spike
 {
-    glm::mat4 Mat4FromAssimpMat4(const aiMatrix4x4& matrix)
+    Submesh::Submesh(Vector<Vertex> vertices, Vector<uint32_t> indices, Vector<TextureStruct> textures)
+        :m_Vertices(vertices), m_Indices(indices), m_Textures(textures)
     {
-        glm::mat4 result;
-        //the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
-        result[0][0] = matrix.a1; result[1][0] = matrix.a2; result[2][0] = matrix.a3; result[3][0] = matrix.a4;
-        result[0][1] = matrix.b1; result[1][1] = matrix.b2; result[2][1] = matrix.b3; result[3][1] = matrix.b4;
-        result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
-        result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
-        return result;
+        SetupMesh();
     }
 
-    static const uint32_t s_MeshImportFlags =
-        aiProcess_Triangulate |
-        aiProcess_GenSmoothNormals |
-        aiProcess_OptimizeMeshes |
-        aiProcess_FlipUVs;
-
-    struct LogStream : public Assimp::LogStream
+    void Submesh::Draw(Ref<Shader>& shader)
     {
-        static void Initialize()
+        uint32_t diffuseNr = 1;
+        uint32_t specularNr = 1;
+        for (uint32_t i = 0; i < m_Textures.size(); i++)
         {
-            if (Assimp::DefaultLogger::isNullLogger())
-            {
-                Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE);
-                Assimp::DefaultLogger::get()->attachStream(new LogStream, Assimp::Logger::Err | Assimp::Logger::Warn);
-            }
-        }
+            glActiveTexture(GL_TEXTURE0 + i);
+            String number;
+            String name = m_Textures[i].Type;
+            if (name == "texture_diffuse")
+                number = std::to_string(diffuseNr++);
+            else if (name == "texture_specular")
+                number = std::to_string(specularNr++);
 
-        virtual void write(const char* message) override
-        {
-            SPK_CORE_LOG_WARN("Assimp: {0}", message);
+            shader->SetInt((name + number).c_str(), i);
+            glBindTexture(GL_TEXTURE_2D, m_Textures[i].ID);
         }
-    };
+        glActiveTexture(GL_TEXTURE0);
 
-    Mesh::Mesh(const String& filepath)
-        : m_FilePath(filepath)
-    {
-        LogStream::Initialize();
-        Generate(filepath);
+        m_VertexArray->Bind();
+        glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
     }
 
-    Mesh::Mesh(const String& filepath, uint32_t entityID)
-        :m_FilePath(filepath), m_ObjectID(entityID)
+    void Submesh::SetupMesh()
     {
-        Generate(filepath, entityID);
-    }
-
-    Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<Index>& indices, const glm::mat4& transform)
-        :m_Vertices(vertices), m_Indices(indices)
-    {
-        Submesh submesh;
-        submesh.BaseVertex = 0;
-        submesh.BaseIndex = 0;
-        submesh.IndexCount = indices.size() * 3;
-        submesh.Transform = transform;
-        m_Submeshes.push_back(submesh);
-
-        m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
+        m_VertexArray = VertexArray::Create();
+        m_VertexBuffer = VertexBuffer::Create(&m_Vertices[0], m_Vertices.size() * sizeof(Vertex));
+        m_IndexBuffer = IndexBuffer::Create(&m_Indices[0], m_Indices.size() * sizeof(uint32_t));
 
         VertexBufferLayout layout =
         {
             { ShaderDataType::Float3, "a_Position" },
             { ShaderDataType::Float3, "a_Normal" },
-            { ShaderDataType::Float2, "a_TexCoord" },
-            { ShaderDataType::Int, "a_ObjectID" }
+            { ShaderDataType::Float2, "a_TexCoords" },
         };
 
-        m_VertexArray = VertexArray::Create();
-
-        m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
         m_VertexBuffer->SetLayout(layout);
 
-        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size() * sizeof(Index));
-
+        m_VertexArray->Bind();
         m_VertexArray->AddVertexBuffer(m_VertexBuffer);
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-        m_VertexArray->Bind();
+        m_VertexArray->Unbind();
     }
 
-    Mesh::~Mesh()
+    uint32_t TextureFromFile(const char* path, const String& directory, bool gamma = false);
+    Mesh::Mesh(const String& path)
     {
+        m_Shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
+        LoadMesh(path);
     }
 
-    void Mesh::Generate(const String& filepath, uint32_t entityID)
+    void Mesh::Draw()
     {
-        SPK_CORE_LOG_INFO("Loading mesh: {0}", filepath.c_str());
-        m_Importer = CreateScope<Assimp::Importer>();
+        for (uint32_t i = 0; i < m_Meshes.size(); i++)
+            m_Meshes[i].Draw(m_Shader);
+    }
 
-        const aiScene* scene = m_Importer->ReadFile(filepath, s_MeshImportFlags);
-        if (!scene || !scene->HasMeshes())
-            SPK_CORE_LOG_ERROR("Failed to load mesh file: {0}", filepath);
+    void Mesh::LoadMesh(String path)
+    {
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
-        uint32_t vertexCount = 0;
-        uint32_t indexCount = 0;
-
-        m_Submeshes.reserve(scene->mNumMeshes);
-        for (size_t m = 0; m < scene->mNumMeshes; m++)
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
-            aiMesh* mesh = scene->mMeshes[m];
-
-            Submesh& submesh = m_Submeshes.emplace_back();
-            submesh.BaseVertex = vertexCount;
-            submesh.BaseIndex = indexCount;
-            //submesh.MaterialIndex = mesh->mMaterialIndex;
-            submesh.IndexCount = mesh->mNumFaces * 3;
-            submesh.MeshName = mesh->mName.C_Str();
-
-            vertexCount += mesh->mNumVertices;
-            indexCount += submesh.IndexCount;
-
-            SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
-            SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
-
-            // Extract vertices from mesh
-            m_Vertices.reserve(mesh->mNumVertices);
-            for (size_t i = 0; i < mesh->mNumVertices; i++)
-            {
-                Vertex vertex;
-                vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
-                vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
-                vertex.ObjectID = entityID;
-
-                if (mesh->HasTextureCoords(0))
-                    vertex.Texcoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
-                m_Vertices.push_back(vertex);
-            }
-
-            // Extract indices from mesh
-            for (size_t i = 0; i < mesh->mNumFaces; i++)
-            {
-                SPK_CORE_ASSERT(mesh->mFaces[i].mNumIndices == 3, "Must have 3 indices.");
-                Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
-                m_Indices.push_back(index);
-            }
+            SPK_CORE_LOG_ERROR("ERROR::ASSIMP:: {0}", importer.GetErrorString());
+            return;
         }
-        TraverseNodes(scene->mRootNode);
-
-        m_MeshShader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
-
-        VertexBufferLayout layout =
-        {
-            { ShaderDataType::Float3, "a_Position" },
-            { ShaderDataType::Float3, "a_Normal" },
-            { ShaderDataType::Float2, "a_TexCoord" },
-            { ShaderDataType::Int, "a_ObjectID" }
-        };
-
-        m_VertexArray = VertexArray::Create();
-
-        m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
-        m_VertexBuffer->SetLayout(layout);
-
-        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), m_Indices.size() * sizeof(Index));
-
-        m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-        m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-        m_VertexArray->Bind();
-        //DumpVertexBuffer();
+        m_FilePath = path.substr(0, path.find_last_of('/'));
+        ProcessNode(scene->mRootNode, scene);
     }
 
-    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
+    void Mesh::ProcessNode(aiNode* node, const aiScene* scene)
     {
-        glm::mat4 transform = parentTransform * Mat4FromAssimpMat4(node->mTransformation);
         for (uint32_t i = 0; i < node->mNumMeshes; i++)
         {
-            uint32_t mesh = node->mMeshes[i];
-            auto& submesh = m_Submeshes[mesh];
-            submesh.NodeName = node->mName.C_Str();
-            submesh.Transform = transform;
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+            m_Meshes.push_back(ProcessMesh(mesh, scene));
         }
-
         for (uint32_t i = 0; i < node->mNumChildren; i++)
-            TraverseNodes(node->mChildren[i], transform, level + 1);
+        {
+            ProcessNode(node->mChildren[i], scene);
+        }
     }
 
-    void Mesh::DumpVertexBuffer()
+    Submesh Mesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     {
-        SPK_CORE_LOG_INFO("------------------------------------------------------");
-        SPK_CORE_LOG_INFO("Vertex Buffer Dump");
-        SPK_CORE_LOG_INFO("Mesh: {0}", m_FilePath);
+        Vector<Vertex> vertices;
+        Vector<uint32_t> indices;
+        Vector<TextureStruct> textures;
 
-        for (size_t i = 0; i < m_Vertices.size(); i++)
+        for (uint32_t i = 0; i < mesh->mNumVertices; i++)
         {
-            auto& vertex = m_Vertices[i];
-            SPK_CORE_LOG_INFO("Vertex: {0}", i);
-            SPK_CORE_LOG_INFO("Position: {0}, {1}, {2}", vertex.Position.x, vertex.Position.y, vertex.Position.z);
-            SPK_CORE_LOG_INFO("Normal: {0}, {1}, {2}", vertex.Normal.x, vertex.Normal.y, vertex.Normal.z);
-            SPK_CORE_LOG_INFO("TexCoord: {0}, {1}", vertex.Texcoord.x, vertex.Texcoord.y);
-            SPK_CORE_LOG_INFO("--");
+            Vertex vertex;
+            glm::vec3 vector;
+            vector.x = mesh->mVertices[i].x;
+            vector.y = mesh->mVertices[i].y;
+            vector.z = mesh->mVertices[i].z;
+            vertex.Position = vector;
+
+            // normals
+            if (mesh->HasNormals())
+            {
+                vector.x = mesh->mNormals[i].x;
+                vector.y = mesh->mNormals[i].y;
+                vector.z = mesh->mNormals[i].z;
+                vertex.Normal = vector;
+            }
+
+            // texture coordinates
+            if (mesh->mTextureCoords[0])
+            {
+                glm::vec2 vec;
+                vec.x = mesh->mTextureCoords[0][i].x;
+                vec.y = mesh->mTextureCoords[0][i].y;
+                vertex.TexCoords = vec;
+            }
+            else
+                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+
+            vertices.push_back(vertex);
+        }
+        for (uint32_t i = 0; i < mesh->mNumFaces; i++)
+        {
+            aiFace face = mesh->mFaces[i];
+            for (uint32_t j = 0; j < face.mNumIndices; j++)
+                indices.push_back(face.mIndices[j]);
         }
 
-        SPK_CORE_LOG_INFO("------------------------------------------------------");
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+        // 1. diffuse maps
+        Vector<TextureStruct> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        // 2. specular maps
+        Vector<TextureStruct> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+        return Submesh(vertices, indices, textures);
+    }
+
+    Vector<TextureStruct> Mesh::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const String& typeName)
+    {
+        Vector<TextureStruct> textures;
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+        {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+            bool skip = false;
+            for (unsigned int j = 0; j < m_TexturesLoaded.size(); j++)
+            {
+                if (std::strcmp(m_TexturesLoaded[j].Path.data(), str.C_Str()) == 0)
+                {
+                    textures.push_back(m_TexturesLoaded[j]);
+                    skip = true;
+                    break;
+                }
+            }
+            if (!skip)
+            {
+                TextureStruct texture;
+                texture.ID = TextureFromFile(str.C_Str(), m_FilePath);
+                texture.Type = typeName;
+                texture.Path = str.C_Str();
+                textures.push_back(texture);
+                m_TexturesLoaded.push_back(texture); // add to loaded textures
+            }
+        }
+        return textures;
+    }
+
+    uint32_t TextureFromFile(const char* name, const String& directory, bool gamma)
+    {
+        std::filesystem::path path = directory;
+        auto parentPath = path.parent_path();
+        parentPath /= std::string(name);
+        std::string texturePath = parentPath.string();
+
+        unsigned int textureID;
+        glGenTextures(1, &textureID);
+
+        //stbi_set_flip_vertically_on_load(1);
+        int width, height, nrComponents;
+        unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrComponents, 0);
+        if (data)
+        {
+            GLenum format;
+            if (nrComponents == 1)
+                format = GL_RED;
+            else if (nrComponents == 3)
+                format = GL_RGB;
+            else if (nrComponents == 4)
+                format = GL_RGBA;
+
+            glBindTexture(GL_TEXTURE_2D, textureID);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Texture failed to load at path: " << name << std::endl;
+            stbi_image_free(data);
+        }
+
+        return textureID;
     }
 }

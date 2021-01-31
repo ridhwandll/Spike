@@ -53,9 +53,9 @@ layout(location = 0) out vec4 FragColor;
 in vec3 v_Normal;
 in vec2 v_TexCoord;
 
-uniform sampler2D u_AlbedoTexture;
+uniform sampler2D texture_diffuse1;
 
 void main()
 {
-    FragColor = texture(u_AlbedoTexture, v_TexCoord);//vec4((v_Normal * 0.5 + 0.5), 1.0);/*vec4(1.0f, 0.5f, 0.0f, 1.0f);*///texture(textureDiffuse, TexCoords);
+    FragColor = texture(texture_diffuse1, v_TexCoord);
 }

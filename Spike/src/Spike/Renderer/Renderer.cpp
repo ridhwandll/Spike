@@ -27,8 +27,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "spkpch.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include <glad/glad.h>
 
 namespace Spike
 {
@@ -77,14 +75,11 @@ namespace Spike
 
     void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
     {
-        mesh->m_MeshShader->Bind();
-        mesh->m_MeshShader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+        auto& shader = mesh->GetShader();
+        shader->Bind();
 
-        mesh->m_VertexArray->Bind();
-        for (Submesh& submesh : mesh->m_Submeshes)
-        {
-            mesh->m_MeshShader->SetMat4("u_Transform", transform * submesh.Transform);
-            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
-        }
+        shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+        shader->SetMat4("u_Transform", transform);
+        mesh->Draw();
     }
 }
