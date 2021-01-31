@@ -92,8 +92,20 @@ namespace Spike
 
     void Mesh::Draw()
     {
-        for (uint32_t i = 0; i < m_Meshes.size(); i++)
-            m_Meshes[i].Draw(m_Shader);
+        for (uint32_t i = 0; i < m_Submeshes.size(); i++)
+            m_Submeshes[i].Draw(m_Shader);
+    }
+
+    void Mesh::Reload()
+    {
+        Clear();
+        LoadMesh(m_FilePath);
+    }
+
+    void Mesh::Clear()
+    {
+        m_Submeshes.clear();
+        m_TexturesLoaded.clear();
     }
 
     void Mesh::LoadMesh(String path)
@@ -115,7 +127,7 @@ namespace Spike
         for (uint32_t i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            m_Meshes.push_back(ProcessMesh(mesh, scene));
+            m_Submeshes.push_back(ProcessMesh(mesh, scene));
         }
         for (uint32_t i = 0; i < node->mNumChildren; i++)
         {
@@ -182,12 +194,12 @@ namespace Spike
     Vector<TextureStruct> Mesh::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const String& typeName)
     {
         Vector<TextureStruct> textures;
-        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+        for (uint32_t i = 0; i < mat->GetTextureCount(type); i++)
         {
             aiString str;
             mat->GetTexture(type, i, &str);
             bool skip = false;
-            for (unsigned int j = 0; j < m_TexturesLoaded.size(); j++)
+            for (uint32_t j = 0; j < m_TexturesLoaded.size(); j++)
             {
                 if (std::strcmp(m_TexturesLoaded[j].Path.data(), str.C_Str()) == 0)
                 {
@@ -209,14 +221,20 @@ namespace Spike
         return textures;
     }
 
-    Ref<Texture2D> TextureFromFile(const char* name, const String& directory)
+    Ref<Texture2D> Mesh::TextureFromFile(const char* name, const String& directory)
     {
         std::filesystem::path path = directory;
         auto parentPath = path.parent_path();
         parentPath /= std::string(name);
         std::string texturePath = parentPath.string();
 
-        Ref<Texture2D> texture = Texture2D::Create(texturePath);
+        Ref<Texture2D> texture;
+
+        if (m_FlipTexturesVertically)
+            texture = Texture2D::Create(texturePath, true);
+        else
+            texture = Texture2D::Create(texturePath, false);
+
         return texture;
     }
 }

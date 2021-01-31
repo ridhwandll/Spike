@@ -55,4 +55,17 @@ namespace Spike
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
+
+    Ref<Texture2D> Texture2D::Create(const String& path, bool flipVertically)
+    {
+        switch (Renderer::GetAPI())
+        {
+        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+        case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path, flipVertically);
+        }
+
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
+    }
+
 }

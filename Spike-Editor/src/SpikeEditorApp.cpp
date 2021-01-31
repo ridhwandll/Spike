@@ -36,7 +36,6 @@ namespace Spike {
         SpikeEditor()
             :Application("Spike Editor")
         {
-            SetAppIcon("Resources/Branding/Spike.png");
             PushLayer(new EditorLayer());
         }
 

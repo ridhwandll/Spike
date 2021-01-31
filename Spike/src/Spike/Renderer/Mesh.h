@@ -77,14 +77,20 @@ namespace Spike
     public:
         Mesh(const String& path);
         void Draw();
-        String m_FilePath;
-
+        void Reload();
         Ref<Shader>& GetShader() { return m_Shader; }
+        void Clear();
+
+    public:
+        String m_FilePath;
+        bool m_FlipTexturesVertically = false;
     private:
-        Vector<Submesh> m_Meshes;
+        Vector<Submesh> m_Submeshes;
         Vector<TextureStruct> m_TexturesLoaded;
         Ref<Shader> m_Shader;
 
+    private:
+        Ref<Texture2D> TextureFromFile(const char* name, const String& directory);
         void LoadMesh(String path);
         void ProcessNode(aiNode* node, const aiScene* scene);
         Submesh ProcessMesh(aiMesh* mesh, const aiScene* scene);

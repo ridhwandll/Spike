@@ -98,9 +98,10 @@ namespace Spike
 
         UUID GetUUID() { return (GetComponent<IDComponent>().ID); }
         UUID GetSceneUUID() { return m_Scene->GetUUID(); }
+    public:
+        Scene* m_Scene = nullptr;
     private:
         entt::entity m_EntityHandle{ entt::null };
-        Scene* m_Scene = nullptr;
         friend class Scene;
         friend class ScriptEngine;
     };
