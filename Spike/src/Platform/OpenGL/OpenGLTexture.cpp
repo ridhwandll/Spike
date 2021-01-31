@@ -123,4 +123,10 @@ namespace Spike
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
+
+    void OpenGLTexture2D::ActivateSlot(uint32_t slot)
+    {
+        glActiveTexture(GL_TEXTURE0 + slot);
+    }
+
 }

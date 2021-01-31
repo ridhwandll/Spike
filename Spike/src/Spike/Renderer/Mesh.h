@@ -49,7 +49,7 @@ namespace Spike
 
     struct TextureStruct
     {
-        uint32_t ID;
+        Ref<Texture> _Texture;
         String Type;
         String Path;
     };

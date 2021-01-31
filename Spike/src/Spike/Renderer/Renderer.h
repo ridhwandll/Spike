@@ -46,6 +46,7 @@ namespace Spike
 
         static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform);
         static void Submit(Ref<Shader> shader, Ref<VertexArray> vertexArray, const glm::mat4& transform);
+        static void Submit(Ref<VertexArray> vertexArray, uint32_t size);
 
         static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:

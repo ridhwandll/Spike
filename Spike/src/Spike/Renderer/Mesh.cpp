@@ -26,8 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Renderer/Mesh.h"
-#include <stb_image.h>
-#include <glad/glad.h>
+#include "Renderer.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -47,7 +46,7 @@ namespace Spike
         uint32_t specularNr = 1;
         for (uint32_t i = 0; i < m_Textures.size(); i++)
         {
-            glActiveTexture(GL_TEXTURE0 + i);
+            m_Textures[i]._Texture->ActivateSlot(i);
             String number;
             String name = m_Textures[i].Type;
             if (name == "texture_diffuse")
@@ -56,12 +55,11 @@ namespace Spike
                 number = std::to_string(specularNr++);
 
             shader->SetInt((name + number).c_str(), i);
-            glBindTexture(GL_TEXTURE_2D, m_Textures[i].ID);
+            m_Textures[i]._Texture->Bind(i);
         }
-        glActiveTexture(GL_TEXTURE0);
 
         m_VertexArray->Bind();
-        glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+        Renderer::Submit(m_VertexArray, m_Indices.size());
     }
 
     void Submesh::SetupMesh()
@@ -72,8 +70,8 @@ namespace Spike
 
         VertexBufferLayout layout =
         {
-            { ShaderDataType::Float3, "a_Position" },
-            { ShaderDataType::Float3, "a_Normal" },
+            { ShaderDataType::Float3, "a_Position"  },
+            { ShaderDataType::Float3, "a_Normal"    },
             { ShaderDataType::Float2, "a_TexCoords" },
         };
 
@@ -85,7 +83,7 @@ namespace Spike
         m_VertexArray->Unbind();
     }
 
-    uint32_t TextureFromFile(const char* path, const String& directory, bool gamma = false);
+    Ref<Texture2D> TextureFromFile(const char* name, const String& directory);
     Mesh::Mesh(const String& path)
     {
         m_Shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
@@ -201,7 +199,7 @@ namespace Spike
             if (!skip)
             {
                 TextureStruct texture;
-                texture.ID = TextureFromFile(str.C_Str(), m_FilePath);
+                texture._Texture = TextureFromFile(str.C_Str(), m_FilePath);
                 texture.Type = typeName;
                 texture.Path = str.C_Str();
                 textures.push_back(texture);
@@ -211,46 +209,14 @@ namespace Spike
         return textures;
     }
 
-    uint32_t TextureFromFile(const char* name, const String& directory, bool gamma)
+    Ref<Texture2D> TextureFromFile(const char* name, const String& directory)
     {
         std::filesystem::path path = directory;
         auto parentPath = path.parent_path();
         parentPath /= std::string(name);
         std::string texturePath = parentPath.string();
 
-        unsigned int textureID;
-        glGenTextures(1, &textureID);
-
-        //stbi_set_flip_vertically_on_load(1);
-        int width, height, nrComponents;
-        unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrComponents, 0);
-        if (data)
-        {
-            GLenum format;
-            if (nrComponents == 1)
-                format = GL_RED;
-            else if (nrComponents == 3)
-                format = GL_RGB;
-            else if (nrComponents == 4)
-                format = GL_RGBA;
-
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            stbi_image_free(data);
-        }
-        else
-        {
-            std::cout << "Texture failed to load at path: " << name << std::endl;
-            stbi_image_free(data);
-        }
-
-        return textureID;
+        Ref<Texture2D> texture = Texture2D::Create(texturePath);
+        return texture;
     }
 }

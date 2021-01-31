@@ -41,6 +41,7 @@ namespace Spike
         virtual uint32_t GetHeight() const override { return m_Height; }
         virtual uint32_t GetRendererID() const override { return m_RendererID; };
         void SetData(void* data, uint32_t size) override;
+        virtual void ActivateSlot(uint32_t slot) override;
 
         virtual void Bind(uint32_t slot = 0) const override;
         virtual void Unbind() const override;

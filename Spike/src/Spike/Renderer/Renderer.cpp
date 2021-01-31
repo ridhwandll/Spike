@@ -73,6 +73,11 @@ namespace Spike
         RenderCommand::DrawIndexed(vertexArray);
     }
 
+    void Renderer::Submit(Ref<VertexArray> vertexArray, uint32_t size)
+    {
+        RenderCommand::DrawIndexed(vertexArray, size);
+    }
+
     void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
     {
         auto& shader = mesh->GetShader();
