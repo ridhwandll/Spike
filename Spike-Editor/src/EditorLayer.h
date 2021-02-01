@@ -27,6 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include "Spike.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ProfilerPanel.h"
 #include "Spike/Renderer/EditorCamera.h"
 
 namespace Spike
@@ -86,6 +87,7 @@ namespace Spike
 
         //Panel(s)
         SceneHierarchyPanel m_SceneHierarchyPanel;
+        ProfilerPanel m_ProfilerPanel;
     };
 
 }

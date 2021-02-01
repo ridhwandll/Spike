@@ -251,35 +251,9 @@ namespace Spike
         }
 
         m_SceneHierarchyPanel.OnImGuiRender();
-
-        ImGui::Begin("Stats");
-        auto stats = Renderer2D::GetStats();
-        ImGui::Text("Renderer2D Stats:");
-        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        ImGui::Text("Quads: %d", stats.QuadCount);
-        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-        static float frameTimeRefreshTimer = 0.0f;
-        static float ft = 0.0f;
-        static float frameRate = 0.0f;
-        frameTimeRefreshTimer += m_FrameTime;
-        if (frameTimeRefreshTimer >= 0.25f)
-        {
-            ft = m_FrameTime;
-            frameRate = 1.0f / m_FrameTime;
-            frameTimeRefreshTimer = 0.0f;
-        }
-        auto& caps = RendererAPI::GetCapabilities();
-
-        ImGui::Text("Vendor: %s", caps.Vendor.c_str());
-        ImGui::Text("Renderer: %s", caps.Renderer.c_str());
-
-        ImGui::Text("FrameTime: %.3f ms", ft);
-        ImGui::Text("FPS: %d", (int)frameRate);
-        ImGui::End();
+        m_ProfilerPanel.OnImGuiRender();
 
         bool show = true;
-
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
