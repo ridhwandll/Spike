@@ -88,12 +88,12 @@ namespace Spike
         Vector<Submesh> m_Submeshes;
         Vector<TextureStruct> m_TexturesLoaded;
         Ref<Shader> m_Shader;
-
     private:
         Ref<Texture2D> TextureFromFile(const char* name, const String& directory);
         void LoadMesh(String path);
         void ProcessNode(aiNode* node, const aiScene* scene);
         Submesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
         Vector<TextureStruct> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const String& typeName);
+        friend class SceneHierarchyPanel;
     };
 }

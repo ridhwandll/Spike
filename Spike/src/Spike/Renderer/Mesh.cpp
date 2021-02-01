@@ -49,12 +49,12 @@ namespace Spike
             m_Textures[i]._Texture->ActivateSlot(i);
             String number;
             String name = m_Textures[i].Type;
-            if (name == "texture_diffuse")
+            if (name == "TextureAlbedo")
                 number = std::to_string(diffuseNr++);
-            else if (name == "texture_specular")
+            else if (name == "TextureSpecular")
                 number = std::to_string(specularNr++);
 
-            shader->SetInt((name + number).c_str(), i);
+            shader->SetInt("u_Material." + name + number, i);
             m_Textures[i]._Texture->Bind(i);
         }
 
@@ -83,10 +83,9 @@ namespace Spike
         m_VertexArray->Unbind();
     }
 
-    Ref<Texture2D> TextureFromFile(const char* name, const String& directory);
     Mesh::Mesh(const String& path)
     {
-        m_Shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl");
+        m_Shader = Renderer::GetShaderLibrary()->Get("MeshShader");
         LoadMesh(path);
     }
 
@@ -182,10 +181,10 @@ namespace Spike
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
         // 1. diffuse maps
-        Vector<TextureStruct> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        Vector<TextureStruct> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "TextureAlbedo");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         // 2. specular maps
-        Vector<TextureStruct> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        Vector<TextureStruct> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "TextureSpecular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
         return Submesh(vertices, indices, textures);
@@ -231,9 +230,9 @@ namespace Spike
         Ref<Texture2D> texture;
 
         if (m_FlipTexturesVertically)
-            texture = Texture2D::Create(texturePath, true);
+            texture = Texture2D::Create(texturePath, true, true);
         else
-            texture = Texture2D::Create(texturePath, false);
+            texture = Texture2D::Create(texturePath, false, true);
 
         return texture;
     }

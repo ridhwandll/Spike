@@ -30,6 +30,18 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    static GLenum ConvertToOpenGLTextureFormat(TextureFormat format)
+    {
+        switch (format)
+        {
+            case TextureFormat::RGB:     return GL_RGB;
+            case TextureFormat::RGBA:    return GL_RGBA;
+            case TextureFormat::Float16: return GL_RGBA16F;
+        }
+        SPK_INTERNAL_ASSERT("Unknown texture format!");
+        return 0;
+    }
+
     OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
         :m_Width(width), m_Height(height)
     {
@@ -99,7 +111,7 @@ namespace Spike
         stbi_image_free(data);
     }
 
-    OpenGLTexture2D::OpenGLTexture2D(const String& path, bool flipVertically)
+    OpenGLTexture2D::OpenGLTexture2D(const String& path, bool flipVertically, bool srgb)
     {
         int width, height, channels;
 
@@ -109,50 +121,61 @@ namespace Spike
             stbi_set_flip_vertically_on_load(0);
 
         stbi_uc* data = nullptr;
+
+        if (stbi_is_hdr(path.c_str()))
         {
-            data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+            SPK_CORE_LOG_INFO("Loading HDR texture {0}, srgb = {1}", path, srgb);
+            data = (stbi_uc*)stbi_loadf(path.c_str(), &width, &height, &channels, 0);
+            m_IsHDR = true;
+            m_Format = TextureFormat::Float16;
+        }
+        else
+        {
+            SPK_CORE_LOG_INFO("Loading texture {0}, srgb = {1}", path, srgb);
+            data = stbi_load(path.c_str(), &width, &height, &channels, srgb ? STBI_rgb : STBI_rgb_alpha);
+            SPK_CORE_ASSERT(data, "Could not read image!");
+            m_Format = TextureFormat::RGBA;
         }
 
-        if (data == nullptr)
-        {
-            SPK_CORE_LOG_ERROR("Failed to load image!");
-        }
+        if (!data)
+            return;
+
+        m_Loaded = true;
         m_Width = width;
         m_Height = height;
 
-        GLenum internalFormat = 0, dataFormat = 0;
-        if (channels == 4)
+        if (srgb)
         {
-            internalFormat = GL_RGBA8;
-            dataFormat = GL_RGBA;
+            glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+            int levels = Texture::CalculateMipMapCount(m_Width, m_Height);
+            glTextureStorage2D(m_RendererID, levels, GL_SRGB8, m_Width, m_Height);
+            glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+            glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glGenerateTextureMipmap(m_RendererID);
         }
-        else if (channels == 3)
+        else
         {
-            internalFormat = GL_RGB8;
-            dataFormat = GL_RGB;
+            glGenTextures(1, &m_RendererID);
+            glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+            GLenum internalFormat = ConvertToOpenGLTextureFormat(m_Format);
+            GLenum format = srgb ? GL_SRGB8 : (m_IsHDR ? GL_RGB : ConvertToOpenGLTextureFormat(m_Format));
+            GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
+            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, format, type, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
-
-        m_InternalFormat = internalFormat;
-        m_DataFormat = dataFormat;
-
-        if (!(internalFormat & dataFormat))
-        {
-            SPK_CORE_LOG_CRITICAL("Texture format not supported!");
-            return;
-        }
-
-        m_Loaded = true;
-
-        glGenTextures(1, &m_RendererID);
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
-
         stbi_image_free(data);
+
     }
 
     OpenGLTexture2D::~OpenGLTexture2D()

@@ -157,22 +157,6 @@ namespace Spike
             DrawComponents(m_SelectionContext);
         }
         ImGui::End();
-
-        //Material
-        ImGui::Begin("Material");
-        if (m_SelectionContext && m_SelectionContext.HasComponent<MeshComponent>())
-        {
-            auto mesh = m_SelectionContext.GetComponent<MeshComponent>().Mesh;
-            if (mesh)
-            {
-                if (GUI::DrawBoolControl("Flip albedo map vertically", &mesh->m_FlipTexturesVertically, 200.0f))
-                {
-                    mesh->Reload();
-                }
-
-            }
-        }
-        ImGui::End();
     }
 
     void SceneHierarchyPanel::DrawEntityNode(Entity entity)

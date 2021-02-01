@@ -27,16 +27,25 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "spkpch.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
+#include "Spike/Renderer/Shader.h"
 
 namespace Spike
 {
     Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
 
+    struct RendererData
+    {
+        Ref<ShaderLibrary> m_ShaderLibrary;
+    };
+
+    static RendererData s_Data;
+
     void Renderer::Init()
     {
-
+        s_Data.m_ShaderLibrary = Ref<ShaderLibrary>::Create();
         RenderCommand::Init();
         Renderer2D::Init();
+        Renderer::GetShaderLibrary()->Load("Spike-Editor/assets/shaders/MeshShader.glsl");
     }
 
     void Renderer::Shutdown()
@@ -57,6 +66,7 @@ namespace Spike
     void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
     {
         s_SceneData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
+        //TODO camera view pos here of s_SceneData
     }
 
     void Renderer::EndScene()
@@ -86,5 +96,10 @@ namespace Spike
         shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
         shader->SetMat4("u_Transform", transform);
         mesh->Draw();
+    }
+
+    Ref<ShaderLibrary> Renderer::GetShaderLibrary()
+    {
+        return s_Data.m_ShaderLibrary;
     }
 }

@@ -37,10 +37,12 @@ uniform mat4 u_Transform;
 
 out vec3 v_Normal;
 out vec2 v_TexCoord;
+out vec3 v_WorldPos;
 
 void main()
 {
-    gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+    v_WorldPos = vec3(u_Transform * vec4(a_Position, 1.0));
+    gl_Position = u_ViewProjection * vec4(v_WorldPos, 1.0f);
     v_TexCoord = a_TexCoord;
     v_Normal = a_Normal;
 }
@@ -48,14 +50,16 @@ void main()
 #type fragment
 #version 430 core
 
-layout(location = 0) out vec4 FragColor;
-
+out vec4 FragColor;
 in vec3 v_Normal;
+in vec3 v_WorldPos;
 in vec2 v_TexCoord;
 
-uniform sampler2D texture_diffuse1;
+/*Uniforms*/
+uniform sampler2D TextureAlbedo1;
 
+/*Main Function*/
 void main()
 {
-    FragColor = texture(texture_diffuse1, v_TexCoord);
+    FragColor = texture(TextureAlbedo1, v_TexCoord);
 }

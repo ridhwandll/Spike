@@ -31,6 +31,21 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    enum class TextureFormat
+    {
+        None = 0,
+        RGB = 1,
+        RGBA = 2,
+        Float16 = 3
+    };
+
+    enum class TextureWrap
+    {
+        None = 0,
+        Clamp = 1,
+        Repeat = 2
+    };
+
     class Texture : public RefCounted
     {
     public:
@@ -46,6 +61,8 @@ namespace Spike
         virtual void Bind(uint32_t slot = 0) const = 0;
         virtual void Unbind() const = 0;
         virtual bool operator==(const Texture& other) const = 0;
+
+        static uint32_t CalculateMipMapCount(uint32_t width, uint32_t height);
     };
 
     class Texture2D : public Texture
@@ -53,7 +70,7 @@ namespace Spike
     public:
         static Ref<Texture2D> Create(uint32_t width, uint32_t height);
         static Ref<Texture2D> Create(const String& path);
-        static Ref<Texture2D> Create(const String& path, bool flipVertically);
+        static Ref<Texture2D> Create(const String& path, bool flipVertically, bool srgb);
     };
 
 }

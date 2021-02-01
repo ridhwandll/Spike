@@ -56,16 +56,25 @@ namespace Spike
         return nullptr;
     }
 
-    Ref<Texture2D> Texture2D::Create(const String& path, bool flipVertically)
+    Ref<Texture2D> Texture2D::Create(const String& path, bool flipVertically, bool srgb)
     {
         switch (Renderer::GetAPI())
         {
         case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path, flipVertically);
+        case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path, flipVertically, srgb);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
+    }
+
+    uint32_t Texture::CalculateMipMapCount(uint32_t width, uint32_t height)
+    {
+        uint32_t levels = 1;
+        while ((width | height) >> levels)
+            levels++;
+
+        return levels;
     }
 
 }

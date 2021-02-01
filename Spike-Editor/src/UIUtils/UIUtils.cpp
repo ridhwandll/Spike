@@ -39,9 +39,9 @@ namespace Spike::GUI
         ImGui::PushID(label);
 
         if (!foundScript && value != "SpikeNull")
-            ImGui::TextColored({ 0.9, 0.1f, 0.1f, 1.0f }, ICON_FK_TIMES" Not Connected with ScriptEngine");
+            ImGui::TextColored({ 0.9f, 0.1f, 0.1f, 1.0f }, ICON_FK_TIMES" Not Connected with ScriptEngine");
         if (value == "SpikeNull")
-            ImGui::TextColored({ 1.0, 1.0f, 0.0f, 1.0f }, ICON_FK_MINUS_SQUARE" SpikeNull is used");
+            ImGui::TextColored({ 1.0f, 1.0f, 0.0f, 1.0f }, ICON_FK_MINUS_SQUARE" SpikeNull is used");
         if (foundScript && value != "SpikeNull")
             ImGui::TextColored({ 0.1f, 0.9f, 0.1f, 1.0f }, ICON_FK_CHECK" Connected with ScriptEngine");
 

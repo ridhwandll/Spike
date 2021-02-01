@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Renderer/Texture.h"
+#include "Spike/Core/Buffer.h"
 #include <glad/glad.h>
 
 namespace Spike
@@ -35,7 +36,7 @@ namespace Spike
     public:
         OpenGLTexture2D(uint32_t width, uint32_t height);
         OpenGLTexture2D(const String& path);
-        OpenGLTexture2D(const String& path, bool flipVertically);
+        OpenGLTexture2D(const String& path, bool flipVertically, bool srgb);
         virtual ~OpenGLTexture2D();
 
         virtual uint32_t GetWidth() const override { return m_Width; }
@@ -57,5 +58,10 @@ namespace Spike
         uint32_t m_Width, m_Height;
         RendererID m_RendererID;
         GLenum m_InternalFormat, m_DataFormat;
+
+        TextureFormat m_Format;
+        TextureWrap m_Wrap = TextureWrap::Clamp;
+        bool m_IsHDR = false;
+        bool m_Locked = false;
     };
 }

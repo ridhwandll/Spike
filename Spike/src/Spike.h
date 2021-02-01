@@ -55,5 +55,3 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/SubTexture2D.h"
 #include "Spike/Renderer/VertexArray.h"
 
-#include "Spike/Renderer/OrthographicCamera.h"
-
