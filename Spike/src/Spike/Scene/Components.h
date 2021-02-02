@@ -129,7 +129,7 @@ namespace Spike
         MeshComponent(const MeshComponent&) = default;
 
         void SetFilePath(String& path) { MeshFilepath = path; }
-        void Reset() { Mesh = nullptr; }
+        void Reset() { Mesh = nullptr; MeshFilepath.clear(); }
     };
 
     struct ScriptComponent

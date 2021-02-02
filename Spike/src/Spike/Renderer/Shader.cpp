@@ -31,27 +31,19 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    Vector<Ref<Shader>> Shader::s_AllShaders;
+
     Ref<Shader> Shader::Create(const String& filepath)
     {
-        switch (Renderer::GetAPI())
-        {
-        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(filepath);
-        }
-
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
-    }
-    Ref<Shader> Shader::Create(const String& name, const String& vertexSrc, const String& fragmentSrc)
-    {
+        Ref<Shader> shader = nullptr;
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(name, vertexSrc, fragmentSrc);
+            case RendererAPI::API::OpenGL:  shader = Ref<OpenGLShader>::Create(filepath);
         }
-
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
+        s_AllShaders.push_back(shader);
+        return shader;
     }
 
     void ShaderLibrary::Add(const String& name, const Ref<Shader>& shader)

@@ -35,11 +35,13 @@ namespace Spike
     class Shader : public RefCounted
     {
     public:
+        using ShaderReloadedCallback = std::function<void()>;
         virtual ~Shader() = default;
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
 
+        /* [Spike] Shader uniform setters, without and materials... just in case if we need it, we can use it [Spike] */
         virtual void SetInt(const String& name, int value) = 0;
         virtual void SetIntArray(const String& name, int* value, uint32_t count) = 0;
         virtual void SetFloat(const String& name, float value) = 0;
@@ -48,11 +50,16 @@ namespace Spike
         virtual void SetFloat4(const String& name, const glm::vec4& value) = 0;
         virtual void SetMat4(const String& name, const glm::mat4& value) = 0;
 
+        virtual void AddShaderReloadedCallback(const ShaderReloadedCallback& callback) = 0;
+        virtual void Load(const String& source) = 0;
+        virtual void Reload() = 0;
+        virtual void DumpShaderData() = 0;
         virtual const String& GetName() const = 0;
 
         static Ref<Shader> Create(const String& filepath);
-        static Ref<Shader> Create(const String& name, const String& vertexSrc, const String& fragmentSrc);
+        static Vector<Ref<Shader>> s_AllShaders; //TODO: Move to asset manager!
     };
+
     class ShaderLibrary : public RefCounted
     {
     public:

@@ -424,6 +424,11 @@ namespace Spike
         {
             ImGui::Text("File Path");
             ImGui::SameLine();
+            if (component.Mesh)
+                ImGui::InputText("##meshfilepath", (char*)component.Mesh->m_FilePath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+            else
+                ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
+
             if (ImGui::Button("Open Mesh", ImVec2(100, 20)))
             {
                 String file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
@@ -433,21 +438,29 @@ namespace Spike
                     component.SetFilePath(file);
                 }
             }
-            ImGui::SameLine();
-
-            if (ImGui::Button("Remove Mesh", ImVec2(100, 20)))
-            {
-                if (component.Mesh)
-                    component.Reset();
-            }
-
-            ImGui::PushItemWidth(ImGui::GetWindowWidth() - 50);
-
             if (component.Mesh)
-                ImGui::InputText("##meshfilepath", (char*)component.Mesh->m_FilePath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
-            else
-                ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
-            ImGui::PopItemWidth();
+            {
+                ImGui::SameLine();
+                bool remove = false;
+                if (ImGui::Button("Remove Mesh", ImVec2(100, 20)))
+                {
+                    component.Reset();
+                    remove = true;
+                }
+                ImGui::SameLine();
+
+                if (!remove)
+                {
+                    if (ImGui::Button("Reload Mesh"))
+                        component.Mesh->Reload();
+
+                    if (GUI::DrawBoolControl("Flip DiffuseMap vertically", &component.Mesh->m_FlipTexturesVertically, 200.0f))
+                        component.Mesh->Reload();
+
+                    if (GUI::DrawBoolControl("SRGB", &component.Mesh->m_SRGB, 200.0f))
+                        component.Mesh->Reload();
+                }
+            }
         });
 
         /* [Spike] Yeah, this needs to be mutable [Spike] */

@@ -44,7 +44,6 @@ namespace Spike
     {
         s_Data.m_ShaderLibrary = Ref<ShaderLibrary>::Create();
         RenderCommand::Init();
-        Renderer2D::Init();
         Renderer::GetShaderLibrary()->Load("Spike-Editor/assets/shaders/MeshShader.glsl");
     }
 

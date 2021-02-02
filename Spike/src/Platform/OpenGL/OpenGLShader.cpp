@@ -1,33 +1,31 @@
+
 /*
                                SPIKE ENGINE
                This file is licensed under the SPIKE LICENSE
                           --Spike Source Code--
-
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
-
 File Name      : OpenGLShader
 File Type      : cpp
 File created on: 2021/01/09
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
- 
+
 0.This software is provided 'AS-IS', without any express or implied warranty.
   In no event will the authors or contributors be held liable for any damages
   arising from the use of this software.
-
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
+
 2.You MUST NOT change or alter this file. This excludes the contributions done
   by people. Changing this file is PERFECTLY LEGAL if you are contributing.
-
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
 #include "OpenGLShader.h"
 #include <glad/glad.h>
-#include "glm/gtc/type_ptr.hpp"
+#include <glm/gtc/type_ptr.hpp>
+#include "Panels/ConsolePanel.h"
 
 namespace Spike
 {
@@ -41,26 +39,43 @@ namespace Spike
     }
 
     OpenGLShader::OpenGLShader(const String& filepath)
+        :m_Filepath(filepath)
     {
-        String source = ReadFile(filepath);
-        auto shaderSources = PreProcess(source);
-        Compile(shaderSources);
-
         // Extract name from the filepath
         auto lastSlash = filepath.find_last_of("/\\");
         lastSlash = lastSlash == String::npos ? 0 : lastSlash + 1;
         auto lastDot = filepath.rfind('.');
         auto count = lastDot == String::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
         m_Name = filepath.substr(lastSlash, count);
+        Reload();
     }
 
-    OpenGLShader::OpenGLShader(const String& name, const String& vertexSrc, const String& fragmentSrc)
-        :m_Name(name)
+    void OpenGLShader::Reload()
     {
-        std::unordered_map<GLenum, String> sources;
-        sources[GL_VERTEX_SHADER] = vertexSrc;
-        sources[GL_FRAGMENT_SHADER] = fragmentSrc;
-        Compile(sources);
+        std::string source = ReadFile(m_Filepath);
+        Load(source);
+    }
+
+    void OpenGLShader::Load(const std::string& source)
+    {
+        m_ShaderSource = PreProcess(source);
+
+        if (m_RendererID)
+            glDeleteProgram(m_RendererID);
+
+        Compile();
+        if (m_Loaded)
+        {
+            for (auto& callback : m_ShaderReloadedCallbacks)
+                callback();
+        }
+
+        m_Loaded = true;
+    }
+
+    void OpenGLShader::AddShaderReloadedCallback(const ShaderReloadedCallback& callback)
+    {
+        m_ShaderReloadedCallbacks.push_back(callback);
     }
 
     OpenGLShader::~OpenGLShader()
@@ -111,13 +126,13 @@ namespace Spike
         return shaderSources;
     }
 
-    void OpenGLShader::Compile(const std::unordered_map<GLenum, String>& shaderSources)
+    void OpenGLShader::Compile()
     {
         GLuint program = glCreateProgram();
         SPK_CORE_ASSERT(shaderSources.size() <= 2, "We only support two shaders for now.");
         std::array<GLenum, 2> glShaderIDs;
         int glShaderIDIndex = 0;
-        for (auto& keyvalue : shaderSources)
+        for (auto& keyvalue : m_ShaderSource)
         {
             GLenum type = keyvalue.first;
             const String& source = keyvalue.second;
@@ -160,7 +175,7 @@ namespace Spike
 
             glDeleteProgram(program);
 
-            for(auto id : glShaderIDs)
+            for (auto id : glShaderIDs)
                 glDeleteShader(id);
             SPK_CORE_LOG_CRITICAL("{0}", infoLog.data());
             SPK_INTERNAL_ASSERT("Shader link failure!");
@@ -265,5 +280,51 @@ namespace Spike
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+
+    void OpenGLShader::DumpShaderData()
+    {
+        auto console = Console::Get();
+        GLint i;
+        GLint count;
+
+        GLint size; // size of the variable
+        GLenum type; // type of the variable (float, vec3 or mat4, etc)
+
+        const GLsizei bufSize = 50; // maximum name length
+        GLchar name[bufSize]; // variable name in GLSL
+        GLsizei length; // name length
+
+        glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTES, &count);
+        SPK_LOG_INFO("==========SPIKE-ENGINE==========");
+        SPK_LOG_INFO("========== {0} ==========", this->GetName());
+        SPK_LOG_INFO("====ATTRIBUTES====");
+        SPK_LOG_INFO("Active Attributes: {0}", count);
+
+        console->Print("==========SPIKE-ENGINE==========");
+        console->Print("========== " + this->GetName() + " ==========");
+        console->Print("====ATTRIBUTES====");
+        console->Print("Active Attributes " + std::to_string(count));
+
+        for (i = 0; i < count; i++)
+        {
+            glGetActiveAttrib(m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
+            SPK_LOG_INFO("Attribute {0} Type: {1} Name: {2}", i, type, name);
+            console->Print("Attribute " + std::to_string(i) + " Type: " + std::to_string(type) + " Name: " + name);
+        }
+
+        glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &count);
+        SPK_LOG_INFO("====UNIFORMS====");
+        SPK_LOG_INFO("Active Uniforms: {0}", count);
+
+        console->Print("====UNIFORMS====");
+        console->Print("Active Uniforms: " + std::to_string(count));
+
+        for (i = 0; i < count; i++)
+        {
+            glGetActiveUniform(m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
+            SPK_LOG_INFO("Uniform {0} Type: {1} Name: {2}", i, type, name);
+            console->Print("Uniform " + std::to_string(i) + " Type: " + std::to_string(type) + " Name: " + name);
+        }
     }
 }

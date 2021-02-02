@@ -82,10 +82,10 @@ namespace Spike
         m_VertexArray->SetIndexBuffer(m_IndexBuffer);
         m_VertexArray->Unbind();
     }
-
     Mesh::Mesh(const String& path)
     {
         m_Shader = Renderer::GetShaderLibrary()->Get("MeshShader");
+        m_Shader->AddShaderReloadedCallback([]() { SPK_CORE_LOG_INFO("MeshShader was reloaded!"); });
         LoadMesh(path);
     }
 
@@ -104,7 +104,7 @@ namespace Spike
     void Mesh::Clear()
     {
         m_Submeshes.clear();
-        m_TexturesLoaded.clear();
+        m_TexturesCache.clear();
     }
 
     void Mesh::LoadMesh(String path)
@@ -198,11 +198,11 @@ namespace Spike
             aiString str;
             mat->GetTexture(type, i, &str);
             bool skip = false;
-            for (uint32_t j = 0; j < m_TexturesLoaded.size(); j++)
+            for (uint32_t j = 0; j < m_TexturesCache.size(); j++)
             {
-                if (std::strcmp(m_TexturesLoaded[j].Path.data(), str.C_Str()) == 0)
+                if (std::strcmp(m_TexturesCache[j].Path.data(), str.C_Str()) == 0)
                 {
-                    textures.push_back(m_TexturesLoaded[j]);
+                    textures.push_back(m_TexturesCache[j]);
                     skip = true;
                     break;
                 }
@@ -214,7 +214,7 @@ namespace Spike
                 texture.Type = typeName;
                 texture.Path = str.C_Str();
                 textures.push_back(texture);
-                m_TexturesLoaded.push_back(texture); // add to loaded textures
+                m_TexturesCache.push_back(texture); // add to loaded textures
             }
         }
         return textures;
@@ -230,9 +230,9 @@ namespace Spike
         Ref<Texture2D> texture;
 
         if (m_FlipTexturesVertically)
-            texture = Texture2D::Create(texturePath, true, true);
+            texture = Texture2D::Create(texturePath, true, m_SRGB);
         else
-            texture = Texture2D::Create(texturePath, false, true);
+            texture = Texture2D::Create(texturePath, false, m_SRGB);
 
         return texture;
     }

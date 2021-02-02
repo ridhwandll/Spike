@@ -26,10 +26,10 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Renderer/Renderer2D.h"
+#include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/VertexArray.h"
 #include "Spike/Renderer/Shader.h"
 #include "Spike/Renderer/RenderCommand.h"
-
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Spike
@@ -116,6 +116,7 @@ namespace Spike
             samplers[i] = i;
 
         s_Data.TextureShader = Shader::Create("Spike-Editor/assets/shaders/Texture.glsl");
+        Renderer::GetShaderLibrary()->Add(s_Data.TextureShader);
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 

@@ -45,7 +45,7 @@ namespace Spike
         static Console* Get();
 
         void OnImGuiRender();
-        void Print(const String& message, LogLevel level = LogLevel::LVL_DEBUG);
+        void Print(const String& message, LogLevel level = LogLevel::LVL_INFO);
 
     private:
         Console();

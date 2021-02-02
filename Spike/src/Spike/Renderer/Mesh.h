@@ -84,9 +84,10 @@ namespace Spike
     public:
         String m_FilePath;
         bool m_FlipTexturesVertically = false;
+        bool m_SRGB = true;
     private:
         Vector<Submesh> m_Submeshes;
-        Vector<TextureStruct> m_TexturesLoaded;
+        Vector<TextureStruct> m_TexturesCache;
         Ref<Shader> m_Shader;
     private:
         Ref<Texture2D> TextureFromFile(const char* name, const String& directory);

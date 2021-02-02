@@ -328,6 +328,26 @@ namespace Spike
         ImGui::End();
         ImGui::PopStyleColor(3);
 
+        ImGui::Begin("Renderer");
+        if (ImGui::TreeNode("Shaders"))
+        {
+            auto& shaders = Shader::s_AllShaders;
+            for (auto& shader : shaders)
+            {
+                if (ImGui::TreeNode(shader->GetName().c_str()))
+                {
+                    if (ImGui::Button("Reload"))
+                        shader->Reload();
+                    ImGui::SameLine();
+                    if (ImGui::Button("Dump Shader Data"))
+                        shader->DumpShaderData();
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::End();
+
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
         ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
         auto viewportOffset = ImGui::GetCursorPos();
