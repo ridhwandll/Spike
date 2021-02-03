@@ -40,7 +40,7 @@ namespace Spike
 
     static void GLFWErrorCallback(int error, const char* description)
     {
-        SPK_CORE_LOG_ERROR("GLFW Error ({0}): {1}", error, description);
+        SPK_CORE_LOG_ERROR("GLFW Error (%d): %s", error, description);
     }
 
     Window* Window::Create(const WindowProps& props)

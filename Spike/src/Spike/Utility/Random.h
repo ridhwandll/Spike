@@ -40,7 +40,7 @@ namespace Spike
                 if (min > max)
                 {
                     std::swap(min, max);
-                    SPK_CORE_LOG_WARN("Minimum is greater than maximum in {0}", __FUNCTION__);
+                    SPK_CORE_LOG_WARN("Minimum is greater than maximum in %s", __FUNCTION__);
                 }
 
                 std::uniform_int_distribution<> distribution(min, max);
@@ -53,7 +53,7 @@ namespace Spike
                 if (min > max)
                 {
                     std::swap(min, max);
-                    SPK_CORE_LOG_WARN("Minimum is greater than maximum in {0}", __FUNCTION__);
+                    SPK_CORE_LOG_WARN("Minimum is greater than maximum in %s", __FUNCTION__);
                 }
 
                 std::uniform_real_distribution<T> distribution(min, max);
@@ -66,7 +66,7 @@ namespace Spike
                 if (min > max)
                 {
                     std::swap(min, max);
-                    SPK_CORE_LOG_WARN("Minimum is greater than maximum in {0}", __FUNCTION__);
+                    SPK_CORE_LOG_WARN("Minimum is greater than maximum in %s", __FUNCTION__);
                 }
 
                 std::uniform_real_distribution<T> distribution(min, max);
@@ -83,7 +83,7 @@ namespace Spike
 
             if constexpr (!std::is_same_v<T, bool> || !std::is_same_v<T, int> || !std::is_same_v<T, float> || !std::is_same_v<T, double>)
             {
-                SPK_INTERNAL_ASSERT("Given data type in LERandom is not supported!");
+                SPK_INTERNAL_ASSERT("Given data type in SPKRandom is not supported!");
                 return -1;
             }
         }

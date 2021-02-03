@@ -95,7 +95,7 @@ namespace Spike
         }
         else
         {
-            SPK_CORE_LOG_CRITICAL("Could not open file path \"{0}\"", filepath);
+            SPK_CORE_LOG_CRITICAL("Could not open file path \"%s\"", filepath.c_str());
         }
         return result;
     }
@@ -128,7 +128,7 @@ namespace Spike
     void OpenGLShader::Compile()
     {
         GLuint program = glCreateProgram();
-        SPK_CORE_ASSERT(shaderSources.size() <= 2, "We only support two shaders for now.");
+        SPK_CORE_ASSERT(m_ShaderSource.size() <= 2, "We only support two shaders for now.");
         std::array<GLenum, 2> glShaderIDs;
         int glShaderIDIndex = 0;
         for (auto& keyvalue : m_ShaderSource)
@@ -153,7 +153,7 @@ namespace Spike
                 glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
                 glDeleteShader(shader);
 
-                SPK_CORE_LOG_CRITICAL("{0}", infoLog.data());
+                SPK_CORE_LOG_CRITICAL("%s", infoLog.data());
                 SPK_INTERNAL_ASSERT("Shader compilation failure!");
                 break;
             }
@@ -176,7 +176,7 @@ namespace Spike
 
             for (auto id : glShaderIDs)
                 glDeleteShader(id);
-            SPK_CORE_LOG_CRITICAL("{0}", infoLog.data());
+            SPK_CORE_LOG_CRITICAL("%s", infoLog.data());
             SPK_INTERNAL_ASSERT("Shader link failure!");
         }
         for (auto id : glShaderIDs)
@@ -282,30 +282,20 @@ namespace Spike
         SPK_CORE_LOG_INFO("====ATTRIBUTES====");
         SPK_CORE_LOG_INFO("Active Attributes: %d", count);
 
-        console->Print("==========SPIKE-ENGINE==========");
-        console->Print("========== " + this->GetName() + " ==========");
-        console->Print("====ATTRIBUTES====");
-        console->Print("Active Attributes " + std::to_string(count));
-
         for (i = 0; i < count; i++)
         {
             glGetActiveAttrib(m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
             SPK_CORE_LOG_INFO("Attribute %d Type: %d Name: %s", i, type, name);
-            console->Print("Attribute " + std::to_string(i) + " Type: " + std::to_string(type) + " Name: " + name);
         }
 
         glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &count);
         SPK_CORE_LOG_INFO("====UNIFORMS====");
         SPK_CORE_LOG_INFO("Active Uniforms: %d", count);
 
-        console->Print("====UNIFORMS====");
-        console->Print("Active Uniforms: " + std::to_string(count));
-
         for (i = 0; i < count; i++)
         {
             glGetActiveUniform(m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
             SPK_CORE_LOG_INFO("Uniform #%d Type: %d Name: %s", i, type, name);
-            console->Print("Uniform " + std::to_string(i) + " Type: " + std::to_string(type) + " Name: " + name);
         }
     }
 }

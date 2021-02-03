@@ -67,7 +67,8 @@ namespace Spike
         }
 
         ImGui::SameLine();
-
+        GUI::DrawColorChangingToggleButton(ICON_FK_PAPERCLIP, m_DisabledColor, m_EnabledColor, m_TraceColor, &m_TraceEnabled);
+        ImGui::SameLine();
         GUI::DrawColorChangingToggleButton(ICON_FK_INFO_CIRCLE, m_DisabledColor, m_EnabledColor, m_InfoColor, &m_InfoEnabled);
         ImGui::SameLine();
         GUI::DrawColorChangingToggleButton(ICON_FK_BUG, m_DisabledColor, m_EnabledColor, m_DebugColor, &m_DebugEnabled);
@@ -82,42 +83,50 @@ namespace Spike
         {
             switch (itr->first)
             {
-                case LogLevel::LVL_INFO:
+            case Severity::Trace:
+            {
+                if (m_TraceEnabled)
+                {
+                    ImGui::TextColored(m_TraceColor, (ICON_FK_PAPERCLIP" " + itr->second).c_str());
+                }
+                break;
+            }
+            case Severity::Info:
                 {
                     if (m_InfoEnabled)
                     {
-                        ImGui::TextColored(m_InfoColor, (ICON_FK_INFO_CIRCLE" [INFO] " + itr->second).c_str());
+                        ImGui::TextColored(m_InfoColor, (ICON_FK_INFO_CIRCLE" " + itr->second).c_str());
                     }
                     break;
                 }
-                case LogLevel::LVL_DEBUG:
+            case Severity::Debug:
                 {
                     if (m_DebugEnabled)
                     {
-                        ImGui::TextColored(m_DebugColor, (ICON_FK_BUG" [DEBUG] " + itr->second).c_str());
+                        ImGui::TextColored(m_DebugColor, (ICON_FK_BUG" " + itr->second).c_str());
                     }
                     break;
                 }
-                case LogLevel::LVL_WARN:
+            case Severity::Warning:
                 {
                     if (m_WarningEnabled)
                     {
-                        ImGui::TextColored(m_WarnColor, (ICON_FK_EXCLAMATION_TRIANGLE" [WARNING] " + itr->second).c_str());
+                        ImGui::TextColored(m_WarnColor, (ICON_FK_EXCLAMATION_TRIANGLE" " + itr->second).c_str());
                     }
                     break;
                 }
-                case LogLevel::LVL_ERROR:
+            case Severity::Error:
                 {
                     if (m_ErrorEnabled)
                     {
-                        ImGui::TextColored(m_ErrorColor, (ICON_FK_EXCLAMATION_CIRCLE" [ERROR] " + itr->second).c_str());
+                        ImGui::TextColored(m_ErrorColor, (ICON_FK_EXCLAMATION_CIRCLE" " + itr->second).c_str());
                     }
                     break;
                 }
-                case LogLevel::LVL_CRITICAL:
+            case Severity::Critical:
                 {
                     // You can't toggle off the critical errors!
-                    ImGui::TextColored(m_CriticalColor, (ICON_FK_EXCLAMATION_CIRCLE" [CRITICAL] " + itr->second).c_str());
+                    ImGui::TextColored(m_CriticalColor, (ICON_FK_EXCLAMATION_CIRCLE" " + itr->second).c_str());
                     break;
                 }
             }
@@ -131,9 +140,9 @@ namespace Spike
 
     }
 
-    void Console::Print(const String& message, LogLevel level)
+    void Console::Print(const String& message, Severity level)
     {
-        m_Messages.emplace_back(std::pair <LogLevel, String>(level, message));
+        m_Messages.emplace_back(std::pair<Severity, String>(level, message));
     }
 
     void Console::ClearLog()

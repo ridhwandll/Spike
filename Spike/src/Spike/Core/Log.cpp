@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Core/Log.h"
+#include "Panels/ConsolePanel.h"
 #include <cstring>
 #include <ctime>
 #include <filesystem>
@@ -38,12 +39,8 @@ namespace Spike
     std::vector<std::string>     Logger::s_Buffer;
 
     bool Logger::s_LogToFile = true;
-
-#ifdef SPK_DEBUG
     bool Logger::s_LogToConsole = true;
-#else
-    bool Logger::s_LogToConsole = false;
-#endif
+    bool Logger::s_LogToEditorConsole = true;
 
     const char* Logger::s_PreviousFile = "Logs/Log-Previous.txt";
     const char* Logger::s_CurrentFile = "Logs/Log-Current.txt";
@@ -251,7 +248,8 @@ namespace Spike
         for (std::string msg : messages)
         {
             std::string logMsg = "";
-            std::string consoleMsg = "";
+            std::string systemConsoleMsg = "";
+            std::string editorConsoleMsg = "";
 
             constexpr uint32_t timeBufferSize = 16;
             std::time_t        currentTime = std::time(nullptr);
@@ -260,25 +258,33 @@ namespace Spike
             if (Logger::s_LogToFile)
                 logMsg += "[" + std::string(name) + "]";
             if (Logger::s_LogToConsole)
-                consoleMsg += std::string(Logger::GetSeverityConsoleColor(severity)) + "[" + std::string(name) + "]";
+                systemConsoleMsg += std::string(Logger::GetSeverityConsoleColor(severity)) + "[" + std::string(name) + "]";
+            if (Logger::s_LogToEditorConsole)
+                editorConsoleMsg += "[" + std::string(name) + "]";
 
             if (std::strftime(timeBuffer, timeBufferSize, "[%H:%M:%S]", std::localtime(&currentTime)))
             {
                 if (Logger::s_LogToFile)
                     logMsg += timeBuffer;
                 if (Logger::s_LogToConsole)
-                    consoleMsg += timeBuffer;
+                    systemConsoleMsg += timeBuffer;
+                if (Logger::s_LogToEditorConsole)
+                    editorConsoleMsg += timeBuffer;
             }
 
             if (Logger::s_LogToFile)
                 logMsg += " " + std::string(Logger::GetSeverityID(severity)) + ": " + msg + "\n";
             if (Logger::s_LogToConsole)
-                consoleMsg += " " + std::string(Logger::GetSeverityID(severity)) + ": " + msg + +"\033[0m " + "\n";
+                systemConsoleMsg += " " + std::string(Logger::GetSeverityID(severity)) + ": " + msg + +"\033[0m " + "\n";
+            if (Logger::s_LogToEditorConsole)
+                editorConsoleMsg += " " + std::string(Logger::GetSeverityID(severity)) + ": " + msg;
 
             if (Logger::s_LogToFile)
                 Logger::s_Buffer.push_back(logMsg);
             if (Logger::s_LogToConsole)
-                printf("%s", consoleMsg.c_str());
+                printf("%s", systemConsoleMsg.c_str());
+            if (Logger::s_LogToEditorConsole)
+                Console::Get()->Print(editorConsoleMsg, severity);
         }
 
         if (Logger::s_LogToFile)

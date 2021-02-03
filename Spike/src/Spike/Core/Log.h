@@ -72,6 +72,7 @@ namespace Spike
 
         static bool        s_LogToFile;
         static bool        s_LogToConsole;
+        static bool        s_LogToEditorConsole;
         static const char* s_PreviousFile;
         static const char* s_CurrentFile;
     };

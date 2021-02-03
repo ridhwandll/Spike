@@ -131,7 +131,7 @@ namespace Spike
         }
         else
         {
-            SPK_CORE_LOG_INFO("Loading texture {0}, srgb = {1}", path, srgb);
+            SPK_CORE_LOG_INFO("Loading texture %s, srgb = %s", path, srgb ? "true" : "false");
             data = stbi_load(path.c_str(), &width, &height, &channels, srgb ? STBI_rgb : STBI_rgb_alpha);
             SPK_CORE_ASSERT(data, "Could not read image!");
             m_Format = TextureFormat::RGBA;

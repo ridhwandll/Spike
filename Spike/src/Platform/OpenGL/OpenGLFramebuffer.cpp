@@ -218,7 +218,7 @@ namespace Spike
     {
         if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
         {
-            SPK_CORE_LOG_WARN("Attempted to resize framebuffer to (Width: {0}, Height: {1})", width, height);
+            SPK_CORE_LOG_WARN("Attempted to resize framebuffer to (Width: %i, Height: %i)", width, height);
             return;
         }
         m_Specification.Width = width;

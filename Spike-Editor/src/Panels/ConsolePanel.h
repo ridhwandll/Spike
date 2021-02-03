@@ -25,11 +25,12 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
+#include "Spike/Core/Base.h"
+#include "Spike/Core/Log.h"
+#include <imgui.h>
+#include <FontAwesome.h>
 #include <vector>
 #include <string>
-#include <FontAwesome.h>
-#include "Spike/Core/Base.h"
-#include <imgui.h>
 
 namespace Spike
 {
@@ -37,26 +38,21 @@ namespace Spike
     {
     public:
         ~Console();
-        enum class LogLevel
-        {
-            LVL_INFO, LVL_DEBUG, LVL_WARN, LVL_ERROR, LVL_CRITICAL
-        };
-
         static Console* Get();
-
         void OnImGuiRender();
-        void Print(const String& message, LogLevel level = LogLevel::LVL_INFO);
+        void Print(const String& message, Severity level = Severity::Info);
 
     private:
         Console();
         void ClearLog();
     private:
         static Console* m_Console;
-        std::vector<std::pair<LogLevel, String>> m_Messages{};
+        std::vector<std::pair<Severity, String>> m_Messages{};
         bool m_ScrollLockEnabled = true;
 
         //Colors
-        ImVec4 m_InfoColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        ImVec4 m_TraceColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+        ImVec4 m_InfoColor = { 0.1f, 0.9f, 0.1f, 1.0f };
         ImVec4 m_DebugColor = { 0.0f, 0.5f, 1.0f, 1.0f };
         ImVec4 m_WarnColor = { 1.0f, 0.9f, 0.0f, 1.0f };
         ImVec4 m_ErrorColor = { 1.0f, 0.2f, 0.1f, 1.0f };
@@ -66,6 +62,7 @@ namespace Spike
 
         //Bool switches
         bool m_WarningEnabled = true;
+        bool m_TraceEnabled = true;
         bool m_InfoEnabled = true;
         bool m_DebugEnabled = true;
         bool m_ErrorEnabled = true;

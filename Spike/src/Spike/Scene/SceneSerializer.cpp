@@ -348,14 +348,13 @@ namespace Spike
         try { data = YAML::LoadFile(filepath); }
         catch (const YAML::ParserException& ex)
         {
-            Console::Get()->Print("Failed to load.spike file!");
-            SPK_CORE_LOG_ERROR("Failed to load .spike file '{0}'\n     {1}", filepath, ex.what());
+            SPK_CORE_LOG_ERROR("Failed to load .spike file '%s'\n     {1}", filepath.c_str(), ex.what());
         }
         if (!data["Scene"])
             return false;
 
         String sceneName = data["Scene"].as<String>();
-        SPK_CORE_LOG_TRACE("Deserializing scene '{0}'", sceneName);
+        SPK_CORE_LOG_TRACE("Deserializing scene '%s'", sceneName.c_str());
 
         auto entities = data["Entities"];
         if (entities)
@@ -369,7 +368,7 @@ namespace Spike
                 if (tagComponent)
                     name = tagComponent["Tag"].as<String>();
 
-                SPK_CORE_LOG_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
+                SPK_CORE_LOG_TRACE("Deserialized entity with ID = %llu, name = %s", uuid, name.c_str());
 
                 Entity deserializedEntity = m_Scene->CreateEntityWithID(uuid, name);
 
@@ -436,7 +435,7 @@ namespace Spike
                         deserializedEntity.AddComponent<MeshComponent>(mesh);
                     }
 
-                    SPK_CORE_LOG_INFO("  Mesh Asset Path: {0}", meshPath);
+                    SPK_CORE_LOG_INFO("  Mesh Asset Path: %s", meshPath.c_str());
                 }
 
                 auto scriptComponent = entity["ScriptComponent"];
@@ -497,7 +496,7 @@ namespace Spike
             SPK_CORE_LOG_ERROR("The following files could not be loaded:");
             for (auto& path : missingPaths)
             {
-                SPK_CORE_LOG_ERROR("  {0}", path);
+                SPK_CORE_LOG_ERROR("  %s", path.c_str());
             }
 
             return false;

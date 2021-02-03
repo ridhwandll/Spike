@@ -44,31 +44,26 @@ namespace Spike::Scripting
     void Spike_Console_LogInfo(MonoString* message)
     {
         SPK_CORE_LOG_INFO(ConvertMonoStringToCppString(message).c_str());
-        Console::Get()->Print(ConvertMonoStringToCppString(message), Console::LogLevel::LVL_INFO);
     }
 
     void Spike_Console_LogWarn(MonoString* message)
     {
         SPK_CORE_LOG_WARN(ConvertMonoStringToCppString(message).c_str());
-        Console::Get()->Print(ConvertMonoStringToCppString(message), Console::LogLevel::LVL_WARN);
     }
 
     void Spike_Console_LogDebug(MonoString* message)
     {
         SPK_CORE_LOG_DEBUG(ConvertMonoStringToCppString(message).c_str());
-        Console::Get()->Print(ConvertMonoStringToCppString(message), Console::LogLevel::LVL_DEBUG);
     }
 
     void Spike_Console_LogError(MonoString* message)
     {
         SPK_CORE_LOG_ERROR(ConvertMonoStringToCppString(message).c_str());
-        Console::Get()->Print(ConvertMonoStringToCppString(message), Console::LogLevel::LVL_ERROR);
     }
 
     void Spike_Console_LogCritical(MonoString* message)
     {
         SPK_CORE_LOG_CRITICAL(ConvertMonoStringToCppString(message).c_str());
-        Console::Get()->Print(ConvertMonoStringToCppString(message), Console::LogLevel::LVL_CRITICAL);
     }
 
     /* [Spike] INPUT [Spike] */

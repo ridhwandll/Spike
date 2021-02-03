@@ -255,7 +255,7 @@ namespace Spike
         if (ImGui::Button(ICON_FK_REPEAT))
         {
             ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
-            Console::Get()->Print("ScriptEngine reloaded the C# assembly successfully!", Console::LogLevel::LVL_INFO);
+            SPK_CORE_LOG_INFO("ScriptEngine reloaded the C# assembly successfully!");
         }
         if (ImGui::IsItemHovered())
         {
@@ -291,7 +291,7 @@ namespace Spike
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
             {
-                Console::Get()->Print("You can pause the scene only in Playmode!", Console::LogLevel::LVL_WARN);
+                SPK_CORE_LOG_WARN("You can pause the scene only in Playmode!");
             }
         }
         else if (m_SceneState == SceneState::Play)
@@ -477,7 +477,7 @@ namespace Spike
         m_FirstTimeSave = true;
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         UpdateWindowTitle("Untitled Scene");
-        Console::Get()->Print("Successfully created new scene!", Console::LogLevel::LVL_INFO);
+        SPK_CORE_LOG_INFO("Successfully created new scene!");
     }
 
     void EditorLayer::LaunchReadymadeScene()
@@ -501,7 +501,7 @@ namespace Spike
 
             SceneSerializer serializer(m_EditorScene);
             serializer.Deserialize(filepath);
-            Console::Get()->Print("Succesfully deserialized scene!", Console::LogLevel::LVL_INFO);
+            SPK_CORE_LOG_INFO("Succesfully deserialized scene!");
         }
     }
 
@@ -513,7 +513,7 @@ namespace Spike
             m_FirstTimeSave = false;
             SceneSerializer serializer(m_EditorScene);
             serializer.Serialize(filepath);
-            Console::Get()->Print("Scene serialized succesfully!", Console::LogLevel::LVL_INFO);
+            SPK_CORE_LOG_INFO("Scene serialized succesfully!");
         }
     }
 
@@ -527,7 +527,7 @@ namespace Spike
         {
             SceneSerializer serializer(m_EditorScene);
             serializer.Serialize(m_ActiveFilepath);
-            Console::Get()->Print("Scene Saved!", Console::LogLevel::LVL_INFO);
+            SPK_CORE_LOG_INFO("Scene Saved!");
         }
     }
 

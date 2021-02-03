@@ -250,7 +250,7 @@ namespace Spike
                 if (!entity.HasComponent<TransformComponent>())
                     entity.AddComponent<TransformComponent>();
                 else
-                    Console::Get()->Print("This entity already has Transform component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has Transform component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Camera"))
@@ -258,7 +258,7 @@ namespace Spike
                 if (!entity.HasComponent<CameraComponent>())
                     entity.AddComponent<CameraComponent>();
                 else
-                    Console::Get()->Print("This entity already has Camera component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has Camera component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Sprite Renderer"))
@@ -266,7 +266,7 @@ namespace Spike
                 if (!entity.HasComponent<SpriteRendererComponent>())
                     entity.AddComponent<SpriteRendererComponent>();
                 else
-                    Console::Get()->Print("This entity already has Sprite Renderer component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has Sprite Renderer component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Mesh"))
@@ -274,7 +274,7 @@ namespace Spike
                 if (!entity.HasComponent<MeshComponent>())
                     entity.AddComponent<MeshComponent>();
                 else
-                    Console::Get()->Print("This entity already has Mesh component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has Mesh component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("Script"))
@@ -282,7 +282,7 @@ namespace Spike
                 if (!entity.HasComponent<ScriptComponent>())
                     entity.AddComponent<ScriptComponent>();
                 else
-                    Console::Get()->Print("This entity already has Script component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has Script component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("RigidBody2D"))
@@ -290,7 +290,7 @@ namespace Spike
                 if (!entity.HasComponent<RigidBody2DComponent>())
                     entity.AddComponent<RigidBody2DComponent>();
                 else
-                    Console::Get()->Print("This entity already has RigidBody2D component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has RigidBody2D component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("BoxCollider2D"))
@@ -298,7 +298,7 @@ namespace Spike
                 if (!entity.HasComponent<BoxCollider2DComponent>())
                     entity.AddComponent<BoxCollider2DComponent>();
                 else
-                    Console::Get()->Print("This entity already has BoxCollider2D component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has BoxCollider2D component!");
                 ImGui::CloseCurrentPopup();
             }
             if (ImGui::MenuItem("CircleCollider2D"))
@@ -306,7 +306,7 @@ namespace Spike
                 if (!entity.HasComponent<CircleCollider2DComponent>())
                     entity.AddComponent<CircleCollider2DComponent>();
                 else
-                    Console::Get()->Print("This entity already has CircleCollider2D component!", Console::LogLevel::LVL_WARN);
+                    SPK_CORE_LOG_WARN("This entity already has CircleCollider2D component!");
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
