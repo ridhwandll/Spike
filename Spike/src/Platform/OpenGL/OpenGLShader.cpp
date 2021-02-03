@@ -1,4 +1,3 @@
-
 /*
                                SPIKE ENGINE
                This file is licensed under the SPIKE LICENSE
@@ -199,92 +198,74 @@ namespace Spike
         glUseProgram(0);
     }
 
-    void OpenGLShader::SetInt(const String& name, int value)
-    {
-        UploadUniformInt(name, value);
-    }
-
-    void OpenGLShader::SetIntArray(const String& name, int* value, uint32_t count)
-    {
-        UploadUniformIntArray(name, value, count);
-    }
-
-    void OpenGLShader::SetFloat(const String& name, float value)
-    {
-        UploadUniformFloat(name, value);
-    }
-
-    void OpenGLShader::SetFloat2(const String& name, const glm::vec2& value)
-    {
-        UploadUniformFloat2(name, value);
-    }
-
-    void OpenGLShader::SetFloat3(const String& name, const glm::vec3& value)
-    {
-        UploadUniformFloat3(name, value);
-    }
-
-    void OpenGLShader::SetFloat4(const String& name, const glm::vec4& value)
-    {
-        UploadUniformFloat4(name, value);
-    }
-
-    void OpenGLShader::SetMat4(const String& name, const glm::mat4& value)
-    {
-        UploadUniformMat4(name, value);
-    }
+    void OpenGLShader::SetInt       (const String& name, int value)                  { UploadUniformInt     (name, value);        }
+    void OpenGLShader::SetIntArray  (const String& name, int* value, uint32_t count) { UploadUniformIntArray(name, value, count); }
+    void OpenGLShader::SetFloat     (const String& name, float value)                { UploadUniformFloat   (name, value);        }
+    void OpenGLShader::SetFloat2    (const String& name, const glm::vec2& value)     { UploadUniformFloat2  (name, value);        }
+    void OpenGLShader::SetFloat3    (const String& name, const glm::vec3& value)     { UploadUniformFloat3  (name, value);        }
+    void OpenGLShader::SetFloat4    (const String& name, const glm::vec4& value)     { UploadUniformFloat4  (name, value);        }
+    void OpenGLShader::SetMat4      (const String& name, const glm::mat4& value)     { UploadUniformMat4    (name, value);        }
 
     void OpenGLShader::UploadUniformInt(const String& name, int value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform1i(location, value);
+        if (location != -1)
+            glUniform1i(location, value);
     }
 
     void OpenGLShader::UploadUniformIntArray(const String& name, int* value, uint32_t count)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform1iv(location, count, value);
+        if (location != -1)
+            glUniform1iv(location, count, value);
     }
 
     void OpenGLShader::UploadUniformFloat(const String& name, float value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform1f(location, value);
+        if (location != -1)
+            glUniform1f(location, value);
     }
 
     void OpenGLShader::UploadUniformFloat2(const String& name, const glm::vec2& values)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform2f(location, values.x, values.y);
+        if (location != -1)
+            glUniform2f(location, values.x, values.y);
     }
 
     void OpenGLShader::UploadUniformFloat3(const String& name, const glm::vec3& values)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform3f(location, values.x, values.y, values.z);
+        if (location != -1)
+            glUniform3f(location, values.x, values.y, values.z);
     }
 
     void OpenGLShader::UploadUniformFloat4(const String& name, const glm::vec4& values)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniform4f(location, values.x, values.y, values.z, values.w);
+        if (location != -1)
+            glUniform4f(location, values.x, values.y, values.z, values.w);
     }
 
     void OpenGLShader::UploadUniformMat3(const String& name, const glm::mat3& matrix)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+        if (location != -1)
+            glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
     void OpenGLShader::UploadUniformMat4(const String& name, const glm::mat4& matrix)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
+        if (location != -1)
+            glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
     void OpenGLShader::DumpShaderData()
     {
         auto console = Console::Get();
+
         GLint i;
         GLint count;
 

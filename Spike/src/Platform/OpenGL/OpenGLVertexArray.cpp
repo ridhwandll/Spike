@@ -84,7 +84,6 @@ namespace Spike
                 case ShaderDataType::Float2:
                 case ShaderDataType::Float3:
                 case ShaderDataType::Float4:
-                case ShaderDataType::Bool:
                 {
                     glEnableVertexAttribArray(m_VertexBufferIndex);
                     glVertexAttribPointer(m_VertexBufferIndex,
@@ -118,6 +117,7 @@ namespace Spike
                 case ShaderDataType::Int2:
                 case ShaderDataType::Int3:
                 case ShaderDataType::Int4:
+                case ShaderDataType::Bool:
                 {
                     glEnableVertexAttribArray(m_VertexBufferIndex);
                     glVertexAttribIPointer(m_VertexBufferIndex,

@@ -34,7 +34,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    void ProfilerPanel::OnImGuiRender()
+    void ProfilerPanel::OnImGuiRender(Entity& entity)
     {
         float avg = 0.0f;
         const uint32_t size = m_FrameTimes.size();
@@ -67,6 +67,17 @@ namespace Spike
         if (GUI::DrawBoolControl("VSync Enabled", &m_VSync, 130.0f))
             Application::Get().GetWindow().SetVSync(m_VSync);
 
+        if (entity)
+            ImGui::Text("Selected Entity: %s", entity.GetComponent<TagComponent>().Tag.c_str());
+        else
+            ImGui::Text("Selected Entity: None");
+
+        auto& stats = Renderer2D::GetStats();
+        ImGui::Text("Renderer2D");
+        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+        ImGui::Text("Quad Count: %d", stats.QuadCount);
+        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
         ImGui::End();
     }
 

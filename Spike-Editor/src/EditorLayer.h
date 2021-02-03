@@ -73,7 +73,8 @@ namespace Spike
         Ref<Scene> m_EditorScene, m_RuntimeScene;
         EditorCamera m_EditorCamera;
         Entity m_StartupCameraEntity;
-        Entity m_HoveredEntity;
+        Entity m_SelectedEntity;
+
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
         glm::vec2 m_ViewportBounds[2];

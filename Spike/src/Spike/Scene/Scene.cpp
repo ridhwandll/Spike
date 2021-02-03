@@ -126,7 +126,7 @@ namespace Spike
 
     void Scene::OnUpdate(Timestep ts)
     {
-        Physics2D::Simulate();
+        Physics2D::Simulate(ts);
     }
 
     void Scene::OnUpdateRuntime(Timestep ts)
@@ -207,11 +207,7 @@ namespace Spike
                 for (auto entity : group)
                 {
                     auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-                    if (sprite.Texture)
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, sprite.TilingFactor, sprite.Color);
-                    else
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color, (uint32_t)entity);
+                    Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
                 }
 
                 auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
@@ -238,7 +234,7 @@ namespace Spike
                     auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                     if (mesh.Mesh)
                     {
-                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
+                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform(), (int)entity);
                     }
                 }
                 Renderer::EndScene();

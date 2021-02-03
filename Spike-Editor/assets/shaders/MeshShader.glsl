@@ -34,10 +34,12 @@ layout(location = 2) in vec2 a_TexCoord;
 
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Transform;
+uniform int u_EntityID;
 
 out vec3 v_Normal;
 out vec2 v_TexCoord;
 out vec3 v_WorldPos;
+out int v_EntityID;
 
 void main()
 {
@@ -45,15 +47,19 @@ void main()
     gl_Position = u_ViewProjection * vec4(v_WorldPos, 1.0f);
     v_TexCoord = a_TexCoord;
     v_Normal = a_Normal;
+    v_EntityID = u_EntityID;
 }
 
 #type fragment
 #version 450 core
 
 out vec4 FragColor;
+out int entityID;
+
 in vec3 v_Normal;
 in vec3 v_WorldPos;
 in vec2 v_TexCoord;
+in flat int v_EntityID;
 
 /*Uniforms*/
 uniform sampler2D TextureAlbedo1;
@@ -62,4 +68,5 @@ uniform sampler2D TextureAlbedo1;
 void main()
 {
     FragColor = texture(TextureAlbedo1, v_TexCoord);
+    entityID = v_EntityID;
 }

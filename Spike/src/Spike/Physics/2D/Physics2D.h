@@ -47,7 +47,7 @@ namespace Spike
     {
     public:
         static void CreateScene(Scene* scene);
-        static void Simulate();
+        static void Simulate(Timestep ts);
         static void Init();
         static void Shutdown();
 

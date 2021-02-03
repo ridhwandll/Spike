@@ -30,12 +30,12 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Utility/PlatformUtils.h"
 #include "Spike/Math/Math.h"
 #include "Spike/Scripting/ScriptEngine.h"
+#include "UIUtils/UIUtils.h"
 #include <FontAwesome.h>
 #include <imgui/imgui.h>
 #include <ImGuizmo.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Spike/Core/Application.h"
 #pragma warning(push)
 #pragma warning(disable : 4244) //Disable ugly 'C4244' "type conversion" warning!
 
@@ -118,13 +118,13 @@ namespace Spike
             m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
 
-
         // Render
         Renderer2D::ResetStats();
         m_Framebuffer->Bind();
-        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::Clear();
-        m_Framebuffer->Bind();
+
+        m_Framebuffer->ClearAttachment(1, -1);
 
         switch (m_SceneState)
         {
@@ -161,15 +161,11 @@ namespace Spike
         int mouseX = (int)mx;
         int mouseY = (int)my;
 
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x && 
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x &&
             mouseY < (int)m_ViewportSize.y && Input::IsMouseButtonPressed(Mouse::Button0) && !ImGuizmo::IsUsing())
         {
-            int pixelData = 9999999; //TODO: Remove this!! (Come up with a proper way to clear the frame buffer with a value of -1)
-            pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            if (pixelData > 9999999)
-                m_HoveredEntity = Entity();
-            else
-                m_HoveredEntity = Entity((entt::entity)pixelData, m_EditorScene.Raw());
+            auto pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
+            m_SelectedEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_EditorScene.Raw());
         }
         m_Framebuffer->Unbind();
     }
@@ -251,7 +247,7 @@ namespace Spike
         }
 
         m_SceneHierarchyPanel.OnImGuiRender();
-        m_ProfilerPanel.OnImGuiRender();
+        m_ProfilerPanel.OnImGuiRender(m_SelectedEntity);
 
         bool show = true;
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
@@ -297,7 +293,7 @@ namespace Spike
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
             {
-                Console::Get()->Print("You need to be in play mode to pause the scene!", Console::LogLevel::LVL_WARN);
+                Console::Get()->Print("You can pause the scene only in Playmode!", Console::LogLevel::LVL_WARN);
             }
         }
         else if (m_SceneState == SceneState::Play)
@@ -352,15 +348,10 @@ namespace Spike
         ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
         auto viewportOffset = ImGui::GetCursorPos();
 
-
         if (m_SceneState == SceneState::Play)
-        {
             DrawRectAroundWindow({ 1.0f, 1.0f, 0.0f, 1.0f });
-        }
         else if (m_SceneState == SceneState::Pause)
-        {
             DrawRectAroundWindow({ 0.0f, 0.0f, 1.0f, 1.0f });
-        }
 
         m_ViewportFocused = ImGui::IsWindowFocused();
         m_ViewportHovered = ImGui::IsWindowHovered();
@@ -476,10 +467,7 @@ namespace Spike
 
     bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
     {
-        if (e.GetMouseButton() == Mouse::ButtonLeft && !ImGuizmo::IsUsing() && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-        {
-            m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
-        }
+        m_SceneHierarchyPanel.SetSelectedEntity(m_SelectedEntity);
         return false;
     }
 

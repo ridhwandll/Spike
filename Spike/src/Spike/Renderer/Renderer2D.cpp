@@ -41,7 +41,9 @@ namespace Spike
         glm::vec2 TexCoord;
         float TexIndex;
         float TilingFactor;
-        int ObjectID;
+
+        //Editor-Only
+        int EntityID = -1;
     };
 
     struct Renderer2DData
@@ -75,13 +77,14 @@ namespace Spike
         s_Data.QuadVertexArray = VertexArray::Create();
 
         s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
-        s_Data.QuadVertexBuffer->SetLayout({
-            { ShaderDataType::Float3, "a_Position" },
-            { ShaderDataType::Float4, "a_Color" },
-            { ShaderDataType::Float2, "a_TexCoord" },
-            { ShaderDataType::Float, "a_TexIndex" },
-            { ShaderDataType::Float, "a_TilingFactor" },
-            { ShaderDataType::Int, "a_ObjectID" }
+        s_Data.QuadVertexBuffer->SetLayout(
+            {
+            { ShaderDataType::Float3, "a_Position"     },
+            { ShaderDataType::Float4, "a_Color"        }, 
+            { ShaderDataType::Float2, "a_TexCoord"     },
+            { ShaderDataType::Float,  "a_TexIndex"     },
+            { ShaderDataType::Float,  "a_TilingFactor" },
+            { ShaderDataType::Int,    "a_EntityID"     }
             });
         s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
@@ -185,6 +188,14 @@ namespace Spike
         s_Data.Stats.DrawCalls++;
     }
 
+    void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+    {
+        if (src.Texture)
+            DrawQuad(transform, src.Texture, src.TilingFactor, src.Color, entityID);
+        else
+            DrawQuad(transform, src.Color, entityID);
+    }
+
     void Renderer2D::NextBatch()
     {
         Flush();
@@ -217,7 +228,7 @@ namespace Spike
         DrawQuad(transform, texture, tilingFactor, tintColor);
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, uint32_t entityID)
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
     {
         constexpr size_t quadVertexCount = 4;
         const float textureIndex = 0.0f; // White Texture
@@ -234,7 +245,7 @@ namespace Spike
             s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
             s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
             s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-            s_Data.QuadVertexBufferPtr->ObjectID = entityID;
+            s_Data.QuadVertexBufferPtr->EntityID = entityID;
             s_Data.QuadVertexBufferPtr++;
         }
 
@@ -242,7 +253,7 @@ namespace Spike
         s_Data.Stats.QuadCount++;
     }
 
-    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+    void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
     {
         constexpr size_t quadVertexCount = 4;
         constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
@@ -277,6 +288,7 @@ namespace Spike
             s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
             s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
             s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr->EntityID = entityID;
             s_Data.QuadVertexBufferPtr++;
         }
 

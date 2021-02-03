@@ -50,6 +50,30 @@ namespace Spike::GUI
      * This is basically a boolean control. This was made because in ImGui::Checkbox(...) a label is necssary
      * but in this button, no label is necessary. Making it perfect for oneliners. [Spike] */
     void DrawDynamicToggleButton(const char* offLabel, const char* onLabel, const ImVec4& offColor, const ImVec4& onColor, bool* boolToModify);
-
     void DrawColorChangingToggleButton(const char* label, const ImVec4& offBgColor, const ImVec4& onBgColor, const ImVec4& textColor, bool* boolToModify);
+
+    template<typename OnFunction, typename OffFunction>
+    void DrawDynamicSwitch(const char* offLabel, const char* onLabel, OffFunction offFunc, OnFunction onFunc, bool* boolToModify)
+    {
+        if (*boolToModify)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.2f, 0.5f, 0.2f, 1.0f });
+            if (ImGui::Button(onLabel))
+            {
+                offFunc();
+                *boolToModify = false;
+            }
+        }
+        else if (!*boolToModify)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Button, { 0.7f, 0.1f, 0.1f, 1.0f });
+            if (ImGui::Button(offLabel))
+            {
+                onFunc();
+                *boolToModify = true;
+            }
+        }
+        ImGui::PopStyleColor();
+    }
 }
+

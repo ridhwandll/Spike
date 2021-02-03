@@ -93,7 +93,7 @@ namespace Spike
         box2DWorld.World->SetContactListener(&m_ContactListener);
     }
 
-    void Physics2D::Simulate()
+    void Physics2D::Simulate(Timestep ts)
     {
         auto scene = m_Scene->m_Registry.view<Box2DWorldComponent>();
         auto& box2DWorld = m_Scene->m_Registry.get<Box2DWorldComponent>(scene.front()).World;
@@ -115,7 +115,7 @@ namespace Spike
                 body->SetTransform({ transform.Translation.x, transform.Translation.y }, transform.Rotation.z);
             }
 
-            box2DWorld->Step(0.02f, velocityIterations, positionIterations);
+            box2DWorld->Step(ts, velocityIterations, positionIterations);
 
             for (auto entity : view)
             {

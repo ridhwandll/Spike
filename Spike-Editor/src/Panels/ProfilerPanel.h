@@ -29,10 +29,11 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    class Entity;
     class ProfilerPanel
     {
     public:
-        void OnImGuiRender();
+        void OnImGuiRender(Entity& entity);
 
     private:
         float m_Time = 0.0f;

@@ -76,7 +76,7 @@ namespace Spike
     {
     public:
         Mesh(const String& path);
-        void Draw();
+        void Draw(int entityID = -1);
         void Reload();
         Ref<Shader>& GetShader() { return m_Shader; }
         void Clear();

@@ -54,7 +54,7 @@ namespace Spike
             else if (name == "TextureSpecular")
                 number = std::to_string(specularNr++);
 
-            shader->SetInt("u_Material." + name + number, i);
+            shader->SetInt(name + number, i);
             m_Textures[i]._Texture->Bind(i);
         }
 
@@ -89,7 +89,7 @@ namespace Spike
         LoadMesh(path);
     }
 
-    void Mesh::Draw()
+    void Mesh::Draw(int entityID)
     {
         for (uint32_t i = 0; i < m_Submeshes.size(); i++)
             m_Submeshes[i].Draw(m_Shader);

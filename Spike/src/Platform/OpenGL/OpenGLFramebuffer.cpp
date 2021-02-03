@@ -98,6 +98,18 @@ namespace Spike
             }
             return false;
         }
+
+        static GLenum SpikeTextureFormatToOpenGLTextureFormat(FramebufferTextureFormat format)
+        {
+            switch (format)
+            {
+                case FramebufferTextureFormat::None:        return 0;
+                case FramebufferTextureFormat::RGBA8:       return GL_RGBA8;
+                case FramebufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+            }
+            SPK_INTERNAL_ASSERT("Unknown Format!");
+            return 0;
+        }
     }
 
     OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
@@ -223,4 +235,12 @@ namespace Spike
         glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
         return pixelData;
     }
+
+    void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
+    {
+        SPK_INTERNAL_ASSERT(attachmentIndex < m_ColorAttachments.size());
+        auto spec = m_ColorAttachmentSpecs[attachmentIndex];
+        glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::SpikeTextureFormatToOpenGLTextureFormat(spec.TextureFormat), GL_INT, &value);
+    }
+
 }
