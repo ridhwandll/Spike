@@ -35,17 +35,17 @@ namespace Spike
         switch (severity)
         {
         case GL_DEBUG_SEVERITY_HIGH:
-            SPK_CORE_LOG_ERROR("[OpenGL Debug HIGH] {0}", message);
-            SPK_CORE_ASSERT(false, "GL_DEBUG_SEVERITY_HIGH");
+            SPK_CORE_LOG_ERROR("[OpenGL Debug HIGH] %s", message);
+            SPK_INTERNAL_ASSERT("GL_DEBUG_SEVERITY_HIGH");
             break;
         case GL_DEBUG_SEVERITY_MEDIUM:
-            SPK_CORE_LOG_WARN("[OpenGL Debug MEDIUM] {0}", message);
+            SPK_CORE_LOG_WARN("[OpenGL Debug MEDIUM] %s", message);
             break;
         case GL_DEBUG_SEVERITY_LOW:
-            SPK_CORE_LOG_INFO("[OpenGL Debug LOW] {0}", message);
+            SPK_CORE_LOG_INFO("[OpenGL Debug LOW] %s", message);
             break;
         case GL_DEBUG_SEVERITY_NOTIFICATION:
-             SPK_CORE_LOG_TRACE("[OpenGL Debug NOTIFICATION] {0}", message);
+             //SPK_CORE_LOG_TRACE("[OpenGL Debug NOTIFICATION] %s", message);
             break;
         }
     }
@@ -72,7 +72,7 @@ namespace Spike
         GLenum error = glGetError();
         while (error != GL_NO_ERROR)
         {
-            SPK_CORE_LOG_ERROR("OpenGL Error {0}", error);
+            SPK_CORE_LOG_ERROR("OpenGL Error %s", error);
             error = glGetError();
         }
     }

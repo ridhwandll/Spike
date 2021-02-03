@@ -35,7 +35,6 @@ project "Spike"
 	{
 		"src",
 		"../Spike-Editor/src",
-		"vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",

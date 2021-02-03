@@ -47,7 +47,6 @@ target_include_directories(Spike PUBLIC
     "src"
     "../Spike-Editor/src"
     "vendor"
-    "vendor/spdlog/include"
     "vendor/imgui"
     "vendor/assimp/include"
     "vendor/ImGuizmo"

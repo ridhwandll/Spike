@@ -1,7 +1,3 @@
-[submodule "Spike/vendor/spdlog"]
-	path = Spike/vendor/spdlog
-	url = https://github.com/gabime/spdlog
-	branch = v1.x
 [submodule "Spike/vendor/GLFW"]
 	path = Spike/vendor/GLFW
 	url = https://github.com/FahimFuad/glfw.git

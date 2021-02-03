@@ -25,39 +25,85 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Base.h"
-
-#pragma warning(push, 0)
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
-#pragma warning(pop)
+#include "Spike/Core/Base.h"
+#include "Spike/Core/Ref.h"
 
 namespace Spike
 {
-    class  Log
+    enum class Severity
+    {
+        Trace,
+        Info,
+        Debug,
+        Warning,
+        Error,
+        Critical
+    };
+
+    class Logger
     {
     public:
+        Logger(const char* name);
+
+        void Log(Severity severity, const char* format, ...);
+        void LogTrace(const char* format, ...);
+        void LogInfo(const char* format, ...);
+        void LogDebug(const char* format, ...);
+        void LogWarning(const char* format, ...);
+        void LogError(const char* format, ...);
+        void LogCritical(const char* format, ...);
+        static Logger GetCoreLogger() { return s_CoreLogger; };
+    public:
         static void Init();
-        static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-        static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+        static void Shutdown();
+        static void Flush();
+
     private:
-        static std::shared_ptr < spdlog::logger> s_CoreLogger;
-        static std::shared_ptr < spdlog::logger> s_ClientLogger;
+        static uint32_t GetSeverityMaxBufferCount(Severity severity);
+        static const char* GetSeverityID(Severity severity);
+        static const char* GetSeverityConsoleColor(Severity severity);
+        static void Log(const char* name, Severity severity, const char* format, va_list args);
+
+    private:
+        const char* m_Name;
+    private:
+        static Logger s_CoreLogger;
+        static std::vector<std::string> s_Buffer;
+
+        static bool        s_LogToFile;
+        static bool        s_LogToConsole;
+        static const char* s_PreviousFile;
+        static const char* s_CurrentFile;
     };
 }
 
-//Core Log Macros
-#define SPK_CORE_LOG_TRACE(...)    ::Spike::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define SPK_CORE_LOG_DEBUG(...)    ::Spike::Log::GetCoreLogger()->debug(__VA_ARGS__)
-#define SPK_CORE_LOG_INFO(...)     ::Spike::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define SPK_CORE_LOG_WARN(...)     ::Spike::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define SPK_CORE_LOG_ERROR(...)    ::Spike::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define SPK_CORE_LOG_CRITICAL(...) ::Spike::Log::GetCoreLogger()->critical(__VA_ARGS__)
+/* [Spike] Formatters
+*   %c                  Character
+    %d                  Signed integer
+    %e or %E            Scientific notation of floats
+    %f                  Float values
+    %g or %G            Similar as %e or %E
+    %hi                 Signed integer (short)
+    %hu                 Unsigned Integer (short)
+    %i                  Unsigned integer
+    %l or %ld or %li    Long
+    %lf                 Double
+    %Lf                 Long double
+    %lu                 Unsigned int or unsigned long
+    %lli or %lld        Long long
+    %llu                Unsigned long long
+    %o                  Octal representation
+    %p                  Pointer
+    %s                  String
+    %u                  Unsigned int
+    %x or %X            Hexadecimal representation
+    %n                  Prints nothing
+    %%                  Prints % character
+ * [Spike] */
 
-//Client Log Macros
-#define SPK_LOG_TRACE(...)         ::Spike::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define SPK_LOG_DEBUG(...)         ::Spike::Log::GetClientLogger()->debug(__VA_ARGS__)
-#define SPK_LOG_INFO(...)          ::Spike::Log::GetClientLogger()->info(__VA_ARGS__)
-#define SPK_LOG_WARN(...)          ::Spike::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define SPK_LOG_ERROR(...)         ::Spike::Log::GetClientLogger()->error(__VA_ARGS__)
-#define SPK_LOG_CRITICAL(...)      ::Spike::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define SPK_CORE_LOG_TRACE(...)    ::Spike::Logger::GetCoreLogger().LogTrace(__VA_ARGS__)
+#define SPK_CORE_LOG_DEBUG(...)    ::Spike::Logger::GetCoreLogger().LogDebug(__VA_ARGS__)
+#define SPK_CORE_LOG_INFO(...)     ::Spike::Logger::GetCoreLogger().LogInfo(__VA_ARGS__)
+#define SPK_CORE_LOG_WARN(...)     ::Spike::Logger::GetCoreLogger().LogWarning(__VA_ARGS__)
+#define SPK_CORE_LOG_ERROR(...)    ::Spike::Logger::GetCoreLogger().LogError(__VA_ARGS__)
+#define SPK_CORE_LOG_CRITICAL(...) ::Spike::Logger::GetCoreLogger().LogCritical(__VA_ARGS__)

@@ -114,7 +114,7 @@ namespace Spike
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
-            SPK_CORE_LOG_ERROR("ERROR::ASSIMP:: {0}", importer.GetErrorString());
+            SPK_CORE_LOG_ERROR("Assimp Error: %s", importer.GetErrorString());
             return;
         }
         m_FilePath = path.substr(0, path.find_last_of('/'));

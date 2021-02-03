@@ -84,7 +84,6 @@ namespace Spike
         bool m_FirstTimeSave = false;
         int m_GizmoType = -1;
         bool m_GizmoInUse = false;
-        float m_FrameTime = 0.0f;
 
         //Panel(s)
         SceneHierarchyPanel m_SceneHierarchyPanel;

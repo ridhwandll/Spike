@@ -32,9 +32,10 @@ extern Spike::Application* Spike::CreateApplication();
 
 int main(int argc, char** argv)
 {
-    Spike::Log::Init();
+    Spike::Logger::Init();
     auto app = Spike::CreateApplication();
     app->Run();
+    Spike::Logger::Shutdown();
     delete app;
 }
 

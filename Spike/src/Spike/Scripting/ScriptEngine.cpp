@@ -186,9 +186,9 @@ namespace Spike
         MonoAssembly* assembly = LoadAssemblyFromFile(path.c_str());
 
         if (!assembly)
-            SPK_CORE_LOG_CRITICAL("Could not load assembly: {0}", path);
+            SPK_CORE_LOG_CRITICAL("Could not load assembly: %s", path.c_str());
         else
-            SPK_CORE_LOG_INFO("Successfully loaded assembly: {0}", path);
+            SPK_CORE_LOG_INFO("Successfully loaded assembly: %s", path.c_str());
 
         return assembly;
     }

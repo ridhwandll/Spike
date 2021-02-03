@@ -107,7 +107,6 @@ namespace Spike
 
     void EditorLayer::OnUpdate(Timestep ts)
     {
-        m_FrameTime = ts;
         // Resize
         if (FramebufferSpecification spec = m_Framebuffer->GetSpecification();
             m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f && // zero sized framebuffer is invalid
@@ -123,7 +122,6 @@ namespace Spike
         m_Framebuffer->Bind();
         RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::Clear();
-
         m_Framebuffer->ClearAttachment(1, -1);
 
         switch (m_SceneState)
@@ -197,7 +195,7 @@ namespace Spike
             window_flags |= ImGuiWindowFlags_NoBackground;
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+        ImGui::Begin("DockSpace", &dockspaceOpen, window_flags);
         ImGui::PopStyleVar();
 
         if (opt_fullscreen)
