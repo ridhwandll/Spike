@@ -26,7 +26,8 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "OpenGLTexture.h"
-#include "stb_image.h"
+#include "Spike/Core/Vault.h"
+#include <stb_image.h>
 
 namespace Spike
 {
@@ -45,9 +46,9 @@ namespace Spike
     OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
         :m_Width(width), m_Height(height)
     {
+        m_Name = "[Spike] Internal Texture";
         m_InternalFormat = GL_RGBA8;
         m_DataFormat = GL_RGBA;
-
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
@@ -62,6 +63,7 @@ namespace Spike
     OpenGLTexture2D::OpenGLTexture2D(const String& path)
         : m_Path(path)
     {
+        m_Name = Vault::GetNameWithoutExtension(path);
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
         stbi_uc* data = nullptr;
@@ -102,19 +104,24 @@ namespace Spike
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+        GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, type, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         stbi_image_free(data);
     }
 
     OpenGLTexture2D::OpenGLTexture2D(const String& path, bool flipVertically, bool srgb)
+        :m_Path(path)
     {
+        m_Name = Vault::GetNameWithoutExtension(path);
         int width, height, channels;
-
         if (flipVertically)
             stbi_set_flip_vertically_on_load(1);
         else
@@ -131,7 +138,7 @@ namespace Spike
         }
         else
         {
-            SPK_CORE_LOG_INFO("Loading texture %s, srgb = %s", path, srgb ? "true" : "false");
+            SPK_CORE_LOG_INFO("Loading texture %s, srgb = %s", path.c_str(), srgb ? "true" : "false");
             data = stbi_load(path.c_str(), &width, &height, &channels, srgb ? STBI_rgb : STBI_rgb_alpha);
             SPK_CORE_ASSERT(data, "Could not read image!");
             m_Format = TextureFormat::RGBA;
@@ -171,9 +178,8 @@ namespace Spike
             GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, format, type, data);
             glGenerateMipmap(GL_TEXTURE_2D);
-
-            glBindTexture(GL_TEXTURE_2D, 0);
         }
+        glBindTexture(GL_TEXTURE_2D, 0);
         stbi_image_free(data);
 
     }

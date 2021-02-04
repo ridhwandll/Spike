@@ -42,8 +42,8 @@ namespace Spike
     bool Logger::s_LogToConsole = true;
     bool Logger::s_LogToEditorConsole = true;
 
-    const char* Logger::s_PreviousFile = "Logs/Log-Previous.txt";
-    const char* Logger::s_CurrentFile = "Logs/Log-Current.txt";
+    const char* Logger::s_PreviousFile = "Logs/SpikeEngine-CurrentLogs.spikeLog";
+    const char* Logger::s_CurrentFile = "Logs/SpikeEngine-Logs.spikeLog";
 
     Logger::Logger(const char* name)
         : m_Name(name) {}
@@ -107,7 +107,8 @@ namespace Spike
     {
         if (std::filesystem::exists(Logger::s_CurrentFile))
         {
-            if (std::filesystem::exists(Logger::s_PreviousFile)) std::filesystem::remove(Logger::s_PreviousFile);
+            if (std::filesystem::exists(Logger::s_PreviousFile))
+                std::filesystem::remove(Logger::s_PreviousFile);
 
             if (rename(Logger::s_CurrentFile, Logger::s_PreviousFile))
                 Logger("Logger").Log(Severity::Debug, "Failed to rename log file %s to %s", Logger::s_CurrentFile, Logger::s_PreviousFile);
@@ -121,7 +122,8 @@ namespace Spike
 
     void Logger::Flush()
     {
-        if (!Logger::s_LogToFile) return;
+        if (!Logger::s_LogToFile)
+            return;
 
         std::filesystem::path filepath{ Logger::s_CurrentFile };
         std::filesystem::create_directories(filepath.parent_path());

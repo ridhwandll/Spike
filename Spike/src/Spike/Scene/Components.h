@@ -26,11 +26,11 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Core/UUID.h"
+#include "Spike/Core/Vault.h"
 #include "Spike/Renderer/Texture.h"
 #include "Spike/Renderer/Mesh.h"
 #include "Panels/ConsolePanel.h"
 #include "SceneCamera.h"
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -91,7 +91,7 @@ namespace Spike
 
         void SetTexture(const String& filepath)
         {
-            Texture = Texture2D::Create(filepath);
+            Texture = Vault::CreateAndSubmitTexture2D(filepath);
             TextureFilepath = filepath;
         }
 

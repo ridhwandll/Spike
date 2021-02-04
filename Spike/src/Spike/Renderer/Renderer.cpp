@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
+#include "Spike/Core/Vault.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Shader.h"
@@ -33,23 +34,14 @@ namespace Spike
 {
     Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
 
-    struct RendererData
-    {
-        Ref<ShaderLibrary> m_ShaderLibrary;
-    };
-
-    static RendererData s_Data;
-
     void Renderer::Init()
     {
-        s_Data.m_ShaderLibrary = Ref<ShaderLibrary>::Create();
         RenderCommand::Init();
-        Renderer::GetShaderLibrary()->Load("Spike-Editor/assets/shaders/MeshShader.glsl");
+        Vault::CreateAndSubmitShader("Spike-Editor/assets/shaders/MeshShader.glsl");
     }
 
     void Renderer::Shutdown()
     {
-        Renderer2D::Shutdown();
     }
 
     void Renderer::OnWindowResize(uint32_t width, uint32_t height)
@@ -96,10 +88,5 @@ namespace Spike
         shader->SetMat4("u_Transform", transform);
         shader->SetInt("u_EntityID", entityID);
         mesh->Draw();
-    }
-
-    Ref<ShaderLibrary> Renderer::GetShaderLibrary()
-    {
-        return s_Data.m_ShaderLibrary;
     }
 }

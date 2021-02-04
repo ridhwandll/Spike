@@ -52,7 +52,11 @@ namespace Spike
         void LogWarning(const char* format, ...);
         void LogError(const char* format, ...);
         void LogCritical(const char* format, ...);
-        static Logger GetCoreLogger() { return s_CoreLogger; };
+        inline static Logger GetCoreLogger() { return s_CoreLogger; };
+
+        void SetLogToFile(bool value) { s_LogToFile = value; }
+        void SetLogToSystemConsole(bool value) { s_LogToConsole = value; }
+        void SetLogToEditorConsole(bool value) { s_LogToEditorConsole = value; }
     public:
         static void Init();
         static void Shutdown();

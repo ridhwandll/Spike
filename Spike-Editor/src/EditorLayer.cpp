@@ -31,6 +31,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Math/Math.h"
 #include "Spike/Scripting/ScriptEngine.h"
 #include "UIUtils/UIUtils.h"
+#include "Spike/Core/Vault.h"
 #include <FontAwesome.h>
 #include <imgui/imgui.h>
 #include <ImGuizmo.h>
@@ -42,9 +43,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     EditorLayer::EditorLayer()
-        : Layer("EditorLayer")
-    {
-    }
+        : Layer("EditorLayer") {}
 
     void EditorLayer::OnAttach()
     {
@@ -58,7 +57,6 @@ namespace Spike
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
-
         LaunchReadymadeScene();
     }
 
@@ -323,19 +321,37 @@ namespace Spike
         ImGui::PopStyleColor(3);
 
         ImGui::Begin("Renderer");
-        if (ImGui::TreeNode("Shaders"))
+        if (ImGui::TreeNode("Cached Shaders"))
         {
-            auto& shaders = Shader::s_AllShaders;
+            auto& shaders = Vault::GetAllShaders();
             for (auto& shader : shaders)
             {
-                if (ImGui::TreeNode(shader->GetName().c_str()))
+                if (shader)
                 {
-                    if (ImGui::Button("Reload"))
-                        shader->Reload();
-                    ImGui::SameLine();
-                    if (ImGui::Button("Dump Shader Data"))
-                        shader->DumpShaderData();
-                    ImGui::TreePop();
+                    if (ImGui::TreeNode(shader->GetName().c_str()))
+                    {
+                        if (ImGui::Button("Reload"))
+                            shader->Reload();
+                        ImGui::SameLine();
+                        if (ImGui::Button("Dump Shader Data"))
+                            shader->DumpShaderData();
+                        ImGui::TreePop();
+                    }
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Cached Textures"))
+        {
+            auto& textures = Vault::GetAllTextures();
+            for (auto& texture : textures)
+            {
+                if (texture)
+                {
+                    if (ImGui::TreeNode(texture->GetName().c_str()))
+                    {
+                        ImGui::TreePop();
+                    }
                 }
             }
             ImGui::TreePop();

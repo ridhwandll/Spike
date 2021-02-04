@@ -429,7 +429,7 @@ namespace Spike
             else
                 ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
 
-            if (ImGui::Button("Open Mesh", ImVec2(100, 20)))
+            if (ImGui::Button("Open"))
             {
                 String file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
                 if (!file.empty())
@@ -442,22 +442,15 @@ namespace Spike
             {
                 ImGui::SameLine();
                 bool remove = false;
-                if (ImGui::Button("Remove Mesh", ImVec2(100, 20)))
+                if (ImGui::Button("Remove"))
                 {
                     component.Reset();
                     remove = true;
                 }
                 ImGui::SameLine();
-
                 if (!remove)
                 {
-                    if (ImGui::Button("Reload Mesh"))
-                        component.Mesh->Reload();
-
-                    if (GUI::DrawBoolControl("Flip DiffuseMap vertically", &component.Mesh->m_FlipTexturesVertically, 200.0f))
-                        component.Mesh->Reload();
-
-                    if (GUI::DrawBoolControl("SRGB", &component.Mesh->m_SRGB, 200.0f))
+                    if (ImGui::Button("Reload"))
                         component.Mesh->Reload();
                 }
             }

@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
+#include "Spike/Core/Vault.h"
 #include "Spike/Renderer/Mesh.h"
 #include "Renderer.h"
 #include <assimp/Importer.hpp>
@@ -46,7 +47,7 @@ namespace Spike
         uint32_t specularNr = 1;
         for (uint32_t i = 0; i < m_Textures.size(); i++)
         {
-            m_Textures[i]._Texture->ActivateSlot(i);
+            m_Textures[i].Texture->ActivateSlot(i);
             String number;
             String name = m_Textures[i].Type;
             if (name == "TextureAlbedo")
@@ -55,7 +56,7 @@ namespace Spike
                 number = std::to_string(specularNr++);
 
             shader->SetInt(name + number, i);
-            m_Textures[i]._Texture->Bind(i);
+            m_Textures[i].Texture->Bind(i);
         }
 
         m_VertexArray->Bind();
@@ -84,7 +85,7 @@ namespace Spike
     }
     Mesh::Mesh(const String& path)
     {
-        m_Shader = Renderer::GetShaderLibrary()->Get("MeshShader");
+        m_Shader = Vault::GetShaderFromCache("MeshShader.glsl");
         m_Shader->AddShaderReloadedCallback([]() { SPK_CORE_LOG_INFO("MeshShader was reloaded!"); });
         LoadMesh(path);
     }
@@ -210,11 +211,11 @@ namespace Spike
             if (!skip)
             {
                 TextureStruct texture;
-                texture._Texture = TextureFromFile(str.C_Str(), m_FilePath);
+                texture.Texture = TextureFromFile(str.C_Str(), m_FilePath);
                 texture.Type = typeName;
                 texture.Path = str.C_Str();
                 textures.push_back(texture);
-                m_TexturesCache.push_back(texture); // add to loaded textures
+                m_TexturesCache.push_back(texture);
             }
         }
         return textures;
@@ -226,14 +227,7 @@ namespace Spike
         auto parentPath = path.parent_path();
         parentPath /= std::string(name);
         std::string texturePath = parentPath.string();
-
-        Ref<Texture2D> texture;
-
-        if (m_FlipTexturesVertically)
-            texture = Texture2D::Create(texturePath, true, m_SRGB);
-        else
-            texture = Texture2D::Create(texturePath, false, m_SRGB);
-
+        Ref<Texture2D> texture = Vault::CreateAndSubmitTexture2D(texturePath.c_str(), m_FlipTexturesVertically, m_SRGB);
         return texture;
     }
 }

@@ -26,7 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Texture.h"
-
+#include "Spike/Core/Vault.h"
 #include "Renderer.h"
 #include "Platform/OpenGL/OpenGLTexture.h"
 
@@ -34,38 +34,36 @@ namespace Spike
 {
     Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
     {
+        Ref<Texture2D> texture;
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(width, height);
+            case RendererAPI::API::OpenGL:  texture = Ref<OpenGLTexture2D>::Create(width, height);
         }
-    
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
+        return Vault::SubmitTexture2D(texture);
     }
 
     Ref<Texture2D> Texture2D::Create(const String& path)
     {
+        Ref<Texture2D> texture;
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path);
+            case RendererAPI::API::OpenGL:  texture = Ref<OpenGLTexture2D>::Create(path);
         }
-
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
+        return Vault::SubmitTexture2D(texture);
     }
 
     Ref<Texture2D> Texture2D::Create(const String& path, bool flipVertically, bool srgb)
     {
+        Ref<Texture2D> texture;
         switch (Renderer::GetAPI())
         {
-        case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-        case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path, flipVertically, srgb);
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::OpenGL:  texture = Ref<OpenGLTexture2D>::Create(path, flipVertically, srgb);
         }
-
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
+        Vault::SubmitTexture2D(texture);
+        return texture;
     }
 
     uint32_t Texture::CalculateMipMapCount(uint32_t width, uint32_t height)

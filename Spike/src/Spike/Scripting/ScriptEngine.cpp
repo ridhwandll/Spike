@@ -187,8 +187,6 @@ namespace Spike
 
         if (!assembly)
             SPK_CORE_LOG_CRITICAL("Could not load assembly: %s", path.c_str());
-        else
-            SPK_CORE_LOG_INFO("Successfully loaded assembly: %s", path.c_str());
 
         return assembly;
     }
@@ -726,11 +724,9 @@ namespace Spike
                             {
                                 for (auto& [fieldName, field] : fieldMap)
                                 {
-    
                                     opened = ImGui::TreeNodeEx((void*)&field, ImGuiTreeNodeFlags_Leaf, fieldName.c_str());
                                     if (opened)
                                     {
-    
                                         ImGui::TreePop();
                                     }
                                 }

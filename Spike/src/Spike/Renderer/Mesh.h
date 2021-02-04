@@ -49,7 +49,7 @@ namespace Spike
 
     struct TextureStruct
     {
-        Ref<Texture> _Texture;
+        Ref<Spike::Texture> Texture;
         String Type;
         String Path;
     };
@@ -83,7 +83,7 @@ namespace Spike
 
     public:
         String m_FilePath;
-        bool m_FlipTexturesVertically = false;
+        bool m_FlipTexturesVertically = true;
         bool m_SRGB = true;
     private:
         Vector<Submesh> m_Submeshes;

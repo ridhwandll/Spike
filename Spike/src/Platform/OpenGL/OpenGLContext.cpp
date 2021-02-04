@@ -44,10 +44,6 @@ namespace Spike
         glfwMakeContextCurrent(m_WindowHandle);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         SPK_CORE_ASSERT(status, "Failed to initialize Glad!");
-        SPK_CORE_LOG_INFO("--OpenGl INFO--");
-        SPK_CORE_LOG_INFO("Vendor  : %s", glGetString(GL_VENDOR));
-        SPK_CORE_LOG_INFO("Renderer: %s", glGetString(GL_RENDERER));
-        SPK_CORE_LOG_INFO("Version : %s}", glGetString(GL_VERSION));
         SPK_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Spike requires at least OpenGL version 4.5!");
     }
 

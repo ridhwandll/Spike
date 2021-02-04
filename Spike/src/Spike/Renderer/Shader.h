@@ -40,6 +40,7 @@ namespace Spike
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
+        virtual String GetFilepath() const = 0;
 
         /* [Spike] Shader uniform setters, without and materials... just in case if we need it, we can use it [Spike] */
         virtual void SetInt(const String& name, int value) = 0;
@@ -57,20 +58,5 @@ namespace Spike
         virtual const String& GetName() const = 0;
 
         static Ref<Shader> Create(const String& filepath);
-        static Vector<Ref<Shader>> s_AllShaders; //TODO: Move to asset manager!
-    };
-
-    class ShaderLibrary : public RefCounted
-    {
-    public:
-        void Add(const String& name, const Ref<Shader>& shader);
-        void Add(const Ref<Shader>& shader);
-        Ref<Shader> Load(const String& filepath);
-        Ref<Shader> Load(const String& name, const String& filepath);
-
-        Ref<Shader> Get(const String& name);
-        bool Exists(const String& name) const;
-    private:
-        std::unordered_map<String, Ref<Shader>> m_Shaders;
     };
 }

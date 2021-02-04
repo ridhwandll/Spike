@@ -46,7 +46,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 #ifdef SPK_ENABLE_ASSERTS
     #define SPK_CORE_ASSERT(x, ...) { if(!(x)) { SPK_CORE_LOG_ERROR("Assertion Failed: %s", __VA_ARGS__); SPK_DEBUGBREAK(); } }
-    #define SPK_INTERNAL_ASSERT(x) { if(!(x)) { SPK_DEBUGBREAK(); SPK_CORE_LOG_CRITICAL("Assertion Failed! RIP"); } }
+    #define SPK_INTERNAL_ASSERT(x) { SPK_DEBUGBREAK(); SPK_CORE_LOG_CRITICAL("Assertion Failed! RIP"); }
 #else
     #define SPK_ASSERT(x, ...)
     #define SPK_CORE_ASSERT(x, ...)

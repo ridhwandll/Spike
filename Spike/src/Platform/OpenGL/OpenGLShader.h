@@ -35,7 +35,7 @@ namespace Spike
 
         virtual void Bind() const override;
         virtual void Unbind() const override;
-
+        virtual String GetFilepath() const override { return m_Filepath; }
         virtual void SetInt(const String& name, int value) override;
         virtual void SetIntArray(const String& name, int* value, uint32_t count) override;
         virtual void SetFloat(const String& name, float value) override;

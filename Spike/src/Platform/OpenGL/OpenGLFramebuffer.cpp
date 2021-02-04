@@ -229,7 +229,7 @@ namespace Spike
 
     int OpenGLFramebuffer::ReadPixel(uint32_t attachmentIndex, int x, int y)
     {
-        SPK_INTERNAL_ASSERT(attachmentIndex < m_ColorAttachments.size());
+        SPK_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "");
         glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
         int pixelData;
         glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
@@ -238,7 +238,7 @@ namespace Spike
 
     void OpenGLFramebuffer::ClearAttachment(uint32_t attachmentIndex, int value)
     {
-        SPK_INTERNAL_ASSERT(attachmentIndex < m_ColorAttachments.size());
+        SPK_CORE_ASSERT(attachmentIndex < m_ColorAttachments.size(), "Attachment index can't be less than m_ColorAttachments.size()!");
         auto spec = m_ColorAttachmentSpecs[attachmentIndex];
         glClearTexImage(m_ColorAttachments[attachmentIndex], 0, Utils::SpikeTextureFormatToOpenGLTextureFormat(spec.TextureFormat), GL_INT, &value);
     }

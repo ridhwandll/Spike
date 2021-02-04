@@ -278,7 +278,7 @@ namespace Spike
 
         glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTES, &count);
         SPK_CORE_LOG_INFO("==========SPIKE-ENGINE==========");
-        SPK_CORE_LOG_INFO("========== %s ==========", this->GetName());
+        SPK_CORE_LOG_INFO("========== %s ==========", this->GetName().c_str());
         SPK_CORE_LOG_INFO("====ATTRIBUTES====");
         SPK_CORE_LOG_INFO("Active Attributes: %d", count);
 
