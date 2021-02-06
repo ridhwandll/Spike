@@ -258,6 +258,26 @@ namespace Spike
         return textures;
     }
 
+    Vector<String> Vault::GetAllDirsInProjectPath()
+    {
+        Vector<String> paths;
+        for (const auto& entry : std::filesystem::directory_iterator(s_ProjectPath))
+        {
+            paths.push_back(entry.path().string());
+        }
+        return paths;
+    }
+
+    Vector<String> Vault::GetAllFolderNamesProjectPath()
+    {
+        Vector<String> names;
+        for (const auto& entry : std::filesystem::directory_iterator(s_ProjectPath))
+        {
+            names.push_back(GetNameWithoutExtension(entry.path().string()));
+        }
+        return names;
+    }
+
     std::unordered_map<String, String> Vault::GetAllScripts()
     {
         return s_Scripts;
@@ -309,5 +329,10 @@ namespace Spike
     Vector<Ref<Shader>> Vault::GetAllBuiltInShaders()
     {
         return s_BuiltInShaders;
+    }
+
+    bool Vault::IsVaultInitialized()
+    {
+        return s_VaultInitialized;
     }
 }

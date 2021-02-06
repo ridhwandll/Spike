@@ -67,9 +67,12 @@ namespace Spike
         static String GetProjectPath() { return s_ProjectPath; }
         static bool Exists(const String& nameWithExtension, ResourceType type);
         static bool Exists(const char* path, ResourceType type);
+        static bool IsVaultInitialized();
         static Vector<Ref<Shader>> GetAllShaders();
         static Vector<Ref<Shader>> GetAllBuiltInShaders();
         static Vector<Ref<Texture>> GetAllTextures();
+        static Vector<String> GetAllDirsInProjectPath();
+        static Vector<String> GetAllFolderNamesProjectPath();
 
         /* [Spike] Mapped as { filepath : Resource } [Spike] */
         static std::unordered_map<String, String> GetAllScripts();

@@ -25,15 +25,32 @@ Github repository : https://github.com/FahimFuad/Spike
 3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
+#include "Spike/Core/Base.h"
 
 namespace Spike
 {
+    struct DirectoryEntry
+    {
+        String Name;
+        String Extension;
+        String AbsolutePath;
+
+        bool IsDirectory;
+        Vector<DirectoryEntry> SubEntries;
+    };
+
     class VaultPanel
     {
     public:
-        VaultPanel() = default;
+        VaultPanel();
         ~VaultPanel() = default;
 
         void OnImGuiRender();
+    private:
+        void DrawPath(DirectoryEntry& entry);
+        Vector<DirectoryEntry> GetFiles(const String& directory);
+    private:
+        Vector<DirectoryEntry> m_Files;
+        String m_ProjectPath;
     };
 }
