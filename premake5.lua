@@ -30,6 +30,7 @@ IncludeDir["ImGuizmo"] = "%{wks.location}/Spike/vendor/ImGuizmo"
 IncludeDir["Assimp"] = "%{wks.location}/Spike/vendor/assimp/include"
 IncludeDir["box2D"] = "%{wks.location}/Spike/vendor/box2D/include"
 IncludeDir["mono"] = "%{wks.location}/Spike/vendor/mono/include"
+IncludeDir["tinyfiledialogs"] = "%{wks.location}/Spike/vendor/tinyfiledialogs"
 IncludeDir["FontAwesome"] = "%{wks.location}/Spike-Editor/src"
 
 LibraryDir = {}

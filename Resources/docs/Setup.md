@@ -16,34 +16,6 @@ Go to the mono [downloads page](https://www.mono-project.com/download/stable/) a
 - If you want to generate for other IDE or versions of Visual Studio then in the project directory run your favourite premake [action](https://github.com/premake/premake-core/wiki/Using-Premake#using-premake-to-generate-project-files)
 - Once premake generate the project files then you can hit the run button and make the engine up and running!
 
-## CMake
-
-- You need to have CMake in your machine! Go [here](https://cmake.org/download/) to download the latest CMake and be sure to add CMake to your environment variable in your OS. We recommend downloading the installer and checking the option `Add to Path`
-- With CMake, CLion is the recommended IDE but Visual Studio 2019 will also work fine!
-
-- CLion
-  - In CLion you can add this repository as a project. And hit the play button!
-
-- Visual Studio 2019
-  - Run the `WindowsGenProjectsCMake.bat` file inside the scripts folder to generate project files for Visual Studio 2019 inside the build folder in the root directory.Open the `Spike.sln` and hit the play button to get the engine running!
-
-- Others
-
-  - If you want to generate for other IDE or versions of Visual Studio then in the project directory then run the following code :arrow_down:
-
-  ```cmake
-  # makes a directory named build in the root directory
-  mkdir build
-
-  # Enters the build directory
-  cd build
-
-  # You CMake action
-  cmake <Your-CMake-action>
-  ```
-
-  - Once CMake generates the project files then you can hit the run button and make the engine up and running!
-
 # Mac & Linux Setup
 
 ![MacOS not supported](https://img.shields.io/badge/MacOS-NotSupported-red.svg)
@@ -55,15 +27,4 @@ Go to the mono [downloads page](https://www.mono-project.com/download/stable/) a
 - To genereate the project files for your IDE, select the actions of the premake and run them in the project directory. A list of actions of the premake can be found [here](https://github.com/premake/premake-core/wiki/Using-Premake#using-premake-to-generate-project-files)
 - The engine is now ready to run!
 
-## CMake
-
-- You need to have CMake in your machine! Go [here](https://cmake.org/download/) to download the latest CMake and be sure to add CMake to your environment variable in your OS. We recommend downloading the installer and checking the option `Add to Path`
-- With CMake, CLion is the recommended IDE in Mac & Linux
-
-- CLion
-  - In CLion you can add this repository as a project. And hit the play button!
-
-- Others
-  - If you want to generate for other IDE then you should make a directory in the project root directory called **`build`** and generate CMake files with other CMake actions
-
-  - Once CMake generates the project files then you can hit the run button and make the engine up and running!
+### **Note**: ***CMake*** support is currently not working due to some problem with the libraries. So we turned CMake CI off. The CMakeLists.txt files still exists in the codebase, incase we bring it back....

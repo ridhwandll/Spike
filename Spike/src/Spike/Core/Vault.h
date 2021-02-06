@@ -42,7 +42,8 @@ namespace Spike
         Vault() = default;
         ~Vault() = default;
 
-        static void Init(const String& projectPath);
+        /* [Spike] Returns the path, in which the scene was saved [Spike] */
+        static String Init(const String& projectPath);
         static void Shutdown();
 
         static Ref<Shader> CreateAndSubmitShader(const String& path);
@@ -60,15 +61,16 @@ namespace Spike
         static String GetNameWithExtension(const String& assetFilepath);
         static String GetExtension(const String& assetFilepath);
 
-        static String GetAssetPath() { return s_AssetPath; }
         static String GetProjectPath() { return s_ProjectPath; }
         static bool Exists(const String& nameWithExtension, ResourceType type);
         static bool Exists(const char* path, ResourceType type);
         static std::vector<Ref<Shader>> GetAllShaders();
         static std::vector<Ref<Texture>> GetAllTextures();
+
+        static bool CreateFolder(const char* parentDirectory, const char* name);
     private:
         static String s_ProjectPath; /* [Spike] Base Path, such as: "C:/Users/Dummy/Desktop/SpikeProject" [Spike] */
-        static String s_AssetPath;   /* [Spike] Path in the base path, such as: "C:/Users/Dummy/Desktop/SpikeProject/Spike Vault" [Spike] */
+        static bool s_VaultInitialized;
         /* [Spike] Mapped as { filepath : Resource  } [Spike] */
         static std::unordered_map<String, Ref<Shader>> s_Shaders;
         static std::unordered_map<String, Ref<Texture2D>> s_Textures;

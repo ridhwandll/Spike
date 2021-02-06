@@ -15,6 +15,7 @@ project "Spike"
 	{
 		"src/**.h",
 		"src/**.cpp",
+		"src/**.c",
 		"vendor/stb_image/**.h",
 		"vendor/stb_image/**.cpp",
 		"vendor/glm/glm/**.hpp",
@@ -22,7 +23,9 @@ project "Spike"
 		"vendor/assimp/include/**.hpp",
 		"vendor/assimp/include/**.inl",
 		"vendor/ImGuizmo/ImGuizmo.h",
-		"vendor/ImGuizmo/ImGuizmo.cpp"
+		"vendor/ImGuizmo/ImGuizmo.cpp",
+		"vendor/tinyfiledialogs/tinyfiledialogs.c",
+		"vendor/tinyfiledialogs/tinyfiledialogs.h"
 	}
 
 	defines
@@ -46,6 +49,7 @@ project "Spike"
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.box2D}",
 		"%{IncludeDir.mono}",
+		"%{IncludeDir.tinyfiledialogs}",
 		"%{IncludeDir.FontAwesome}"
 	}
 
@@ -82,3 +86,6 @@ project "Spike"
 		defines "SPK_DIST"
 		runtime "Release"
 		optimize "on" 
+
+	filter "files:**.c"
+		flags {"NoPCH"}

@@ -25,6 +25,7 @@ project "Spike-Editor"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Assimp}",
+		"%{IncludeDir.tinyfiledialogs}",
 		"%{IncludeDir.FontAwesome}"
 	}
 
@@ -56,4 +57,7 @@ project "Spike-Editor"
 	filter "configurations:Dist"
 		defines "SPK_DIST"
 		runtime "Release"
-		optimize "on" 
+		optimize "on"
+
+	filter "files:**.c"
+		flags {"NoPCH"}

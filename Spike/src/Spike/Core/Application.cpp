@@ -29,8 +29,9 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Log.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
-#include "Input.h"
-#include "Vault.h"
+#include "Spike/Core/Input.h"
+#include "Spike/Core/Vault.h"
+#include "Spike/Utility/FileDialogs.h"
 #include "Spike/Scripting/ScriptEngine.h"
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -49,7 +50,6 @@ namespace Spike
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-        //Vault::Init(""); //TODO: Automate via a popup window, just like the Unity Hub, or Unreal Asset Browser
         ScriptEngine::Init("Spike-Editor/assets/scripts/ExampleApp.dll");
         Renderer::Init();
         Renderer2D::Init();
@@ -63,7 +63,7 @@ namespace Spike
         Renderer::Shutdown();
         Renderer2D::Shutdown();
         ScriptEngine::Shutdown();
-        //Vault::Shutdown();
+        Vault::Shutdown();  
     }
 
     void Application::PushLayer(Layer* layer)
@@ -130,7 +130,10 @@ namespace Spike
 
     void Application::Close()
     {
-        m_Running = false;
+        if (FileDialogs::AMessageBox("Spike", "Are you sure you want to quit?", DialogType::Yes__No, IconType::Question, DefaultButton::No))
+            m_Running = false;
+        else
+            return;
     }
 
     void Application::OnEvent(Event& e)
@@ -178,8 +181,10 @@ namespace Spike
 
     bool Application::OnWindowClose(WindowCloseEvent& e)
     {
-        m_Running = false;
-        return true;
+        if (FileDialogs::AMessageBox("Spike", "Are you sure you want to quit?", DialogType::Yes__No, IconType::Question, DefaultButton::No))
+            m_Running = false;
+        else
+            return false;
     }
 
     bool Application::OnWindowResize(WindowResizeEvent& e)

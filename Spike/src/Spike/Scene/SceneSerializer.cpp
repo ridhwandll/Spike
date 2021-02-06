@@ -324,15 +324,19 @@ namespace Spike
         m_Scene->m_Registry.each([&](auto entityID)
             {
                 Entity entity = { entityID, m_Scene.Raw() };
-                if (!entity)
-                    return;
-
+                if (!entity) return;
                 SerializeEntity(out, entity);
             });
         out << YAML::EndSeq;
         out << YAML::EndMap;
 
         std::ofstream fout(filepath);
+
+        if (fout.bad())
+        {
+            SPK_CORE_LOG_ERROR("Error serializing the file! Terminating serialization system...");
+            return;
+        }
         fout << out.c_str();
     }
 

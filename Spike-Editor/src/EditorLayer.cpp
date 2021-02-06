@@ -27,7 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "EditorLayer.h"
 #include "Panels/ConsolePanel.h"
 #include "Spike/Scene/SceneSerializer.h"
-#include "Spike/Utility/PlatformUtils.h"
+#include "Spike/Utility/FileDialogs.h"
 #include "Spike/Math/Math.h"
 #include "Spike/Scripting/ScriptEngine.h"
 #include "UIUtils/UIUtils.h"
@@ -47,7 +47,6 @@ namespace Spike
 
     void EditorLayer::OnAttach()
     {
-        //Application::Get()->GetWindow().SetVSync(false);
         FramebufferSpecification fbSpec;
         fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
         fbSpec.Width = 1280;
@@ -57,7 +56,6 @@ namespace Spike
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
-        LaunchReadymadeScene();
     }
 
     void EditorLayer::OnDetach()
@@ -209,7 +207,6 @@ namespace Spike
             ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
             ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         }
-
         style.WindowMinSize.x = minWinSizeX;
 
         Console::Get()->OnImGuiRender();
@@ -438,10 +435,10 @@ namespace Spike
             }
             case Key::S:
             {
-                if (control && shift)
-                    SaveSceneAs();
                 if (control)
                     SaveScene();
+                if (control && shift)
+                    SaveSceneAs();
                 break;
             }
 
@@ -487,27 +484,34 @@ namespace Spike
 
     void EditorLayer::NewScene()
     {
-        m_EditorScene = Ref<Scene>::Create();
-        m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-        m_SceneHierarchyPanel.SetContext(m_EditorScene);
-        m_FirstTimeSave = true;
-        m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
-        UpdateWindowTitle("Untitled Scene");
-        SPK_CORE_LOG_INFO("Successfully created new scene!");
-    }
+        const char* filepath = FileDialogs::SelectFolder("Select or create a folder to save project files");
+        if (filepath)
+        {
+            m_EditorScene = Ref<Scene>::Create();
+            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_SceneHierarchyPanel.SetContext(m_EditorScene);
+            m_ActiveFilepath = Vault::Init(filepath);
 
-    void EditorLayer::LaunchReadymadeScene()
-    {
-        NewScene();
-        m_StartupCameraEntity = m_EditorScene->CreateEntity(ICON_FK_CAMERA" Main Camera");
-        m_StartupCameraEntity.AddComponent<CameraComponent>();
-        m_StartupCameraEntity.GetComponent<TransformComponent>().Translation.z = 0.9f;
+            m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
+            m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+
+            m_StartupCameraEntity = m_EditorScene->CreateEntity(ICON_FK_CAMERA" Main Camera");
+            m_StartupCameraEntity.AddComponent<CameraComponent>().Camera.SetProjectionType(SceneCamera::ProjectionType::Perspective);
+            m_StartupCameraEntity.GetComponent<TransformComponent>().Translation.z = 10.0f;
+            m_FirstTimeSave = true;
+
+            String projectName = Vault::GetNameWithoutExtension(filepath);
+            SceneSerializer serializer(m_EditorScene);
+            serializer.Serialize(String(m_ActiveFilepath) + "/" + projectName + ".spike");
+            UpdateWindowTitle(projectName);
+        }
     }
 
     void EditorLayer::OpenScene()
     {
-        String filepath = FileDialogs::OpenFile("Spike Scene (*.spike)\0*.spike\0");
-        if (!filepath.empty())
+        const char* pattern[1] = { "*.spike" };
+        const char* filepath = FileDialogs::OpenFile("Open Scene", 1, pattern, "", false);
+        if (filepath)
         {
             m_FirstTimeSave = false;
             m_ActiveFilepath = filepath;
@@ -517,14 +521,16 @@ namespace Spike
 
             SceneSerializer serializer(m_EditorScene);
             serializer.Deserialize(filepath);
+
             SPK_CORE_LOG_INFO("Succesfully deserialized scene!");
         }
     }
 
     void EditorLayer::SaveSceneAs()
     {
-        String filepath = FileDialogs::SaveFile("Spike Scene (*.spike)\0*.spike\0");
-        if (!filepath.empty())
+        const char* pattern[1] = { "*.spike" };
+        const char* filepath = FileDialogs::SaveFile("Save Scene", 1, pattern, "Spike Scene");
+        if (filepath)
         {
             m_FirstTimeSave = false;
             SceneSerializer serializer(m_EditorScene);

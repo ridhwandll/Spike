@@ -29,7 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
 #include "Spike/Scripting/ScriptEngine.h"
-#include "Spike/Utility/PlatformUtils.h"
+#include "Spike/Utility/FileDialogs.h"
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <FontAwesome.h>
@@ -397,17 +397,19 @@ namespace Spike
 
             if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
             {
-                String filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
-                if (!filepath.empty())
+                char const* lFilterPatterns[2] = { "*.png", "*.jpg" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", 2, lFilterPatterns, "Texture", false);
+                if (filepath)
                     component.SetTexture(filepath);
             }
 
             ImGui::SetCursorPosY(cursorPos + 5);
 
-            if (ImGui::Button("Add Texture"))
+            if (ImGui::Button("Open Texture"))
             {
-                String filepath = FileDialogs::OpenFile("Texture (*.png)(*.jpg)*.png**.jpg*\0");
-                if (!filepath.empty())
+                char const* lFilterPatterns[2] = { "*.png", "*.jpg" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", 2, lFilterPatterns, "Texture", false);
+                if (filepath)
                     component.SetTexture(filepath);
             }
 
@@ -431,11 +433,12 @@ namespace Spike
 
             if (ImGui::Button("Open"))
             {
-                String file = FileDialogs::OpenFile("ObjectFile (*.fbx *.obj *.blend)\0*.fbx; *.obj; *.blend\0");
-                if (!file.empty())
+                const char* patterns[2] = { "*.fbx", "*.obj" };
+                const char* file = FileDialogs::OpenFile("Open 3D Object file", 2, patterns, "", false);
+                if (file)
                 {
                     component.Mesh = Ref<Mesh>::Create(file);
-                    component.SetFilePath(file);
+                    component.SetFilePath(String(file));
                 }
             }
             if (component.Mesh)

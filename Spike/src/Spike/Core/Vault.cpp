@@ -32,16 +32,20 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     String Vault::s_ProjectPath = "";
-    String Vault::s_AssetPath = "";
+    bool Vault::s_VaultInitialized = false;
     std::unordered_map<String, Ref<Shader>>         Vault::s_Shaders;
     std::unordered_map<String, Ref<Texture2D>>      Vault::s_Textures;
 
-    void Vault::Init(const String& projectPath)
+    String Vault::Init(const String& projectPath)
     {
+        if (s_VaultInitialized)
+            Vault::Shutdown();
+
         s_ProjectPath = projectPath;
-        auto path = s_ProjectPath + "/Spike Vault";
-        if (std::filesystem::create_directory(path) || std::filesystem::exists(path))
-            s_AssetPath = path;
+        auto scenePath = s_ProjectPath + "/" + "Scenes";
+        std::filesystem::create_directory(scenePath);
+        s_VaultInitialized = true;
+        return scenePath;
     }
 
     Ref<Shader> Vault::CreateAndSubmitShader(const String& path)
@@ -122,7 +126,6 @@ namespace Spike
 
     void Vault::Shutdown()
     {
-        s_AssetPath.clear();
         s_ProjectPath.clear();
         s_Textures.clear();
         s_Shaders.clear();
@@ -208,6 +211,14 @@ namespace Spike
             textures.emplace_back(texture.second);
         }
         return textures;
+    }
+
+    bool Vault::CreateFolder(const char* parentDirectory, const char* name)
+    {
+        String path = String(parentDirectory) + "/" + String(name);
+        if (std::filesystem::create_directory(path) || std::filesystem::exists(path))
+            return true;
+        return false;
     }
 
     String Vault::GetExtension(const String& assetFilepath)
