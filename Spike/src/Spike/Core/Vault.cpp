@@ -33,8 +33,10 @@ namespace Spike
 {
     String Vault::s_ProjectPath = "";
     bool Vault::s_VaultInitialized = false;
+    Vector<Ref<Shader>>                             Vault::s_BuiltInShaders;
     std::unordered_map<String, Ref<Shader>>         Vault::s_Shaders;
     std::unordered_map<String, Ref<Texture2D>>      Vault::s_Textures;
+    std::unordered_map<String, String>              Vault::s_Scripts;
 
     String Vault::Init(const String& projectPath)
     {
@@ -45,6 +47,7 @@ namespace Spike
         auto scenePath = s_ProjectPath + "/" + "Scenes";
         std::filesystem::create_directory(scenePath);
         s_VaultInitialized = true;
+        Reload();
         return scenePath;
     }
 
@@ -56,6 +59,13 @@ namespace Spike
             return s_Shaders[path];
         }
         return s_Shaders[path]; /* [Spike] Gives access to the second element, which is our cached shader [Spike] */
+    }
+
+    Ref<Shader> Vault::CreateAndSubmitBuiltInShader(const String& source, const char* name)
+    {
+        auto shader = Shader::AddBuiltInShader(source, name);
+        s_BuiltInShaders.push_back(shader);
+        return shader;
     }
 
     Ref<Texture2D> Vault::CreateAndSubmitTexture2D(const String& path)
@@ -102,6 +112,17 @@ namespace Spike
         return s_Textures[filepath];
     }
 
+    Ref<Shader> Vault::GetBuiltInShaderFromCache(const String& nameWithoutExtension)
+    {
+        for (auto& shader : s_BuiltInShaders)
+        {
+            if (shader->GetName() == nameWithoutExtension)
+                return shader;
+        }
+        SPK_CORE_LOG_ERROR("Built In Shader is not in cache!");
+        return nullptr;
+    }
+
     Ref<Shader> Vault::GetShaderFromCache(const String& nameWithExtension)
     {
         for (auto& shader : s_Shaders)
@@ -127,8 +148,35 @@ namespace Spike
     void Vault::Shutdown()
     {
         s_ProjectPath.clear();
-        s_Textures.clear();
-        s_Shaders.clear();
+        ClearAllCache();
+    }
+
+    bool Vault::Reload()
+    {
+        Vault::ClearAllCache();
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(s_ProjectPath))
+        {
+            if (GetExtension(entry.path().string()) == ".glsl")
+            {
+                auto shader = Shader::Create(entry.path().string().c_str());
+                s_Shaders[entry.path().string()] = shader;
+            }
+            if (GetExtension(entry.path().string()) == ".png")
+            {
+                auto texture = Texture2D::Create(entry.path().string().c_str());
+                s_Textures[entry.path().string()] = texture;
+            }
+            if (GetExtension(entry.path().string()) == ".jpg")
+            {
+                auto texture = Texture2D::Create(entry.path().string().c_str());
+                s_Textures[entry.path().string()] = texture;
+            }
+            if (GetExtension(entry.path().string()) == ".cs")
+            {
+                s_Scripts[entry.path().string()] = ReadFile(entry.path().string());
+            }
+        }
+        return true;
     }
 
     String Vault::GetNameWithoutExtension(const String& assetFilepath)
@@ -148,21 +196,19 @@ namespace Spike
         switch (type)
         {
             case Spike::ResourceType::_Shader:
-                {
                     for (auto& shader : s_Shaders)
-                    {
-                        if (GetNameWithExtension(shader.first) == nameWithExtension) return true;
-                    }
-                }
+                        if (GetNameWithExtension(shader.first) == nameWithExtension)
+                            return true;
+
             case Spike::ResourceType::_Texture:
-                {
                     for (auto& texture : s_Textures)
-                    {
-                        if (GetNameWithExtension(texture.first) == nameWithExtension) return true;
-                    }
-                }
-            case Spike::ResourceType::_Text:
-                return false; //TODO
+                        if (GetNameWithExtension(texture.first) == nameWithExtension)
+                            return true;
+
+            case Spike::ResourceType::_Script:
+                for (auto& script : s_Scripts)
+                    if (GetNameWithExtension(script.first) == nameWithExtension)
+                        return true;
         }
         return false;
     }
@@ -172,28 +218,27 @@ namespace Spike
         switch (type)
         {
             case Spike::ResourceType::_Shader:
-                {
                     for (auto& shader : s_Shaders)
-                    {
-                        if (shader.first == path) return true;
-                    }
-                }
+                        if (shader.first == path)
+                            return true;
+
             case Spike::ResourceType::_Texture:
-                {
                     for (auto& texture : s_Textures)
-                    {
-                        if (texture.first == path) return true;
-                    }
-                }
-            case Spike::ResourceType::_Text:
-                return false; //TODO
+                        if (texture.first == path)
+                            return true;
+
+            case Spike::ResourceType::_Script:
+                    for (auto& script : s_Scripts)
+                        if (script.first == path)
+                            return true;
         }
         return false;
 
     }
-    std::vector<Ref<Shader>> Vault::GetAllShaders()
+
+    Vector<Ref<Shader>> Vault::GetAllShaders()
     {
-        std::vector<Ref<Shader>> shaders;
+        Vector<Ref<Shader>> shaders;
         shaders.resize(s_Shaders.size());
         for (auto& shader : s_Shaders)
         {
@@ -202,15 +247,20 @@ namespace Spike
         return shaders;
     }
 
-    std::vector<Ref<Texture>> Vault::GetAllTextures()
+    Vector<Ref<Texture>> Vault::GetAllTextures()
     {
-        std::vector<Ref<Texture>> textures;
-        textures.resize(textures.size());
+        Vector<Ref<Texture>> textures;
+        textures.resize(s_Textures.size());
         for (auto& texture : s_Textures)
         {
             textures.emplace_back(texture.second);
         }
         return textures;
+    }
+
+    std::unordered_map<String, String> Vault::GetAllScripts()
+    {
+        return s_Scripts;
     }
 
     bool Vault::CreateFolder(const char* parentDirectory, const char* name)
@@ -221,6 +271,31 @@ namespace Spike
         return false;
     }
 
+    void Vault::ClearAllCache()
+    {
+        s_Textures.clear();
+        s_Shaders.clear();
+        s_Scripts.clear();
+    }
+
+    String Vault::ReadFile(const String& filepath)
+    {
+        String result;
+        std::ifstream in(filepath, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
+        if (in)
+        {
+            in.seekg(0, std::ios::end);
+            result.resize(in.tellg());
+            in.seekg(0, std::ios::beg);
+            in.read(&result[0], result.size());
+        }
+        else
+        {
+            SPK_CORE_LOG_CRITICAL("Could not open file path \"%s\"", filepath.c_str());
+        }
+        return result;
+    }
+
     String Vault::GetExtension(const String& assetFilepath)
     {
         return std::filesystem::path(assetFilepath).extension().string();
@@ -229,5 +304,10 @@ namespace Spike
     String Vault::GetNameWithExtension(const String& assetFilepath)
     {
         return std::filesystem::path(assetFilepath).filename().string();
+    }
+
+    Vector<Ref<Shader>> Vault::GetAllBuiltInShaders()
+    {
+        return s_BuiltInShaders;
     }
 }

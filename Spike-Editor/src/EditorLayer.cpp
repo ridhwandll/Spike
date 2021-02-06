@@ -240,6 +240,7 @@ namespace Spike
         }
 
         m_SceneHierarchyPanel.OnImGuiRender();
+        m_VaultPanel.OnImGuiRender();
         m_ProfilerPanel.OnImGuiRender(m_SelectedEntity);
 
         bool show = true;
@@ -317,8 +318,8 @@ namespace Spike
         ImGui::End();
         ImGui::PopStyleColor(3);
 
-        ImGui::Begin("Renderer");
-        if (ImGui::TreeNode("Cached Shaders"))
+        ImGui::Begin("SpikeCache");
+        if (ImGui::TreeNode("Shaders"))
         {
             auto& shaders = Vault::GetAllShaders();
             for (auto& shader : shaders)
@@ -338,7 +339,24 @@ namespace Spike
             }
             ImGui::TreePop();
         }
-        if (ImGui::TreeNode("Cached Textures"))
+        if (ImGui::TreeNode("BuiltIn Shaders"))
+        {
+            auto& shaders = Vault::GetAllBuiltInShaders();
+            for (auto& shader : shaders)
+            {
+                if (shader)
+                {
+                    if (ImGui::TreeNode(shader->GetName().c_str()))
+                    {
+                        if (ImGui::Button("Dump Shader Data"))
+                            shader->DumpShaderData();
+                        ImGui::TreePop();
+                    }
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Textures"))
         {
             auto& textures = Vault::GetAllTextures();
             for (auto& texture : textures)
@@ -346,6 +364,21 @@ namespace Spike
                 if (texture)
                 {
                     if (ImGui::TreeNode(texture->GetName().c_str()))
+                    {
+                        ImGui::TreePop();
+                    }
+                }
+            }
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Scripts"))
+        {
+            auto& scripts = Vault::GetAllScripts();
+            for (auto& script : scripts)
+            {
+                if (script.first.c_str())
+                {
+                    if (ImGui::TreeNode(Vault::GetNameWithoutExtension(script.first).c_str()))
                     {
                         ImGui::TreePop();
                     }

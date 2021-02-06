@@ -22,6 +22,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "OpenGLShader.h"
+#include "Spike/Core/Vault.h"
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 #include "Panels/ConsolePanel.h"
@@ -40,18 +41,21 @@ namespace Spike
     OpenGLShader::OpenGLShader(const String& filepath)
         :m_Filepath(filepath)
     {
-        // Extract name from the filepath
-        auto lastSlash = filepath.find_last_of("/\\");
-        lastSlash = lastSlash == String::npos ? 0 : lastSlash + 1;
-        auto lastDot = filepath.rfind('.');
-        auto count = lastDot == String::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
-        m_Name = filepath.substr(lastSlash, count);
+        m_Name = Vault::GetNameWithoutExtension(filepath);
         Reload();
+    }
+
+    OpenGLShader::OpenGLShader(const String& source, const char* name)
+        :m_Name(name), m_Filepath("[Spike] Shader is Built-In [Spike]")
+    {
+        m_ShaderSource = PreProcess(source);
+        Compile();
+        m_Loaded = true;
     }
 
     void OpenGLShader::Reload()
     {
-        std::string source = ReadFile(m_Filepath);
+        std::string source = Vault::ReadFile(m_Filepath);
         Load(source);
     }
 
@@ -82,24 +86,6 @@ namespace Spike
         glDeleteProgram(m_RendererID);
     }
 
-    String OpenGLShader::ReadFile(const String& filepath)
-    {
-        String result;
-        std::ifstream in(filepath, std::ios::in | std::ios::binary); // ifstream closes itself due to RAII
-        if (in)
-        {
-            in.seekg(0, std::ios::end);
-            result.resize(in.tellg());
-            in.seekg(0, std::ios::beg);
-            in.read(&result[0], result.size());
-        }
-        else
-        {
-            SPK_CORE_LOG_CRITICAL("Could not open file path \"%s\"", filepath.c_str());
-        }
-        return result;
-    }
-
     std::unordered_map<GLenum, String> OpenGLShader::PreProcess(const String& source)
     {
         std::unordered_map<GLenum, String> shaderSources;
@@ -110,13 +96,13 @@ namespace Spike
         while (pos != String::npos)
         {
             size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
-            SPK_CORE_ASSERT(eol != String::npos, "Syntax error");
+            SPK_CRIRICAL(eol != String::npos, "Syntax error");
             size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
             String type = source.substr(begin, eol - begin);
-            SPK_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
+            SPK_CRIRICAL(ShaderTypeFromString(type), "Invalid shader type specified");
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
-            SPK_CORE_ASSERT(nextLinePos != String::npos, "Syntax error");
+            SPK_CRIRICAL(nextLinePos != String::npos, "Syntax error");
             pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
 
             shaderSources[ShaderTypeFromString(type)] = (pos == String::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
@@ -128,7 +114,7 @@ namespace Spike
     void OpenGLShader::Compile()
     {
         GLuint program = glCreateProgram();
-        SPK_CORE_ASSERT(m_ShaderSource.size() <= 2, "We only support two shaders for now.");
+        SPK_CRIRICAL(m_ShaderSource.size() <= 2, "We only support two shaders for now.");
         std::array<GLenum, 2> glShaderIDs;
         int glShaderIDIndex = 0;
         for (auto& keyvalue : m_ShaderSource)
@@ -154,7 +140,7 @@ namespace Spike
                 glDeleteShader(shader);
 
                 SPK_CORE_LOG_CRITICAL("%s", infoLog.data());
-                SPK_INTERNAL_ASSERT("Shader compilation failure!");
+                SPK_CORE_LOG_CRITICAL("Shader compilation failure!");
                 break;
             }
             glAttachShader(program, shader);
@@ -177,7 +163,7 @@ namespace Spike
             for (auto id : glShaderIDs)
                 glDeleteShader(id);
             SPK_CORE_LOG_CRITICAL("%s", infoLog.data());
-            SPK_INTERNAL_ASSERT("Shader link failure!");
+            SPK_CORE_LOG_CRITICAL("Shader link failure!");
         }
         for (auto id : glShaderIDs)
         {

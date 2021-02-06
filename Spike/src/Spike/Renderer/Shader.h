@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Core/Ref.h"
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <glm/glm.hpp>
@@ -58,5 +59,6 @@ namespace Spike
         virtual const String& GetName() const = 0;
 
         static Ref<Shader> Create(const String& filepath);
+        static Ref<Shader> AddBuiltInShader(const String& source, const char* name);
     };
 }

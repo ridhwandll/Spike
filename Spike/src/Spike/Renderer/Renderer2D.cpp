@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Core/Vault.h"
+#include "Spike/BuiltInAssets/GLSLShaders.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/VertexArray.h"
@@ -119,7 +120,7 @@ namespace Spike
         for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
             samplers[i] = i;
 
-        s_Data.TextureShader = Vault::CreateAndSubmitShader("Spike-Editor/assets/shaders/Texture.glsl");
+        s_Data.TextureShader = Vault::CreateAndSubmitBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader");
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 

@@ -31,6 +31,7 @@ namespace Spike
     {
     public:
         OpenGLShader(const String& filepath);
+        OpenGLShader(const String& source, const char* name);
         virtual ~OpenGLShader();
 
         virtual void Bind() const override;
@@ -51,7 +52,6 @@ namespace Spike
 
         void Reload();
     private:
-        String ReadFile(const String& filepath);
         std::unordered_map<GLenum, String> PreProcess(const String& source);
         void Compile();
 

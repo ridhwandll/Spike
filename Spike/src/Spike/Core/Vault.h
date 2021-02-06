@@ -33,7 +33,7 @@ namespace Spike
 {
     enum class ResourceType
     {
-        _Shader, _Texture, _Text
+        _Shader, _Texture, _Script
     };
 
     class Vault
@@ -45,14 +45,17 @@ namespace Spike
         /* [Spike] Returns the path, in which the scene was saved [Spike] */
         static String Init(const String& projectPath);
         static void Shutdown();
+        static bool Reload();
 
         static Ref<Shader> CreateAndSubmitShader(const String& path);
+        static Ref<Shader> CreateAndSubmitBuiltInShader(const String& source, const char* name);
         static Ref<Texture2D> CreateAndSubmitTexture2D(const String& path);
         static Ref<Texture2D> CreateAndSubmitTexture2D(const char* path, bool flipVertically, bool srgb);
 
         static Ref<Shader> SubmitShader(Ref<Shader>& shader);
         static Ref<Texture2D> SubmitTexture2D(Ref<Texture2D>& texture);
 
+        static Ref<Shader> GetBuiltInShaderFromCache(const String& nameWithoutExtension);
         static Ref<Shader> GetShaderFromCache(const String& nameWithExtension);
         static Ref<Texture> GetTexture2DFromCache(const String& nameWithExtension);
 
@@ -64,15 +67,24 @@ namespace Spike
         static String GetProjectPath() { return s_ProjectPath; }
         static bool Exists(const String& nameWithExtension, ResourceType type);
         static bool Exists(const char* path, ResourceType type);
-        static std::vector<Ref<Shader>> GetAllShaders();
-        static std::vector<Ref<Texture>> GetAllTextures();
+        static Vector<Ref<Shader>> GetAllShaders();
+        static Vector<Ref<Shader>> GetAllBuiltInShaders();
+        static Vector<Ref<Texture>> GetAllTextures();
+
+        /* [Spike] Mapped as { filepath : Resource } [Spike] */
+        static std::unordered_map<String, String> GetAllScripts();
 
         static bool CreateFolder(const char* parentDirectory, const char* name);
+        static void ClearAllCache();
+        static String ReadFile(const String& filepath);
     private:
         static String s_ProjectPath; /* [Spike] Base Path, such as: "C:/Users/Dummy/Desktop/SpikeProject" [Spike] */
         static bool s_VaultInitialized;
+        static Vector<Ref<Shader>> s_BuiltInShaders;
+
         /* [Spike] Mapped as { filepath : Resource  } [Spike] */
         static std::unordered_map<String, Ref<Shader>> s_Shaders;
         static std::unordered_map<String, Ref<Texture2D>> s_Textures;
+        static std::unordered_map<String, String> s_Scripts;
     };
 }

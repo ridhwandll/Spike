@@ -85,8 +85,7 @@ namespace Spike
     }
     Mesh::Mesh(const String& path)
     {
-        m_Shader = Vault::GetShaderFromCache("MeshShader.glsl");
-        m_Shader->AddShaderReloadedCallback([]() { SPK_CORE_LOG_INFO("MeshShader was reloaded!"); });
+        m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader");
         LoadMesh(path);
     }
 

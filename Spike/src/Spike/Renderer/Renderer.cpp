@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Core/Vault.h"
+#include "Spike/BuiltInAssets/GLSLShaders.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Shader.h"
@@ -37,7 +38,7 @@ namespace Spike
     void Renderer::Init()
     {
         RenderCommand::Init();
-        Vault::CreateAndSubmitShader("Spike-Editor/assets/shaders/MeshShader.glsl");
+        Vault::CreateAndSubmitBuiltInShader(s_GLSLMeshShader, "MeshShader");
     }
 
     void Renderer::Shutdown()
