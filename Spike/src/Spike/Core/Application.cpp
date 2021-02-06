@@ -185,6 +185,7 @@ namespace Spike
             m_Running = false;
         else
             return false;
+        return false;
     }
 
     bool Application::OnWindowResize(WindowResizeEvent& e)
