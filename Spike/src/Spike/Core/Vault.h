@@ -63,8 +63,8 @@ namespace Spike
         static String GetNameWithoutExtension(const String& assetFilepath);
         static String GetNameWithExtension(const String& assetFilepath);
         static String GetExtension(const String& assetFilepath);
-
         static String GetProjectPath() { return s_ProjectPath; }
+
         static bool Exists(const String& nameWithExtension, ResourceType type);
         static bool Exists(const char* path, ResourceType type);
         static bool IsVaultInitialized();

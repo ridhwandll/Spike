@@ -45,12 +45,12 @@ namespace Spike
         void OnUpdate(Timestep ts) override;
         virtual void OnImGuiRender() override;
         void OnEvent(Event& e) override;
-
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
         bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
         void NewScene();
+        void OpenFolder();
         void OpenScene();
         void SaveScene();
         void SaveSceneAs();
@@ -88,6 +88,8 @@ namespace Spike
         SceneHierarchyPanel m_SceneHierarchyPanel;
         ProfilerPanel m_ProfilerPanel;
         VaultPanel m_VaultPanel;
+    private:
+        friend class VaultPanel;
     };
 
 }

@@ -53,7 +53,7 @@ namespace Spike
         Scene* scene = s_ActiveScenes[sceneID];
 
         auto entityID = registry.get<IDComponent>(entity).ID;
-        SPK_INTERNAL_ASSERT(scene->m_EntityIDMap.find(entityID) != scene->m_EntityIDMap.end());
+        SPK_CRIRICAL(scene->m_EntityIDMap.find(entityID) != scene->m_EntityIDMap.end(), "");
         ScriptEngine::InitScriptEntity(scene->m_EntityIDMap.at(entityID));
     }
 

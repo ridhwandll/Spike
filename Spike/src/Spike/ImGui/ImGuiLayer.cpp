@@ -57,8 +57,8 @@ namespace Spike
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-        io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/JetBrains Mono/JetBrainsMono-ExtraBold.ttf", 15.0f);
-        io.FontDefault = io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/JetBrains Mono/JetBrainsMono-Medium.ttf", 15.0f);
+        io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/Ruda/Ruda-ExtraBold.ttf", 15.0f);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("Spike-Editor/assets/fonts/Ruda/Ruda-Regular.ttf", 15.0f);
 
         ImFontConfig config;
         config.MergeMode = true;

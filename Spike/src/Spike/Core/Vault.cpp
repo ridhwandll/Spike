@@ -44,11 +44,10 @@ namespace Spike
             Vault::Shutdown();
 
         s_ProjectPath = projectPath;
-        auto scenePath = s_ProjectPath + "/" + "Scenes";
-        std::filesystem::create_directory(scenePath);
+
         s_VaultInitialized = true;
         Reload();
-        return scenePath;
+        return s_ProjectPath;
     }
 
     Ref<Shader> Vault::CreateAndSubmitShader(const String& path)

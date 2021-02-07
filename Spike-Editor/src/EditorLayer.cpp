@@ -215,16 +215,19 @@ namespace Spike
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("New", "Ctrl+N"))
+                if (ImGui::MenuItem("Open Folder"))
+                    OpenFolder();
+
+                if (ImGui::MenuItem("New", "CTRL+N"))
                     NewScene();
 
-                if (ImGui::MenuItem("Open...", "Ctrl+O"))
+                if (ImGui::MenuItem("Open...", "CTRL+O"))
                     OpenScene();
 
-                if (ImGui::MenuItem("Save", "Ctrl+S"))
+                if (ImGui::MenuItem("Save", "CTRL+S"))
                     SaveScene();
 
-                if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+                if (ImGui::MenuItem("Save As...", "CTRL+Shift+S"))
                     SaveSceneAs();
 
                 if (ImGui::MenuItem("Exit"))
@@ -257,7 +260,7 @@ namespace Spike
         {
             ImGui::BeginTooltip();
             ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
-            ImGui::TextUnformatted("Reload C#");
+            ImGui::TextUnformatted("Reload C# assembly");
             ImGui::PopTextWrapPos();
             ImGui::EndTooltip();
         }
@@ -515,27 +518,46 @@ namespace Spike
         return false;
     }
 
-    void EditorLayer::NewScene()
+    void EditorLayer::OpenFolder()
     {
-        const char* filepath = FileDialogs::SelectFolder("Select or create a folder to save project files");
+        const char* filepath = FileDialogs::SelectFolder("Select a folder to open");
         if (filepath)
         {
             m_EditorScene = Ref<Scene>::Create();
             m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_SceneHierarchyPanel.SetContext(m_EditorScene);
-            m_ActiveFilepath = Vault::Init(filepath);
 
             m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
             m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
 
-            m_StartupCameraEntity = m_EditorScene->CreateEntity(ICON_FK_CAMERA" Main Camera");
-            m_StartupCameraEntity.AddComponent<CameraComponent>().Camera.SetProjectionType(SceneCamera::ProjectionType::Perspective);
-            m_StartupCameraEntity.GetComponent<TransformComponent>().Translation.z = 10.0f;
-            m_FirstTimeSave = true;
+            Vault::Init(filepath);
 
             String projectName = Vault::GetNameWithoutExtension(filepath);
+            UpdateWindowTitle(projectName);
+        }
+    }
+
+    void EditorLayer::NewScene()
+    {
+        const char* filepath = FileDialogs::SelectFolder("Select a location to save project files");
+        if (filepath)
+        {
+            m_EditorScene = Ref<Scene>::Create();
+            m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_SceneHierarchyPanel.SetContext(m_EditorScene);
+
+            m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
+            m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+
+            m_FirstTimeSave = false;
+            Vault::Init(filepath);
+
+            String projectName = Vault::GetNameWithoutExtension(filepath);
+            m_ActiveFilepath = String(filepath) + "/" + projectName + ".spike";
+
             SceneSerializer serializer(m_EditorScene);
-            serializer.Serialize(String(m_ActiveFilepath) + "/" + projectName + ".spike");
+            serializer.Serialize(m_ActiveFilepath);
+
             UpdateWindowTitle(projectName);
         }
     }
@@ -664,6 +686,5 @@ namespace Spike
             }
         }
     }
-
 }
 #pragma warning (pop) // Pop the warning

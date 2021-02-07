@@ -59,12 +59,18 @@ namespace Spike
         if (m_ProjectPath.empty())
             m_ProjectPath = Vault::GetProjectPath();
 
+
         ImGui::Begin("Spike Vault");
         if (ImGui::Button(ICON_FK_REFRESH))
         {
-            if (Vault::Reload())
-                SPK_CORE_LOG_INFO("Vault reloaded successfully.");
-            m_Files = GetFiles(m_ProjectPath);
+            if (Vault::IsVaultInitialized())
+            {
+                Vault::Reload();
+                m_ProjectPath = Vault::GetProjectPath();
+                m_Files = GetFiles(m_ProjectPath);
+            }
+            else
+                SPK_CORE_LOG_WARN("Open A working directory first! Go to 'Files->Open Folder' to open a working directory.");
         }
 
         if (!s_Loaded && !m_ProjectPath.empty())
@@ -90,13 +96,15 @@ namespace Spike
 
         String nodeString;
 
-        if (entry.Extension == ".cs" || entry.Extension == ".glsl")
-            nodeString = ICON_FK_FILE_CODE_O + String(" ") + entry.Name + entry.Extension;
+        if (entry.Extension == ".cs" || entry.Extension == ".glsl" || entry.Extension == ".cpp" || entry.Extension == ".lua"
+            || entry.Extension == ".py" || entry.Extension == ".hlsl" || entry.Extension == ".js" || entry.Extension == ".c")
+            nodeString = ICON_FK_CODE + String(" ") + entry.Name + entry.Extension;
 
         else if (entry.Extension == ".spike" || entry.Extension == ".txt")
-            nodeString = ICON_FK_FILE_TEXT + String(" ") + entry.Name + entry.Extension;
+            nodeString = ICON_FK_FILE_TEXT_O + String(" ") + entry.Name + entry.Extension;
 
-        else if (entry.Extension == ".png" || entry.Extension == ".jpg" || entry.Extension == ".gif" || entry.Extension == ".bmp" || entry.Extension == ".psd")
+        else if (entry.Extension == ".png" || entry.Extension == ".jpg" || entry.Extension == ".gif"
+            || entry.Extension == ".bmp" || entry.Extension == ".psd")
             nodeString = ICON_FK_FILE_IMAGE_O + String(" ") + entry.Name + entry.Extension;
 
         else if (entry.IsDirectory)
@@ -110,7 +118,6 @@ namespace Spike
             if (entry.IsDirectory)
                 for (auto& subDirectory : entry.SubEntries)
                     DrawPath(subDirectory);
-
             ImGui::TreePop();
         }
     }
