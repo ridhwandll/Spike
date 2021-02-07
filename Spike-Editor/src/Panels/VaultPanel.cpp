@@ -35,6 +35,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     static void* s_EditorLayerStorage;
+    static Ref<Texture> s_TexturePreviewStorage;
     static bool s_Loaded = false; //TEMP (TODO)
     VaultPanel::VaultPanel(const void* editorLayerPtr)
     {
@@ -89,6 +90,25 @@ namespace Spike
                 this->DrawPath(file);
         }
         ImGui::End();
+
+        bool show = true;
+        ImGui::Begin("Texture Preview", &show, ImGuiWindowFlags_NoResize);
+        if (s_TexturePreviewStorage)
+        {
+            uint64_t rendererID = s_TexturePreviewStorage->GetRendererID();
+            glm::vec2 imageRes = s_TexturePreviewStorage->GetResolution();
+            ImVec2 windowRes = ImGui::GetWindowSize();
+
+            glm::vec2 imageMiddle = { imageRes.x * 0.5f, imageRes.y * 0.5f };
+            glm::vec2 windowMiddle = { windowRes.x * 0.5f, windowRes.y * 0.5f };
+
+            glm::vec2 result = { windowMiddle - imageMiddle };
+            ImGui::SetCursorPos({ result.x, result.y });
+            ImGui::Image((ImTextureID)rendererID, { imageRes.x, imageRes.y }, { 0, 1 }, { 1, 0 });
+        }
+        else
+            ImGui::TextUnformatted("No Texture is selected. Select an image file\nin the Spike Vault to show it up here!");
+        ImGui::End();
     }
 
     void VaultPanel::DrawPath(DirectoryEntry& entry)
@@ -100,22 +120,17 @@ namespace Spike
 
         String nodeString;
 
-        if (entry.Extension == ".cs" || entry.Extension == ".glsl" || entry.Extension == ".cpp" || entry.Extension == ".lua"
-            || entry.Extension == ".py" || entry.Extension == ".hlsl" || entry.Extension == ".js" || entry.Extension == ".c")
-            nodeString = ICON_FK_CODE + String(" ") + entry.Name + entry.Extension;
+        bool codeExtBools = entry.Extension == ".cs" || entry.Extension == ".glsl" || entry.Extension == ".cpp" || entry.Extension == ".lua"
+            || entry.Extension == ".py" || entry.Extension == ".hlsl" || entry.Extension == ".js" || entry.Extension == ".c" || entry.Extension == ".h";
 
-        else if (entry.Extension == ".spike" || entry.Extension == ".txt")
-            nodeString = ICON_FK_FILE_TEXT_O + String(" ") + entry.Name + entry.Extension;
+        bool imageExtBools = entry.Extension == ".png" || entry.Extension == ".jpg" || entry.Extension == ".gif"
+            || entry.Extension == ".bmp" || entry.Extension == ".psd";
 
-        else if (entry.Extension == ".png" || entry.Extension == ".jpg" || entry.Extension == ".gif"
-            || entry.Extension == ".bmp" || entry.Extension == ".psd")
-            nodeString = ICON_FK_FILE_IMAGE_O + String(" ") + entry.Name + entry.Extension;
-
-        else if (entry.IsDirectory)
-            nodeString = ICON_FK_FOLDER + String(" ") + entry.Name;
-
-        else
-            nodeString = entry.Name + entry.Extension;
+        if (codeExtBools) nodeString = ICON_FK_CODE + String(" ") + entry.Name + entry.Extension;
+        else if (entry.Extension == ".spike" || entry.Extension == ".txt") nodeString = ICON_FK_FILE_TEXT_O + String(" ") + entry.Name + entry.Extension;
+        else if (imageExtBools) nodeString = ICON_FK_FILE_IMAGE_O + String(" ") + entry.Name + entry.Extension;
+        else if (entry.IsDirectory) nodeString = ICON_FK_FOLDER + String(" ") + entry.Name;
+        else nodeString = entry.Name + entry.Extension;
 
         if (ImGui::TreeNodeEx(nodeString.c_str(), flags))
         {
@@ -123,7 +138,7 @@ namespace Spike
                 for (auto& subDirectory : entry.SubEntries)
                     DrawPath(subDirectory);
 
-            if (entry.Extension == ".spike" && ImGui::IsItemClicked())
+            if (entry.Extension == ".spike" && ImGui::IsItemClicked(0))
             {
                 ((EditorLayer*)s_EditorLayerStorage)->m_ActiveFilepath = entry.AbsolutePath;
                 ((EditorLayer*)s_EditorLayerStorage)->m_FirstTimeSave = false;
@@ -133,6 +148,13 @@ namespace Spike
 
                 SceneSerializer serializer(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
                 serializer.Deserialize(entry.AbsolutePath);
+            }
+
+            if (imageExtBools && ImGui::IsItemClicked(0))
+            {
+                if (s_TexturePreviewStorage)
+                    s_TexturePreviewStorage = nullptr;
+                s_TexturePreviewStorage = Texture2D::Create(entry.AbsolutePath);
             }
 
             ImGui::TreePop();

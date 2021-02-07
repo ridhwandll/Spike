@@ -397,8 +397,8 @@ namespace Spike
 
             if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
             {
-                char const* lFilterPatterns[2] = { "*.png", "*.jpg" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", 2, lFilterPatterns, "Texture", false);
+                char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", 3, lFilterPatterns, "Texture", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }
@@ -407,8 +407,8 @@ namespace Spike
 
             if (ImGui::Button("Open Texture"))
             {
-                char const* lFilterPatterns[2] = { "*.png", "*.jpg" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", 2, lFilterPatterns, "Texture", false);
+                char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", 3, lFilterPatterns, "Texture", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }

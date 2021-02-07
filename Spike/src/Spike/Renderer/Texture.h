@@ -26,8 +26,9 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Core/Ref.h"
-#include <string>
 #include "Spike/Core/Base.h"
+#include <string>
+#include <glm/glm.hpp>
 
 namespace Spike
 {
@@ -58,6 +59,7 @@ namespace Spike
         virtual String GetName() const = 0;
         virtual void SetData(void* data, uint32_t size) = 0;
         virtual void ActivateSlot(uint32_t slot) = 0;
+        virtual glm::vec2 GetResolution() = 0;
         virtual bool Loaded() = 0;
         virtual void Bind(uint32_t slot = 0) const = 0;
         virtual void Unbind() const = 0;

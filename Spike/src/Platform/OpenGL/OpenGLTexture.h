@@ -45,6 +45,7 @@ namespace Spike
         virtual String GetFilepath() const override { return m_Path; }
         void SetData(void* data, uint32_t size) override;
         virtual void ActivateSlot(uint32_t slot) override;
+        virtual glm::vec2 GetResolution() override { return m_Resolution; };
         virtual void Bind(uint32_t slot = 0) const override;
         virtual void Unbind() const override;
         virtual bool Loaded() override { return m_Loaded; }
@@ -64,5 +65,6 @@ namespace Spike
         TextureWrap m_Wrap = TextureWrap::Clamp;
         bool m_IsHDR = false;
         bool m_Locked = false;
+        glm::vec2 m_Resolution;
     };
 }
