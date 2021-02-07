@@ -42,7 +42,7 @@ namespace Spike
     class VaultPanel
     {
     public:
-        VaultPanel();
+        VaultPanel(const void* editorLayerPtr);
         ~VaultPanel() = default;
 
         void OnImGuiRender();

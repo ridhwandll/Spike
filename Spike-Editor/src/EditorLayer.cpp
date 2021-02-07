@@ -43,7 +43,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     EditorLayer::EditorLayer()
-        : Layer("EditorLayer") {}
+        : Layer("EditorLayer"), m_VaultPanel(this) {}
 
     void EditorLayer::OnAttach()
     {

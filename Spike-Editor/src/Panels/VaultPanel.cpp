@@ -26,15 +26,19 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "VaultPanel.h"
 #include "Spike/Core/Vault.h"
+#include "Spike/Scene/SceneSerializer.h"
+#include "EditorLayer.h"
 #include <filesystem>
 #include <imgui/imgui.h>
 #include <FontAwesome.h>
 
 namespace Spike
 {
+    static void* s_EditorLayerStorage;
     static bool s_Loaded = false; //TEMP (TODO)
-    VaultPanel::VaultPanel()
+    VaultPanel::VaultPanel(const void* editorLayerPtr)
     {
+        s_EditorLayerStorage = (EditorLayer*)editorLayerPtr;
         m_ProjectPath.clear();
         s_Loaded = false;
     }
@@ -118,6 +122,19 @@ namespace Spike
             if (entry.IsDirectory)
                 for (auto& subDirectory : entry.SubEntries)
                     DrawPath(subDirectory);
+
+            if (entry.Extension == ".spike" && ImGui::IsItemClicked())
+            {
+                ((EditorLayer*)s_EditorLayerStorage)->m_ActiveFilepath = entry.AbsolutePath;
+                ((EditorLayer*)s_EditorLayerStorage)->m_FirstTimeSave = false;
+                ((EditorLayer*)s_EditorLayerStorage)->m_EditorScene = Ref<Scene>::Create();
+                ((EditorLayer*)s_EditorLayerStorage)->m_EditorScene->OnViewportResize((uint32_t)((EditorLayer*)s_EditorLayerStorage)->m_ViewportSize.x, (uint32_t)((EditorLayer*)s_EditorLayerStorage)->m_ViewportSize.y);
+                ((EditorLayer*)s_EditorLayerStorage)->m_SceneHierarchyPanel.SetContext(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
+
+                SceneSerializer serializer(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
+                serializer.Deserialize(entry.AbsolutePath);
+            }
+
             ImGui::TreePop();
         }
     }

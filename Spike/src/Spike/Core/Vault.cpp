@@ -44,7 +44,6 @@ namespace Spike
             Vault::Shutdown();
 
         s_ProjectPath = projectPath;
-
         s_VaultInitialized = true;
         Reload();
         return s_ProjectPath;
