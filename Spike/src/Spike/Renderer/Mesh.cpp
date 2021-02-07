@@ -226,7 +226,9 @@ namespace Spike
         auto parentPath = path.parent_path();
         parentPath /= std::string(name);
         std::string texturePath = parentPath.string();
-        Ref<Texture2D> texture = Vault::CreateAndSubmitTexture2D(texturePath.c_str(), m_FlipTexturesVertically, m_SRGB);
+
+        Ref<Texture2D> texture = Texture2D::Create(texturePath.c_str(), m_FlipTexturesVertically, m_SRGB);
+        Vault::SubmitTexture2D(texture);
         return texture;
     }
 }

@@ -120,7 +120,8 @@ namespace Spike
         for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
             samplers[i] = i;
 
-        s_Data.TextureShader = Vault::CreateAndSubmitBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader");
+        s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader");
+        Vault::SubmitBuiltInShader(s_Data.TextureShader);
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 

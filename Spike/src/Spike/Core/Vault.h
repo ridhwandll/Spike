@@ -47,12 +47,8 @@ namespace Spike
         static void Shutdown();
         static bool Reload();
 
-        static Ref<Shader> CreateAndSubmitShader(const String& path);
-        static Ref<Shader> CreateAndSubmitBuiltInShader(const String& source, const char* name);
-        static Ref<Texture2D> CreateAndSubmitTexture2D(const String& path);
-        static Ref<Texture2D> CreateAndSubmitTexture2D(const char* path, bool flipVertically, bool srgb);
-
         static Ref<Shader> SubmitShader(Ref<Shader>& shader);
+        static Ref<Shader> SubmitBuiltInShader(Ref<Shader>& shader);
         static Ref<Texture2D> SubmitTexture2D(Ref<Texture2D>& texture);
 
         static Ref<Shader> GetBuiltInShaderFromCache(const String& nameWithoutExtension);

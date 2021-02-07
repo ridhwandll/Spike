@@ -50,43 +50,6 @@ namespace Spike
         return s_ProjectPath;
     }
 
-    Ref<Shader> Vault::CreateAndSubmitShader(const String& path)
-    {
-        if (s_Shaders.count(path) == 0)
-        {
-            s_Shaders[path] = Shader::Create(path); /* [Spike] We store the shader in our cache [Spike] */
-            return s_Shaders[path];
-        }
-        return s_Shaders[path]; /* [Spike] Gives access to the second element, which is our cached shader [Spike] */
-    }
-
-    Ref<Shader> Vault::CreateAndSubmitBuiltInShader(const String& source, const char* name)
-    {
-        auto shader = Shader::AddBuiltInShader(source, name);
-        s_BuiltInShaders.push_back(shader);
-        return shader;
-    }
-
-    Ref<Texture2D> Vault::CreateAndSubmitTexture2D(const String& path)
-    {
-        if (s_Textures.count(path) == 0)
-        {
-            s_Textures[path] = Texture2D::Create(path); /* [Spike] We store the texture in our cache [Spike] */
-            return s_Textures[path];
-        }
-        return s_Textures[path]; /* [Spike] Gives access to the second element, which is our cached texture [Spike] */
-    }
-
-    Ref<Texture2D> Vault::CreateAndSubmitTexture2D(const char* path, bool flipVertically, bool srgb)
-    {
-        if (s_Textures.count(String(path)) == 0)
-        {
-            s_Textures[path] = Texture2D::Create(path, flipVertically, srgb); /* [Spike] We store the texture in our cache [Spike] */
-            return s_Textures[path];
-        }
-        return s_Textures[path]; /* [Spike] Gives access to the second element, which is our cached texture [Spike] */
-    }
-
     Ref<Shader> Vault::SubmitShader(Ref<Shader>& shader)
     {
         auto filepath = shader->GetFilepath();
@@ -97,6 +60,18 @@ namespace Spike
         }
         s_Shaders[filepath] = shader;
         return s_Shaders[filepath];
+    }
+
+    Ref<Shader> Vault::SubmitBuiltInShader(Ref<Shader>& shader)
+    {
+        auto name = shader->GetName();
+        for (auto& cacheShader : s_BuiltInShaders) /* [Spike] Blocks loading same shader twice [Spike] */
+        {
+            if (cacheShader->GetName() == name)
+                return cacheShader;
+        }
+        s_BuiltInShaders.push_back(shader); /* [Spike] It is not in the cache, so add it to cache! [Spike] */
+        return shader;
     }
 
     Ref<Texture2D> Vault::SubmitTexture2D(Ref<Texture2D>& texture)
