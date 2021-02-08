@@ -398,7 +398,7 @@ namespace Spike
             if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
             {
                 char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", 3, lFilterPatterns, "Texture", false);
+                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }
@@ -408,7 +408,7 @@ namespace Spike
             if (ImGui::Button("Open Texture"))
             {
                 char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", 3, lFilterPatterns, "Texture", false);
+                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }
@@ -434,7 +434,7 @@ namespace Spike
             if (ImGui::Button("Open"))
             {
                 const char* patterns[2] = { "*.fbx", "*.obj" };
-                const char* file = FileDialogs::OpenFile("Open 3D Object file", 2, patterns, "", false);
+                const char* file = FileDialogs::OpenFile("Open 3D Object file", "", 2, patterns, "", false);
                 if (file)
                 {
                     component.Mesh = Ref<Mesh>::Create(file);

@@ -61,8 +61,8 @@ namespace Spike
         static int AMessageBox(const String& title, const String& message, DialogType dialogType, IconType iconType, DefaultButton defaultButton);
         static char const* InputBox(const String& title, const String& message);
         static char const* PasswordBox(const String& title, const String& message);
-        static char const* OpenFile(const String& title, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc, bool allowMultipleSelects);
-        static char const* SaveFile(const String& title, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc);
+        static char const* OpenFile(const String& title, const String& defaultName, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc, bool allowMultipleSelects);
+        static char const* SaveFile(const String& title, const String& defaultName, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc);
         static char const* SelectFolder(const String& title);
     private:
         static const char* DialogTypeToString(DialogType type);

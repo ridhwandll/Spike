@@ -322,11 +322,11 @@ namespace Spike
         out << YAML::Key << "Scene" << YAML::Value << "Untitled";
         out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
         m_Scene->m_Registry.each([&](auto entityID)
-            {
-                Entity entity = { entityID, m_Scene.Raw() };
-                if (!entity) return;
-                SerializeEntity(out, entity);
-            });
+        {
+            Entity entity = { entityID, m_Scene.Raw() };
+            if (!entity) return;
+            SerializeEntity(out, entity);
+        });
         out << YAML::EndSeq;
         out << YAML::EndMap;
 
@@ -358,7 +358,6 @@ namespace Spike
             return false;
 
         String sceneName = data["Scene"].as<String>();
-        SPK_CORE_LOG_TRACE("Deserializing scene '%s'", sceneName.c_str());
 
         auto entities = data["Entities"];
         if (entities)
@@ -371,9 +370,6 @@ namespace Spike
                 auto tagComponent = entity["TagComponent"];
                 if (tagComponent)
                     name = tagComponent["Tag"].as<String>();
-
-                SPK_CORE_LOG_TRACE("Deserialized entity with ID = %llu, name = %s", uuid, name.c_str());
-
                 Entity deserializedEntity = m_Scene->CreateEntityWithID(uuid, name);
 
                 auto transformComponent = entity["TransformComponent"];

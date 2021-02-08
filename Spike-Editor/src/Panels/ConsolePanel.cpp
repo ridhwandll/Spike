@@ -31,9 +31,7 @@ namespace Spike
 {
     Console* Console::m_Console = new Console();
 
-    Console::Console()
-    {
-    }
+    Console::Console() {}
 
     Console::~Console()
     {

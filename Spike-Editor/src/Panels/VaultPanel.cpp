@@ -37,6 +37,7 @@ namespace Spike
     static void* s_EditorLayerStorage;
     static Ref<Texture> s_TexturePreviewStorage;
     static bool s_Loaded = false; //TEMP (TODO)
+
     VaultPanel::VaultPanel(const void* editorLayerPtr)
     {
         s_EditorLayerStorage = (EditorLayer*)editorLayerPtr;
@@ -47,14 +48,25 @@ namespace Spike
     Vector<DirectoryEntry> VaultPanel::GetFiles(const String& directory)
     {
         Vector<DirectoryEntry> result;
-        for (const auto& entry : std::filesystem::directory_iterator(directory))
+        try
         {
-            String path = entry.path().string();
-            DirectoryEntry e = { entry.path().stem().string(), entry.path().extension().string(), path, entry.is_directory() };
+            for (const auto& entry : std::filesystem::directory_iterator(directory))
+            {
+                String path = entry.path().string();
+                DirectoryEntry e = { entry.path().stem().string(), entry.path().extension().string(), path, entry.is_directory() };
 
-            if (entry.is_directory())
-                e.SubEntries = GetFiles(entry.path().string());
-            result.push_back(e);
+                if (entry.is_directory())
+                    e.SubEntries = GetFiles(entry.path().string());
+                result.push_back(e);
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            SPK_CORE_LOG_ERROR("%s !", e.what());
+        }
+        catch (...)
+        {
+            SPK_CORE_LOG_ERROR("Error on filesystem!");
         }
         return result;
     }
@@ -63,7 +75,6 @@ namespace Spike
     {
         if (m_ProjectPath.empty())
             m_ProjectPath = Vault::GetProjectPath();
-
 
         ImGui::Begin("Spike Vault");
         if (ImGui::Button(ICON_FK_REFRESH))
@@ -91,23 +102,22 @@ namespace Spike
         }
         ImGui::End();
 
-        bool show = true;
-        ImGui::Begin("Texture Preview", &show, ImGuiWindowFlags_NoResize);
+        ImGui::Begin("Texture Preview", false, ImGuiWindowFlags_HorizontalScrollbar);
         if (s_TexturePreviewStorage)
         {
             uint64_t rendererID = s_TexturePreviewStorage->GetRendererID();
             glm::vec2 imageRes = s_TexturePreviewStorage->GetResolution();
             ImVec2 windowRes = ImGui::GetWindowSize();
 
-            glm::vec2 imageMiddle = { imageRes.x * 0.5f, imageRes.y * 0.5f };
-            glm::vec2 windowMiddle = { windowRes.x * 0.5f, windowRes.y * 0.5f };
-
-            glm::vec2 result = { windowMiddle - imageMiddle };
-            ImGui::SetCursorPos({ result.x, result.y });
+            DrawImageAtMiddle(imageRes, { windowRes.x, windowRes.y });
             ImGui::Image((ImTextureID)rendererID, { imageRes.x, imageRes.y }, { 0, 1 }, { 1, 0 });
         }
         else
+        {
+            ImVec2 windowRes = ImGui::GetWindowSize();
+            ImGui::SetCursorPos({ windowRes.x * 0.2f, windowRes.y * 0.5f });
             ImGui::TextUnformatted("No Texture is selected. Select an image file\nin the Spike Vault to show it up here!");
+        }
         ImGui::End();
     }
 
@@ -138,6 +148,7 @@ namespace Spike
                 for (auto& subDirectory : entry.SubEntries)
                     DrawPath(subDirectory);
 
+            /* [Spike] Loading Spike files [Spike] */
             if (entry.Extension == ".spike" && ImGui::IsItemClicked(0))
             {
                 ((EditorLayer*)s_EditorLayerStorage)->m_ActiveFilepath = entry.AbsolutePath;
@@ -150,14 +161,30 @@ namespace Spike
                 serializer.Deserialize(entry.AbsolutePath);
             }
 
+            /* [Spike] Texture [Spike] */
             if (imageExtBools && ImGui::IsItemClicked(0))
             {
                 if (s_TexturePreviewStorage)
                     s_TexturePreviewStorage = nullptr;
                 s_TexturePreviewStorage = Texture2D::Create(entry.AbsolutePath);
+                ImGui::SetWindowFocus(String("Texture Preview").c_str());
             }
 
+            if ((codeExtBools || entry.Extension == ".txt") && ImGui::IsItemClicked(0))
+            {
+                ((EditorLayer*)s_EditorLayerStorage)->m_CodeEditorPanel.OpenFile(entry.AbsolutePath, entry.Extension);
+            }
             ImGui::TreePop();
         }
+    }
+
+    /* [Spike] Simple helper function with simple mEth [Spike] */
+    void VaultPanel::DrawImageAtMiddle(const glm::vec2& imageRes, const glm::vec2& windowRes)
+    {
+        glm::vec2 imageMiddle = { imageRes.x * 0.5f, imageRes.y * 0.5f };
+        glm::vec2 windowMiddle = { windowRes.x * 0.5f, windowRes.y * 0.5f };
+
+        glm::vec2 result = { windowMiddle - imageMiddle };
+        ImGui::SetCursorPos({ result.x, result.y });
     }
 }

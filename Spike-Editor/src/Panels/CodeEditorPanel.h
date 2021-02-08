@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : VaultPanel
+File Name      : CodeEditorPanel
 File Type      : h
-File created on: 2021/02/06
+File created on: 2021/02/08
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -25,34 +25,26 @@ Github repository : https://github.com/FahimFuad/Spike
 3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Spike/Core/Base.h"
-#include <glm/glm.hpp>
+#include "TextEditor.h"
 
 namespace Spike
 {
-    struct DirectoryEntry
-    {
-        String Name;
-        String Extension;
-        String AbsolutePath;
-
-        bool IsDirectory;
-        Vector<DirectoryEntry> SubEntries;
-    };
-
-    class VaultPanel
+    class CodeEditorPanel
     {
     public:
-        VaultPanel(const void* editorLayerPtr);
-        ~VaultPanel() = default;
+        CodeEditorPanel();
+        ~CodeEditorPanel() = default;
 
         void OnImGuiRender();
+        void OpenFile(const String& path, const String& extension = ".cs");
+        void Save();
     private:
-        void DrawPath(DirectoryEntry& entry);
-        Vector<DirectoryEntry> GetFiles(const String& directory);
-        void DrawImageAtMiddle(const glm::vec2& imageRes, const glm::vec2& windowRes);
-    private:
-        Vector<DirectoryEntry> m_Files;
-        String m_ProjectPath;
+        TextEditor m_TextEditor;
+        ImFont* m_Font;
+
+        String m_TextStorage;
+        String m_CurrentFilePath;
+        String m_CurrentFileName;
+        String m_FileType;
     };
 }

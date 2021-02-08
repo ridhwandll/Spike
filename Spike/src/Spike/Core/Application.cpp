@@ -63,7 +63,7 @@ namespace Spike
         Renderer::Shutdown();
         Renderer2D::Shutdown();
         ScriptEngine::Shutdown();
-        Vault::Shutdown();  
+        Vault::Shutdown();
     }
 
     void Application::PushLayer(Layer* layer)

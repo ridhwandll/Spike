@@ -51,17 +51,17 @@ namespace Spike
         return result;
     }
 
-    char const* FileDialogs::OpenFile(const String& title, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc, bool allowMultipleSelects)
+    char const* FileDialogs::OpenFile(const String& title, const String& defaultName, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc, bool allowMultipleSelects)
     {
         char const* result;
-        result = tinyfd_openFileDialog(title.c_str(), "", numberOfFilters, filterPatterns, filterDesc.c_str(), (int)allowMultipleSelects);
+        result = tinyfd_openFileDialog(title.c_str(), defaultName.c_str(), numberOfFilters, filterPatterns, filterDesc.c_str(), (int)allowMultipleSelects);
         return result;
     }
 
-    char const* FileDialogs::SaveFile(const String& title, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc)
+    char const* FileDialogs::SaveFile(const String& title, const String& defaultName, const int numberOfFilters, char const* const* const filterPatterns, const String& filterDesc)
     {
         char const* result;
-        result = tinyfd_saveFileDialog(title.c_str(), "", numberOfFilters, filterPatterns, filterDesc.c_str());
+        result = tinyfd_saveFileDialog(title.c_str(), defaultName.c_str(), numberOfFilters, filterPatterns, filterDesc.c_str());
         return result;
     }
 

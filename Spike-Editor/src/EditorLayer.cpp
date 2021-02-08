@@ -209,8 +209,6 @@ namespace Spike
         }
         style.WindowMinSize.x = minWinSizeX;
 
-        Console::Get()->OnImGuiRender();
-        ScriptEngine::OnImGuiRender();
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -220,9 +218,6 @@ namespace Spike
 
                 if (ImGui::MenuItem("New", "CTRL+N"))
                     NewScene();
-
-                if (ImGui::MenuItem("Open...", "CTRL+O"))
-                    OpenScene();
 
                 if (ImGui::MenuItem("Save", "CTRL+S"))
                     SaveScene();
@@ -242,9 +237,12 @@ namespace Spike
             ImGui::EndMenuBar();
         }
 
+        Console::Get()->OnImGuiRender();
+        ScriptEngine::OnImGuiRender();
         m_SceneHierarchyPanel.OnImGuiRender();
+        m_ProfilerPanel.OnImGuiRender();
         m_VaultPanel.OnImGuiRender();
-        m_ProfilerPanel.OnImGuiRender(m_SelectedEntity);
+        m_CodeEditorPanel.OnImGuiRender();
 
         bool show = true;
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
@@ -565,7 +563,7 @@ namespace Spike
     void EditorLayer::OpenScene()
     {
         const char* pattern[1] = { "*.spike" };
-        const char* filepath = FileDialogs::OpenFile("Open Scene", 1, pattern, "", false);
+        const char* filepath = FileDialogs::OpenFile("Open Scene", "", 1, pattern, "", false);
         if (filepath)
         {
             m_FirstTimeSave = false;
@@ -584,7 +582,7 @@ namespace Spike
     void EditorLayer::SaveSceneAs()
     {
         const char* pattern[1] = { "*.spike" };
-        const char* filepath = FileDialogs::SaveFile("Save Scene", 1, pattern, "Spike Scene");
+        const char* filepath = FileDialogs::SaveFile("Save Scene", "Scene.spike", 1, pattern, "Spike Scene");
         if (filepath)
         {
             m_FirstTimeSave = false;

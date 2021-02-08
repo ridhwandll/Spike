@@ -73,6 +73,7 @@ namespace Spike
     /* [Spike] Engine TypeDefs & Usings[Spike] */
     typedef uint8_t byte;
     typedef std::string String;
+    typedef uint32_t RendererID;
 
     template<typename T>
     using Vector = std::vector<T>;

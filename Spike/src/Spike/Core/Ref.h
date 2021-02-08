@@ -64,20 +64,15 @@ namespace Spike
     {
     public:
         Ref()
-            : m_Instance(nullptr)
-        {
-        }
+            : m_Instance(nullptr) {}
 
         Ref(std::nullptr_t n)
-            : m_Instance(nullptr)
-        {
-        }
+            : m_Instance(nullptr) {}
 
         Ref(T* instance)
             : m_Instance(instance)
         {
             static_assert(std::is_base_of<RefCounted, T>::value, "Class is not RefCounted!");
-
             IncRef();
         }
 
@@ -178,9 +173,7 @@ namespace Spike
             {
                 m_Instance->DecRefCount();
                 if (m_Instance->GetRefCount() == 0)
-                {
                     delete m_Instance;
-                }
             }
         }
 
@@ -188,9 +181,5 @@ namespace Spike
         friend class Ref;
         T* m_Instance;
     };
-
-    /*Useful typedefs*/
-    typedef uint32_t RendererID;
-
     // TODO: WeakRef
 }

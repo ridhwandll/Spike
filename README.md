@@ -4,6 +4,9 @@
 ![workflow](https://github.com/FahimFuad/Spike/workflows/build/badge.svg)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/742fb18d76ca40c691137d01cfbc7c8a)](https://www.codacy.com/gh/FahimFuad/Spike/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=FahimFuad/Spike&amp;utm_campaign=Badge_Grade)
 ![RepoSize](https://img.shields.io/github/repo-size/FahimFuad/SpikeEngine)
+
+![Spike](Resources/Branding/SpikeLogo.png)
+
 ## Welcome to the **Spike**'s source code
 
 ***A C++17 game engine, which can run on a toaster***  
