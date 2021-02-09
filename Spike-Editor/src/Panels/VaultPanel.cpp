@@ -30,7 +30,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "EditorLayer.h"
 #include <filesystem>
 #include <imgui/imgui.h>
-#include <FontAwesome.h>
 
 namespace Spike
 {
@@ -86,7 +85,7 @@ namespace Spike
                 m_Files = GetFiles(m_ProjectPath);
             }
             else
-                SPK_CORE_LOG_WARN("Open A working directory first! Go to 'Files->Open Folder' to open a working directory.");
+                SPK_CORE_LOG_WARN("Open A working directory first! Go to 'File>Open Folder' to open a working directory.");
         }
 
         if (!s_Loaded && !m_ProjectPath.empty())
@@ -169,16 +168,11 @@ namespace Spike
                 s_TexturePreviewStorage = Texture2D::Create(entry.AbsolutePath);
                 ImGui::SetWindowFocus(String("Texture Preview").c_str());
             }
-
-            if ((codeExtBools || entry.Extension == ".txt") && ImGui::IsItemClicked(0))
-            {
-                ((EditorLayer*)s_EditorLayerStorage)->m_CodeEditorPanel.OpenFile(entry.AbsolutePath, entry.Extension);
-            }
             ImGui::TreePop();
         }
     }
 
-    /* [Spike] Simple helper function with simple mEth [Spike] */
+    /* [Spike] Simple helper function with simple Math [Spike] */
     void VaultPanel::DrawImageAtMiddle(const glm::vec2& imageRes, const glm::vec2& windowRes)
     {
         glm::vec2 imageMiddle = { imageRes.x * 0.5f, imageRes.y * 0.5f };

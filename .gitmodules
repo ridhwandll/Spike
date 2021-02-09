@@ -9,6 +9,3 @@
 [submodule "Spike/vendor/yaml-cpp"]
 	path = Spike/vendor/yaml-cpp
 	url = https://github.com/FahimFuad/yaml-cpp.git
-[submodule "Spike/vendor/imgui"]
-	path = Spike/vendor/imgui
-	url = https://github.com/FahimFuad/imgui.git
