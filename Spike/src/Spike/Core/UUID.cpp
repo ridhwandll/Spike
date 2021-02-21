@@ -26,7 +26,6 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "UUID.h"
-
 #include <random>
 
 namespace Spike

@@ -26,7 +26,6 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Base.h"
-#include <xhash>
 
 namespace Spike
 {
@@ -42,11 +41,10 @@ namespace Spike
     private:
         uint64_t m_UUID;
     };
-
 }
 
-namespace std {
-
+namespace std
+{
     template <>
     struct hash<Spike::UUID>
     {

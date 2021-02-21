@@ -39,7 +39,6 @@ namespace Spike
         RGBA8,
         RED_INTEGER,
 
-
         // Depth/stencil
         DEPTH32F,
         DEPTH24STENCIL8,
