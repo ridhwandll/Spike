@@ -151,7 +151,6 @@ namespace Spike
         {
             {
                 Renderer2D::BeginScene(*mainCamera, cameraTransform);
-
                 auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
                 for (auto entity : group)
                 {
@@ -167,7 +166,6 @@ namespace Spike
             }
             {
                 Renderer::BeginScene(*mainCamera, cameraTransform);
-
                 auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
                 for (auto entity : group)
                 {
@@ -200,45 +198,42 @@ namespace Spike
     void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
     {
         {
+            Renderer2D::BeginScene(camera);
+
+            auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+            for (auto entity : group)
             {
-                Renderer2D::BeginScene(camera);
-
-                auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-                for (auto entity : group)
-                {
-                    auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                    Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
-                }
-
-                auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
-                const glm::vec4 debugColor(0.5f, 0.9f, 0.5f, 0.25f);
-                for (auto entity : view)
-                {
-                    auto[transformComponent, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
-                    glm::mat4 trans = transformComponent.GetTransform() *
-                        glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.0f)) * 
-                        glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
-
-                    Renderer2D::DrawQuad(trans, debugColor);
-                }
-
-                Renderer2D::EndScene();
+                auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
             }
 
+            auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
+            const glm::vec4 debugColor(0.5f, 0.9f, 0.5f, 0.25f);
+            for (auto entity : view)
             {
-                Renderer::BeginScene(camera);
+                auto[transformComponent, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+                glm::mat4 trans = transformComponent.GetTransform() *
+                    glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.0f)) * 
+                    glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
 
-                auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
-                for (auto entity : group)
-                {
-                    auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
-                    if (mesh.Mesh)
-                    {
-                        Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform(), (int)entity);
-                    }
-                }
-                Renderer::EndScene();
+                Renderer2D::DrawQuad(trans, debugColor);
             }
+
+            Renderer2D::EndScene();
+        }
+
+        {
+            Renderer::BeginScene(camera);
+            auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
+            for (auto entity : group)
+            {
+                auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
+                if (mesh.Mesh)
+                {
+                    Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform(), (int)entity);
+                }
+            }
+            Renderer::EndScene();
         }
     }
 

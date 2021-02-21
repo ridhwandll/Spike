@@ -623,8 +623,8 @@ namespace Spike
         }
         SPK_CORE_ASSERT(false, "Unknown field type!");
         return 0;
-
     }
+
     PublicField::PublicField(const String& name, FieldType type)
         :Name(name), Type(type)
     {

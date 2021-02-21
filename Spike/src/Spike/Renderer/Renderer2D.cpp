@@ -50,10 +50,10 @@ namespace Spike
 
     struct Renderer2DData
     {
-        static const uint32_t MaxQuads = 20000;
+        static const uint32_t MaxQuads = 10000;
         static const uint32_t MaxVertices = MaxQuads * 4;
         static const uint32_t MaxIndices = MaxQuads * 6;
-        static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
+        static const uint32_t MaxTextureSlots = 32;
 
         Ref<Pipeline> QuadPipeline;
         Ref<VertexBuffer> QuadVertexBuffer;
@@ -76,6 +76,9 @@ namespace Spike
 
     void Renderer2D::Init()
     {
+        s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader");
+        Vault::SubmitBuiltInShader(s_Data.TextureShader);
+
         s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
         s_Data.QuadVertexBuffer->SetLayout(
             {
@@ -115,8 +118,6 @@ namespace Spike
         for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
             samplers[i] = i;
 
-        s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader");
-        Vault::SubmitBuiltInShader(s_Data.TextureShader);
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 
@@ -153,13 +154,9 @@ namespace Spike
 
     void Renderer2D::BeginScene(const EditorCamera& camera)
     {
-
-
         glm::mat4 viewProj = camera.GetViewProjection();
-
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
-
         StartBatch();
     }
 
@@ -172,7 +169,6 @@ namespace Spike
     {
         s_Data.QuadIndexCount = 0;
         s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-
         s_Data.TextureSlotIndex = 1;
     }
 
@@ -206,32 +202,6 @@ namespace Spike
         StartBatch();
     }
 
-    void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
-    {
-        DrawQuad({ position.x, position.y, 0.0f }, size, color);
-    }
-
-    void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
-    {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-            * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-        DrawQuad(transform, color);
-    }
-
-    void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
-    {
-        DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColor);
-    }
-
-    void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
-    {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-            * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-        DrawQuad(transform, texture, tilingFactor, tintColor);
-    }
-
     void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
     {
         constexpr size_t quadVertexCount = 4;
@@ -252,7 +222,6 @@ namespace Spike
             s_Data.QuadVertexBufferPtr->EntityID = entityID;
             s_Data.QuadVertexBufferPtr++;
         }
-
         s_Data.QuadIndexCount += 6;
         s_Data.Stats.QuadCount++;
     }
@@ -297,36 +266,7 @@ namespace Spike
         }
 
         s_Data.QuadIndexCount += 6;
-
         s_Data.Stats.QuadCount++;
-    }
-
-    void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-    {
-        DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
-    }
-
-    void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-    {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-            * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-        DrawQuad(transform, color);
-    }
-
-    void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
-    {
-        DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColor);
-    }
-
-    void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
-    {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-            * glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-            * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-        DrawQuad(transform, texture, tilingFactor, tintColor);
     }
 
     void Renderer2D::ResetStats()
