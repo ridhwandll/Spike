@@ -5,8 +5,8 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : OpenGLVertexArray
-File Type      : h
+File Name      : VertexArray
+File Type      : cpp
 File created on: 2021/01/09
 File created by: Fahim Fuad
 Other editors  : None
@@ -24,29 +24,23 @@ Github repository : https://github.com/FahimFuad/Spike
 
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
-#pragma once
-#include "Spike/Renderer/VertexArray.h"
+#include "spkpch.h"
+#include "Pipeline.h"
+#include "Renderer.h"
+#include "Platform/OpenGL/OpenGLPipeline.h"
 
 namespace Spike
 {
-    class OpenGLVertexArray : public VertexArray
+    Ref<Pipeline> Pipeline::Create(const PipelineSpecification& spec)
     {
-    public:
-        OpenGLVertexArray();
-        virtual ~OpenGLVertexArray();
+        switch (Renderer::GetAPI())
+        {
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLPipeline>::Create(spec);
+        }
 
-        virtual void Bind() const override;
-        virtual void Unbind() const override;
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
+    }
 
-        virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) override;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
-
-        virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const override { return m_VertexBuffers; }
-        virtual const Ref<IndexBuffer>& GetIndexBuffer() const override { return m_IndexBuffer; }
-    private:
-        RendererID m_RendererID;
-        uint32_t m_VertexBufferIndex = 0;
-        std::vector<Ref<VertexBuffer>> m_VertexBuffers;
-        Ref<IndexBuffer> m_IndexBuffer;
-    };
 }

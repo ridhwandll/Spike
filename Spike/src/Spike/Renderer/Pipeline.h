@@ -28,24 +28,26 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Ref.h"
 #include "Spike/Renderer/VertexBuffer.h"
 #include "Spike/Renderer/IndexBuffer.h"
-#include <memory>
+#include "Spike/Renderer/Shader.h"
 
 namespace Spike
 {
-    class VertexArray : public RefCounted
+    struct PipelineSpecification
+    {
+        Ref<Spike::VertexBuffer> VertexBuffer;
+        Ref<Spike::Shader> Shader;
+        Ref<Spike::IndexBuffer> IndexBuffer;
+    };
+
+    class Pipeline : public RefCounted
     {
     public:
-        virtual ~VertexArray() = default;
+        virtual ~Pipeline() = default;
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
 
-        virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer) = 0;
-        virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) = 0;
-
-        virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const = 0;
-        virtual const Ref<IndexBuffer>& GetIndexBuffer() const = 0;
-
-        static Ref<VertexArray> Create();
+        virtual const PipelineSpecification& GetSpecification() const = 0;
+        static Ref<Pipeline> Create(const PipelineSpecification& spec);
     };
 }

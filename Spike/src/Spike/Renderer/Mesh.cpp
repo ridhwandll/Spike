@@ -59,13 +59,12 @@ namespace Spike
             m_Textures[i].Texture->Bind(i);
         }
 
-        m_VertexArray->Bind();
-        Renderer::Submit(m_VertexArray, m_Indices.size());
+        m_Pipeline->Bind();
+        Renderer::Submit(m_Pipeline, m_Indices.size());
     }
 
     void Submesh::SetupMesh()
     {
-        m_VertexArray = VertexArray::Create();
         m_VertexBuffer = VertexBuffer::Create(&m_Vertices[0], m_Vertices.size() * sizeof(Vertex));
         m_IndexBuffer = IndexBuffer::Create(&m_Indices[0], m_Indices.size() * sizeof(uint32_t));
 
@@ -78,10 +77,13 @@ namespace Spike
 
         m_VertexBuffer->SetLayout(layout);
 
-        m_VertexArray->Bind();
-        m_VertexArray->AddVertexBuffer(m_VertexBuffer);
-        m_VertexArray->SetIndexBuffer(m_IndexBuffer);
-        m_VertexArray->Unbind();
+
+        PipelineSpecification spec;
+        spec.VertexBuffer = m_VertexBuffer;
+        spec.IndexBuffer = m_IndexBuffer;
+        //spec.Shader = m_Shader;
+        m_Pipeline = Pipeline::Create(spec);
+        m_Pipeline->Bind();
     }
     Mesh::Mesh(const String& path)
     {

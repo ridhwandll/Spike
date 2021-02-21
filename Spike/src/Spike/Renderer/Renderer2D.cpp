@@ -29,7 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/BuiltInAssets/GLSLShaders.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Renderer.h"
-#include "Spike/Renderer/VertexArray.h"
+#include "Spike/Renderer/Pipeline.h"
 #include "Spike/Renderer/Shader.h"
 #include "Spike/Renderer/RenderCommand.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,7 +55,7 @@ namespace Spike
         static const uint32_t MaxIndices = MaxQuads * 6;
         static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
 
-        Ref<VertexArray> QuadVertexArray;
+        Ref<Pipeline> QuadPipeline;
         Ref<VertexBuffer> QuadVertexBuffer;
         Ref<Shader> TextureShader;
         Ref<Texture2D> WhiteTexture;
@@ -76,8 +76,6 @@ namespace Spike
 
     void Renderer2D::Init()
     {
-        s_Data.QuadVertexArray = VertexArray::Create();
-
         s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
         s_Data.QuadVertexBuffer->SetLayout(
             {
@@ -88,7 +86,6 @@ namespace Spike
             { ShaderDataType::Float,  "a_TilingFactor" },
             { ShaderDataType::Int,    "a_EntityID"     }
             });
-        s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
         s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
@@ -109,8 +106,6 @@ namespace Spike
         }
 
         Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
-        s_Data.QuadVertexArray->SetIndexBuffer(quadIB);
-        delete[] quadIndices;
 
         s_Data.WhiteTexture = Texture2D::Create(1, 1);
         uint32_t whiteTextureData = 0xffffffff;
@@ -132,6 +127,13 @@ namespace Spike
         s_Data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
         s_Data.QuadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
         s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+
+        PipelineSpecification spec;
+        spec.VertexBuffer = s_Data.QuadVertexBuffer;
+        spec.IndexBuffer = quadIB;
+        spec.Shader = s_Data.TextureShader;
+        s_Data.QuadPipeline = Pipeline::Create(spec);
+        delete[] quadIndices;
     }
 
     void Renderer2D::Shutdown()
@@ -186,7 +188,7 @@ namespace Spike
         for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
             s_Data.TextureSlots[i]->Bind(i);
 
-        RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+        RenderCommand::DrawIndexed(s_Data.QuadPipeline, s_Data.QuadIndexCount);
         s_Data.Stats.DrawCalls++;
     }
 

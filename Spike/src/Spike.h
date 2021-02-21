@@ -53,5 +53,5 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Framebuffer.h"
 #include "Spike/Renderer/Texture.h"
 #include "Spike/Renderer/SubTexture2D.h"
-#include "Spike/Renderer/VertexArray.h"
+#include "Spike/Renderer/Pipeline.h"
 

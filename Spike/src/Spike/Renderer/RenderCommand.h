@@ -51,9 +51,9 @@ namespace Spike
             s_RendererAPI->Clear();
         }
 
-        static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
+        static void DrawIndexed(const Ref<Pipeline>& pipeline, uint32_t count = 0)
         {
-            s_RendererAPI->DrawIndexed(vertexArray, count);
+            s_RendererAPI->DrawIndexed(pipeline, count);
         }
 
         static void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex)

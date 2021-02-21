@@ -240,8 +240,6 @@ namespace Spike
                 Renderer::EndScene();
             }
         }
-
-        Renderer2D::EndScene();
     }
 
     template<typename T>

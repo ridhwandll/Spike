@@ -27,7 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include "Spike/Renderer/Texture.h"
 #include "Spike/Renderer/Shader.h"
-#include "Spike/Renderer/VertexArray.h"
+#include "Spike/Renderer/Pipeline.h"
 #include "Spike/Renderer/VertexBuffer.h"
 #include "Spike/Renderer/IndexBuffer.h"
 #include <glm/glm.hpp>
@@ -66,7 +66,7 @@ namespace Spike
         Vector<TextureStruct> m_Textures;
 
     private:
-        Ref<VertexArray> m_VertexArray;
+        Ref<Pipeline> m_Pipeline;
         Ref<VertexBuffer> m_VertexBuffer;
         Ref<IndexBuffer> m_IndexBuffer;
         void SetupMesh();

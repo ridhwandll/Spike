@@ -42,8 +42,8 @@ namespace Spike
         static void BeginScene(const Camera& camera, const glm::mat4& transform);
         static void EndScene();
         static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, int entityID = -1);
-        static void Submit(Ref<Shader> shader, Ref<VertexArray> vertexArray, const glm::mat4& transform);
-        static void Submit(Ref<VertexArray> vertexArray, uint32_t size);
+        static void Submit(Ref<Shader> shader, Ref<Pipeline> pipeline, const glm::mat4& transform);
+        static void Submit(Ref<Pipeline> pipeline, uint32_t size);
 
         static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:

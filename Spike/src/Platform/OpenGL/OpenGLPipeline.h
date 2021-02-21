@@ -5,8 +5,8 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : VertexArray
-File Type      : cpp
+File Name      : OpenGLVertexArray
+File Type      : h
 File created on: 2021/01/09
 File created by: Fahim Fuad
 Other editors  : None
@@ -24,23 +24,23 @@ Github repository : https://github.com/FahimFuad/Spike
 
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
-#include "spkpch.h"
-#include "VertexArray.h"
-#include "Renderer.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#pragma once
+#include "Spike/Renderer/Pipeline.h"
 
 namespace Spike
 {
-    Ref<VertexArray> VertexArray::Create()
+    class OpenGLPipeline : public Pipeline
     {
-        switch (Renderer::GetAPI())
-        {
-            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexArray>::Create();
-        }
+    public:
+        OpenGLPipeline(const PipelineSpecification& spec);
+        virtual ~OpenGLPipeline();
 
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
-    }
-
+        virtual void Bind() const override;
+        virtual void Unbind() const override;
+        virtual const PipelineSpecification& GetSpecification() const override { return m_Specification; }
+    private:
+        RendererID m_RendererID;
+        uint32_t m_VertexBufferIndex = 0;
+        PipelineSpecification m_Specification;
+    };
 }
