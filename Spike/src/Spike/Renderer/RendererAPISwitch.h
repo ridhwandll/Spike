@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : RenderCommand
-File Type      : cpp
-File created on: 2021/01/09
+File Name      : RendererAPISwitch
+File Type      : h
+File created on: 2021/02/22
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -22,20 +22,11 @@ Github repository : https://github.com/FahimFuad/Spike
 2.You MUST NOT change or alter this file. This excludes the contributions done
   by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
-#include "spkpch.h"
-#include "RenderCommand.h"
-#include "Platform/OpenGL/OpenGLRendererAPI.h"
-#include "RendererAPISwitch.h"
+#pragma once
 
-namespace Spike
-{
-    #ifdef RENDERER_API_OPENGL
-        Scope<RendererAPI> RenderCommand::s_RendererAPI = CreateScope<OpenGLRendererAPI>();
-    #elif defined RENDERER_API_DX11
-        Scope<RendererAPI> RenderCommand::s_RendererAPI = CreateScope<DX11RendererAPI>();
-    #else
-        #error No RendererAPI selected! RendererAPI 'NONE' is currently not supported!
-    #endif
-}
+/* [Spike] Uncomment/Comment these #define 's to switch the RendererAPI [Spike] */
+#define RENDERER_API_OPENGL // OpenGL
+//#define RENDERER_API_DX11 // DirectX 11
+

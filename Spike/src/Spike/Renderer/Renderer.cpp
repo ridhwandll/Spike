@@ -38,7 +38,7 @@ namespace Spike
     void Renderer::Init()
     {
         RenderCommand::Init();
-        auto shader = Shader::AddBuiltInShader(s_GLSLMeshShader, "MeshShader");
+        auto shader = Shader::AddBuiltInShader(s_GLSLMeshShader, "MeshShader.glsl");
         Vault::SubmitBuiltInShader(shader);
     }
 

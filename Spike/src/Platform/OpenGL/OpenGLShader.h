@@ -49,7 +49,7 @@ namespace Spike
 
         const String& GetName() const override { return m_Name; }
         virtual void AddShaderReloadedCallback(const ShaderReloadedCallback& callback) override;
-        virtual void Load(const std::string& source) override;
+        virtual void Load(const String& source) override;
         virtual void DumpShaderData() override;
 
         void Reload();

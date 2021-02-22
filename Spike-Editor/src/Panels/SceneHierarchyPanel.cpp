@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "SceneHierarchyPanel.h"
+#include "Spike/Renderer/RendererAPISwitch.h"
 #include "UIUtils/UIUtils.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
@@ -387,15 +388,29 @@ namespace Spike
         {
             GUI::DrawColorControl("Color", component.Color);
 
-            const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-            stbi_set_flip_vertically_on_load(1);
+            #ifdef RENDERER_API_OPENGL
+                const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
+            #elif defined RENDERER_API_DX11
+                const void* id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
+            #endif
+
+            #ifdef RENDERER_API_OPENGL
+                stbi_set_flip_vertically_on_load(1);
+            #endif
 
             ImGui::Text("Texture");
             const float cursorPos = ImGui::GetCursorPosY();
             const ImVec2 buttonSize = { 65, 65 };
             ImGui::SameLine(ImGui::GetWindowWidth() * 0.8f);
 
-            if (ImGui::ImageButton((ImTextureID)id, buttonSize, { 0, 1 }, { 1, 0 }, 0, {1, 0, 1, 1}))
+            if
+            (
+            #ifdef RENDERER_API_OPENGL
+                ImGui::ImageButton(reinterpret_cast<void*>(id), buttonSize, { 0, 1 }, { 1, 0 })
+            #elif defined RENDERER_API_DX11
+                ImGui::ImageButton((ImTextureID)id, buttonSize)
+            #endif 
+            )
             {
                 char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
                 const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);

@@ -28,10 +28,10 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Vault.h"
 #include "Spike/Renderer/Mesh.h"
 #include "Renderer.h"
+#include <filesystem>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <filesystem>
 
 namespace Spike
 {
@@ -87,7 +87,7 @@ namespace Spike
     }
     Mesh::Mesh(const String& path)
     {
-        m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader");
+        m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader.glsl");
         LoadMesh(path);
     }
 

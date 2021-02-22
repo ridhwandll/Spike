@@ -55,11 +55,11 @@ namespace Spike
 
     void OpenGLShader::Reload()
     {
-        std::string source = Vault::ReadFile(m_Filepath);
+        String source = Vault::ReadFile(m_Filepath);
         Load(source);
     }
 
-    void OpenGLShader::Load(const std::string& source)
+    void OpenGLShader::Load(const String& source)
     {
         m_ShaderSource = PreProcess(source);
 
