@@ -33,6 +33,11 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    enum class ShaderDomain
+    {
+        VERTEX = 0,
+        PIXEL = 1
+    };
     class Shader : public RefCounted
     {
     public:
@@ -42,6 +47,7 @@ namespace Spike
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
         virtual String GetFilepath() const = 0;
+        virtual RendererID GetRendererID() const = 0;
 
         /* [Spike] Shader uniform setters, without and materials... just in case if we need it, we can use it [Spike] */
         virtual void SetInt(const String& name, int value) = 0;

@@ -31,6 +31,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Pipeline.h"
 #include "Spike/Renderer/Shader.h"
+#include "Spike/Renderer/ConstantBuffer.h"
 #include "Spike/Renderer/RenderCommand.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -59,6 +60,7 @@ namespace Spike
         Ref<VertexBuffer> QuadVertexBuffer;
         Ref<Shader> TextureShader;
         Ref<Texture2D> WhiteTexture;
+        Ref<ConstantBuffer> QuadConstantBuffer;
 
         uint32_t QuadIndexCount = 0;
         QuadVertex* QuadVertexBufferBase = nullptr;
@@ -74,10 +76,18 @@ namespace Spike
 
     static Renderer2DData s_Data;
 
+    struct ShaderData
+    {
+        glm::mat4 CameraViewProjection;
+    };
+
     void Renderer2D::Init()
     {
-        s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader");
+        s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader, "Renderer2DShader.glsl");
         Vault::SubmitBuiltInShader(s_Data.TextureShader);
+
+        s_Data.QuadConstantBuffer = ConstantBuffer::Create(s_Data.TextureShader, "Data", nullptr, sizeof(ShaderData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
+        s_Data.QuadConstantBuffer->Bind();
 
         s_Data.QuadVertexBuffer = VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
         s_Data.QuadVertexBuffer->SetLayout(
@@ -119,6 +129,7 @@ namespace Spike
             samplers[i] = i;
 
         s_Data.TextureShader->Bind();
+        /* [Spike] We dont use s_Data.QuadConstantBuffer here, as its OpenGL only [Spike] */
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
 
         // Set first texture slot to 0
@@ -147,8 +158,8 @@ namespace Spike
         glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 
         s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
-
+        s_Data.QuadConstantBuffer->Bind();
+        s_Data.QuadConstantBuffer->SetData(&viewProj);
         StartBatch();
     }
 
@@ -156,7 +167,8 @@ namespace Spike
     {
         glm::mat4 viewProj = camera.GetViewProjection();
         s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection", viewProj);
+        s_Data.QuadConstantBuffer->Bind();
+        s_Data.QuadConstantBuffer->SetData(&viewProj);
         StartBatch();
     }
 

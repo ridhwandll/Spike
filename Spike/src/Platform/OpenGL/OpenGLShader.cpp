@@ -64,7 +64,7 @@ namespace Spike
         m_ShaderSource = PreProcess(source);
 
         if (m_RendererID)
-            glDeleteProgram(m_RendererID);
+            glDeleteProgram((GLuint)m_RendererID);
 
         Compile();
         if (m_Loaded)
@@ -83,7 +83,7 @@ namespace Spike
 
     OpenGLShader::~OpenGLShader()
     {
-        glDeleteProgram(m_RendererID);
+        glDeleteProgram((GLuint)m_RendererID);
     }
 
     std::unordered_map<GLenum, String> OpenGLShader::PreProcess(const String& source)
@@ -171,12 +171,12 @@ namespace Spike
             glDeleteShader(id);
         }
 
-        m_RendererID = program;
+        m_RendererID = (RendererID)program;
     }
 
     void OpenGLShader::Bind() const
     {
-        glUseProgram(m_RendererID);
+        glUseProgram((GLuint)m_RendererID);
     }
 
     void OpenGLShader::Unbind() const
@@ -194,56 +194,56 @@ namespace Spike
 
     void OpenGLShader::UploadUniformInt(const String& name, int value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniform1i(location, value);
     }
 
     void OpenGLShader::UploadUniformIntArray(const String& name, int* value, uint32_t count)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniform1iv(location, count, value);
     }
 
     void OpenGLShader::UploadUniformFloat(const String& name, float value)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniform1f(location, value);
     }
 
     void OpenGLShader::UploadUniformFloat2(const String& name, const glm::vec2& values)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniform2f(location, values.x, values.y);
     }
 
     void OpenGLShader::UploadUniformFloat3(const String& name, const glm::vec3& values)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniform3f(location, values.x, values.y, values.z);
     }
 
     void OpenGLShader::UploadUniformFloat4(const String& name, const glm::vec4& values)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniform4f(location, values.x, values.y, values.z, values.w);
     }
 
     void OpenGLShader::UploadUniformMat3(const String& name, const glm::mat3& matrix)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
     void OpenGLShader::UploadUniformMat4(const String& name, const glm::mat4& matrix)
     {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
@@ -262,7 +262,7 @@ namespace Spike
         GLchar name[bufSize]; // variable name in GLSL
         GLsizei length; // name length
 
-        glGetProgramiv(m_RendererID, GL_ACTIVE_ATTRIBUTES, &count);
+        glGetProgramiv((GLuint)m_RendererID, GL_ACTIVE_ATTRIBUTES, &count);
         SPK_CORE_LOG_INFO("==========SPIKE-ENGINE==========");
         SPK_CORE_LOG_INFO("========== %s ==========", this->GetName().c_str());
         SPK_CORE_LOG_INFO("====ATTRIBUTES====");
@@ -270,17 +270,17 @@ namespace Spike
 
         for (i = 0; i < count; i++)
         {
-            glGetActiveAttrib(m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
+            glGetActiveAttrib((GLuint)m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
             SPK_CORE_LOG_INFO("Attribute %d Type: %d Name: %s", i, type, name);
         }
 
-        glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &count);
+        glGetProgramiv((GLuint)m_RendererID, GL_ACTIVE_UNIFORMS, &count);
         SPK_CORE_LOG_INFO("====UNIFORMS====");
         SPK_CORE_LOG_INFO("Active Uniforms: %d", count);
 
         for (i = 0; i < count; i++)
         {
-            glGetActiveUniform(m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
+            glGetActiveUniform((GLuint)m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
             SPK_CORE_LOG_INFO("Uniform #%d Type: %d Name: %s", i, type, name);
         }
     }
