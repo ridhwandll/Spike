@@ -121,12 +121,7 @@ namespace Spike
     {
         auto [xSpeed, ySpeed] = PanSpeed();
         m_FocalPoint += -GetRightDirection() * delta.x * xSpeed * m_Distance;
-
-    #ifdef RENDERER_API_DX11
-        m_FocalPoint += -GetUpDirection() * delta.y * ySpeed * m_Distance;
-    #elif defined RENDERER_API_OPENGL
         m_FocalPoint += GetUpDirection() * delta.y * ySpeed * m_Distance;
-    #endif
     }
 
     void EditorCamera::MouseRotate(const glm::vec2& delta)
@@ -168,10 +163,6 @@ namespace Spike
 
     glm::quat EditorCamera::GetOrientation() const
     {
-    #ifdef RENDERER_API_DX11
-        return glm::quat(glm::vec3(m_Pitch, -m_Yaw, 0.0f));
-    #elif defined RENDERER_API_OPENGL
         return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
-    #endif
     }
 }
