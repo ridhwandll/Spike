@@ -34,6 +34,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike::GUI
 {
+    void DrawImageControl(const RendererID imageID, const glm::vec2& viewportDimensions);
+    bool DrawImageButtonControl(const RendererID imageID, glm::vec2 buttonSize);
     bool DrawScriptTextControl(const char* label, String& value, float columnWidth = 100.0f, bool foundTheScript = false);
     bool DrawTextControl(const char* label, char* value, float columnWidth = 100.0f);
     void DrawVec3Control(const String& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);

@@ -27,6 +27,8 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "VaultPanel.h"
 #include "Spike/Core/Vault.h"
 #include "Spike/Scene/SceneSerializer.h"
+#include "Spike/Renderer/RendererAPISwitch.h"
+#include "UIUtils/UIUtils.h"
 #include "EditorLayer.h"
 #include <filesystem>
 #include <imgui/imgui.h>
@@ -109,7 +111,7 @@ namespace Spike
             ImVec2 windowRes = ImGui::GetWindowSize();
 
             DrawImageAtMiddle(imageRes, { windowRes.x, windowRes.y });
-            ImGui::Image((ImTextureID)rendererID, { imageRes.x, imageRes.y }, { 0, 1 }, { 1, 0 });
+            GUI::DrawImageControl(rendererID, { imageRes.x, imageRes.y });
         }
         else
         {

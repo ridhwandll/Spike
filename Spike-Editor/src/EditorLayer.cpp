@@ -37,6 +37,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <ImGuizmo.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #pragma warning(push)
 #pragma warning(disable : 4244) //Disable ugly 'C4244' "type conversion" warning!
 
@@ -57,6 +58,7 @@ namespace Spike
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
+        UpdateWindowTitle("Spike Engine Startup Window (No project is opened)");
     }
 
     void EditorLayer::OnDetach()
@@ -268,38 +270,26 @@ namespace Spike
         if (m_SceneState == SceneState::Edit)
         {
             if (ImGui::ArrowButton("Play", ImGuiDir_Right))
-            {
                 OnScenePlay();
-            }
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
-            {
                 SPK_CORE_LOG_WARN("You can pause the scene only in Playmode!");
-            }
         }
         else if (m_SceneState == SceneState::Play)
         {
             if (ImGui::Button(ICON_FK_STOP))
-            {
                 OnSceneStop();
-            }
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
-            {
                 OnScenePause();
-            }
         }
         else if (m_SceneState == SceneState::Pause)
         {
             if (ImGui::Button(ICON_FK_STOP))
-            {
                 OnSceneStop();
-            }
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
-            {
                 OnSceneResume();
-            }
         }
 
         ImGui::End();
@@ -338,7 +328,7 @@ namespace Spike
             auto& scripts = Vault::GetAllScripts();
             for (auto& script : scripts)
                 if (script.first.c_str())
-                    if (ImGui::TreeNode(Vault::GetNameWithoutExtension(script.first).c_str()))
+                    if (ImGui::TreeNode(Vault::GetNameWithExtension(script.first).c_str()))
                         ImGui::TreePop();
             ImGui::TreePop();
         }
@@ -360,8 +350,7 @@ namespace Spike
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-        ImGui::Image(m_Framebuffer->GetColorViewID(), ImVec2{ m_ViewportSize.x, m_ViewportSize.y });
-
+        GUI::DrawImageControl(m_Framebuffer->GetColorViewID(), m_ViewportSize);
         DrawGizmos();
         ImGui::End();
         ImGui::PopStyleVar();
@@ -445,11 +434,12 @@ namespace Spike
                     m_GizmoType = ImGuizmo::OPERATION::SCALE;
                 }
                 break;
-            case Key::Escape:
-                if (m_SceneState == SceneState::Play)
-                {
-                    m_SceneState = SceneState::Edit;
-                }
+            case Key::F5:
+                if (m_SceneState == SceneState::Edit)
+                    OnScenePlay();
+                else
+                    OnSceneStop();
+                break;
         }
         return false;
     }
@@ -480,7 +470,6 @@ namespace Spike
 
             SceneSerializer serializer(m_EditorScene);
             serializer.Serialize(m_ActiveFilepath);
-
             UpdateWindowTitle(projectName);
         }
     }

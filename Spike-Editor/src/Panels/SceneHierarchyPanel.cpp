@@ -388,7 +388,7 @@ namespace Spike
         {
             GUI::DrawColorControl("Color", component.Color);
 
-            const auto id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
+            const RendererID imageID = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
 
             #ifdef RENDERER_API_OPENGL
                 stbi_set_flip_vertically_on_load(1);
@@ -396,17 +396,9 @@ namespace Spike
 
             ImGui::Text("Texture");
             const float cursorPos = ImGui::GetCursorPosY();
-            const ImVec2 buttonSize = { 65, 65 };
             ImGui::SameLine(ImGui::GetWindowWidth() * 0.8f);
 
-            if
-            (
-            #ifdef RENDERER_API_OPENGL
-                ImGui::ImageButton(reinterpret_cast<void*>(id), buttonSize, { 0, 1 }, { 1, 0 })
-            #elif defined RENDERER_API_DX11
-                ImGui::ImageButton((ImTextureID)id, buttonSize)
-            #endif 
-            )
+            if(GUI::DrawImageButtonControl(imageID, { 65, 65 }))
             {
                 char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
                 const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
@@ -430,7 +422,7 @@ namespace Spike
                 component.RemoveTexture();
 
             // Tiling Factor
-            GUI::DrawFloatControl("Tiling Factor", &component.TilingFactor, 120);
+            GUI::DrawFloatControl("Tiling Factor", &component.TilingFactor, 100);
         });
 
         DrawComponent<MeshComponent>(ICON_FK_CUBE" Mesh", entity, [](auto& component)
@@ -653,10 +645,11 @@ namespace Spike
         });
         DrawComponent<BoxCollider2DComponent>("BoxCollider2D", entity, [](auto& component)
         {
-            GUI::DrawFloat2Control("Offset",   component.Offset);
-            GUI::DrawFloat2Control("Size",     component.Size);
-            GUI::DrawFloatControl("Density",  &component.Density);
-            GUI::DrawFloatControl("Friction", &component.Friction);
+            GUI::DrawFloat2Control("Offset",   component.Offset, 150.0f);
+            GUI::DrawFloat2Control("Size",     component.Size, 150.0f);
+            GUI::DrawFloatControl("Density",  &component.Density, 150.0f);
+            GUI::DrawFloatControl("Friction", &component.Friction, 150.0f);
+            GUI::DrawBoolControl("Show Collider Bounds", &component.ShowBounds, 150.0f);
         });
         DrawComponent<CircleCollider2DComponent>("CircleCollider2D", entity, [](auto& component)
         {

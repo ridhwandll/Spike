@@ -90,14 +90,7 @@ namespace Spike
     {
         m_Scene = scene;
 
-        float gravityScale = 9.8f;
-        switch (RendererAPI::GetAPI())
-        {
-            case RendererAPI::API::DX11:   gravityScale =  9.8f; break;
-            case RendererAPI::API::OpenGL: gravityScale = -9.8f; break;// -9.8 because OpenGL's Y axis is flipped
-            default:                       gravityScale =  9.8f; break;
-        }
-        Box2DWorldComponent& box2DWorld = m_Scene->m_Registry.emplace<Box2DWorldComponent>(m_Scene->m_SceneEntity, CreateScope<b2World>(b2Vec2{ 0.0f, gravityScale }));
+        Box2DWorldComponent& box2DWorld = m_Scene->m_Registry.emplace<Box2DWorldComponent>(m_Scene->m_SceneEntity, CreateScope<b2World>(b2Vec2{ 0.0f, -9.8f }));
         box2DWorld.World->SetContactListener(&m_ContactListener);
     }
 
