@@ -61,6 +61,11 @@ namespace Spike
             s_RendererAPI->DrawIndexedMesh(indexCount, baseIndex, baseVertex);
         }
 
+        static void BindBackbuffer()
+        {
+            s_RendererAPI->BindBackbuffer();
+        }
+
     private:
         static Scope<RendererAPI> s_RendererAPI;
     };

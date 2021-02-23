@@ -32,8 +32,8 @@ namespace Spike
     class OpenGLVertexBuffer : public VertexBuffer
     {
     public:
-        OpenGLVertexBuffer(uint32_t size);
-        OpenGLVertexBuffer(void* vertices, uint32_t size);
+        OpenGLVertexBuffer(uint32_t size, VertexBufferLayout layout);
+        OpenGLVertexBuffer(void* vertices, uint32_t size, VertexBufferLayout layout);
         virtual ~OpenGLVertexBuffer();
 
         virtual void Bind() const override;

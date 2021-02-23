@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "ConstantBuffer.h"
 #include "RendererAPI.h"
 #include "Platform/OpenGL/OpenGLConstantBuffer.h"
+#include "Platform/DX11/DX11ConstantBuffer.h"
 
 namespace Spike
 {
@@ -37,6 +38,7 @@ namespace Spike
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLConstantBuffer>::Create(shader, name, data, size, bindSlot, shaderDomain, usage);
+            case RendererAPI::API::DX11:    return Ref<DX11ConstantBuffer>::Create(shader, name, data, size, bindSlot, shaderDomain, usage);
         }
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;

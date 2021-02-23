@@ -46,11 +46,12 @@ namespace Spike
     OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
         :m_Width(width), m_Height(height)
     {
+        uint32_t rendererID;
         m_Name = "[Spike] Internal Texture";
         m_InternalFormat = GL_RGBA8;
         m_DataFormat = GL_RGBA;
-        glGenTextures(1, &m_RendererID);
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        glGenTextures(1, &rendererID);
+        glBindTexture(GL_TEXTURE_2D, rendererID);
 
         m_Loaded = true;
 
@@ -58,6 +59,7 @@ namespace Spike
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        m_RendererID = (RendererID)rendererID;
     }
 
     OpenGLTexture2D::OpenGLTexture2D(const String& path)
@@ -70,7 +72,6 @@ namespace Spike
         {
             data = stbi_load(path.c_str(), &width, &height, &channels, 0);
         }
-        m_Resolution = { width, height };
         if (data == nullptr) //We don't want to assert here....the engine should be running
         {
             SPK_CORE_LOG_CRITICAL("Failed to load image!");
@@ -101,8 +102,9 @@ namespace Spike
 
         m_Loaded = true;
 
-        glGenTextures(1, &m_RendererID);
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        uint32_t rendererID;
+        glGenTextures(1, &rendererID);
+        glBindTexture(GL_TEXTURE_2D, rendererID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -113,87 +115,20 @@ namespace Spike
         GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, type, data);
         glGenerateMipmap(GL_TEXTURE_2D);
-
-        stbi_image_free(data);
-    }
-
-    OpenGLTexture2D::OpenGLTexture2D(const String& path, bool flipVertically, bool srgb)
-        :m_Path(path)
-    {
-        m_Name = Vault::GetNameWithoutExtension(path);
-        int width, height, channels;
-        if (flipVertically)
-            stbi_set_flip_vertically_on_load(1);
-        else
-            stbi_set_flip_vertically_on_load(0);
-
-        stbi_uc* data = nullptr;
-
-        if (stbi_is_hdr(path.c_str()))
-        {
-            SPK_CORE_LOG_INFO("Loading HDR texture {0}, srgb = {1}", path, srgb);
-            data = (stbi_uc*)stbi_loadf(path.c_str(), &width, &height, &channels, 0);
-            m_IsHDR = true;
-            m_Format = TextureFormat::Float16;
-        }
-        else
-        {
-            SPK_CORE_LOG_INFO("Loading texture %s, srgb = %s", path.c_str(), srgb ? "true" : "false");
-            data = stbi_load(path.c_str(), &width, &height, &channels, srgb ? STBI_rgb : STBI_rgb_alpha);
-            SPK_CORE_ASSERT(data, "Could not read image!");
-            m_Format = TextureFormat::RGBA;
-        }
-
-        if (!data)
-            return;
-
-        m_Loaded = true;
-        m_Width = width;
-        m_Height = height;
-
-        if (srgb)
-        {
-            glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-            int levels = Texture::CalculateMipMapCount(m_Width, m_Height);
-            glTextureStorage2D(m_RendererID, levels, GL_SRGB8, m_Width, m_Height);
-            glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-            glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, GL_RGB, GL_UNSIGNED_BYTE, data);
-            glGenerateTextureMipmap(m_RendererID);
-        }
-        else
-        {
-            glGenTextures(1, &m_RendererID);
-            glBindTexture(GL_TEXTURE_2D, m_RendererID);
-
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-            GLenum internalFormat = ConvertToOpenGLTextureFormat(m_Format);
-            GLenum format = srgb ? GL_SRGB8 : (m_IsHDR ? GL_RGB : ConvertToOpenGLTextureFormat(m_Format));
-            GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
-            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, format, type, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        glBindTexture(GL_TEXTURE_2D, 0);
-        stbi_image_free(data);
-
+        m_RendererID = (RendererID)rendererID;
+        free(data);
     }
 
     OpenGLTexture2D::~OpenGLTexture2D()
     {
-        glDeleteTextures(1, &m_RendererID);
+        glDeleteTextures(1, (GLuint*)m_RendererID);
     }
 
-    void OpenGLTexture2D::Bind(uint32_t slot) const
+    void OpenGLTexture2D::Bind(uint32_t slot, ShaderDomain domain) const
     {
         GLenum textureUnit = GL_TEXTURE0 + slot;
         glActiveTexture(textureUnit);
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        glBindTexture(GL_TEXTURE_2D, (GLuint)m_RendererID);
     }
 
     void OpenGLTexture2D::Unbind() const
@@ -205,7 +140,7 @@ namespace Spike
     {
         uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
         SPK_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
-        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+        glBindTexture(GL_TEXTURE_2D, (GLuint)m_RendererID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
 

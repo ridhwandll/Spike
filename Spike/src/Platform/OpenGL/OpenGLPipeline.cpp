@@ -53,11 +53,14 @@ namespace Spike
     OpenGLPipeline::OpenGLPipeline(const PipelineSpecification& spec)
         :m_Specification(spec)
     {
-        glGenVertexArrays(1, &m_RendererID);
-
         SPK_CORE_ASSERT(m_Specification.VertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
-        glBindVertexArray(m_RendererID);
+
+        uint32_t rendererID;
+        glGenVertexArrays(1, &rendererID);
+        glBindVertexArray(rendererID);
+
         m_Specification.VertexBuffer->Bind();
+
         const auto& layout = m_Specification.VertexBuffer->GetLayout();
         for (const auto& element : layout)
         {
@@ -115,22 +118,30 @@ namespace Spike
                 SPK_INTERNAL_ASSERT("Unknown ShaderDataType!");
             }
         }
-        glBindVertexArray(m_RendererID);
+        glBindVertexArray(rendererID);
         m_Specification.IndexBuffer->Bind();
+        m_RendererID = (RendererID)rendererID;
     }
 
     OpenGLPipeline::~OpenGLPipeline()
     {
-        glDeleteVertexArrays(1, &m_RendererID);
+        glDeleteVertexArrays(1, (GLuint*)m_RendererID);
     }
 
     void OpenGLPipeline::Bind() const
     {
-        glBindVertexArray(m_RendererID);
+        uint32_t* rendererID = reinterpret_cast<uint32_t*>(m_RendererID);
+        glBindVertexArray(*rendererID);
     }
 
     void OpenGLPipeline::Unbind() const
     {
         glBindVertexArray(0);
     }
+
+    void OpenGLPipeline::SetPrimitiveTopology(PrimitiveTopology topology)
+    {
+        //TODO
+    }
+
 }

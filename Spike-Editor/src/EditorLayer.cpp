@@ -48,9 +48,10 @@ namespace Spike
     void EditorLayer::OnAttach()
     {
         FramebufferSpecification fbSpec;
-        fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
         fbSpec.Width = 1280;
         fbSpec.Height = 720;
+        fbSpec.SwapChainTarget = false;
+        fbSpec.BufferDescriptions.emplace_back(FramebufferSpecification::BufferDesc(FormatCode::R32G32B32A32_FLOAT, BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE));
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         m_EditorScene = Ref<Scene>::Create();
@@ -115,10 +116,8 @@ namespace Spike
 
         // Render
         Renderer2D::ResetStats();
+        m_Framebuffer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
         m_Framebuffer->Bind();
-        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-        RenderCommand::Clear();
-        m_Framebuffer->ClearAttachment(1, -1);
 
         switch (m_SceneState)
         {
@@ -147,20 +146,9 @@ namespace Spike
             }
         }
 
-        auto [mx, my] = ImGui::GetMousePos();
-        mx -= m_ViewportBounds[0].x;
-        my -= m_ViewportBounds[0].y;
-        glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
-        my = m_ViewportSize.y - my;
-        int mouseX = (int)mx;
-        int mouseY = (int)my;
-
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x &&
-            mouseY < (int)m_ViewportSize.y && Input::IsMouseButtonPressed(Mouse::Button0) && !ImGuizmo::IsUsing())
-        {
-            auto pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            m_SelectedEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_EditorScene.Raw());
-        }
+        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+        RenderCommand::Clear();
+        RenderCommand::BindBackbuffer();
         m_Framebuffer->Unbind();
     }
 
@@ -170,9 +158,6 @@ namespace Spike
         static bool opt_fullscreen_persistant = true;
         bool opt_fullscreen = opt_fullscreen_persistant;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-
-        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
-        // because it would be confusing to have two docking targets within each others.
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         if (opt_fullscreen)
         {
@@ -186,7 +171,6 @@ namespace Spike
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
 
-        // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
         if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
             window_flags |= ImGuiWindowFlags_NoBackground;
 
@@ -326,67 +310,36 @@ namespace Spike
         {
             auto& shaders = Vault::GetAllShaders();
             for (auto& shader : shaders)
-            {
                 if (shader)
-                {
                     if (ImGui::TreeNode(shader->GetName().c_str()))
-                    {
-                        if (ImGui::Button("Reload"))
-                            shader->Reload();
-                        ImGui::SameLine();
-                        if (ImGui::Button("Dump Shader Data"))
-                            shader->DumpShaderData();
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("BuiltIn Shaders"))
         {
             auto& shaders = Vault::GetAllBuiltInShaders();
             for (auto& shader : shaders)
-            {
                 if (shader)
-                {
                     if (ImGui::TreeNode(shader->GetName().c_str()))
-                    {
-                        if (ImGui::Button("Dump Shader Data"))
-                            shader->DumpShaderData();
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("Textures"))
         {
             auto& textures = Vault::GetAllTextures();
             for (auto& texture : textures)
-            {
                 if (texture)
-                {
                     if (ImGui::TreeNode(texture->GetName().c_str()))
-                    {
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("Scripts"))
         {
             auto& scripts = Vault::GetAllScripts();
             for (auto& script : scripts)
-            {
                 if (script.first.c_str())
-                {
                     if (ImGui::TreeNode(Vault::GetNameWithoutExtension(script.first).c_str()))
-                    {
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         ImGui::End();
@@ -407,8 +360,7 @@ namespace Spike
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-        uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-        ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+        ImGui::Image(m_Framebuffer->GetColorViewID(), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
         DrawGizmos();
         auto windowSize = ImGui::GetWindowSize();
@@ -596,9 +548,7 @@ namespace Spike
     void EditorLayer::SaveScene()
     {
         if (m_FirstTimeSave)
-        {
             SaveSceneAs();
-        }
         else
         {
             SceneSerializer serializer(m_EditorScene);
@@ -663,7 +613,6 @@ namespace Spike
                 snapValue = 45.0f;
 
             float snapValues[3] = { snapValue, snapValue, snapValue };
-
             ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
                 (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
                 nullptr, snap ? snapValues : nullptr);
@@ -680,9 +629,7 @@ namespace Spike
                 tc.Scale = scale;
             }
             else
-            {
                 m_GizmoInUse = false;
-            }
         }
     }
 }

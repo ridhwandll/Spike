@@ -42,7 +42,9 @@ namespace Spike
         :m_Filepath(filepath)
     {
         m_Name = Vault::GetNameWithoutExtension(filepath);
-        Reload();
+        String source = Vault::ReadFile(m_Filepath);
+        m_ShaderSource = PreProcess(source);
+        Compile();
     }
 
     OpenGLShader::OpenGLShader(const String& source, const char* name)
@@ -50,35 +52,6 @@ namespace Spike
     {
         m_ShaderSource = PreProcess(source);
         Compile();
-        m_Loaded = true;
-    }
-
-    void OpenGLShader::Reload()
-    {
-        String source = Vault::ReadFile(m_Filepath);
-        Load(source);
-    }
-
-    void OpenGLShader::Load(const String& source)
-    {
-        m_ShaderSource = PreProcess(source);
-
-        if (m_RendererID)
-            glDeleteProgram((GLuint)m_RendererID);
-
-        Compile();
-        if (m_Loaded)
-        {
-            for (auto& callback : m_ShaderReloadedCallbacks)
-                callback();
-        }
-
-        m_Loaded = true;
-    }
-
-    void OpenGLShader::AddShaderReloadedCallback(const ShaderReloadedCallback& callback)
-    {
-        m_ShaderReloadedCallbacks.push_back(callback);
     }
 
     OpenGLShader::~OpenGLShader()
@@ -184,7 +157,12 @@ namespace Spike
         glUseProgram(0);
     }
 
-    void OpenGLShader::SetInt       (const String& name, int value)                  { UploadUniformInt     (name, value);        }
+    void* OpenGLShader::GetNativeClass()
+    {
+        return (void*)this;
+    }
+
+    void OpenGLShader::SetInt(const String& name, int value) { UploadUniformInt(name, value); }
     void OpenGLShader::SetIntArray  (const String& name, int* value, uint32_t count) { UploadUniformIntArray(name, value, count); }
     void OpenGLShader::SetFloat     (const String& name, float value)                { UploadUniformFloat   (name, value);        }
     void OpenGLShader::SetFloat2    (const String& name, const glm::vec2& value)     { UploadUniformFloat2  (name, value);        }
@@ -246,42 +224,5 @@ namespace Spike
         GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)
             glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
-    }
-
-    void OpenGLShader::DumpShaderData()
-    {
-        auto console = Console::Get();
-
-        GLint i;
-        GLint count;
-
-        GLint size; // size of the variable
-        GLenum type; // type of the variable (float, vec3 or mat4, etc)
-
-        const GLsizei bufSize = 50; // maximum name length
-        GLchar name[bufSize]; // variable name in GLSL
-        GLsizei length; // name length
-
-        glGetProgramiv((GLuint)m_RendererID, GL_ACTIVE_ATTRIBUTES, &count);
-        SPK_CORE_LOG_INFO("==========SPIKE-ENGINE==========");
-        SPK_CORE_LOG_INFO("========== %s ==========", this->GetName().c_str());
-        SPK_CORE_LOG_INFO("====ATTRIBUTES====");
-        SPK_CORE_LOG_INFO("Active Attributes: %d", count);
-
-        for (i = 0; i < count; i++)
-        {
-            glGetActiveAttrib((GLuint)m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
-            SPK_CORE_LOG_INFO("Attribute %d Type: %d Name: %s", i, type, name);
-        }
-
-        glGetProgramiv((GLuint)m_RendererID, GL_ACTIVE_UNIFORMS, &count);
-        SPK_CORE_LOG_INFO("====UNIFORMS====");
-        SPK_CORE_LOG_INFO("Active Uniforms: %d", count);
-
-        for (i = 0; i < count; i++)
-        {
-            glGetActiveUniform((GLuint)m_RendererID, (GLuint)i, bufSize, &length, &size, &type, name);
-            SPK_CORE_LOG_INFO("Uniform #%d Type: %d Name: %s", i, type, name);
-        }
     }
 }

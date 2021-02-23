@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Physics2D.h"
+#include "Spike/Renderer/RendererAPI.h"
 #include <box2D/box2D.h>
 
 namespace Spike
@@ -88,8 +89,15 @@ namespace Spike
     void Physics2D::CreateScene(Scene* scene)
     {
         m_Scene = scene;
-        Box2DWorldComponent& box2DWorld =
-            m_Scene->m_Registry.emplace<Box2DWorldComponent>(m_Scene->m_SceneEntity, CreateScope<b2World>(b2Vec2{ 0.0f, -9.8f }));
+
+        float gravityScale = 9.8f;
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11:   gravityScale =  9.8f; break;
+            case RendererAPI::API::OpenGL: gravityScale = -9.8f; break;// -9.8 because OpenGL's Y axis is flipped
+            default:                       gravityScale =  9.8f; break;
+        }
+        Box2DWorldComponent& box2DWorld = m_Scene->m_Registry.emplace<Box2DWorldComponent>(m_Scene->m_SceneEntity, CreateScope<b2World>(b2Vec2{ 0.0f, gravityScale }));
         box2DWorld.World->SetContactListener(&m_ContactListener);
     }
 

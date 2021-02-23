@@ -104,8 +104,8 @@ namespace Spike
         ImGui::Begin("Texture Preview", false, ImGuiWindowFlags_HorizontalScrollbar);
         if (s_TexturePreviewStorage)
         {
-            uint64_t rendererID = s_TexturePreviewStorage->GetRendererID();
-            glm::vec2 imageRes = s_TexturePreviewStorage->GetResolution();
+            auto rendererID = s_TexturePreviewStorage->GetRendererID();
+            glm::vec2 imageRes = { s_TexturePreviewStorage->GetWidth(), s_TexturePreviewStorage->GetHeight() };
             ImVec2 windowRes = ImGui::GetWindowSize();
 
             DrawImageAtMiddle(imageRes, { windowRes.x, windowRes.y });

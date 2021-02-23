@@ -75,13 +75,7 @@ namespace Spike
     typedef uint8_t byte;
     typedef std::string String;
 
-    #ifdef RENDERER_API_OPENGL
-        typedef uint32_t RendererID;
-    #elif defined RENDERER_API_DX11
-        typedef void* RendererID;
-    #else
-        #error No RendererAPI selected! RendererAPI 'NONE' is currently not supported!
-    #endif
+    typedef void* RendererID;
 
     template<typename T>
     using Vector = std::vector<T>;

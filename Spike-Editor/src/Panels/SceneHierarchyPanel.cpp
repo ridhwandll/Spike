@@ -388,11 +388,7 @@ namespace Spike
         {
             GUI::DrawColorControl("Color", component.Color);
 
-            #ifdef RENDERER_API_OPENGL
-                const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-            #elif defined RENDERER_API_DX11
-                const void* id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-            #endif
+            const auto id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
 
             #ifdef RENDERER_API_OPENGL
                 stbi_set_flip_vertically_on_load(1);

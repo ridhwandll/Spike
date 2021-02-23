@@ -26,17 +26,21 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "ImGuiLayer.h"
-
+#include "Spike/Renderer/RendererAPISwitch.h"
 #include <imgui.h>
 #include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-
 #include "Spike/Core/Application.h"
-
 #include <GLFW/glfw3.h> // TEMPORARY
 #include <glad/glad.h> // TEMPORARY
 #include <ImGuizmo.h>
 #include <FontAwesome.h>
+
+#ifdef RENDERER_API_OPENGL
+    #include "backends/imgui_impl_opengl3.h"
+#elif defined RENDERER_API_DX11
+    #include "Platform/DX11/DX11Internal.h"
+    #include "backends/imgui_impl_dx11.h"
+#endif
 
 namespace Spike
 {
@@ -74,16 +78,18 @@ namespace Spike
         {
             style.WindowRounding = 0.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-        }
-
+        }   
         SetDarkThemeColors();
-
         Application& app = Application::Get();
         GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 
-        // Setup Platform/Renderer bindings
+    #ifdef RENDERER_API_OPENGL
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 410");
+    #elif defined RENDERER_API_DX11
+        ImGui_ImplGlfw_InitForVulkan(window, true); //GLFW init
+        ImGui_ImplDX11_Init(DX11Internal::GetDevice(), DX11Internal::GetDeviceContext());
+    #endif
     }
     void ImGuiLayer::OnEvent(Event& e)
     {
@@ -96,14 +102,22 @@ namespace Spike
     }
     void ImGuiLayer::OnDetach()
     {
+    #ifdef RENDERER_API_OPENGL
         ImGui_ImplOpenGL3_Shutdown();
+    #elif defined RENDERER_API_DX11
+        ImGui_ImplDX11_Shutdown();
+    #endif
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
     void ImGuiLayer::Begin()
     {
+    #ifdef RENDERER_API_OPENGL
         ImGui_ImplOpenGL3_NewFrame();
+    #elif defined RENDERER_API_DX11
+        ImGui_ImplDX11_NewFrame();
+    #endif
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGuizmo::BeginFrame();
@@ -117,7 +131,11 @@ namespace Spike
 
         // Rendering
         ImGui::Render();
+    #ifdef RENDERER_API_OPENGL
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    #elif defined RENDERER_API_DX11
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    #endif
 
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {

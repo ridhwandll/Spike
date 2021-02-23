@@ -38,7 +38,7 @@ namespace Spike
     Logger Logger::s_CoreLogger = Logger("Spike");
     std::vector<std::string>     Logger::s_Buffer;
 
-    bool Logger::s_LogToFile = true;
+    bool Logger::s_LogToFile = false;
     bool Logger::s_LogToConsole = true;
     bool Logger::s_LogToEditorConsole = true;
 

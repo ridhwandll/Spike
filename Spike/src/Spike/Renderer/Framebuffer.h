@@ -26,50 +26,48 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike/Core/Ref.h"
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 
 namespace Spike
 {
-
-    enum class FramebufferTextureFormat
+    enum class FormatCode
     {
-        None = 0,
-
-        // Color
-        RGBA8,
-        RED_INTEGER,
-
-        // Depth/stencil
-        DEPTH32F,
-        DEPTH24STENCIL8,
-
-        // Defaults
-        Depth = DEPTH24STENCIL8
+        R32G32B32A32_FLOAT = 2,
+        R8G8B8A8_UNORM = 28,
+        D24_UNORM_S8_UINT = 45
     };
 
-    struct FramebufferTextureSpecification
+    enum class BindFlag
     {
-        FramebufferTextureSpecification() = default;
-        FramebufferTextureSpecification(FramebufferTextureFormat format) : TextureFormat(format) {}
-
-        FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
-        // TODO: filtering/wrap
+        VERTEX_BUFFER = 0x1L,
+        INDEX_BUFFER = 0x2L,
+        CONSTANT_BUFFER = 0x4L,
+        SHADER_RESOURCE = 0x8L,
+        STREAM_OUTPUT = 0x10L,
+        RENDER_TARGET = 0x20L,
+        DEPTH_STENCIL = 0x40L,
+        UNORDERED_ACCESS = 0x80L,
+        DECODER = 0x200L,
+        VIDEO_ENCODER = 0x400L
     };
-
-    struct FramebufferAttachmentSpecification
-    {
-        FramebufferAttachmentSpecification() = default;
-        FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
-            : Attachments(attachments) {}
-
-        std::vector<FramebufferTextureSpecification> Attachments;
-    };
+    inline BindFlag operator|(BindFlag a, BindFlag b) { return (BindFlag)((uint32_t)a | (uint32_t)b); };
 
     struct FramebufferSpecification
     {
         uint32_t Width = 0, Height = 0;
         uint32_t Samples = 1;
-        FramebufferAttachmentSpecification Attachments;
+
+        struct BufferDesc
+        {
+            BufferDesc() = default;
+            BufferDesc(FormatCode format, BindFlag bindFlags)
+                :BindFlags(bindFlags), Format(format) {}
+
+            FormatCode Format;
+            BindFlag BindFlags;
+        };
+
+        Vector<BufferDesc> BufferDescriptions;
         bool SwapChainTarget = false;
     };
 
@@ -77,15 +75,15 @@ namespace Spike
     {
     public:
         virtual ~Framebuffer() = default;
+
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
+        virtual void Resize(uint32_t width, uint32_t height) = 0;
+        virtual FramebufferSpecification& GetSpecification() = 0;
+        virtual void Clear(const glm::vec4& clearColor) = 0;
+        virtual RendererID GetColorViewID() = 0;
+        virtual RendererID GetSwapChainTarget() = 0;
 
-        virtual void Resize(const uint32_t width, const uint32_t height) = 0;
-        virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
-
-        virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
-        virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
-        virtual const FramebufferSpecification& GetSpecification() const = 0;
         static Ref<Framebuffer> Create(const FramebufferSpecification& spec);
     };
 }

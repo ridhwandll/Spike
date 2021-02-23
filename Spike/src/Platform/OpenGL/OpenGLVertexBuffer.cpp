@@ -30,28 +30,35 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, VertexBufferLayout layout)
+        :m_Layout(layout)
     {
-        glCreateBuffers(1, &m_RendererID);
-        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        uint32_t rendererID;
+
+        glGenBuffers(1, &rendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, rendererID);
         glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+        m_RendererID = (RendererID)rendererID;
     }
 
-    OpenGLVertexBuffer::OpenGLVertexBuffer(void* vertices, uint32_t size)
+    OpenGLVertexBuffer::OpenGLVertexBuffer(void* vertices, uint32_t size, VertexBufferLayout layout)
+        :m_Layout(layout)
     {
-        glCreateBuffers(1, &m_RendererID);
-        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        uint32_t rendererID;
+        glGenBuffers(1, &rendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, rendererID);
         glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+        m_RendererID = (RendererID)rendererID;
     }
 
     OpenGLVertexBuffer::~OpenGLVertexBuffer()
     {
-        glDeleteBuffers(1, &m_RendererID);
+        glDeleteBuffers(1, (GLuint*)m_RendererID);
     }
 
     void OpenGLVertexBuffer::Bind() const
     {
-        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, (GLuint)m_RendererID);
     }
 
     void OpenGLVertexBuffer::Unbind() const
@@ -61,7 +68,7 @@ namespace Spike
 
     void OpenGLVertexBuffer::SetData(const void* data, uint32_t size)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, (GLuint)m_RendererID);
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
     }
 }

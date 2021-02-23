@@ -32,11 +32,21 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    enum class PrimitiveTopology
+    {
+        UNDEFINED = 0,
+        POINTLIST = 1,
+        LINELIST = 2,
+        LINESTRIP = 3,
+        TRIANGLELIST = 4,
+        TRIANGLESTRIP = 5
+    };
+
     struct PipelineSpecification
     {
-        Ref<Spike::VertexBuffer> VertexBuffer;
-        Ref<Spike::Shader> Shader;
-        Ref<Spike::IndexBuffer> IndexBuffer;
+        Ref<Spike::VertexBuffer> VertexBuffer = nullptr;
+        Ref<Spike::Shader> Shader = nullptr;
+        Ref<Spike::IndexBuffer> IndexBuffer = nullptr;
     };
 
     class Pipeline : public RefCounted
@@ -48,6 +58,7 @@ namespace Spike
         virtual void Unbind() const = 0;
 
         virtual const PipelineSpecification& GetSpecification() const = 0;
+        virtual void SetPrimitiveTopology(PrimitiveTopology topology) = 0;
         static Ref<Pipeline> Create(const PipelineSpecification& spec);
     };
 }

@@ -32,8 +32,8 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Events/MouseEvent.h"
 #include "Spike/Events/KeyEvent.h"
 #include "Platform/OpenGL/OpenGLContext.h"
+#include "Platform/DX11/DX11Context.h"
 
-// GLFW is temporary. In Windows it will be replaced by WIN32 API
 namespace Spike
 {
     static bool s_GLFWInitialized = false;
@@ -75,8 +75,12 @@ namespace Spike
 
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 
-
+#ifdef RENDERER_API_DX11
+        m_Context = CreateScope<DX11Context>(m_Window);
+#elif defined RENDERER_API_OPENGL
         m_Context = CreateScope<OpenGLContext>(m_Window);
+#endif
+
         m_Context->Init();
 
         glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -180,7 +184,6 @@ namespace Spike
 
     void WindowsWindow::OnUpdate()
     {
-
         glfwPollEvents();
         m_Context->SwapBuffers();
     }
@@ -193,10 +196,12 @@ namespace Spike
 
     void WindowsWindow::SetVSync(bool enabled)
     {
+    #ifdef RENDERER_API_OPENGL
         if (enabled)
             glfwSwapInterval(1);
         else
             glfwSwapInterval(0);
+    #endif // RENDERER_API_OPENGL
 
         m_Data.VSync = enabled;
     }

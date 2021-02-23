@@ -38,6 +38,7 @@ namespace Spike
         virtual void Bind() const override;
         virtual void Unbind() const override;
         virtual const PipelineSpecification& GetSpecification() const override { return m_Specification; }
+        virtual void SetPrimitiveTopology(PrimitiveTopology topology) override;
     private:
         RendererID m_RendererID;
         uint32_t m_VertexBufferIndex = 0;

@@ -33,18 +33,20 @@ namespace Spike
     OpenGLIndexBuffer::OpenGLIndexBuffer(void* indices, uint32_t size)
         : m_Size(size)
     {
-        glCreateBuffers(1, &m_RendererID);
-        glNamedBufferData(m_RendererID, size, indices, GL_STATIC_DRAW);
+        uint32_t rendererID;
+        glCreateBuffers(1, &rendererID);
+        glNamedBufferData(rendererID, size, indices, GL_STATIC_DRAW);
+        m_RendererID = (RendererID)rendererID;
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
-        glDeleteBuffers(1, &m_RendererID);
+        glDeleteBuffers(1, (GLuint*)m_RendererID);
     }
 
     void OpenGLIndexBuffer::Bind() const
     {
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (GLuint)m_RendererID);
     }
 
     void OpenGLIndexBuffer::Unbind() const

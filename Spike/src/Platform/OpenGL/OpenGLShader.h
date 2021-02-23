@@ -38,6 +38,8 @@ namespace Spike
         virtual void Unbind() const override;
         virtual String GetFilepath() const override { return m_Filepath; }
         virtual RendererID GetRendererID() const override { return m_RendererID; }
+        const String& GetName() const override { return m_Name; }
+        virtual void* GetNativeClass() override;
 
         virtual void SetInt(const String& name, int value) override;
         virtual void SetIntArray(const String& name, int* value, uint32_t count) override;
@@ -46,13 +48,6 @@ namespace Spike
         virtual void SetFloat3(const String& name, const glm::vec3& value) override;
         virtual void SetFloat4(const String& name, const glm::vec4& value) override;
         virtual void SetMat4(const String& name, const glm::mat4& value) override;
-
-        const String& GetName() const override { return m_Name; }
-        virtual void AddShaderReloadedCallback(const ShaderReloadedCallback& callback) override;
-        virtual void Load(const String& source) override;
-        virtual void DumpShaderData() override;
-
-        void Reload();
     private:
         std::unordered_map<GLenum, String> PreProcess(const String& source);
         void Compile();
@@ -66,11 +61,9 @@ namespace Spike
         void UploadUniformMat3(const String& name, const glm::mat3& matrix);
         void UploadUniformMat4(const String& name, const glm::mat4& matrix);
     private:
-        bool m_Loaded = false;
         String m_Name, m_Filepath;
         RendererID m_RendererID;
         std::unordered_map<GLenum, String> m_ShaderSource;
-        std::vector<ShaderReloadedCallback> m_ShaderReloadedCallbacks;
     };
 
 }

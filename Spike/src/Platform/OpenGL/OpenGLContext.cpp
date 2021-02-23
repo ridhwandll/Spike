@@ -51,5 +51,4 @@ namespace Spike
     {
         glfwSwapBuffers(m_WindowHandle);
     }
-
 }

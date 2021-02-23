@@ -155,11 +155,7 @@ namespace Spike
                 for (auto entity : group)
                 {
                     auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-                    if (sprite.Texture)
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, sprite.TilingFactor, sprite.Color);
-                    else
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+                    Renderer2D::DrawSprite(transform.GetTransform(), sprite);
                 }
 
                 Renderer2D::EndScene();
@@ -204,7 +200,7 @@ namespace Spike
             for (auto entity : group)
             {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite);
             }
 
             auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();

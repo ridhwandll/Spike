@@ -69,9 +69,12 @@ project "Spike"
 
 	filter "system:windows"
 		systemversion "latest"
-
-		defines
+		links
 		{
+			"d3d11.lib",
+			"dxgi.lib",
+			"dxguid.lib",
+			"d3dCompiler.lib",
 		}
 
 	filter "configurations:Debug"
