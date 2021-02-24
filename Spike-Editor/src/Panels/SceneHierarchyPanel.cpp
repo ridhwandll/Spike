@@ -29,7 +29,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "UIUtils/UIUtils.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
-#include "Spike/Scripting/ScriptEngine.h"
 #include "Spike/Utility/FileDialogs.h"
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -278,14 +277,6 @@ namespace Spike
                     SPK_CORE_LOG_WARN("This entity already has Mesh component!");
                 ImGui::CloseCurrentPopup();
             }
-            if (ImGui::MenuItem("Script"))
-            {
-                if (!entity.HasComponent<ScriptComponent>())
-                    entity.AddComponent<ScriptComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Script component!");
-                ImGui::CloseCurrentPopup();
-            }
             if (ImGui::MenuItem("RigidBody2D"))
             {
                 if (!entity.HasComponent<RigidBody2DComponent>())
@@ -457,99 +448,6 @@ namespace Spike
                 {
                     if (ImGui::Button("Reload"))
                         component.Mesh->Reload();
-                }
-            }
-        });
-
-        /* [Spike] Yeah, this needs to be mutable [Spike] */
-        DrawComponent<ScriptComponent>(ICON_FK_CODE" Script", entity, [=](ScriptComponent& sc) mutable
-        {
-            String oldName = sc.ModuleName;
-            if (GUI::DrawScriptTextControl("Module Name", sc.ModuleName, 100.0f, ScriptEngine::ModuleExists(sc.ModuleName)))
-            {
-                // Shutdown old script
-                if (ScriptEngine::ModuleExists(oldName))
-                    ScriptEngine::ShutdownScriptEntity(entity, oldName);
-
-                if (ScriptEngine::ModuleExists(sc.ModuleName))
-                    ScriptEngine::InitScriptEntity(entity);
-            }
-
-            // Public Fields
-            if (ScriptEngine::ModuleExists(sc.ModuleName))
-            {
-                EntityInstanceData& entityInstanceData = ScriptEngine::GetEntityInstanceData(entity.GetSceneUUID(), ID);
-                auto& moduleFieldMap = entityInstanceData.ModuleFieldMap;
-                if (moduleFieldMap.find(sc.ModuleName) != moduleFieldMap.end())
-                {
-                    auto& publicFields = moduleFieldMap.at(sc.ModuleName);
-                    for (auto& [name, field] : publicFields)
-                    {
-                        bool isRuntime = m_Context->m_IsPlaying && field.IsRuntimeAvailable();
-                        switch (field.Type)
-                        {
-                            case FieldType::Int:
-                            {
-                                int value = isRuntime ? field.GetRuntimeValue<int>() : field.GetStoredValue<int>();
-                                if (GUI::DrawIntControl(field.Name.c_str(), &value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Float:
-                            {
-                                float value = isRuntime ? field.GetRuntimeValue<float>() : field.GetStoredValue<float>();
-                                if (GUI::DrawFloatControl(field.Name.c_str(), &value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Vec2:
-                            {
-                                glm::vec2 value = isRuntime ? field.GetRuntimeValue<glm::vec2>() : field.GetStoredValue<glm::vec2>();
-                                if (GUI::DrawFloat2Control(field.Name.c_str(), value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Vec3:
-                            {
-                                glm::vec3 value = isRuntime ? field.GetRuntimeValue<glm::vec3>() : field.GetStoredValue<glm::vec3>();
-                                if (GUI::DrawFloat3Control(field.Name.c_str(), value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Vec4:
-                            {
-                                glm::vec4 value = isRuntime ? field.GetRuntimeValue<glm::vec4>() : field.GetStoredValue<glm::vec4>();
-                                if (GUI::DrawFloat4Control(field.Name.c_str(), value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                        }
-                    }
                 }
             }
         });

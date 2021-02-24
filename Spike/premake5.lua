@@ -50,7 +50,6 @@ project "Spike"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Assimp}",
 		"%{IncludeDir.box2D}",
-		"%{IncludeDir.mono}",
 		"%{IncludeDir.tinyfiledialogs}",
 		"%{IncludeDir.FontAwesome}"
 	}
@@ -63,7 +62,6 @@ project "Spike"
 		"yaml-cpp",
 		"box2D",
 		"%{LibraryDir.Assimp}",
-		"%{LibraryDir.mono}",
 		"opengl32.lib"
 	}
 

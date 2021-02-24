@@ -32,7 +32,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Input.h"
 #include "Spike/Core/Vault.h"
 #include "Spike/Utility/FileDialogs.h"
-#include "Spike/Scripting/ScriptEngine.h"
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
@@ -50,7 +49,6 @@ namespace Spike
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-        ScriptEngine::Init("Spike-Editor/assets/scripts/ExampleApp.dll");
         Renderer::Init();
         Renderer2D::Init();
 
@@ -62,7 +60,6 @@ namespace Spike
     {
         Renderer::Shutdown();
         Renderer2D::Shutdown();
-        ScriptEngine::Shutdown();
         Vault::Shutdown();
     }
 

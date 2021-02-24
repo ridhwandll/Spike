@@ -29,12 +29,10 @@ IncludeDir["yaml_cpp"] = "%{wks.location}/Spike/vendor/yaml-cpp/include"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Spike/vendor/ImGuizmo"
 IncludeDir["Assimp"] = "%{wks.location}/Spike/vendor/assimp/include"
 IncludeDir["box2D"] = "%{wks.location}/Spike/vendor/box2D/include"
-IncludeDir["mono"] = "%{wks.location}/Spike/vendor/mono/include"
 IncludeDir["tinyfiledialogs"] = "%{wks.location}/Spike/vendor/tinyfiledialogs"
 IncludeDir["FontAwesome"] = "%{wks.location}/Spike-Editor/src"
 
 LibraryDir = {}
-LibraryDir["mono"] = "%{wks.location}/Spike/vendor/mono/lib/Debug/mono-2.0-sgen.lib"
 LibraryDir["Assimp"] = "%{wks.location}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib"
 
 group "Dependencies"
@@ -47,61 +45,3 @@ group ""
 
 include "Spike"
 include "Spike-Editor"
-
-project "ScriptEngine"
-    location "ScriptEngine"
-    kind "SharedLib"
-    language "C#"
-
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-    files
-    {
-        "%{prj.name}/src/**.cs"
-    }
-
-
-
-    -- Test Project
-workspace "Sandbox"
-    architecture "x64"
-    targetdir "build"
-
-    configurations 
-    { 
-        "Debug", 
-        "Release",
-        "Dist"
-    }
-
-project "ScriptEngine"
-    location "ScriptEngine"
-    kind "SharedLib"
-    language "C#"
-
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-    files 
-    {
-        "%{prj.name}/src/**.cs", 
-    }
-
-project "ExampleApp"
-    location "ExampleApp"
-    kind "SharedLib"
-    language "C#"
-
-    targetdir ("%{wks.location}/Spike-Editor/assets/scripts")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-    files 
-    {
-        "%{prj.name}/src/**.cs", 
-    }
-
-	links
-	{
-		"ScriptEngine"
-	}

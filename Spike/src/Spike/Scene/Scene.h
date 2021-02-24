@@ -47,7 +47,7 @@ namespace Spike
         ~Scene();
 
         Entity CreateEntity(const String& name = String());
-        Entity CreateEntityWithID(UUID uuid, const String& name = "", bool runtimeMap = false);
+        Entity CreateEntityWithID(UUID uuid, const String& name = "");
         void DestroyEntity(Entity entity);
         void DuplicateEntity(Entity entity);
         void OnUpdate(Timestep ts);
