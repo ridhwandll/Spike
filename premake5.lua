@@ -48,8 +48,8 @@ group ""
 include "Spike"
 include "Spike-Editor"
 
-project "Spike-ScriptCore"
-    location "Spike-ScriptCore"
+project "ScriptEngine"
+    location "ScriptEngine"
     kind "SharedLib"
     language "C#"
 
@@ -58,9 +58,12 @@ project "Spike-ScriptCore"
 
     files
     {
-        "%{prj.name}/src/**.cs",
+        "%{prj.name}/src/**.cs"
     }
 
+
+
+    -- Test Project
 workspace "Sandbox"
     architecture "x64"
     targetdir "build"
@@ -72,8 +75,8 @@ workspace "Sandbox"
         "Dist"
     }
 
-project "Spike-ScriptCore"
-    location "Spike-ScriptCore"
+project "ScriptEngine"
+    location "ScriptEngine"
     kind "SharedLib"
     language "C#"
 
@@ -100,5 +103,5 @@ project "ExampleApp"
 
 	links
 	{
-		"Spike-ScriptCore"
+		"ScriptEngine"
 	}

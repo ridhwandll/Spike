@@ -38,9 +38,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#pragma warning(push)
-#pragma warning(disable : 4244) //Disable ugly 'C4244' "type conversion" warning!
-
 namespace Spike
 {
     EditorLayer::EditorLayer()
@@ -116,10 +113,11 @@ namespace Spike
             m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
 
-        // Render
         Renderer2D::ResetStats();
-        m_Framebuffer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
+
         m_Framebuffer->Bind();
+        RenderCommand::Clear();
+        m_Framebuffer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
         switch (m_SceneState)
         {
@@ -148,8 +146,6 @@ namespace Spike
             }
         }
 
-        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-        RenderCommand::Clear();
         RenderCommand::BindBackbuffer();
         m_Framebuffer->Unbind();
     }
@@ -253,9 +249,7 @@ namespace Spike
         ImGui::SameLine();
 
         if (ImGui::Button(ICON_FK_FLOPPY_O))
-        {
             SaveScene();
-        }
         if (ImGui::IsItemHovered())
         {
             ImGui::BeginTooltip();
@@ -335,6 +329,7 @@ namespace Spike
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+
         ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
         auto viewportOffset = ImGui::GetCursorPos();
 
@@ -352,6 +347,7 @@ namespace Spike
 
         GUI::DrawImageControl(m_Framebuffer->GetColorViewID(), m_ViewportSize);
         DrawGizmos();
+
         ImGui::End();
         ImGui::PopStyleVar();
         ImGui::End();
@@ -360,7 +356,6 @@ namespace Spike
     void EditorLayer::OnEvent(Event& e)
     {
         m_SceneHierarchyPanel.OnEvent(e);
-
         if (m_SceneState == SceneState::Edit)
         {
             if (m_ViewportHovered)
@@ -368,13 +363,10 @@ namespace Spike
             m_EditorScene->OnEvent(e);
         }
         else if (m_SceneState == SceneState::Play)
-        {
             m_RuntimeScene->OnEvent(e);
-        }
 
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-        dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
     }
 
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -441,12 +433,6 @@ namespace Spike
                     OnSceneStop();
                 break;
         }
-        return false;
-    }
-
-    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-    {
-        m_SceneHierarchyPanel.SetSelectedEntity(m_SelectedEntity);
         return false;
     }
 
@@ -553,7 +539,6 @@ namespace Spike
 
     void EditorLayer::DrawGizmos()
     {
-        // Gizmos
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
         /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
         if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
@@ -613,4 +598,3 @@ namespace Spike
         }
     }
 }
-#pragma warning (pop) // Pop the warning

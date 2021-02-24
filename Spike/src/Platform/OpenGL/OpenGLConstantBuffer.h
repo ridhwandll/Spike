@@ -33,6 +33,7 @@ namespace Spike
     {
     public:
         OpenGLConstantBuffer(const Ref<Shader>& shader, const String& name, void* data, const uint32_t size, const uint32_t bindSlot, ShaderDomain shaderDomain = ShaderDomain::VERTEX, DataUsage usage = DataUsage::DYNAMIC);
+        virtual ~OpenGLConstantBuffer();
         virtual void Bind() override;
         virtual void* GetData() override { return m_Data; }
         virtual DataUsage GetDataUsage() override { return m_DataUsage; }

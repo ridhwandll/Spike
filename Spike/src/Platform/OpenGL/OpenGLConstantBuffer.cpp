@@ -65,4 +65,10 @@ namespace Spike
     {
         glBufferSubData(GL_UNIFORM_BUFFER, 0, m_Size, data);
     }
+
+    OpenGLConstantBuffer::~OpenGLConstantBuffer()
+    {
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteBuffers(1, &rendererID);
+    }
 }

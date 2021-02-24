@@ -56,7 +56,8 @@ namespace Spike
 
     OpenGLShader::~OpenGLShader()
     {
-        glDeleteProgram((GLuint)m_RendererID);
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteProgram(rendererID);
     }
 
     std::unordered_map<GLenum, String> OpenGLShader::PreProcess(const String& source)

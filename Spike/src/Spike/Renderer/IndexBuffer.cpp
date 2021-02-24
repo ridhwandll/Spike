@@ -40,9 +40,8 @@ namespace Spike
             case RendererAPI::API::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(indices, size);
             case RendererAPI::API::DX11:    return Ref<DX11IndexBuffer>::Create(indices, size);
         }
-    
+
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
-
 }

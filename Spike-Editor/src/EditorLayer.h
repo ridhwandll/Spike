@@ -47,7 +47,6 @@ namespace Spike
         void OnEvent(Event& e) override;
     private:
         bool OnKeyPressed(KeyPressedEvent& e);
-        bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
         void NewScene();
         void OpenFolder();

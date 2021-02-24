@@ -87,7 +87,11 @@ namespace Spike
 
     void Renderer2D::Init()
     {
-        s_Data.TextureShader = Shader::AddBuiltInShader(s_HLSLRenderer2DShader.c_str(), "Standard2D.hlsl");
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11:   s_Data.TextureShader = Shader::AddBuiltInShader(s_HLSLRenderer2DShader.c_str(), "Standard2D.hlsl"); break;
+            case RendererAPI::API::OpenGL: s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader.c_str(), "Standard2D.glsl"); break;
+        }
         Vault::SubmitBuiltInShader(s_Data.TextureShader); //Submit the shader to vault
 
         s_Data.TextureShader->Bind();
@@ -132,14 +136,25 @@ namespace Spike
         for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
             samplers[i] = i;
 
-        //sData.TextureShader->SetIntArray("u_Textures", samplers, sData.MaxTextureSlots);
+        s_Data.TextureShader->SetIntArray("u_Textures", samplers, s_Data.MaxTextureSlots);
         // Set first texture slot to 0
         s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 
-        s_Data.QuadVertexPositions[0] = { 0.5f,  0.5f, 0.0f, 1.0f };
-        s_Data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-        s_Data.QuadVertexPositions[2] = { -0.5f, -0.5f, 0.0f, 1.0f };
-        s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11:
+                s_Data.QuadVertexPositions[0] = {  0.5f,  0.5f, 0.0f, 1.0f };
+                s_Data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+                s_Data.QuadVertexPositions[2] = { -0.5f, -0.5f, 0.0f, 1.0f };
+                s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f }; break;
+            case RendererAPI::API::OpenGL:
+                s_Data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+                s_Data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+                s_Data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
+                s_Data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f }; break;
+            default:
+                SPK_INTERNAL_ASSERT("RendererAPI not supported!");
+        }
 
         PipelineSpecification spec = {};
         spec.Shader = s_Data.TextureShader;
@@ -229,7 +244,14 @@ namespace Spike
     void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
     {
         constexpr size_t quadVertexCount = 4;
+
+        /* [Spike] We are not doing a switch on RendererAPI::GetAPI() because, we don't want to do that every frame! [Spike] */
+    #ifdef RENDERER_API_DX11
         constexpr glm::vec2 textureCoords[] = { { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f } };
+    #elif defined RENDERER_API_OPENGL
+        constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+    #endif
+
 
         if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
         {

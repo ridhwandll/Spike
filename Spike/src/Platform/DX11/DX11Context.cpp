@@ -36,8 +36,11 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    DX11Context::DX11Context(GLFWwindow* windowHandel)
-        :m_WindowHandle(windowHandel) {}
+    DX11Context::DX11Context(GLFWwindow* windowHandle)
+        :m_WindowHandle(windowHandle)
+    {
+        SPK_CORE_ASSERT(windowHandle, "Window handle is null!");
+    }
 
     void DX11Context::Init()
     {

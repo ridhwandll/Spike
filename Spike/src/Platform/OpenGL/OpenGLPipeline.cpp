@@ -125,13 +125,13 @@ namespace Spike
 
     OpenGLPipeline::~OpenGLPipeline()
     {
-        glDeleteVertexArrays(1, (GLuint*)m_RendererID);
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteVertexArrays(1, &rendererID);
     }
 
     void OpenGLPipeline::Bind() const
     {
-        uint32_t* rendererID = reinterpret_cast<uint32_t*>(m_RendererID);
-        glBindVertexArray(*rendererID);
+        glBindVertexArray((GLuint)m_RendererID);
     }
 
     void OpenGLPipeline::Unbind() const
@@ -143,5 +143,4 @@ namespace Spike
     {
         //TODO
     }
-
 }

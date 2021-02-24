@@ -326,7 +326,6 @@ namespace Spike
         DrawComponent<CameraComponent>(ICON_FK_CAMERA" Camera", entity, [](auto& component)
         {
             auto& camera = component.Camera;
-
             GUI::DrawBoolControl("Primary", &component.Primary, 160.0f);
 
             const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
@@ -391,7 +390,7 @@ namespace Spike
             const RendererID imageID = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
 
             #ifdef RENDERER_API_OPENGL
-                stbi_set_flip_vertically_on_load(1);
+                stbi_set_flip_vertically_on_load(true);
             #endif
 
             ImGui::Text("Texture");
@@ -400,8 +399,8 @@ namespace Spike
 
             if(GUI::DrawImageButtonControl(imageID, { 65, 65 }))
             {
-                char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
+                char const* lFilterPatterns[8] = { "*.png", "*.jpg", "*.tga", "*.bmp", "*.psd", "*.hdr", "*.pic", "*.gif" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 8, lFilterPatterns, "", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }
@@ -410,8 +409,8 @@ namespace Spike
 
             if (ImGui::Button("Open Texture"))
             {
-                char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
+                char const* lFilterPatterns[8] = { "*.png", "*.jpg", "*.tga", "*.bmp", "*.psd", "*.hdr", "*.pic", "*.gif" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 8, lFilterPatterns, "", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }

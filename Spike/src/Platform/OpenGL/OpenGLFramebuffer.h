@@ -33,23 +33,25 @@ namespace Spike
     {
     public:
         OpenGLFramebuffer(const FramebufferSpecification& spec);
-        virtual ~OpenGLFramebuffer() = default;
+        virtual ~OpenGLFramebuffer();
 
         virtual void Bind() override;
         virtual void Unbind() override;
         virtual void Resize(uint32_t width, uint32_t height) override;
-        virtual FramebufferSpecification& GetSpecification() override { return mSpecification; }
+        virtual FramebufferSpecification& GetSpecification() override { return m_Specification; }
         virtual void Clear(const glm::vec4& clearColor) override;
         virtual RendererID GetColorViewID() override;
         virtual RendererID GetSwapChainTarget() override;
     private:
-        void CreateSwapChainView();
-        void CreateColorView(FramebufferSpecification::BufferDesc desc);
-
+        void CreateColorView();
+        void CreateDepthView();
         void Invalidate();
         void Clean();
     private:
-        FramebufferSpecification mSpecification;
+        FramebufferSpecification m_Specification;
+        RendererID m_RendererID;
+        uint32_t m_ColorAttachmentID;
+        uint32_t m_DepthAttachmentID;
     };
 
 }

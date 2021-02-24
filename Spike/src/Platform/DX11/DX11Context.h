@@ -37,13 +37,12 @@ namespace Spike
     class DX11Context : public GraphicsContext
     {
     public:
-        DX11Context(GLFWwindow* windowHandel);
+        DX11Context(GLFWwindow* windowHandle);
         virtual ~DX11Context();
         virtual void Init() override;
         virtual void SwapBuffers() override;
 
     private:
         GLFWwindow* m_WindowHandle;
-        friend class RenderCommand;
     };
 }

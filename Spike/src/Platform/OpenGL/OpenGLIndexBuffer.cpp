@@ -41,7 +41,8 @@ namespace Spike
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
-        glDeleteBuffers(1, (GLuint*)m_RendererID);
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteBuffers(1, &rendererID);
     }
 
     void OpenGLIndexBuffer::Bind() const

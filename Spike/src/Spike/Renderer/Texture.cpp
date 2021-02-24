@@ -41,6 +41,9 @@ namespace Spike
             case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(width, height);
             case RendererAPI::API::DX11:    return Ref<DX11Texture2D>::Create(width, height);
         }
+
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
     }
 
     Ref<Texture2D> Texture2D::Create(const String& path)
@@ -51,6 +54,9 @@ namespace Spike
             case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path);
             case RendererAPI::API::DX11:    return Ref<DX11Texture2D>::Create(path);
         }
+
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
     }
 
     uint32_t Texture::CalculateMipMapCount(uint32_t width, uint32_t height)

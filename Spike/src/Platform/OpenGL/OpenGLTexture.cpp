@@ -59,7 +59,7 @@ namespace Spike
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        m_RendererID = (RendererID)rendererID;
+        m_RendererID = reinterpret_cast<RendererID>(rendererID);
     }
 
     OpenGLTexture2D::OpenGLTexture2D(const String& path)
@@ -69,13 +69,11 @@ namespace Spike
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
         stbi_uc* data = nullptr;
-        {
-            data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-        }
-        if (data == nullptr) //We don't want to assert here....the engine should be running
-        {
+        data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+
+        if (!data)
             SPK_CORE_LOG_CRITICAL("Failed to load image!");
-        }
+
         m_Width = width;
         m_Height = height;
 
@@ -94,7 +92,7 @@ namespace Spike
         m_InternalFormat = internalFormat;
         m_DataFormat = dataFormat;
 
-        if (!(internalFormat & dataFormat)) //We don't want to assert here....the engine should be running
+        if (!(internalFormat & dataFormat))
         {
             SPK_CORE_LOG_CRITICAL("Texture format not supported!");
             return;
@@ -121,7 +119,8 @@ namespace Spike
 
     OpenGLTexture2D::~OpenGLTexture2D()
     {
-        glDeleteTextures(1, (GLuint*)m_RendererID);
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteTextures(1, &rendererID);
     }
 
     void OpenGLTexture2D::Bind(uint32_t slot, ShaderDomain domain) const
