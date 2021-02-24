@@ -7,7 +7,7 @@ project "Spike"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 	debugdir "%{wks.location}"
-	disablewarnings { "4267", "4244" } -- Warning: conversion from 'size_t' to 'int', possible loss of data
+	disablewarnings { "4267", "4244", "4302", "4311", "4312" }
 	linkoptions { "-IGNORE:4006" }
 
 	pchheader "spkpch.h"

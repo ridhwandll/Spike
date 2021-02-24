@@ -194,7 +194,6 @@ namespace Spike
             SPK_CORE_LOG_ERROR("[%s(%d)] {%s} failed with error: %s", file.data(), line, statement.data(), buffer);
             return false;
         }
-
         return true;
     }
 }
