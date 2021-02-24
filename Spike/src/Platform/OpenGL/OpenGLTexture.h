@@ -36,17 +36,15 @@ namespace Spike
     public:
         OpenGLTexture2D(uint32_t width, uint32_t height);
         OpenGLTexture2D(const String& path);
-        OpenGLTexture2D(const String& path, bool flipVertically, bool srgb);
         virtual ~OpenGLTexture2D();
-        virtual String GetName() const override { return m_Name; }
+        virtual String const GetName() const override { return m_Name; }
         virtual uint32_t GetWidth() const override { return m_Width; }
         virtual uint32_t GetHeight() const override { return m_Height; }
-        virtual uint32_t GetRendererID() const override { return m_RendererID; };
+        virtual RendererID GetRendererID() const override { return (RendererID)m_RendererID; };
         virtual String GetFilepath() const override { return m_Path; }
         void SetData(void* data, uint32_t size) override;
         virtual void ActivateSlot(uint32_t slot) override;
-        virtual glm::vec2 GetResolution() override { return m_Resolution; };
-        virtual void Bind(uint32_t slot = 0) const override;
+        virtual void Bind(uint32_t slot = 0, ShaderDomain domain = ShaderDomain::VERTEX) const override;
         virtual void Unbind() const override;
         virtual bool Loaded() override { return m_Loaded; }
         bool operator==(const Texture& other) const override
@@ -65,6 +63,5 @@ namespace Spike
         TextureWrap m_Wrap = TextureWrap::Clamp;
         bool m_IsHDR = false;
         bool m_Locked = false;
-        glm::vec2 m_Resolution;
     };
 }

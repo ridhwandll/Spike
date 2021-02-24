@@ -29,7 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Input.h"
 #include "Spike/Core/KeyCodes.h"
 #include "Spike/Core/MouseCodes.h"
-
+#include "Spike/Renderer/RendererAPISwitch.h"
 #include <GLFW/glfw3.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -165,5 +165,4 @@ namespace Spike
     {
         return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
     }
-
 }

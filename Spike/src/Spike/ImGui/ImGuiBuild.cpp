@@ -25,7 +25,13 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
+#include "Spike/Renderer/RendererAPISwitch.h"
 
-#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+#ifdef RENDERER_API_OPENGL
+    #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include "backends/imgui_impl_opengl3.cpp"
+#elif defined RENDERER_API_DX11
+    #include "backends/imgui_impl_dx11.cpp"
+#endif
+
 #include "backends/imgui_impl_glfw.cpp" 

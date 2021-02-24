@@ -48,7 +48,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #ifdef SPK_ENABLE_ASSERTS
     #define SPK_CORE_ASSERT(x, ...) { if(!(x)) { SPK_CORE_LOG_ERROR("Assertion Failed: %s", __VA_ARGS__); SPK_DEBUGBREAK(); } }
     #define SPK_CRIRICAL(x, ...) { if(!(x)) { SPK_CORE_LOG_CRITICAL("Critical ERROR: %s", __VA_ARGS__); } }
-    #define SPK_INTERNAL_ASSERT(x) {  SPK_CORE_LOG_CRITICAL("Assertion Failed! RIP"); SPK_DEBUGBREAK(); }
+    #define SPK_INTERNAL_ASSERT(x) {  if(!(x)) SPK_DEBUGBREAK(); }
 #else
     #define SPK_CORE_ASSERT(x, ...)
     #define SPK_CRIRICAL(x, ...)
@@ -75,13 +75,7 @@ namespace Spike
     typedef uint8_t byte;
     typedef std::string String;
 
-    #ifdef RENDERER_API_OPENGL
-        typedef uint32_t RendererID;
-    #elif defined RENDERER_API_DX11
-        typedef void* RendererID;
-    #else
-        #error No RendererAPI selected! RendererAPI 'NONE' is currently not supported!
-    #endif
+    typedef void* RendererID;
 
     template<typename T>
     using Vector = std::vector<T>;

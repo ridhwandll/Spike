@@ -29,7 +29,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "UIUtils/UIUtils.h"
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
-#include "Spike/Scripting/ScriptEngine.h"
 #include "Spike/Utility/FileDialogs.h"
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -278,14 +277,6 @@ namespace Spike
                     SPK_CORE_LOG_WARN("This entity already has Mesh component!");
                 ImGui::CloseCurrentPopup();
             }
-            if (ImGui::MenuItem("Script"))
-            {
-                if (!entity.HasComponent<ScriptComponent>())
-                    entity.AddComponent<ScriptComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Script component!");
-                ImGui::CloseCurrentPopup();
-            }
             if (ImGui::MenuItem("RigidBody2D"))
             {
                 if (!entity.HasComponent<RigidBody2DComponent>())
@@ -326,7 +317,6 @@ namespace Spike
         DrawComponent<CameraComponent>(ICON_FK_CAMERA" Camera", entity, [](auto& component)
         {
             auto& camera = component.Camera;
-
             GUI::DrawBoolControl("Primary", &component.Primary, 160.0f);
 
             const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
@@ -388,32 +378,20 @@ namespace Spike
         {
             GUI::DrawColorControl("Color", component.Color);
 
-            #ifdef RENDERER_API_OPENGL
-                const uint64_t id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-            #elif defined RENDERER_API_DX11
-                const void* id = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-            #endif
+            const RendererID imageID = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
 
             #ifdef RENDERER_API_OPENGL
-                stbi_set_flip_vertically_on_load(1);
+                stbi_set_flip_vertically_on_load(true);
             #endif
 
             ImGui::Text("Texture");
             const float cursorPos = ImGui::GetCursorPosY();
-            const ImVec2 buttonSize = { 65, 65 };
             ImGui::SameLine(ImGui::GetWindowWidth() * 0.8f);
 
-            if
-            (
-            #ifdef RENDERER_API_OPENGL
-                ImGui::ImageButton(reinterpret_cast<void*>(id), buttonSize, { 0, 1 }, { 1, 0 })
-            #elif defined RENDERER_API_DX11
-                ImGui::ImageButton((ImTextureID)id, buttonSize)
-            #endif 
-            )
+            if(GUI::DrawImageButtonControl(imageID, { 65, 65 }))
             {
-                char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
+                char const* lFilterPatterns[8] = { "*.png", "*.jpg", "*.tga", "*.bmp", "*.psd", "*.hdr", "*.pic", "*.gif" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 8, lFilterPatterns, "", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }
@@ -422,8 +400,8 @@ namespace Spike
 
             if (ImGui::Button("Open Texture"))
             {
-                char const* lFilterPatterns[3] = { "*.png", "*.jpg", "*.gif" };
-                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 3, lFilterPatterns, "Texture", false);
+                char const* lFilterPatterns[8] = { "*.png", "*.jpg", "*.tga", "*.bmp", "*.psd", "*.hdr", "*.pic", "*.gif" };
+                const char* filepath = FileDialogs::OpenFile("Open Texture", "", 8, lFilterPatterns, "", false);
                 if (filepath)
                     component.SetTexture(filepath);
             }
@@ -434,7 +412,7 @@ namespace Spike
                 component.RemoveTexture();
 
             // Tiling Factor
-            GUI::DrawFloatControl("Tiling Factor", &component.TilingFactor, 120);
+            GUI::DrawFloatControl("Tiling Factor", &component.TilingFactor, 100);
         });
 
         DrawComponent<MeshComponent>(ICON_FK_CUBE" Mesh", entity, [](auto& component)
@@ -470,99 +448,6 @@ namespace Spike
                 {
                     if (ImGui::Button("Reload"))
                         component.Mesh->Reload();
-                }
-            }
-        });
-
-        /* [Spike] Yeah, this needs to be mutable [Spike] */
-        DrawComponent<ScriptComponent>(ICON_FK_CODE" Script", entity, [=](ScriptComponent& sc) mutable
-        {
-            String oldName = sc.ModuleName;
-            if (GUI::DrawScriptTextControl("Module Name", sc.ModuleName, 100.0f, ScriptEngine::ModuleExists(sc.ModuleName)))
-            {
-                // Shutdown old script
-                if (ScriptEngine::ModuleExists(oldName))
-                    ScriptEngine::ShutdownScriptEntity(entity, oldName);
-
-                if (ScriptEngine::ModuleExists(sc.ModuleName))
-                    ScriptEngine::InitScriptEntity(entity);
-            }
-
-            // Public Fields
-            if (ScriptEngine::ModuleExists(sc.ModuleName))
-            {
-                EntityInstanceData& entityInstanceData = ScriptEngine::GetEntityInstanceData(entity.GetSceneUUID(), ID);
-                auto& moduleFieldMap = entityInstanceData.ModuleFieldMap;
-                if (moduleFieldMap.find(sc.ModuleName) != moduleFieldMap.end())
-                {
-                    auto& publicFields = moduleFieldMap.at(sc.ModuleName);
-                    for (auto& [name, field] : publicFields)
-                    {
-                        bool isRuntime = m_Context->m_IsPlaying && field.IsRuntimeAvailable();
-                        switch (field.Type)
-                        {
-                            case FieldType::Int:
-                            {
-                                int value = isRuntime ? field.GetRuntimeValue<int>() : field.GetStoredValue<int>();
-                                if (GUI::DrawIntControl(field.Name.c_str(), &value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Float:
-                            {
-                                float value = isRuntime ? field.GetRuntimeValue<float>() : field.GetStoredValue<float>();
-                                if (GUI::DrawFloatControl(field.Name.c_str(), &value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Vec2:
-                            {
-                                glm::vec2 value = isRuntime ? field.GetRuntimeValue<glm::vec2>() : field.GetStoredValue<glm::vec2>();
-                                if (GUI::DrawFloat2Control(field.Name.c_str(), value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Vec3:
-                            {
-                                glm::vec3 value = isRuntime ? field.GetRuntimeValue<glm::vec3>() : field.GetStoredValue<glm::vec3>();
-                                if (GUI::DrawFloat3Control(field.Name.c_str(), value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                            case FieldType::Vec4:
-                            {
-                                glm::vec4 value = isRuntime ? field.GetRuntimeValue<glm::vec4>() : field.GetStoredValue<glm::vec4>();
-                                if (GUI::DrawFloat4Control(field.Name.c_str(), value))
-                                {
-                                    if (isRuntime)
-                                        field.SetRuntimeValue(value);
-                                    else
-                                        field.SetStoredValue(value);
-                                }
-                                break;
-                            }
-                        }
-                    }
                 }
             }
         });
@@ -657,10 +542,11 @@ namespace Spike
         });
         DrawComponent<BoxCollider2DComponent>("BoxCollider2D", entity, [](auto& component)
         {
-            GUI::DrawFloat2Control("Offset",   component.Offset);
-            GUI::DrawFloat2Control("Size",     component.Size);
-            GUI::DrawFloatControl("Density",  &component.Density);
-            GUI::DrawFloatControl("Friction", &component.Friction);
+            GUI::DrawFloat2Control("Offset",   component.Offset, 150.0f);
+            GUI::DrawFloat2Control("Size",     component.Size, 150.0f);
+            GUI::DrawFloatControl("Density",  &component.Density, 150.0f);
+            GUI::DrawFloatControl("Friction", &component.Friction, 150.0f);
+            GUI::DrawBoolControl("Show Collider Bounds", &component.ShowBounds, 150.0f);
         });
         DrawComponent<CircleCollider2DComponent>("CircleCollider2D", entity, [](auto& component)
         {

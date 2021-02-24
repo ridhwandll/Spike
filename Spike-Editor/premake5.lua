@@ -38,8 +38,7 @@ project "Spike-Editor"
 
 	postbuildcommands 
 	{
-		'{COPY} "../Spike/vendor/assimp/lib/assimp-vc142-mt.dll" "%{cfg.targetdir}"',
-		'{COPY} "../Spike/vendor/mono/bin/Debug/mono-2.0-sgen.dll" "%{cfg.targetdir}"'
+		'{COPY} "../Spike/vendor/assimp/lib/assimp-vc142-mt.dll" "%{cfg.targetdir}"'
 	}
 
 	filter "system:windows"

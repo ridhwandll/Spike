@@ -44,19 +44,21 @@ namespace Spike
     OpenGLConstantBuffer::OpenGLConstantBuffer(const Ref<Shader>& shader, const String& name, void* data, const uint32_t size, const uint32_t bindSlot, ShaderDomain shaderDomain, DataUsage usage)
         :m_Name(name), m_Data(data), m_Size(size), m_BindSlot(bindSlot), m_ShaderDomain(shaderDomain), m_DataUsage(usage)
     {
-        uint32_t index = glGetUniformBlockIndex(shader->GetRendererID(), name.c_str());
-        glUniformBlockBinding(shader->GetRendererID(), index, bindSlot);
+        uint32_t index = glGetUniformBlockIndex((GLuint)shader->GetRendererID(), name.c_str());
+        glUniformBlockBinding((GLuint)shader->GetRendererID(), index, bindSlot);
+        uint32_t rendererID;
 
-        glGenBuffers(1, &m_RendererID);
-        glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+        glGenBuffers(1, &rendererID);
+        glBindBuffer(GL_UNIFORM_BUFFER, rendererID);
         glBufferData(GL_UNIFORM_BUFFER, size, data, SpikeDataUsageToOpenGLDataUsage(usage));
-        glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-        glBindBufferBase(GL_UNIFORM_BUFFER, m_BindSlot, m_RendererID);
+        glBindBuffer(GL_UNIFORM_BUFFER, rendererID);
+        glBindBufferBase(GL_UNIFORM_BUFFER, m_BindSlot, rendererID);
+        m_RendererID = (RendererID)rendererID;
     }
 
     void OpenGLConstantBuffer::Bind()
     {
-        glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+        glBindBuffer(GL_UNIFORM_BUFFER, (uint32_t)m_RendererID);
     }
 
     void OpenGLConstantBuffer::SetData(void* data)
@@ -64,4 +66,9 @@ namespace Spike
         glBufferSubData(GL_UNIFORM_BUFFER, 0, m_Size, data);
     }
 
+    OpenGLConstantBuffer::~OpenGLConstantBuffer()
+    {
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteBuffers(1, &rendererID);
+    }
 }

@@ -133,15 +133,6 @@ namespace Spike
         void Reset() { Mesh = nullptr; MeshFilepath.clear(); }
     };
 
-    struct ScriptComponent
-    {
-        String ModuleName;
-
-        ScriptComponent() = default;
-        ScriptComponent(const ScriptComponent&) = default;
-        void Reset() { ModuleName = "SpikeNull"; }
-    };
-
     //// 2D Physics //////////////////////////////////////////////////////////////////////
     enum class CollisionDetectionType;
     enum class SleepType;
@@ -175,7 +166,7 @@ namespace Spike
 
         float Density = 1.0f;
         float Friction = 1.0f;
-
+        bool ShowBounds = false;
         void* RuntimeFixture = nullptr; //Needed at runtime
 
         BoxCollider2DComponent() = default;
@@ -189,6 +180,7 @@ namespace Spike
 
             Density = 1.0f;
             Friction = 1.0f;
+            ShowBounds = false;
         }
     };
 

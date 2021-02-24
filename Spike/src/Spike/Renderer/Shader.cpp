@@ -29,6 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Shader.h"
 #include "Renderer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Platform/DX11/DX11Shader.h"
 
 namespace Spike
 {
@@ -38,6 +39,7 @@ namespace Spike
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(filepath);
+            case RendererAPI::API::DX11:    return Ref<DX11Shader>::Create(filepath);
         }
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
@@ -49,6 +51,7 @@ namespace Spike
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(source, name);
+            case RendererAPI::API::DX11:    return Ref<DX11Shader>::Create(source, name);
         }
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;

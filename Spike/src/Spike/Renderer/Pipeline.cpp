@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Pipeline.h"
 #include "Renderer.h"
 #include "Platform/OpenGL/OpenGLPipeline.h"
+#include "Platform/DX11/DX11Pipeline.h"
 
 namespace Spike
 {
@@ -37,6 +38,7 @@ namespace Spike
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLPipeline>::Create(spec);
+            case RendererAPI::API::DX11:    return Ref<DX11Pipeline>::Create(spec);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");

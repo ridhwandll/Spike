@@ -31,7 +31,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/Components.h"
 #include "Spike/Core/Input.h"
 #include "Spike/Physics/2D/Physics2D.h"
-#include "Spike/Scripting/ScriptEngine.h"
 #include "Entity.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -54,7 +53,6 @@ namespace Spike
 
         auto entityID = registry.get<IDComponent>(entity).ID;
         SPK_CRIRICAL(scene->m_EntityIDMap.find(entityID) != scene->m_EntityIDMap.end(), "");
-        ScriptEngine::InitScriptEntity(scene->m_EntityIDMap.at(entityID));
     }
 
     static void OnScriptComponentDestroy(entt::registry& registry, entt::entity entity)
@@ -65,13 +63,10 @@ namespace Spike
         Scene* scene = s_ActiveScenes[sceneID];
 
         auto entityID = registry.get<IDComponent>(entity).ID;
-        ScriptEngine::OnScriptComponentDestroyed(sceneID, entityID);
     }
 
     Scene::Scene()
     {
-        m_Registry.on_construct<ScriptComponent>().connect<&OnScriptComponentConstruct>();
-
         m_SceneEntity = m_Registry.create();
         s_ActiveScenes[m_SceneID] = this;
 
@@ -81,8 +76,6 @@ namespace Spike
 
     Scene::~Scene()
     {
-        m_Registry.on_destroy<ScriptComponent>().disconnect();
-        ScriptEngine::OnSceneDestruct(m_SceneID);
         m_Registry.clear();
         s_ActiveScenes.erase(m_SceneID);
     }
@@ -101,7 +94,7 @@ namespace Spike
         return entity;
     }
 
-    Entity Scene::CreateEntityWithID(UUID uuid, const String& name, bool runtimeMap)
+    Entity Scene::CreateEntityWithID(UUID uuid, const String& name)
     {
         auto entity = Entity{ m_Registry.create(), this };
         auto& idComponent = entity.AddComponent<IDComponent>();
@@ -118,9 +111,6 @@ namespace Spike
 
     void Scene::DestroyEntity(Entity entity)
     {
-        if (entity.HasComponent<ScriptComponent>())
-            ScriptEngine::OnScriptComponentDestroyed(m_SceneID, entity.GetUUID());
-
         m_Registry.destroy(entity);
     }
 
@@ -155,11 +145,7 @@ namespace Spike
                 for (auto entity : group)
                 {
                     auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-                    if (sprite.Texture)
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Texture, sprite.TilingFactor, sprite.Color);
-                    else
-                        Renderer2D::DrawQuad(transform.GetTransform(), sprite.Color);
+                    Renderer2D::DrawSprite(transform.GetTransform(), sprite);
                 }
 
                 Renderer2D::EndScene();
@@ -179,20 +165,7 @@ namespace Spike
             }
         }
 
-        // Update scripts
-        {
-            auto view = m_Registry.view<ScriptComponent>();
-            for (auto entity : view)
-            {
-                Entity e = { entity, this };
-                if (ScriptEngine::ModuleExists(e.GetComponent<ScriptComponent>().ModuleName))
-                {
-                    ScriptEngine::OnUpdateEntity(e, ts);
-                    /* [Spike] Maybe not hardcode the fixed timestep and have a settings struct? [Spike] */
-                    ScriptEngine::OnFixedUpdateEntity(e, 0.02f); //0.02f is hardcoded here
-                }
-            }
-        }
+        // Update scripts Here (TODO)
     }
 
     void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
@@ -204,19 +177,21 @@ namespace Spike
             for (auto entity : group)
             {
                 auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-                Renderer2D::DrawSprite(transform.GetTransform(), sprite, (int)entity);
+                Renderer2D::DrawSprite(transform.GetTransform(), sprite);
             }
 
             auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
             const glm::vec4 debugColor(0.5f, 0.9f, 0.5f, 0.25f);
             for (auto entity : view)
             {
-                auto[transformComponent, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
-                glm::mat4 trans = transformComponent.GetTransform() *
-                    glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.0f)) * 
-                    glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
-
-                Renderer2D::DrawQuad(trans, debugColor);
+                auto [transformComponent, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
+                if (boxCollider.ShowBounds)
+                {
+                    glm::mat4 trans = transformComponent.GetTransform() *
+                        glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.0f)) *
+                        glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
+                    Renderer2D::DrawQuad(trans, debugColor);
+                }
             }
 
             Renderer2D::EndScene();
@@ -268,17 +243,6 @@ namespace Spike
 
     void Scene::OnRuntimeStart()
     {
-        ScriptEngine::SetSceneContext(this);
-        {
-            auto view = m_Registry.view<ScriptComponent>();
-            for (auto entity : view)
-            {
-                Entity e = { entity, this };
-                if (ScriptEngine::ModuleExists(e.GetComponent<ScriptComponent>().ModuleName))
-                    ScriptEngine::InstantiateEntityClass(e);
-            }
-        }
-
         {
             auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
             for (auto entity : view)
@@ -301,10 +265,11 @@ namespace Spike
     {
         std::unordered_map<UUID, entt::entity> enttMap;
         auto idComponents = m_Registry.view<IDComponent>();
+
         for (auto entity : idComponents)
         {
             auto uuid = m_Registry.get<IDComponent>(entity).ID;
-            Entity e = target->CreateEntityWithID(uuid, "", true);
+            Entity e = target->CreateEntityWithID(uuid);
             enttMap[uuid] = e.Raw();
         }
 
@@ -313,15 +278,9 @@ namespace Spike
         CopyComponent<MeshComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CameraComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<SpriteRendererComponent>(target->m_Registry, m_Registry, enttMap);
-        CopyComponent<ScriptComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<RigidBody2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<BoxCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
-
-
-        const auto& entityInstanceMap = ScriptEngine::GetEntityInstanceMap();
-        if (entityInstanceMap.find(target->GetUUID()) != entityInstanceMap.end())
-            ScriptEngine::CopyEntityScriptData(target->GetUUID(), m_SceneID);
     }
 
     template<typename T>
@@ -346,7 +305,6 @@ namespace Spike
         CopyComponentIfExists<MeshComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<CameraComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<SpriteRendererComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
-        CopyComponentIfExists<ScriptComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<RigidBody2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<CircleCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
@@ -434,11 +392,5 @@ namespace Spike
     template<>
     void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
     {
-    }
-
-    template<>
-    void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
-    {
-
     }
 }

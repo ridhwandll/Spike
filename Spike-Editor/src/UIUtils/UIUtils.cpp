@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "UIUtils.h"
+#include "Spike/Renderer/RendererAPISwitch.h"
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -340,4 +341,21 @@ namespace Spike::GUI
         ImGui::PopStyleColor(2);
     }
 
+    void DrawImageControl(const RendererID imageID, const glm::vec2& viewportDimensions)
+    {
+    #ifdef RENDERER_API_DX11
+        ImGui::Image(imageID, ImVec2{ viewportDimensions.x, viewportDimensions.y });
+    #elif defined RENDERER_API_OPENGL
+        ImGui::Image(imageID, ImVec2{ viewportDimensions.x, viewportDimensions.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    #endif
+    }
+
+    bool DrawImageButtonControl(const RendererID imageID, glm::vec2 buttonSize)
+    {
+    #ifdef RENDERER_API_DX11
+        return ImGui::ImageButton(imageID, { buttonSize.x, buttonSize.y });
+    #elif defined RENDERER_API_OPENGL
+        return ImGui::ImageButton(imageID, { buttonSize.x, buttonSize.y }, { 0, 1 }, { 1, 0 });
+    #endif
+    }
 }

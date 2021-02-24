@@ -29,15 +29,17 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "Platform/OpenGL/OpenGLVertexBuffer.h"
+#include "Platform/DX11/DX11VertexBuffer.h"
 
 namespace Spike
 {
-    Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+    Ref<VertexBuffer> VertexBuffer::Create(uint32_t size, VertexBufferLayout layout)
     {
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size);
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size, layout);
+            case RendererAPI::API::DX11:    return Ref<DX11VertexBuffer>::Create(size, layout);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
@@ -45,12 +47,13 @@ namespace Spike
     }
 
 
-    Ref<VertexBuffer> VertexBuffer::Create(void* vertices, uint32_t size)
+    Ref<VertexBuffer> VertexBuffer::Create(void* vertices, uint32_t size, VertexBufferLayout layout)
     {
         switch (Renderer::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size);
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size, layout);
+            case RendererAPI::API::DX11:    return Ref<DX11VertexBuffer>::Create(vertices, size, layout);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");

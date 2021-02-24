@@ -65,8 +65,6 @@ namespace Spike
 
     void Submesh::SetupMesh()
     {
-        m_VertexBuffer = VertexBuffer::Create(&m_Vertices[0], m_Vertices.size() * sizeof(Vertex));
-        m_IndexBuffer = IndexBuffer::Create(&m_Indices[0], m_Indices.size() * sizeof(uint32_t));
 
         VertexBufferLayout layout =
         {
@@ -75,8 +73,8 @@ namespace Spike
             { ShaderDataType::Float2, "a_TexCoords" },
         };
 
-        m_VertexBuffer->SetLayout(layout);
-
+        m_VertexBuffer = VertexBuffer::Create(&m_Vertices[0], m_Vertices.size() * sizeof(Vertex), layout);
+        m_IndexBuffer = IndexBuffer::Create(&m_Indices[0], m_Indices.size() * sizeof(uint32_t));
 
         PipelineSpecification spec;
         spec.VertexBuffer = m_VertexBuffer;
@@ -229,7 +227,7 @@ namespace Spike
         parentPath /= std::string(name);
         std::string texturePath = parentPath.string();
 
-        Ref<Texture2D> texture = Texture2D::Create(texturePath.c_str(), m_FlipTexturesVertically, m_SRGB);
+        Ref<Texture2D> texture = Texture2D::Create(texturePath.c_str());
         Vault::SubmitTexture2D(texture);
         return texture;
     }

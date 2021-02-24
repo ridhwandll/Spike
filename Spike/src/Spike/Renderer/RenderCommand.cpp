@@ -27,6 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "spkpch.h"
 #include "RenderCommand.h"
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Platform/DX11/DX11RendererAPI.h"
 #include "RendererAPISwitch.h"
 
 namespace Spike

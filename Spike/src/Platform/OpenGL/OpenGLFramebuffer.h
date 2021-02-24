@@ -35,24 +35,23 @@ namespace Spike
         OpenGLFramebuffer(const FramebufferSpecification& spec);
         virtual ~OpenGLFramebuffer();
 
-        void Invalidate();
         virtual void Bind() override;
         virtual void Unbind() override;
-        virtual void Resize(const uint32_t width, const uint32_t height) override;
-        virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) override;
-
-        virtual void ClearAttachment(uint32_t attachmentIndex, int value) override;
-        virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { SPK_CORE_ASSERT(index < m_ColorAttachments.size(), ""); return m_ColorAttachments[index]; }
-        virtual const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
-
+        virtual void Resize(uint32_t width, uint32_t height) override;
+        virtual FramebufferSpecification& GetSpecification() override { return m_Specification; }
+        virtual void Clear(const glm::vec4& clearColor) override;
+        virtual RendererID GetColorViewID() override;
+        virtual RendererID GetSwapChainTarget() override;
     private:
-        RendererID m_RendererID = 0;
+        void CreateColorView();
+        void CreateDepthView();
+        void Invalidate();
+        void Clean();
+    private:
         FramebufferSpecification m_Specification;
-
-        std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecs;
-        FramebufferTextureSpecification m_DepthAttachmentSpec = FramebufferTextureFormat::None;
-        std::vector<RendererID> m_ColorAttachments;
-        RendererID m_DepthAttachment;
+        RendererID m_RendererID;
+        uint32_t m_ColorAttachmentID;
+        uint32_t m_DepthAttachmentID;
     };
 
 }

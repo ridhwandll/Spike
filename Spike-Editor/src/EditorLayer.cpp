@@ -29,7 +29,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/SceneSerializer.h"
 #include "Spike/Utility/FileDialogs.h"
 #include "Spike/Math/Math.h"
-#include "Spike/Scripting/ScriptEngine.h"
 #include "UIUtils/UIUtils.h"
 #include "Spike/Core/Vault.h"
 #include <FontAwesome.h>
@@ -37,8 +36,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <ImGuizmo.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#pragma warning(push)
-#pragma warning(disable : 4244) //Disable ugly 'C4244' "type conversion" warning!
 
 namespace Spike
 {
@@ -48,14 +45,16 @@ namespace Spike
     void EditorLayer::OnAttach()
     {
         FramebufferSpecification fbSpec;
-        fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
         fbSpec.Width = 1280;
         fbSpec.Height = 720;
+        fbSpec.SwapChainTarget = false;
+        fbSpec.BufferDescriptions.emplace_back(FramebufferSpecification::BufferDesc(FormatCode::R32G32B32A32_FLOAT, BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE));
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         m_EditorScene = Ref<Scene>::Create();
         m_EditorCamera = EditorCamera(45.0f, 1.778f, 0.1f, 1000.0f);
         m_SceneHierarchyPanel.SetContext(m_EditorScene);
+        UpdateWindowTitle("Spike Engine Startup Window (No project is opened)");
     }
 
     void EditorLayer::OnDetach()
@@ -64,11 +63,6 @@ namespace Spike
 
     void EditorLayer::OnScenePlay()
     {
-        if (m_ReloadScriptOnPlay)
-        {
-            ScriptEngine::SetSceneContext(m_EditorScene);
-            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
-        }
         m_SceneHierarchyPanel.ClearSelectedEntity();
         m_SceneState = SceneState::Play;
 
@@ -113,12 +107,11 @@ namespace Spike
             m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
         }
 
-        // Render
         Renderer2D::ResetStats();
+
         m_Framebuffer->Bind();
-        RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
         RenderCommand::Clear();
-        m_Framebuffer->ClearAttachment(1, -1);
+        m_Framebuffer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
 
         switch (m_SceneState)
         {
@@ -147,20 +140,7 @@ namespace Spike
             }
         }
 
-        auto [mx, my] = ImGui::GetMousePos();
-        mx -= m_ViewportBounds[0].x;
-        my -= m_ViewportBounds[0].y;
-        glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
-        my = m_ViewportSize.y - my;
-        int mouseX = (int)mx;
-        int mouseY = (int)my;
-
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)m_ViewportSize.x &&
-            mouseY < (int)m_ViewportSize.y && Input::IsMouseButtonPressed(Mouse::Button0) && !ImGuizmo::IsUsing())
-        {
-            auto pixelData = m_Framebuffer->ReadPixel(1, mouseX, mouseY);
-            m_SelectedEntity = pixelData == -1 ? Entity() : Entity((entt::entity)pixelData, m_EditorScene.Raw());
-        }
+        RenderCommand::BindBackbuffer();
         m_Framebuffer->Unbind();
     }
 
@@ -170,9 +150,6 @@ namespace Spike
         static bool opt_fullscreen_persistant = true;
         bool opt_fullscreen = opt_fullscreen_persistant;
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-
-        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
-        // because it would be confusing to have two docking targets within each others.
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
         if (opt_fullscreen)
         {
@@ -186,7 +163,6 @@ namespace Spike
             window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
 
-        // When using ImGuiDockNodeFlags_PassthruCentralNode, DockSpace() will render our background and handle the pass-thru hole, so we ask Begin() to not render a background.
         if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
             window_flags |= ImGuiWindowFlags_NoBackground;
 
@@ -241,7 +217,6 @@ namespace Spike
         }
 
         Console::Get()->OnImGuiRender();
-        ScriptEngine::OnImGuiRender();
         m_SceneHierarchyPanel.OnImGuiRender();
         m_ProfilerPanel.OnImGuiRender();
         m_VaultPanel.OnImGuiRender();
@@ -251,25 +226,11 @@ namespace Spike
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
         ImGui::Begin("ToolBar", &show, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
-        if (ImGui::Button(ICON_FK_REPEAT))
-        {
-            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
-            SPK_CORE_LOG_INFO("ScriptEngine reloaded the C# assembly successfully!");
-        }
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::BeginTooltip();
-            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
-            ImGui::TextUnformatted("Reload C# assembly");
-            ImGui::PopTextWrapPos();
-            ImGui::EndTooltip();
-        }
+
         ImGui::SameLine();
 
         if (ImGui::Button(ICON_FK_FLOPPY_O))
-        {
             SaveScene();
-        }
         if (ImGui::IsItemHovered())
         {
             ImGui::BeginTooltip();
@@ -284,38 +245,26 @@ namespace Spike
         if (m_SceneState == SceneState::Edit)
         {
             if (ImGui::ArrowButton("Play", ImGuiDir_Right))
-            {
                 OnScenePlay();
-            }
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
-            {
                 SPK_CORE_LOG_WARN("You can pause the scene only in Playmode!");
-            }
         }
         else if (m_SceneState == SceneState::Play)
         {
             if (ImGui::Button(ICON_FK_STOP))
-            {
                 OnSceneStop();
-            }
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
-            {
                 OnScenePause();
-            }
         }
         else if (m_SceneState == SceneState::Pause)
         {
             if (ImGui::Button(ICON_FK_STOP))
-            {
                 OnSceneStop();
-            }
             ImGui::SameLine();
             if (ImGui::Button(ICON_FK_PAUSE))
-            {
                 OnSceneResume();
-            }
         }
 
         ImGui::End();
@@ -326,72 +275,42 @@ namespace Spike
         {
             auto& shaders = Vault::GetAllShaders();
             for (auto& shader : shaders)
-            {
                 if (shader)
-                {
                     if (ImGui::TreeNode(shader->GetName().c_str()))
-                    {
-                        if (ImGui::Button("Reload"))
-                            shader->Reload();
-                        ImGui::SameLine();
-                        if (ImGui::Button("Dump Shader Data"))
-                            shader->DumpShaderData();
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("BuiltIn Shaders"))
         {
             auto& shaders = Vault::GetAllBuiltInShaders();
             for (auto& shader : shaders)
-            {
                 if (shader)
-                {
                     if (ImGui::TreeNode(shader->GetName().c_str()))
-                    {
-                        if (ImGui::Button("Dump Shader Data"))
-                            shader->DumpShaderData();
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("Textures"))
         {
             auto& textures = Vault::GetAllTextures();
             for (auto& texture : textures)
-            {
                 if (texture)
-                {
                     if (ImGui::TreeNode(texture->GetName().c_str()))
-                    {
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         if (ImGui::TreeNode("Scripts"))
         {
             auto& scripts = Vault::GetAllScripts();
             for (auto& script : scripts)
-            {
                 if (script.first.c_str())
-                {
-                    if (ImGui::TreeNode(Vault::GetNameWithoutExtension(script.first).c_str()))
-                    {
+                    if (ImGui::TreeNode(Vault::GetNameWithExtension(script.first).c_str()))
                         ImGui::TreePop();
-                    }
-                }
-            }
             ImGui::TreePop();
         }
         ImGui::End();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+
         ImGui::Begin(ICON_FK_GAMEPAD" Viewport");
         auto viewportOffset = ImGui::GetCursorPos();
 
@@ -407,18 +326,8 @@ namespace Spike
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
         m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-        uint64_t textureID = m_Framebuffer->GetColorAttachmentRendererID();
-        ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
+        GUI::DrawImageControl(m_Framebuffer->GetColorViewID(), m_ViewportSize);
         DrawGizmos();
-        auto windowSize = ImGui::GetWindowSize();
-        ImVec2 minBound = ImGui::GetWindowPos();
-        minBound.x += viewportOffset.x;
-        minBound.y += viewportOffset.y;
-
-        ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-        m_ViewportBounds[0] = { minBound.x, minBound.y };
-        m_ViewportBounds[1] = { maxBound.x, maxBound.y };
 
         ImGui::End();
         ImGui::PopStyleVar();
@@ -428,7 +337,6 @@ namespace Spike
     void EditorLayer::OnEvent(Event& e)
     {
         m_SceneHierarchyPanel.OnEvent(e);
-
         if (m_SceneState == SceneState::Edit)
         {
             if (m_ViewportHovered)
@@ -436,13 +344,10 @@ namespace Spike
             m_EditorScene->OnEvent(e);
         }
         else if (m_SceneState == SceneState::Play)
-        {
             m_RuntimeScene->OnEvent(e);
-        }
 
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-        dispatcher.Dispatch<MouseButtonPressedEvent>(SPK_BIND_EVENT_FN(EditorLayer::OnMouseButtonPressed));
     }
 
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -502,18 +407,13 @@ namespace Spike
                     m_GizmoType = ImGuizmo::OPERATION::SCALE;
                 }
                 break;
-            case Key::Escape:
-                if (m_SceneState == SceneState::Play)
-                {
-                    m_SceneState = SceneState::Edit;
-                }
+            case Key::F5:
+                if (m_SceneState == SceneState::Edit)
+                    OnScenePlay();
+                else
+                    OnSceneStop();
+                break;
         }
-        return false;
-    }
-
-    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-    {
-        m_SceneHierarchyPanel.SetSelectedEntity(m_SelectedEntity);
         return false;
     }
 
@@ -537,7 +437,6 @@ namespace Spike
 
             SceneSerializer serializer(m_EditorScene);
             serializer.Serialize(m_ActiveFilepath);
-
             UpdateWindowTitle(projectName);
         }
     }
@@ -596,9 +495,7 @@ namespace Spike
     void EditorLayer::SaveScene()
     {
         if (m_FirstTimeSave)
-        {
             SaveSceneAs();
-        }
         else
         {
             SceneSerializer serializer(m_EditorScene);
@@ -623,7 +520,6 @@ namespace Spike
 
     void EditorLayer::DrawGizmos()
     {
-        // Gizmos
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
         /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
         if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
@@ -663,7 +559,6 @@ namespace Spike
                 snapValue = 45.0f;
 
             float snapValues[3] = { snapValue, snapValue, snapValue };
-
             ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
                 (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
                 nullptr, snap ? snapValues : nullptr);
@@ -680,10 +575,7 @@ namespace Spike
                 tc.Scale = scale;
             }
             else
-            {
                 m_GizmoInUse = false;
-            }
         }
     }
 }
-#pragma warning (pop) // Pop the warning
