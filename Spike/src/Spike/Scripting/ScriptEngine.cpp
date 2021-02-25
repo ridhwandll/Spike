@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : Timestep
-File Type      : h
-File created on: 2021/01/09
+File Name      : ScriptEngine
+File Type      : cpp
+File created on: 2021/02/24
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -21,21 +21,9 @@ Github repository : https://github.com/FahimFuad/Spike
 
 2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
-#pragma once
+#include "spkpch.h"
 
 namespace Spike
 {
-    class Timestep
-    {
-    public:
-        Timestep(float time = 0.0f)
-            :m_Time(time) {}
 
-        operator float() const { return m_Time; }
-
-        float GetSeconds() const { return m_Time; }
-        float GetMilliseconds() const { return m_Time * 1000.0f; }
-    private:
-        float m_Time;
-    };
 }

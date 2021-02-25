@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : Timestep
+File Name      : ScriptEngine
 File Type      : h
-File created on: 2021/01/09
+File created on: 2021/02/24
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -19,23 +19,14 @@ Github repository : https://github.com/FahimFuad/Spike
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
 
-2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
 
 namespace Spike
 {
-    class Timestep
+    class ScriptEngine
     {
-    public:
-        Timestep(float time = 0.0f)
-            :m_Time(time) {}
 
-        operator float() const { return m_Time; }
-
-        float GetSeconds() const { return m_Time; }
-        float GetMilliseconds() const { return m_Time * 1000.0f; }
-    private:
-        float m_Time;
     };
 }
