@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <entt.hpp>
 #include "Spike/Core/Log.h"
 #include "Spike/Scene/Components.h"
+#include "Spike/Scripting/ScriptEngine.h"
 
 namespace Spike
 {

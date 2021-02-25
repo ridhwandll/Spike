@@ -26,6 +26,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Scene/SceneSerializer.h"
 #include "Spike/Utility/FileDialogs.h"
 #include "Spike/Math/Math.h"
+#include "Spike/Scripting/ScriptEngine.h"
 #include "UIUtils/UIUtils.h"
 #include "Spike/Core/Vault.h"
 #include <FontAwesome.h>
@@ -60,6 +61,11 @@ namespace Spike
 
     void EditorLayer::OnScenePlay()
     {
+        if (m_ReloadScriptOnPlay)
+        {
+            ScriptEngine::SetSceneContext(m_EditorScene);
+            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+        }
         m_SceneHierarchyPanel.ClearSelectedEntity();
         m_SceneState = SceneState::Play;
 
@@ -214,6 +220,7 @@ namespace Spike
         }
 
         Console::Get()->OnImGuiRender();
+        ScriptEngine::OnImGuiRender();
         m_SceneHierarchyPanel.OnImGuiRender();
         m_ProfilerPanel.OnImGuiRender();
         m_VaultPanel.OnImGuiRender();
@@ -223,7 +230,19 @@ namespace Spike
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.4f, 0.4f, 0.4f, 1.0f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5, 0.5, 0.5, 1.0f));
         ImGui::Begin("ToolBar", &show, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
-
+        if (ImGui::Button(ICON_FK_REPEAT))
+        {
+            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+            SPK_CORE_LOG_INFO("ScriptEngine reloaded the C# assembly successfully!");
+        }
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+            ImGui::TextUnformatted("Reload C# assembly");
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
         ImGui::SameLine();
 
         if (ImGui::Button(ICON_FK_FLOPPY_O))

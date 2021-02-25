@@ -286,6 +286,24 @@ namespace Spike
         return result;
     }
 
+    Vector<char> Vault::ReadBinaryFile(const String& filepath)
+    {
+        std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
+
+        if (!stream)
+            SPK_CORE_LOG_ERROR("Cannot open filepath: %s!", filepath.c_str());
+
+        auto end = stream.tellg();
+        stream.seekg(0, std::ios::beg);
+        auto size = std::size_t(end - stream.tellg());
+        if (size == 0) return {};
+
+        Vector<char> buffer(size);
+        if (!stream.read((char*)buffer.data(), buffer.size()))
+            SPK_CORE_LOG_ERROR("Cannot read file: %s", filepath.c_str());
+        return buffer;
+    }
+
     String Vault::GetExtension(const String& assetFilepath)
     {
         return std::filesystem::path(assetFilepath).extension().string();

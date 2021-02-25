@@ -130,6 +130,15 @@ namespace Spike
         void Reset() { Mesh = nullptr; MeshFilepath.clear(); }
     };
 
+    struct ScriptComponent
+    {
+        String ModuleName;
+
+        ScriptComponent() = default;
+        ScriptComponent(const ScriptComponent&) = default;
+        void Reset() { ModuleName = "SpikeNull"; }
+    };
+
     //// 2D Physics //////////////////////////////////////////////////////////////////////
     enum class CollisionDetectionType;
     enum class SleepType;

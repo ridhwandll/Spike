@@ -72,7 +72,10 @@ namespace Spike
 
         static bool CreateFolder(const char* parentDirectory, const char* name);
         static void ClearAllCache();
+
+        /* [Spike] File Readers [Spike] */
         static String ReadFile(const String& filepath);
+        static Vector<char> ReadBinaryFile(const String& filepath);
     private:
         static String s_ProjectPath; /* [Spike] Base Path, such as: "C:/Users/Dummy/Desktop/SpikeProject" [Spike] */
         static bool s_VaultInitialized;

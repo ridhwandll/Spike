@@ -39,6 +39,7 @@ namespace Spike
         NeverSleep = 0, StartAwake = 1, StartAsleep = 2
     };
 
+    class ContactListener2D;
     class Physics2D
     {
     public:
@@ -47,9 +48,11 @@ namespace Spike
         static void Init();
         static void Shutdown();
 
+        static ContactListener2D GetContactListener();
         static void SetGravity(float gravity);
         static float GetGravity();
     private:
+        static ContactListener2D m_ContactListener;
         static Scene* m_Scene;
         static Entity* m_Physics2DBodyEntityBuffer;
     };

@@ -31,6 +31,52 @@ namespace Spike
     Entity* Physics2D::m_Physics2DBodyEntityBuffer = nullptr;
     Scene* Physics2D::m_Scene = nullptr;
 
+    class ContactListener2D : public b2ContactListener
+    {
+    public:
+        /* [Spike] Called when contact begins [Spike] */
+        void BeginContact(b2Contact* contact) override
+        {
+            /* [Spike] Collision between 2 entities, so entityA and entityB [Spike] */
+            Entity& entityA = *(Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
+            Entity& entityB = *(Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+            if (entityA.HasComponent<ScriptComponent>() && ScriptEngine::ModuleExists(entityA.GetComponent<ScriptComponent>().ModuleName))
+                ScriptEngine::OnCollision2DBegin(entityA);
+
+            if (entityB.HasComponent<ScriptComponent>() && ScriptEngine::ModuleExists(entityB.GetComponent<ScriptComponent>().ModuleName))
+                ScriptEngine::OnCollision2DBegin(entityB);
+        }
+
+        /* [Spike] Called when contact ends [Spike] */
+        void EndContact(b2Contact* contact) override
+        {
+            /* [Spike] Collision between 2 entities, so entityA and entityB [Spike] */
+            Entity& entityA = *(Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
+            Entity& entityB = *(Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+            if (entityA.HasComponent<ScriptComponent>() && ScriptEngine::ModuleExists(entityA.GetComponent<ScriptComponent>().ModuleName))
+                ScriptEngine::OnCollision2DEnd(entityA);
+
+            if (entityB.HasComponent<ScriptComponent>() && ScriptEngine::ModuleExists(entityB.GetComponent<ScriptComponent>().ModuleName))
+                ScriptEngine::OnCollision2DEnd(entityB);
+        }
+
+        virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold) override
+        {
+            B2_NOT_USED(contact);
+            B2_NOT_USED(oldManifold);
+        }
+
+        virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override
+        {
+            B2_NOT_USED(contact);
+            B2_NOT_USED(impulse);
+        }
+    };
+
+    ContactListener2D Physics2D::m_ContactListener;
+
     struct Box2DWorldComponent
     {
         Box2DWorldComponent() = default;
@@ -41,6 +87,7 @@ namespace Spike
     {
         m_Scene = scene;
         Box2DWorldComponent& box2DWorld = m_Scene->m_Registry.emplace<Box2DWorldComponent>(m_Scene->m_SceneEntity, CreateScope<b2World>(b2Vec2{ 0.0f, -9.8f }));
+        box2DWorld.World->SetContactListener(&m_ContactListener);
     }
 
     void Physics2D::Simulate(Timestep ts)
@@ -213,6 +260,11 @@ namespace Spike
     void Physics2D::Shutdown()
     {
         delete[] m_Physics2DBodyEntityBuffer;
+    }
+
+    ContactListener2D Physics2D::GetContactListener()
+    {
+        return m_ContactListener;
     }
 
     void Physics2D::SetGravity(float gravity)
