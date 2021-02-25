@@ -25,6 +25,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Vault.h"
 #include "Spike/Scene/SceneSerializer.h"
 #include "Spike/Renderer/RendererAPISwitch.h"
+#include "Spike/Utility/FileDialogs.h"
 #include "UIUtils/UIUtils.h"
 #include "EditorLayer.h"
 #include <filesystem>
@@ -94,10 +95,8 @@ namespace Spike
         }
 
         if (Vault::IsVaultInitialized())
-        {
             for (auto& file : m_Files)
-                this->DrawPath(file);
-        }
+                DrawPath(file);
         ImGui::End();
 
         ImGui::Begin("Texture Preview", false, ImGuiWindowFlags_HorizontalScrollbar);
@@ -115,6 +114,45 @@ namespace Spike
             ImVec2 windowRes = ImGui::GetWindowSize();
             ImGui::SetCursorPos({ windowRes.x * 0.2f, windowRes.y * 0.5f });
             ImGui::TextUnformatted("No Texture is selected. Select an image file\nin the Spike Vault to show it up here!");
+        }
+        ImGui::End();
+
+        ImGui::Begin("SpikeCache");
+        if (ImGui::TreeNode("External Shaders"))
+        {
+            auto& shaders = Vault::GetAllShaders();
+            for (auto& shader : shaders)
+                if (shader)
+                    if (ImGui::TreeNode(shader->GetName().c_str()))
+                        ImGui::TreePop();
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("BuiltIn Shaders"))
+        {
+            auto& shaders = Vault::GetAllBuiltInShaders();
+            for (auto& shader : shaders)
+                if (shader)
+                    if (ImGui::TreeNode(shader->GetName().c_str()))
+                        ImGui::TreePop();
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Textures"))
+        {
+            auto& textures = Vault::GetAllTextures();
+            for (auto& texture : textures)
+                if (texture)
+                    if (ImGui::TreeNode(texture->GetName().c_str()))
+                        ImGui::TreePop();
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Scripts"))
+        {
+            auto& scripts = Vault::GetAllScripts();
+            for (auto& script : scripts)
+                if (script.first.c_str())
+                    if (ImGui::TreeNode(Vault::GetNameWithExtension(script.first).c_str()))
+                        ImGui::TreePop();
+            ImGui::TreePop();
         }
         ImGui::End();
     }
@@ -149,14 +187,19 @@ namespace Spike
             /* [Spike] Loading Spike files [Spike] */
             if (entry.Extension == ".spike" && ImGui::IsItemClicked(0))
             {
-                ((EditorLayer*)s_EditorLayerStorage)->m_ActiveFilepath = entry.AbsolutePath;
-                ((EditorLayer*)s_EditorLayerStorage)->m_FirstTimeSave = false;
-                ((EditorLayer*)s_EditorLayerStorage)->m_EditorScene = Ref<Scene>::Create();
-                ((EditorLayer*)s_EditorLayerStorage)->m_EditorScene->OnViewportResize((uint32_t)((EditorLayer*)s_EditorLayerStorage)->m_ViewportSize.x, (uint32_t)((EditorLayer*)s_EditorLayerStorage)->m_ViewportSize.y);
-                ((EditorLayer*)s_EditorLayerStorage)->m_SceneHierarchyPanel.SetContext(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
+                int filepath = FileDialogs::AMessageBox("", "Do you want to open this scene?", DialogType::Yes__No, IconType::Question, DefaultButton::No);
+                if(filepath)
+                {
+                    ((EditorLayer*)s_EditorLayerStorage)->m_ActiveFilepath = entry.AbsolutePath;
+                    ((EditorLayer*)s_EditorLayerStorage)->m_FirstTimeSave = false;
+                    ((EditorLayer*)s_EditorLayerStorage)->m_EditorScene = Ref<Scene>::Create();
+                    ((EditorLayer*)s_EditorLayerStorage)->m_EditorScene->OnViewportResize((uint32_t)((EditorLayer*)s_EditorLayerStorage)->m_ViewportSize.x, (uint32_t)((EditorLayer*)s_EditorLayerStorage)->m_ViewportSize.y);
+                    ((EditorLayer*)s_EditorLayerStorage)->m_SceneHierarchyPanel.SetContext(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
 
-                SceneSerializer serializer(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
-                serializer.Deserialize(entry.AbsolutePath);
+                    SceneSerializer serializer(((EditorLayer*)s_EditorLayerStorage)->m_EditorScene);
+                    serializer.Deserialize(entry.AbsolutePath);
+                    ImGui::SetWindowFocus(String(ICON_FK_GAMEPAD" Viewport").c_str());
+                }
             }
 
             /* [Spike] Texture [Spike] */

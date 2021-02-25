@@ -23,10 +23,11 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #pragma once
 #include "Spike.h"
+#include "Spike/Renderer/EditorCamera.h"
+#include "Panels/ConsolePanel.h"
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ProfilerPanel.h"
 #include "Panels/VaultPanel.h"
-#include "Spike/Renderer/EditorCamera.h"
 
 namespace Spike
 {
@@ -52,7 +53,8 @@ namespace Spike
         void SaveSceneAs();
         void UpdateWindowTitle(const String& sceneName);
         void DrawRectAroundWindow(const glm::vec4& color);
-        void DrawGizmos();
+        void RenderGizmos();
+        void RenderPanels();
 
         void OnScenePlay();
         void OnSceneStop();
@@ -73,7 +75,7 @@ namespace Spike
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
         glm::vec2 m_ViewportSize = {0.0f, 0.0f};
-        glm::vec2 m_ViewportBounds[2];
+        glm::vec2 m_ViewportBounds[2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
         bool m_FirstTimeSave = false;
         bool m_ReloadScriptOnPlay = true;
         String m_ActiveFilepath = String();

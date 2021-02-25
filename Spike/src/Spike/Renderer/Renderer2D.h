@@ -53,12 +53,11 @@ namespace Spike
             uint32_t GetTotalVertexCount() const { return QuadCount * 4; }
             uint32_t GetTotalIndexCount() const { return QuadCount * 6; }
         };
-        static void ResetStats();
+        static void UpdateStats();
         static Statistics GetStats();
 
     private:
         static void StartBatch();
-        static void NextBatch();
     };
 
 }

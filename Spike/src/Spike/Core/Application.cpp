@@ -47,7 +47,8 @@ namespace Spike
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-        ScriptEngine::Init("Spike-Editor/assets/scripts/ExampleApp.dll");
+        m_ScriptEngineAppAssemblyPath = "Spike-Editor/assets/scripts/ExampleApp.dll";
+        ScriptEngine::Init(m_ScriptEngineAppAssemblyPath);
         Renderer::Init();
         Renderer2D::Init();
 
@@ -83,6 +84,11 @@ namespace Spike
         stbi_image_free(icons[0].pixels);
     }
 
+    const char* Application::GetScriptEngineAppAssemblyPath()
+    {
+        return m_ScriptEngineAppAssemblyPath;
+    }
+
     const char* Application::GetPlatformName()
     {
         #if defined SPK_PLATFORM_WINDOWS
@@ -116,11 +122,7 @@ namespace Spike
             case RendererAPI::API::OpenGL:
                 return "OpenGL 4.5";
             case RendererAPI::API::DX11:
-                return "DX11";
-            case RendererAPI::API::Vulkan:
-                return "Vulkan";
-            case RendererAPI::API::Metal:
-                return "Metal";
+                return "DirectX 11";
         }
         return "RendererAPI not found!";
     }

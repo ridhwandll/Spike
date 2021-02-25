@@ -38,56 +38,22 @@ namespace Spike
 
 namespace Spike::Scripting
 {
-    void Spike_Console_LogInfo(MonoString* message)
-    {
-        SPK_CORE_LOG_INFO(ConvertMonoStringToCppString(message).c_str());
-    }
-
-    void Spike_Console_LogWarn(MonoString* message)
-    {
-        SPK_CORE_LOG_WARN(ConvertMonoStringToCppString(message).c_str());
-    }
-
-    void Spike_Console_LogDebug(MonoString* message)
-    {
-        SPK_CORE_LOG_DEBUG(ConvertMonoStringToCppString(message).c_str());
-    }
-
-    void Spike_Console_LogError(MonoString* message)
-    {
-        SPK_CORE_LOG_ERROR(ConvertMonoStringToCppString(message).c_str());
-    }
-
-    void Spike_Console_LogCritical(MonoString* message)
-    {
-        SPK_CORE_LOG_CRITICAL(ConvertMonoStringToCppString(message).c_str());
-    }
+    void Spike_Console_LogInfo(MonoString* message)     { SPK_CORE_LOG_INFO    (ConvertMonoStringToCppString(message).c_str()); }
+    void Spike_Console_LogWarn(MonoString* message)     { SPK_CORE_LOG_WARN    (ConvertMonoStringToCppString(message).c_str()); }
+    void Spike_Console_LogDebug(MonoString* message)    { SPK_CORE_LOG_DEBUG   (ConvertMonoStringToCppString(message).c_str()); }
+    void Spike_Console_LogError(MonoString* message)    { SPK_CORE_LOG_ERROR   (ConvertMonoStringToCppString(message).c_str()); }
+    void Spike_Console_LogCritical(MonoString* message) { SPK_CORE_LOG_CRITICAL(ConvertMonoStringToCppString(message).c_str()); }
 
     /* [Spike] INPUT [Spike] */
-    bool Spike_Input_IsKeyPressed(KeyCode key)
-    {
-        return Spike::Input::IsKeyPressed(key);
-    }
-
-    bool Spike_Input_IsMouseButtonPressed(MouseCode button)
-    {
-        return Spike::Input::IsMouseButtonPressed(button);
-    }
+    bool Spike_Input_IsKeyPressed(KeyCode key) { return Spike::Input::IsKeyPressed(key);}
+    bool Spike_Input_IsMouseButtonPressed(MouseCode button) { return Spike::Input::IsMouseButtonPressed(button);}
+    void Spike_Input_SetCursorMode(MousePointerMode mode) { Input::SetCursorMode(mode); }
+    MousePointerMode Spike_Input_GetCursorMode() { return Spike::Input::GetCursorMode(); }
 
     void Spike_Input_GetMousePosition(glm::vec2* outPosition)
     {
         glm::vec2 result =  Spike::Input::GetMousePosition();
         *outPosition = result;
-    }
-
-    void Spike_Input_SetCursorMode(MousePointerMode mode)
-    {
-        Spike::Input::SetCursorMode(mode);
-    }
-
-    MousePointerMode Spike_Input_GetCursorMode()
-    {
-        return Spike::Input::GetCursorMode();
     }
 
     /* [Spike] ENTITY [Spike] */

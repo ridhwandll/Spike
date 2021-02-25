@@ -518,6 +518,8 @@ namespace Spike
         CallMethod(entityInstance.GetInstance(), entityInstance.ScriptClass->Constructor, param);
 
         ScriptModuleFieldMap& moduleFieldMap = entityInstanceData.ModuleFieldMap;
+
+        //Copy all the stored value to runtime
         if (moduleFieldMap.find(moduleName) != moduleFieldMap.end())
         {
             auto& publicFields = moduleFieldMap.at(moduleName);
@@ -662,49 +664,5 @@ namespace Spike
     {
         SPK_INTERNAL_ASSERT(m_EntityInstance->GetInstance());
         mono_field_get_value(m_EntityInstance->GetInstance(), m_MonoClassField, outValue);
-    }
-
-    /* [Spike] DEBUG ONLY [Spike] */
-    void ScriptEngine::OnImGuiRender()
-    {
-        ImGui::Begin("ScriptEngine Status");
-        for (auto& [sceneID, entityMap] : s_EntityInstanceMap)
-        {
-            bool opened = ImGui::TreeNode((void*)(uint64_t)sceneID, "Scene (%llx)", sceneID);
-            if (opened)
-            {
-                Ref<Scene> scene = Scene::GetScene(sceneID);
-                for (auto& [entityID, entityInstanceData] : entityMap)
-                {
-                    Entity entity = scene->GetScene(sceneID)->GetEntityMap().at(entityID);
-                    String entityName = "Unnamed Entity";
-                    if (entity.HasComponent<TagComponent>())
-                        entityName = entity.GetComponent<TagComponent>().Tag;
-                    opened = ImGui::TreeNode((void*)(uint64_t)entityID, "%s (%llx)", entityName.c_str(), entityID);
-                    if (opened)
-                    {
-                        for (auto& [moduleName, fieldMap] : entityInstanceData.ModuleFieldMap)
-                        {
-                            opened = ImGui::TreeNode(moduleName.c_str());
-                            if (opened)
-                            {
-                                for (auto& [fieldName, field] : fieldMap)
-                                {
-                                    opened = ImGui::TreeNodeEx((void*)&field, ImGuiTreeNodeFlags_Leaf, fieldName.c_str());
-                                    if (opened)
-                                    {
-                                        ImGui::TreePop();
-                                    }
-                                }
-                                ImGui::TreePop();
-                            }
-                        }
-                        ImGui::TreePop();
-                    }
-                }
-                ImGui::TreePop();
-            }
-        }
-        ImGui::End();
     }
 }

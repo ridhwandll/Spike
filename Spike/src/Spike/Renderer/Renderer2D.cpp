@@ -303,7 +303,7 @@ namespace Spike
             DrawQuad(transform, sprite.Color);
     }
 
-    void Renderer2D::ResetStats()
+    void Renderer2D::UpdateStats()
     {
         memset(&s_Data.Stats, 0, sizeof(Statistics));
     }

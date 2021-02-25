@@ -36,6 +36,7 @@ namespace Spike::DX11Internal
     void CreateSampler();
     void CreateBackbuffer();
     void CreateBlendState();
+    void CreateRasterizerState();
     void LogDeviceInfo();
 
     ID3D11Device* GetDevice();

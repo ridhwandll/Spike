@@ -43,6 +43,7 @@ namespace Spike
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
         void SetAppIcon(const String& imagePath);
+        const char* GetScriptEngineAppAssemblyPath();
 
         static const char* GetPlatformName();
         static const char* GetConfigurationName();
@@ -63,6 +64,7 @@ namespace Spike
         bool m_Minimized = false;
         LayerStack m_LayerStack;
         float m_LastFrameTime = 0.0f;
+        const char* m_ScriptEngineAppAssemblyPath;
     private:
         static Application* s_Instance;
     };

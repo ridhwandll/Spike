@@ -458,7 +458,6 @@ namespace Spike
             }
         });
 
-        /* [Spike] Yeah, this needs to be mutable [Spike] */
         DrawComponent<ScriptComponent>(ICON_FK_CODE" Script", entity, [=](ScriptComponent& sc) mutable
         {
             String oldName = sc.ModuleName;

@@ -46,9 +46,7 @@ namespace Spike
         {
             None = 0,
             OpenGL = 1,
-            Vulkan = 2,
-            DX11 = 3,
-            Metal = 4
+            DX11 = 2,
         };
     public:
         static RenderAPICapabilities& GetCapabilities()

@@ -133,7 +133,6 @@ namespace Spike
         static void OnCollision2DBegin(Entity entity);
         static void OnCollision2DEnd(Entity entity);
 
-        /* [Spike] Script Engine must have a scene to work on, we set the scene context by this [Spike] */
         static void SetSceneContext(const Ref<Scene>& scene);
         static Ref<Scene> GetSceneContext();
 
@@ -154,8 +153,5 @@ namespace Spike
 
         static EntityInstanceMap& GetEntityInstanceMap();
         static EntityInstanceData& GetEntityInstanceData(UUID sceneID, UUID entityID);
-
-        /* [Spike] Debug Only [Spike] */
-        static void OnImGuiRender();
     };
 }
