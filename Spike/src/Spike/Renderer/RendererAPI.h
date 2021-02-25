@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
 #include <glm\glm.hpp>
@@ -49,9 +46,7 @@ namespace Spike
         {
             None = 0,
             OpenGL = 1,
-            Vulkan = 2,
-            DX11 = 3,
-            Metal = 4
+            DX11 = 2,
         };
     public:
         static RenderAPICapabilities& GetCapabilities()

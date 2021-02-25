@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim/
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 
 //UI utility function to be used in the Panels and the GUI stuff
@@ -34,6 +31,11 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike::GUI
 {
+    void BeginViewport(const char* name);
+    void EndViewport();
+    void BeginDockspace();
+    void EndDockspace();
+
     void DrawImageControl(const RendererID imageID, const glm::vec2& viewportDimensions);
     bool DrawImageButtonControl(const RendererID imageID, glm::vec2 buttonSize);
     bool DrawScriptTextControl(const char* label, String& value, float columnWidth = 100.0f, bool foundTheScript = false);

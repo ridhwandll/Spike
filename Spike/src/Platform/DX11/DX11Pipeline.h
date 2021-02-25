@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
 #include "Spike/Renderer/Pipeline.h"
@@ -37,11 +34,11 @@ namespace Spike
         virtual ~DX11Pipeline();
         virtual void Bind() const override;
         virtual void Unbind() const override;
-        virtual const PipelineSpecification& GetSpecification() const override { return mSpec; }
-        virtual void SetPrimitiveTopology(PrimitiveTopology topology) override { mPrimitiveTopology = topology; }
+        virtual const PipelineSpecification& GetSpecification() const override { return m_Spec; }
+        virtual void SetPrimitiveTopology(PrimitiveTopology topology) override { m_PrimitiveTopology = topology; }
     private:
-        ID3D11InputLayout* mInputLayout = nullptr;
-        PipelineSpecification mSpec;
-        PrimitiveTopology mPrimitiveTopology = PrimitiveTopology::TRIANGLELIST;
+        ID3D11InputLayout* m_InputLayout = nullptr;
+        PipelineSpecification m_Spec;
+        PrimitiveTopology m_PrimitiveTopology = PrimitiveTopology::TRIANGLELIST;
     };
 }

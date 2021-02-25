@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
 #include "DX11Pipeline.h"
@@ -31,7 +28,6 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-
     static DXGI_FORMAT ShaderDataTypeToDirectXBaseType(ShaderDataType type)
     {
         switch (type)
@@ -67,9 +63,9 @@ namespace Spike
     }
 
     DX11Pipeline::DX11Pipeline(const PipelineSpecification& spec)
-        :mSpec(spec)
+        :m_Spec(spec)
     {
-        auto& elements = mSpec.VertexBuffer->GetLayout().GetElements();
+        auto& elements = m_Spec.VertexBuffer->GetLayout().GetElements();
         D3D11_INPUT_ELEMENT_DESC* ied = new D3D11_INPUT_ELEMENT_DESC[elements.size()];
 
         for (int i = 0; i < elements.size(); i++)
@@ -81,27 +77,27 @@ namespace Spike
             };
         }
 
-        DX11Shader* nativeShader = static_cast<DX11Shader*>(mSpec.Shader->GetNativeClass());
+        DX11Shader* nativeShader = static_cast<DX11Shader*>(m_Spec.Shader->GetNativeClass());
         DX11Internal::GetDevice();
         DX_CALL(DX11Internal::GetDevice()->CreateInputLayout(
             ied,
             (UINT)elements.size(),
             static_cast<ID3DBlob*>(nativeShader->GetVSRaw())->GetBufferPointer(),
             static_cast<ID3DBlob*>(nativeShader->GetVSRaw())->GetBufferSize(),
-            &mInputLayout));
+            &m_InputLayout));
         delete[] ied;
     }
 
     DX11Pipeline::~DX11Pipeline()
     {
-        if (mInputLayout)
-            mInputLayout->Release();
+        if (m_InputLayout)
+            m_InputLayout->Release();
     }
 
     void DX11Pipeline::Bind() const
     {
-        DX11Internal::GetDeviceContext()->IASetPrimitiveTopology(SpikeTopologyToDX11Topology(mPrimitiveTopology));
-        DX11Internal::GetDeviceContext()->IASetInputLayout(mInputLayout);
+        DX11Internal::GetDeviceContext()->IASetPrimitiveTopology(SpikeTopologyToDX11Topology(m_PrimitiveTopology));
+        DX11Internal::GetDeviceContext()->IASetInputLayout(m_InputLayout);
     }
 
     void DX11Pipeline::Unbind() const

@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
 #include "DX11IndexBuffer.h"
@@ -31,7 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike
 {
     DX11IndexBuffer::DX11IndexBuffer(void* indices, uint32_t count)
-        :mCount(count)
+        :m_Count(count)
     {
         D3D11_BUFFER_DESC id = {};
         id.Usage = D3D11_USAGE_DEFAULT;
@@ -46,17 +43,17 @@ namespace Spike
         sd.SysMemPitch = 0;
         sd.SysMemSlicePitch = 0;
 
-        DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&id, &sd, &mIndexBuffer));
+        DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&id, &sd, &m_IndexBuffer));
     }
 
     DX11IndexBuffer::~DX11IndexBuffer()
     {
-        mIndexBuffer->Release();
+        m_IndexBuffer->Release();
     }
 
     void DX11IndexBuffer::Bind() const
     {
-        DX11Internal::GetDeviceContext()->IASetIndexBuffer(mIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+        DX11Internal::GetDeviceContext()->IASetIndexBuffer(m_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
     }
 
     void DX11IndexBuffer::Unbind() const

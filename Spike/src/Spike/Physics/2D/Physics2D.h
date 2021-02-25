@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim/
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
 #include "Spike/Scene/Entity.h"
@@ -42,6 +39,7 @@ namespace Spike
         NeverSleep = 0, StartAwake = 1, StartAsleep = 2
     };
 
+    class ContactListener2D;
     class Physics2D
     {
     public:
@@ -50,9 +48,11 @@ namespace Spike
         static void Init();
         static void Shutdown();
 
+        static ContactListener2D GetContactListener();
         static void SetGravity(float gravity);
         static float GetGravity();
     private:
+        static ContactListener2D m_ContactListener;
         static Scene* m_Scene;
         static Entity* m_Physics2DBodyEntityBuffer;
     };

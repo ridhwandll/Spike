@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 /* [Spike] All the assets are stored in the Vault [Spike] */
 #include "spkpch.h"
@@ -287,6 +284,24 @@ namespace Spike
             SPK_CORE_LOG_CRITICAL("Could not open file path \"%s\"", filepath.c_str());
         }
         return result;
+    }
+
+    Vector<char> Vault::ReadBinaryFile(const String& filepath)
+    {
+        std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
+
+        if (!stream)
+            SPK_CORE_LOG_ERROR("Cannot open filepath: %s!", filepath.c_str());
+
+        auto end = stream.tellg();
+        stream.seekg(0, std::ios::beg);
+        auto size = std::size_t(end - stream.tellg());
+        if (size == 0) return {};
+
+        Vector<char> buffer(size);
+        if (!stream.read((char*)buffer.data(), buffer.size()))
+            SPK_CORE_LOG_ERROR("Cannot read file: %s", filepath.c_str());
+        return buffer;
     }
 
     String Vault::GetExtension(const String& assetFilepath)

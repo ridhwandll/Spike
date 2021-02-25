@@ -2,6 +2,7 @@
 **/bin/
 bin-int/
 !vendor/premake/bin/
+!Spike/vendor/mono/bin
 
 #Spike Generated Project Files
 Logs/

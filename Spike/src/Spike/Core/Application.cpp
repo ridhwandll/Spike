@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
 #include "Application.h"
@@ -32,6 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Input.h"
 #include "Spike/Core/Vault.h"
 #include "Spike/Utility/FileDialogs.h"
+#include "Spike/Scripting/ScriptEngine.h"
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
@@ -49,6 +47,8 @@ namespace Spike
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
+        m_ScriptEngineAppAssemblyPath = "Spike-Editor/assets/scripts/ExampleApp.dll";
+        ScriptEngine::Init(m_ScriptEngineAppAssemblyPath);
         Renderer::Init();
         Renderer2D::Init();
 
@@ -60,6 +60,7 @@ namespace Spike
     {
         Renderer::Shutdown();
         Renderer2D::Shutdown();
+        ScriptEngine::Shutdown();
         Vault::Shutdown();
     }
 
@@ -81,6 +82,11 @@ namespace Spike
         icons[0].pixels = stbi_load(imagePath.c_str(), &icons[0].width, &icons[0].height, 0, 4);
         glfwSetWindowIcon(static_cast<GLFWwindow*>(m_Window->GetNativeWindow()), 1, icons);
         stbi_image_free(icons[0].pixels);
+    }
+
+    const char* Application::GetScriptEngineAppAssemblyPath()
+    {
+        return m_ScriptEngineAppAssemblyPath;
     }
 
     const char* Application::GetPlatformName()
@@ -116,11 +122,7 @@ namespace Spike
             case RendererAPI::API::OpenGL:
                 return "OpenGL 4.5";
             case RendererAPI::API::DX11:
-                return "DX11";
-            case RendererAPI::API::Vulkan:
-                return "Vulkan";
-            case RendererAPI::API::Metal:
-                return "Metal";
+                return "DirectX 11";
         }
         return "RendererAPI not found!";
     }

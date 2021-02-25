@@ -18,11 +18,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
- 
-2.You MUST NOT change or alter this file. This excludes the contributions done
-  by people. Changing this file is PERFECTLY LEGAL if you are contributing.
 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
 #include "SceneSerializer.h"
@@ -255,6 +252,16 @@ namespace Spike
                 out << YAML::EndMap; // MeshComponent
             }
 
+            if (entity.HasComponent<ScriptComponent>())
+            {
+                out << YAML::Key << "ScriptComponent";
+                out << YAML::BeginMap; // ScriptComponent
+
+                auto moduleName = entity.GetComponent<ScriptComponent>().ModuleName;
+                out << YAML::Key << "ModuleName" << moduleName;
+
+                out << YAML::EndMap; // ScriptComponent
+            }
             if (entity.HasComponent<RigidBody2DComponent>())
             {
                 out << YAML::Key << "RigidBody2DComponent";
@@ -426,6 +433,17 @@ namespace Spike
                     }
 
                     SPK_CORE_LOG_INFO("  Mesh Asset Path: %s", meshPath.c_str());
+                }
+
+                auto scriptComponent = entity["ScriptComponent"];
+                if (scriptComponent)
+                {
+                    String moduleName = scriptComponent["ModuleName"].as<String>();
+
+                    if (!deserializedEntity.HasComponent<ScriptComponent>())
+                    {
+                        deserializedEntity.AddComponent<ScriptComponent>(moduleName);
+                    }
                 }
 
                 auto rigidBody2DComponent = entity["RigidBody2DComponent"];

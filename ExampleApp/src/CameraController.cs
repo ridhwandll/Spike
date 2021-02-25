@@ -1,5 +1,4 @@
-﻿using System;
-using Spike;
+﻿using Spike;
 
 class CameraController : Entity
 {
@@ -7,6 +6,7 @@ class CameraController : Entity
     private TransformComponent m_PlayerTransform;
     public void Start()
     {
+        Console.LogDebug("Camera Started");
     }
 
     public void Update(float ts)
@@ -20,5 +20,4 @@ class CameraController : Entity
     public void FixedUpdate(float fixedTimestep)
     {
     }
-
 }
