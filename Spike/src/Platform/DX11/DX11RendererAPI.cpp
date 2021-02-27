@@ -59,7 +59,7 @@ namespace Spike
 
     void DX11RendererAPI::DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex)
     {
-        //TODO
+        DX11Internal::GetDeviceContext()->DrawIndexed(indexCount, baseIndex, baseVertex);
     }
 
     void DX11RendererAPI::BindBackbuffer()
