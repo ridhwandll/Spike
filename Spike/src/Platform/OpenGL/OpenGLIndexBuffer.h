@@ -35,9 +35,9 @@ namespace Spike
         virtual void Bind() const;
         virtual void Unbind() const;
     
-        virtual uint32_t GetCount() const { return m_Size; }
+        virtual uint32_t GetCount() const { return m_Count; }
     private:
         RendererID m_RendererID;
-        uint32_t m_Size;
+        uint32_t m_Count;
     };
 }

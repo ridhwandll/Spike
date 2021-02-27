@@ -36,12 +36,10 @@ layout(location = 2) in vec2 a_TexCoord;
 
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Transform;
-uniform int u_EntityID;
 
 out vec3 v_Normal;
 out vec2 v_TexCoord;
 out vec3 v_WorldPos;
-out int v_EntityID;
 
 void main()
 {
@@ -49,28 +47,20 @@ void main()
     gl_Position = u_ViewProjection * vec4(v_WorldPos, 1.0f);
     v_TexCoord = a_TexCoord;
     v_Normal = a_Normal;
-    v_EntityID = u_EntityID;
 }
 
 #type fragment
 #version 450 core
 
 out vec4 FragColor;
-out int entityID;
 
 in vec3 v_Normal;
 in vec3 v_WorldPos;
 in vec2 v_TexCoord;
-in flat int v_EntityID;
 
-/*Uniforms*/
-uniform sampler2D TextureAlbedo1;
-
-/*Main Function*/
 void main()
 {
-    FragColor = texture(TextureAlbedo1, v_TexCoord);
-    entityID = v_EntityID;
+    FragColor = vec4((v_Normal * 0.5 + 0.5), 1.0);
 }
 
 )";
@@ -85,7 +75,6 @@ layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in float a_TexIndex;
 layout(location = 4) in float a_TilingFactor;
-layout(location = 5) in int a_EntityID;
 
 layout (std140, binding = 0) uniform Data
 {
@@ -96,7 +85,6 @@ out vec4 v_Color;
 out vec2 v_TexCoord;
 out flat float v_TexIndex;
 out float v_TilingFactor;
-out int v_EntityID;
 
 void main()
 {
@@ -104,7 +92,6 @@ void main()
     v_TexCoord = a_TexCoord;
     v_TexIndex = a_TexIndex;
     v_TilingFactor = a_TilingFactor;
-    v_EntityID = a_EntityID;
     gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }
 
@@ -112,13 +99,11 @@ void main()
 #version 450 core
 
 out vec4 color;
-out int entityID;
 
 in vec4 v_Color;
 in vec2 v_TexCoord;
 in flat float v_TexIndex;
 in float v_TilingFactor;
-in flat int v_EntityID;
 
 uniform sampler2D u_Textures[32];
 
@@ -161,7 +146,6 @@ void main()
         case 31: texColor *= texture(u_Textures[31], v_TexCoord * v_TilingFactor); break;
     }
     color = texColor;
-    entityID = v_EntityID;
 }
 )";
 

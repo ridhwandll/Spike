@@ -426,7 +426,7 @@ namespace Spike
             ImGui::Text("File Path");
             ImGui::SameLine();
             if (component.Mesh)
-                ImGui::InputText("##meshfilepath", (char*)component.Mesh->m_FilePath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+                ImGui::InputText("##meshfilepath", (char*)component.Mesh->GetFilePath().c_str(), 256, ImGuiInputTextFlags_ReadOnly);
             else
                 ImGui::InputText("##meshfilepath", (char*)"", 256, ImGuiInputTextFlags_ReadOnly);
 
@@ -448,12 +448,6 @@ namespace Spike
                 {
                     component.Reset();
                     remove = true;
-                }
-                ImGui::SameLine();
-                if (!remove)
-                {
-                    if (ImGui::Button("Reload"))
-                        component.Mesh->Reload();
                 }
             }
         });

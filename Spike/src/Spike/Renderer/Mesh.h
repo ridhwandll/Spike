@@ -30,68 +30,61 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <glm/glm.hpp>
 
 struct aiNode;
-struct aiMesh;
-struct aiMaterial;
-struct aiScene;
-enum aiTextureType;
-
 namespace Spike
 {
     struct Vertex
     {
         glm::vec3 Position;
         glm::vec3 Normal;
-        glm::vec2 TexCoords;
+        glm::vec2 TexCoord;
     };
 
-    struct TextureStruct
+    struct Submesh
     {
-        Ref<Spike::Texture> Texture;
-        String Type;
-        String Path;
+        uint32_t BaseVertex;
+        uint32_t BaseIndex;
+        uint32_t MaterialIndex;
+        uint32_t IndexCount;
+        uint32_t VertexCount;
+
+        glm::mat4 Transform;
+        glm::mat4 LocalTransform;
+
+        String NodeName, MeshName;
     };
 
-    class Submesh
+    struct Index
     {
-    public:
-        Submesh(Vector<Vertex> vertices, Vector<uint32_t> indices, Vector<TextureStruct> textures);
-        void Draw(Ref<Shader>& shader);
-
-    public:
-        Vector<Vertex>        m_Vertices;
-        Vector<uint32_t>      m_Indices;
-        Vector<TextureStruct> m_Textures;
-
-    private:
-        Ref<Pipeline> m_Pipeline;
-        Ref<VertexBuffer> m_VertexBuffer;
-        Ref<IndexBuffer> m_IndexBuffer;
-        void SetupMesh();
+        uint32_t V1, V2, V3;
     };
 
     class Mesh : public RefCounted
     {
     public:
-        Mesh(const String& path);
-        void Draw(int entityID = -1);
-        void Reload();
-        Ref<Shader>& GetShader() { return m_Shader; }
-        void Clear();
+        Mesh(const String& filename);
+        Vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
+        const Vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
 
-    public:
-        String m_FilePath;
-        bool m_FlipTexturesVertically = true;
-        bool m_SRGB = true;
+        const Vector<Vertex>& GetVertices() const { return m_Vertices; }
+        const Vector<Index>& GetIndices() const { return m_Indices; }
+
+        Ref<Shader> GetShader() { return m_Shader; }
+        const String& GetFilePath() const { return m_FilePath; }
+    private:
+        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
+
     private:
         Vector<Submesh> m_Submeshes;
-        Vector<TextureStruct> m_TexturesCache;
+
+        Ref<Pipeline> m_Pipeline;
+        Ref<VertexBuffer> m_VertexBuffer;
+        Ref<IndexBuffer> m_IndexBuffer;
+
+        Vector<Vertex> m_Vertices;
+        Vector<Index> m_Indices;
+
         Ref<Shader> m_Shader;
-    private:
-        Ref<Texture2D> TextureFromFile(const char* name, const String& directory);
-        void LoadMesh(String path);
-        void ProcessNode(aiNode* node, const aiScene* scene);
-        Submesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-        Vector<TextureStruct> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const String& typeName);
-        friend class SceneHierarchyPanel;
+        String m_FilePath;
+        friend class Renderer;
     };
 }

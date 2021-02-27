@@ -82,14 +82,20 @@ namespace Spike
         RenderCommand::DrawIndexed(pipeline, size);
     }
 
-    void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform, int entityID)
+    void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
     {
         auto& shader = mesh->GetShader();
         shader->Bind();
+        mesh->m_VertexBuffer->Bind();
+        mesh->m_Pipeline->Bind();
+        mesh->m_IndexBuffer->Bind();
 
         shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-        shader->SetMat4("u_Transform", transform);
-        shader->SetInt("u_EntityID", entityID);
-        mesh->Draw();
+
+        for (Submesh& submesh : mesh->m_Submeshes)
+        {
+            shader->SetMat4("u_Transform", transform * submesh.Transform);
+            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
+        }
     }
 }

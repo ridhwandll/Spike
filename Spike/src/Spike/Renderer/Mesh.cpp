@@ -22,210 +22,120 @@ Github repository : https://github.com/FahimFuad/Spike
 2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "spkpch.h"
-#include "Spike/Core/Vault.h"
-#include "Spike/Renderer/Mesh.h"
+#include "Mesh.h"
 #include "Renderer.h"
-#include <filesystem>
+#include "Spike/EngineAssets/EngineAssets.h"
+#include "Spike/Core/Vault.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 namespace Spike
 {
-    Submesh::Submesh(Vector<Vertex> vertices, Vector<uint32_t> indices, Vector<TextureStruct> textures)
-        :m_Vertices(vertices), m_Indices(indices), m_Textures(textures)
+    glm::mat4 AssimpMat4ToGlmMat4(const aiMatrix4x4& matrix)
     {
-        SetupMesh();
+        glm::mat4 result;
+        result[0][0] = matrix.a1; result[1][0] = matrix.a2; result[2][0] = matrix.a3; result[3][0] = matrix.a4;
+        result[0][1] = matrix.b1; result[1][1] = matrix.b2; result[2][1] = matrix.b3; result[3][1] = matrix.b4;
+        result[0][2] = matrix.c1; result[1][2] = matrix.c2; result[2][2] = matrix.c3; result[3][2] = matrix.c4;
+        result[0][3] = matrix.d1; result[1][3] = matrix.d2; result[2][3] = matrix.d3; result[3][3] = matrix.d4;
+        return result;
     }
 
-    void Submesh::Draw(Ref<Shader>& shader)
-    {
-        uint32_t diffuseNr = 1;
-        uint32_t specularNr = 1;
-        for (uint32_t i = 0; i < m_Textures.size(); i++)
-        {
-            m_Textures[i].Texture->ActivateSlot(i);
-            String number;
-            String name = m_Textures[i].Type;
-            if (name == "TextureAlbedo")
-                number = std::to_string(diffuseNr++);
-            else if (name == "TextureSpecular")
-                number = std::to_string(specularNr++);
+    static const uint32_t s_MeshImportFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords | aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices;
 
-            shader->SetInt(name + number, i);
-            m_Textures[i].Texture->Bind(i);
+    Mesh::Mesh(const String& filepath)
+        :m_FilePath(filepath)
+    {
+        SPK_CORE_LOG_INFO("Loading Mesh... %s", filepath.c_str());
+
+        auto importer = CreateScope<Assimp::Importer>();
+        const aiScene* scene = importer->ReadFile(filepath, s_MeshImportFlags);
+        if (!scene || !scene->HasMeshes()) SPK_CORE_LOG_ERROR("Failed to load mesh file: %s", filepath.c_str());
+
+        uint32_t vertexCount = 0;
+        uint32_t indexCount = 0;
+
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11: m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader.glsl"); break;
+        }
+        m_Shader->Bind();
+
+        m_Submeshes.reserve(scene->mNumMeshes);
+        for (size_t m = 0; m < scene->mNumMeshes; m++)
+        {
+            aiMesh* mesh = scene->mMeshes[m];
+
+            Submesh& submesh = m_Submeshes.emplace_back();
+            submesh.BaseVertex = vertexCount;
+            submesh.BaseIndex = indexCount;
+            submesh.MaterialIndex = mesh->mMaterialIndex;
+            submesh.IndexCount = mesh->mNumFaces * 3;
+            submesh.VertexCount = mesh->mNumVertices;
+            submesh.MeshName = mesh->mName.C_Str();
+
+            vertexCount += submesh.VertexCount;
+            indexCount += submesh.IndexCount;
+
+            SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
+            SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
+
+            for (size_t i = 0; i < mesh->mNumVertices; i++)
+            {
+                Vertex vertex;
+                vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+                vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+
+                if (mesh->HasTextureCoords(0))
+                    vertex.TexCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+                else
+                    vertex.TexCoord = { 0.0f, 0.0f };
+                m_Vertices.push_back(vertex);
+            }
+
+            for (size_t i = 0; i < mesh->mNumFaces; i++)
+            {
+                SPK_CORE_ASSERT(mesh->mFaces[i].mNumIndices == 3, "Mesh Must have 3 indices!");
+                Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
+                m_Indices.push_back(index);
+            }
         }
 
-        m_Pipeline->Bind();
-        Renderer::Submit(m_Pipeline, m_Indices.size());
-    }
-
-    void Submesh::SetupMesh()
-    {
+        TraverseNodes(scene->mRootNode);
 
         VertexBufferLayout layout =
         {
-            { ShaderDataType::Float3, "a_Position"  },
-            { ShaderDataType::Float3, "a_Normal"    },
-            { ShaderDataType::Float2, "a_TexCoords" },
+            { ShaderDataType::Float3, "M_POSITION" },
+            { ShaderDataType::Float3, "M_NORMAL" },
+            { ShaderDataType::Float2, "M_TEXCOORD" },
         };
 
-        m_VertexBuffer = VertexBuffer::Create(&m_Vertices[0], m_Vertices.size() * sizeof(Vertex), layout);
-        m_IndexBuffer = IndexBuffer::Create(&m_Indices[0], m_Indices.size() * sizeof(uint32_t));
+        m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex), layout);
+        m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), std::size(m_Indices) * 3);
 
         PipelineSpecification spec;
+        spec.Shader = m_Shader;
         spec.VertexBuffer = m_VertexBuffer;
         spec.IndexBuffer = m_IndexBuffer;
-        //spec.Shader = m_Shader;
         m_Pipeline = Pipeline::Create(spec);
-        m_Pipeline->Bind();
-    }
-    Mesh::Mesh(const String& path)
-    {
-        m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader.glsl");
-        LoadMesh(path);
     }
 
-    void Mesh::Draw(int entityID)
+    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
     {
-        for (uint32_t i = 0; i < m_Submeshes.size(); i++)
-            m_Submeshes[i].Draw(m_Shader);
-    }
-
-    void Mesh::Reload()
-    {
-        Clear();
-        LoadMesh(m_FilePath);
-    }
-
-    void Mesh::Clear()
-    {
-        m_Submeshes.clear();
-        m_TexturesCache.clear();
-    }
-
-    void Mesh::LoadMesh(String path)
-    {
-        Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-        {
-            SPK_CORE_LOG_ERROR("Assimp Error: %s", importer.GetErrorString());
-            return;
-        }
-        m_FilePath = path.substr(0, path.find_last_of('/'));
-        ProcessNode(scene->mRootNode, scene);
-    }
-
-    void Mesh::ProcessNode(aiNode* node, const aiScene* scene)
-    {
+        glm::mat4 localTransform = AssimpMat4ToGlmMat4(node->mTransformation);
+        glm::mat4 transform = parentTransform * localTransform;
         for (uint32_t i = 0; i < node->mNumMeshes; i++)
         {
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            m_Submeshes.push_back(ProcessMesh(mesh, scene));
+            uint32_t mesh = node->mMeshes[i];
+            auto& submesh = m_Submeshes[mesh];
+            submesh.NodeName = node->mName.C_Str();
+            submesh.Transform = transform;
+            submesh.LocalTransform = localTransform;
         }
+
         for (uint32_t i = 0; i < node->mNumChildren; i++)
-        {
-            ProcessNode(node->mChildren[i], scene);
-        }
-    }
-
-    Submesh Mesh::ProcessMesh(aiMesh* mesh, const aiScene* scene)
-    {
-        Vector<Vertex> vertices;
-        Vector<uint32_t> indices;
-        Vector<TextureStruct> textures;
-
-        for (uint32_t i = 0; i < mesh->mNumVertices; i++)
-        {
-            Vertex vertex;
-            glm::vec3 vector;
-            vector.x = mesh->mVertices[i].x;
-            vector.y = mesh->mVertices[i].y;
-            vector.z = mesh->mVertices[i].z;
-            vertex.Position = vector;
-
-            // normals
-            if (mesh->HasNormals())
-            {
-                vector.x = mesh->mNormals[i].x;
-                vector.y = mesh->mNormals[i].y;
-                vector.z = mesh->mNormals[i].z;
-                vertex.Normal = vector;
-            }
-
-            // texture coordinates
-            if (mesh->mTextureCoords[0])
-            {
-                glm::vec2 vec;
-                vec.x = mesh->mTextureCoords[0][i].x;
-                vec.y = mesh->mTextureCoords[0][i].y;
-                vertex.TexCoords = vec;
-            }
-            else
-                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-
-            vertices.push_back(vertex);
-        }
-        for (uint32_t i = 0; i < mesh->mNumFaces; i++)
-        {
-            aiFace face = mesh->mFaces[i];
-            for (uint32_t j = 0; j < face.mNumIndices; j++)
-                indices.push_back(face.mIndices[j]);
-        }
-
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-        // 1. diffuse maps
-        Vector<TextureStruct> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "TextureAlbedo");
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        // 2. specular maps
-        Vector<TextureStruct> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "TextureSpecular");
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-
-        return Submesh(vertices, indices, textures);
-    }
-
-    Vector<TextureStruct> Mesh::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, const String& typeName)
-    {
-        Vector<TextureStruct> textures;
-        for (uint32_t i = 0; i < mat->GetTextureCount(type); i++)
-        {
-            aiString str;
-            mat->GetTexture(type, i, &str);
-            bool skip = false;
-            for (uint32_t j = 0; j < m_TexturesCache.size(); j++)
-            {
-                if (std::strcmp(m_TexturesCache[j].Path.data(), str.C_Str()) == 0)
-                {
-                    textures.push_back(m_TexturesCache[j]);
-                    skip = true;
-                    break;
-                }
-            }
-            if (!skip)
-            {
-                TextureStruct texture;
-                texture.Texture = TextureFromFile(str.C_Str(), m_FilePath);
-                texture.Type = typeName;
-                texture.Path = str.C_Str();
-                textures.push_back(texture);
-                m_TexturesCache.push_back(texture);
-            }
-        }
-        return textures;
-    }
-
-    Ref<Texture2D> Mesh::TextureFromFile(const char* name, const String& directory)
-    {
-        std::filesystem::path path = directory;
-        auto parentPath = path.parent_path();
-        parentPath /= std::string(name);
-        std::string texturePath = parentPath.string();
-
-        Ref<Texture2D> texture = Texture2D::Create(texturePath.c_str());
-        Vault::SubmitTexture2D(texture);
-        return texture;
+            TraverseNodes(node->mChildren[i], transform, level + 1);
     }
 }
