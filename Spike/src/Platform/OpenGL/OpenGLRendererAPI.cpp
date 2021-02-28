@@ -101,7 +101,15 @@ namespace Spike
         glDrawElementsBaseVertex(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * baseIndex), baseVertex);
     }
 
-    void OpenGLRendererAPI::BindBackbuffer()
+    void OpenGLRendererAPI::BindBackbuffer() {}
+
+    void OpenGLRendererAPI::BeginWireframe()
     {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
+
+    void OpenGLRendererAPI::EndWireframe()
+    {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 }

@@ -64,6 +64,9 @@ namespace Spike
         virtual void DrawIndexed(const Ref<Pipeline>& pipeline, uint32_t indexCount = 0) = 0;
         virtual void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex) = 0;
         virtual void BindBackbuffer() = 0;
+        virtual void BeginWireframe() = 0;
+        virtual void EndWireframe() = 0;
+
         static API GetAPI() { return s_API; }
     private:
         static API s_API;

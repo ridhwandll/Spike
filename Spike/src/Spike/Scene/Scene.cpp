@@ -200,21 +200,22 @@ namespace Spike
                 Renderer2D::DrawSprite(transform.GetTransform(), sprite);
             }
 
+            Renderer2D::EndScene();
+
+            RenderCommand::BeginWireframe();
+            Renderer2D::BeginScene(camera);
             auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
-            const glm::vec4 debugColor(0.5f, 0.9f, 0.5f, 0.25f);
             for (auto entity : view)
             {
                 auto [transformComponent, boxCollider] = view.get<TransformComponent, BoxCollider2DComponent>(entity);
                 if (boxCollider.ShowBounds)
                 {
-                    glm::mat4 trans = transformComponent.GetTransform() *
-                        glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.0f)) *
-                        glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
-                    Renderer2D::DrawQuad(trans, debugColor);
+                    glm::mat4 trans = transformComponent.GetTransform() * glm::translate(glm::mat4(1.0f), glm::vec3(boxCollider.Offset.x, boxCollider.Offset.y, 0.01f)) * glm::scale(glm::mat4(1.0f), glm::vec3(boxCollider.Size.x, boxCollider.Size.y, 1.0f));
+                    Renderer2D::DrawDebugQuad(trans);
                 }
             }
-
             Renderer2D::EndScene();
+            RenderCommand::EndWireframe();
         }
 
         {

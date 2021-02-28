@@ -303,6 +303,33 @@ namespace Spike
             DrawQuad(transform, sprite.Color);
     }
 
+    void Renderer2D::DrawDebugQuad(const glm::mat4& transform)
+    {
+        constexpr size_t quadVertexCount = 4;
+        constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+        const float tilingFactor = 1.0f;
+
+        if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+        {
+            Flush();
+            StartBatch();
+        }
+
+        for (size_t i = 0; i < quadVertexCount; i++)
+        {
+            s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
+            s_Data.QuadVertexBufferPtr->Color = { 0.0f, 1.0f, 0.0f, 1.0f };
+            s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+            s_Data.QuadVertexBufferPtr->TexIndex = 0.0f;
+            s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+            s_Data.QuadVertexBufferPtr++;
+        }
+
+        s_Data.QuadIndexCount += 6;
+        s_Data.Stats.QuadCount++;
+
+    }
+
     void Renderer2D::UpdateStats()
     {
         memset(&s_Data.Stats, 0, sizeof(Statistics));

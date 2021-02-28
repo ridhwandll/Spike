@@ -67,4 +67,13 @@ namespace Spike
         DX11Internal::BindBackbuffer();
     }
 
+    void DX11RendererAPI::BeginWireframe()
+    {
+        DX11Internal::BeginWireframe();
+    }
+
+    void DX11RendererAPI::EndWireframe()
+    {
+        DX11Internal::EndWireframe();
+    }
 }

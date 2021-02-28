@@ -37,6 +37,8 @@ namespace Spike
         virtual void DrawIndexed(const Ref<Pipeline>& pipeline, uint32_t indexCount = 0) override;
         virtual void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex) override;
         virtual void BindBackbuffer() override;
+        virtual void BeginWireframe() override;
+        virtual void EndWireframe() override;
     private:
         glm::vec4 m_ClearColor;
     };

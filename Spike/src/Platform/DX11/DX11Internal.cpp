@@ -31,6 +31,7 @@ namespace Spike::DX11Internal
     IDXGISwapChain* g_SwapChain = nullptr;
     ID3D11BlendState* g_BlendState = nullptr;
     ID3D11RasterizerState* g_NormalRasterizerState = nullptr;
+    ID3D11RasterizerState* g_WireframeRasterizerState = nullptr;
     ID3D11SamplerState* g_SamplerState = nullptr;
     Ref<Framebuffer>     g_Backbuffer = nullptr;
     uint32_t g_Height;
@@ -183,13 +184,27 @@ namespace Spike::DX11Internal
 
     void CreateRasterizerState()
     {
-        D3D11_RASTERIZER_DESC rasterDesc{};
-
+        D3D11_RASTERIZER_DESC rasterDesc = {};
         rasterDesc.CullMode = D3D11_CULL_NONE;
         rasterDesc.FillMode = D3D11_FILL_SOLID;
         rasterDesc.DepthClipEnable = true;
-
         DX_CALL(g_Device->CreateRasterizerState(&rasterDesc, &g_NormalRasterizerState));
+
+        rasterDesc.CullMode = D3D11_CULL_NONE;
+        rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+        rasterDesc.DepthClipEnable = true;
+        DX_CALL(g_Device->CreateRasterizerState(&rasterDesc, &g_WireframeRasterizerState));
+
+        g_DeviceContext->RSSetState(g_NormalRasterizerState);
+    }
+
+    void BeginWireframe()
+    {
+        g_DeviceContext->RSSetState(g_WireframeRasterizerState);
+    }
+
+    void EndWireframe()
+    {
         g_DeviceContext->RSSetState(g_NormalRasterizerState);
     }
 }

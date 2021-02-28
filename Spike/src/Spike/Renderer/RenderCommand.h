@@ -63,6 +63,16 @@ namespace Spike
             s_RendererAPI->BindBackbuffer();
         }
 
+        static void BeginWireframe()
+        {
+            s_RendererAPI->BeginWireframe();
+        }
+
+        static void EndWireframe()
+        {
+            s_RendererAPI->EndWireframe();
+        }
+
     private:
         static Scope<RendererAPI> s_RendererAPI;
     };
