@@ -56,7 +56,7 @@ namespace Spike::Scripting
     {
         auto& entityMap = ValidateSceneAndReturnEntityMap(ScriptEngine::GetSceneContext(), entityID);
         Entity entity = entityMap.at(entityID);
-        SPK_INTERNAL_ASSERT(entity.HasComponent<T>());
+        SPK_CORE_ASSERT(entity.HasComponent<T>(), "");
         auto& component = entity.GetComponent<T>();
         return component;
     }

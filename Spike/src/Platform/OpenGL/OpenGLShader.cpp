@@ -69,13 +69,13 @@ namespace Spike
         while (pos != String::npos)
         {
             size_t eol = source.find_first_of("\r\n", pos); //End of shader type declaration line
-            SPK_CRIRICAL(eol != String::npos, "Syntax error");
+            SPK_CORE_ASSERT(eol != String::npos, "Syntax error");
             size_t begin = pos + typeTokenLength + 1; //Start of shader type name (after "#type " keyword)
             String type = source.substr(begin, eol - begin);
-            SPK_CRIRICAL(ShaderTypeFromString(type), "Invalid shader type specified");
+            SPK_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol); //Start of shader code after shader type declaration line
-            SPK_CRIRICAL(nextLinePos != String::npos, "Syntax error");
+            SPK_CORE_ASSERT(nextLinePos != String::npos, "Syntax error");
             pos = source.find(typeToken, nextLinePos); //Start of next shader type declaration line
 
             shaderSources[ShaderTypeFromString(type)] = (pos == String::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
@@ -87,7 +87,7 @@ namespace Spike
     void OpenGLShader::Compile()
     {
         GLuint program = glCreateProgram();
-        SPK_CRIRICAL(m_ShaderSource.size() <= 2, "We only support two shaders for now.");
+        SPK_CORE_ASSERT(m_ShaderSource.size() <= 2, "We only support two shaders for now.");
         std::array<GLenum, 2> glShaderIDs;
         int glShaderIDIndex = 0;
         for (auto& keyvalue : m_ShaderSource)

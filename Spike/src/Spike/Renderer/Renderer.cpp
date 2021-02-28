@@ -36,11 +36,14 @@ namespace Spike
     void Renderer::Init()
     {
         RenderCommand::Init();
-#ifdef RENDERER_API_DX11
-        auto shader = Shader::AddBuiltInShader(s_HLSLMeshShader, "MeshShader.hlsl");
-#elif defined RENDERER_API_OPENGL
-        auto shader = Shader::AddBuiltInShader(s_GLSLMeshShader, "MeshShader.glsl");
-#endif
+        Ref<Shader> shader;
+
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11: shader = Shader::AddBuiltInShader(s_HLSLMeshShader, "MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: shader = Shader::AddBuiltInShader(s_GLSLMeshShader, "MeshShader.glsl"); break;
+        }
+
         Vault::SubmitBuiltInShader(shader);
         s_SceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
     }
@@ -75,8 +78,7 @@ namespace Spike
 
     void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
     {
-        auto& shader = mesh->GetShader();
-        shader->Bind();
+        mesh->m_Shader->Bind();
         mesh->m_VertexBuffer->Bind();
         mesh->m_Pipeline->Bind();
         mesh->m_IndexBuffer->Bind();

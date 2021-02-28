@@ -163,7 +163,7 @@ namespace Spike::Scripting
         auto& component = ValidateSceneAndReturnAComponent<RigidBody2DComponent>(ScriptEngine::GetSceneContext(), entityID);
         b2Body* body = (b2Body*)component.RuntimeBody;
         const auto& velocity = body->GetLinearVelocity();
-        SPK_INTERNAL_ASSERT(outVelocity);
+        SPK_CORE_ASSERT(outVelocity, "OutVelocity is NULL!");
         *outVelocity = { velocity.x, velocity.y };
     }
 
@@ -171,7 +171,7 @@ namespace Spike::Scripting
     {
         auto& component = ValidateSceneAndReturnAComponent<RigidBody2DComponent>(ScriptEngine::GetSceneContext(), entityID);
         b2Body* body = (b2Body*)component.RuntimeBody;
-        SPK_INTERNAL_ASSERT(velocity);
+        SPK_CORE_ASSERT(velocity, "InVelocity is NULL!");
         body->SetLinearVelocity({ velocity->x, velocity->y });
     }
 

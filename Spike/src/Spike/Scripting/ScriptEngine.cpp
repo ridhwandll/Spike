@@ -346,9 +346,9 @@ namespace Spike
 
     void ScriptEngine::OnScriptComponentDestroyed(UUID sceneID, UUID entityID)
     {
-        SPK_INTERNAL_ASSERT(s_EntityInstanceMap.find(sceneID) != s_EntityInstanceMap.end());
+        SPK_CORE_ASSERT(s_EntityInstanceMap.find(sceneID) != s_EntityInstanceMap.end(), "Entity not found!");
         auto& entityMap = s_EntityInstanceMap.at(sceneID);
-        SPK_INTERNAL_ASSERT(entityMap.find(entityID) != entityMap.end());
+        SPK_CORE_ASSERT(entityMap.find(entityID) != entityMap.end(), "Entity not found in EntityInstanceMap!");
         entityMap.erase(entityID);
     }
 
@@ -511,7 +511,7 @@ namespace Spike
 
         EntityInstanceData& entityInstanceData = GetEntityInstanceData(scene->GetUUID(), id);
         EntityInstance& entityInstance = entityInstanceData.Instance;
-        SPK_INTERNAL_ASSERT(entityInstance.ScriptClass);
+        SPK_CORE_ASSERT(entityInstance.ScriptClass, "Invalid ScriptClass");
         entityInstance.Handle = Instantiate(*entityInstance.ScriptClass);
 
         void* param[] = { &id };
@@ -551,8 +551,8 @@ namespace Spike
 
     void ScriptEngine::CopyEntityScriptData(UUID dst, UUID src)
     {
-        SPK_INTERNAL_ASSERT(s_EntityInstanceMap.find(dst) != s_EntityInstanceMap.end());
-        SPK_INTERNAL_ASSERT(s_EntityInstanceMap.find(src) != s_EntityInstanceMap.end());
+        SPK_CORE_ASSERT(s_EntityInstanceMap.find(dst) != s_EntityInstanceMap.end(), "Entity already exists in destination!");
+        SPK_CORE_ASSERT(s_EntityInstanceMap.find(src) != s_EntityInstanceMap.end(), "Entity already exists in source!");
 
         auto& dstEntityMap = s_EntityInstanceMap.at(dst);
         auto& srcEntityMap = s_EntityInstanceMap.at(src);
@@ -564,9 +564,9 @@ namespace Spike
                 auto& dstModuleFieldMap = dstEntityMap[entityID].ModuleFieldMap;
                 for (auto& [fieldName, field] : srcFieldMap)
                 {
-                    SPK_INTERNAL_ASSERT(dstModuleFieldMap.find(moduleName) != dstModuleFieldMap.end());
+                    SPK_CORE_ASSERT(dstModuleFieldMap.find(moduleName) != dstModuleFieldMap.end(), "Module already exixts!");
                     auto& fieldMap = dstModuleFieldMap.at(moduleName);
-                    SPK_INTERNAL_ASSERT(fieldMap.find(fieldName) != fieldMap.end());
+                    SPK_CORE_ASSERT(fieldMap.find(fieldName) != fieldMap.end(), "Field already exixts!");
                     fieldMap.at(fieldName).SetStoredValueRaw(field.m_StoredValueBuffer);
                 }
             }
@@ -619,7 +619,7 @@ namespace Spike
 
     void PublicField::CopyStoredValueToRuntime()
     {
-        SPK_INTERNAL_ASSERT(m_EntityInstance->GetInstance());
+        SPK_CORE_ASSERT(m_EntityInstance->GetInstance(), "Instance is null!");
         mono_field_set_value(m_EntityInstance->GetInstance(), m_MonoClassField, m_StoredValueBuffer);
     }
 
@@ -656,13 +656,13 @@ namespace Spike
 
     void PublicField::SetRuntimeValue_Internal(void* value) const
     {
-        SPK_INTERNAL_ASSERT(m_EntityInstance->GetInstance());
+        SPK_CORE_ASSERT(m_EntityInstance->GetInstance(), "Instance is null!");
         mono_field_set_value(m_EntityInstance->GetInstance(), m_MonoClassField, value);
     }
 
     void PublicField::GetRuntimeValue_Internal(void* outValue) const
     {
-        SPK_INTERNAL_ASSERT(m_EntityInstance->GetInstance());
+        SPK_CORE_ASSERT(m_EntityInstance->GetInstance(), "Instance is null!");
         mono_field_get_value(m_EntityInstance->GetInstance(), m_MonoClassField, outValue);
     }
 }
