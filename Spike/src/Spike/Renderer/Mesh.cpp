@@ -75,7 +75,7 @@ namespace Spike
             submesh.IndexCount = mesh->mNumFaces * 3;
             submesh.VertexCount = mesh->mNumVertices;
             submesh.MeshName = mesh->mName.C_Str();
-
+            submesh.CBuffer = ConstantBuffer::Create(m_Shader, "Mesh", nullptr, sizeof(glm::mat4), 1, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
             vertexCount += submesh.VertexCount;
             indexCount += submesh.IndexCount;
 

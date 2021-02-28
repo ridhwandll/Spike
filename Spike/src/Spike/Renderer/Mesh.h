@@ -27,6 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Pipeline.h"
 #include "Spike/Renderer/VertexBuffer.h"
 #include "Spike/Renderer/IndexBuffer.h"
+#include "Spike/Renderer/ConstantBuffer.h"
 #include <glm/glm.hpp>
 
 struct aiNode;
@@ -47,9 +48,10 @@ namespace Spike
         uint32_t IndexCount;
         uint32_t VertexCount;
 
+        Ref<ConstantBuffer> CBuffer;
+
         glm::mat4 Transform;
         glm::mat4 LocalTransform;
-
         String NodeName, MeshName;
     };
 

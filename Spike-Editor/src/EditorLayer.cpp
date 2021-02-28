@@ -46,6 +46,7 @@ namespace Spike
         fbSpec.Height = 720;
         fbSpec.SwapChainTarget = false;
         fbSpec.BufferDescriptions.emplace_back(FramebufferSpecification::BufferDesc(FormatCode::R32G32B32A32_FLOAT, BindFlag::RENDER_TARGET | BindFlag::SHADER_RESOURCE));
+        fbSpec.BufferDescriptions.emplace_back(FramebufferSpecification::BufferDesc(FormatCode::D24_UNORM_S8_UINT, BindFlag::DEPTH_STENCIL));
         m_Framebuffer = Framebuffer::Create(fbSpec);
 
         m_EditorScene = Ref<Scene>::Create();

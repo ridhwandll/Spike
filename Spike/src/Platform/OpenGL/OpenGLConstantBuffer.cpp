@@ -50,16 +50,18 @@ namespace Spike
         glBufferData(GL_UNIFORM_BUFFER, size, data, SpikeDataUsageToOpenGLDataUsage(usage));
         glBindBuffer(GL_UNIFORM_BUFFER, rendererID);
         glBindBufferBase(GL_UNIFORM_BUFFER, m_BindSlot, rendererID);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
         m_RendererID = (RendererID)rendererID;
     }
 
     void OpenGLConstantBuffer::Bind()
     {
-        glBindBuffer(GL_UNIFORM_BUFFER, (uint32_t)m_RendererID);
+        glBindBufferBase(GL_UNIFORM_BUFFER, m_BindSlot, (uint32_t)m_RendererID);
     }
 
     void OpenGLConstantBuffer::SetData(void* data)
     {
+        glBindBufferBase(GL_UNIFORM_BUFFER, m_BindSlot, (uint32_t)m_RendererID);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, m_Size, data);
     }
 

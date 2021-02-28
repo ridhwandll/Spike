@@ -30,6 +30,7 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
+    Ref<ConstantBuffer> Renderer::s_SceneCbuffer = nullptr;
     Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
 
     void Renderer::Init()
@@ -41,6 +42,7 @@ namespace Spike
         auto shader = Shader::AddBuiltInShader(s_GLSLMeshShader, "MeshShader.glsl");
 #endif
         Vault::SubmitBuiltInShader(shader);
+        s_SceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
     }
 
     void Renderer::Shutdown()
@@ -60,21 +62,10 @@ namespace Spike
     void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
     {
         s_SceneData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
-        //TODO camera view pos here of s_SceneData
     }
 
     void Renderer::EndScene()
     {
-    }
-
-    void Renderer::Submit(Ref<Shader> shader, Ref<Pipeline> pipeline, const glm::mat4& transform)
-    {
-        shader->Bind();
-        shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
-        shader->SetMat4("u_Transform", transform);
-
-        pipeline->Bind();
-        RenderCommand::DrawIndexed(pipeline);
     }
 
     void Renderer::Submit(Ref<Pipeline> pipeline, uint32_t size)
@@ -90,11 +81,11 @@ namespace Spike
         mesh->m_Pipeline->Bind();
         mesh->m_IndexBuffer->Bind();
 
-        shader->SetMat4("u_ViewProjection", s_SceneData->ViewProjectionMatrix);
+        s_SceneCbuffer->SetData(&s_SceneData->ViewProjectionMatrix);
 
         for (Submesh& submesh : mesh->m_Submeshes)
         {
-            shader->SetMat4("u_Transform", transform * submesh.Transform);
+            submesh.CBuffer->SetData(&(transform * submesh.Transform));
             RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
         }
     }

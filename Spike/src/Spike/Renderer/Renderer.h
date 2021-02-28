@@ -24,6 +24,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include "RenderCommand.h"
 #include "EditorCamera.h"
+#include "ConstantBuffer.h"
 #include "Mesh.h"
 
 namespace Spike
@@ -39,7 +40,6 @@ namespace Spike
         static void BeginScene(const Camera& camera, const glm::mat4& transform);
         static void EndScene();
         static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform);
-        static void Submit(Ref<Shader> shader, Ref<Pipeline> pipeline, const glm::mat4& transform);
         static void Submit(Ref<Pipeline> pipeline, uint32_t size);
 
         static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
@@ -48,6 +48,7 @@ namespace Spike
         {
             glm::mat4 ViewProjectionMatrix;
         };
+        static Ref<ConstantBuffer> s_SceneCbuffer;
         static Scope<SceneData> s_SceneData;
     };
 }
