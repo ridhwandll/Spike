@@ -32,7 +32,7 @@ namespace Spike
 {
     Ref<VertexBuffer> VertexBuffer::Create(uint32_t size, VertexBufferLayout layout)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(size, layout);
@@ -46,7 +46,7 @@ namespace Spike
 
     Ref<VertexBuffer> VertexBuffer::Create(void* vertices, uint32_t size, VertexBufferLayout layout)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLVertexBuffer>::Create(vertices, size, layout);

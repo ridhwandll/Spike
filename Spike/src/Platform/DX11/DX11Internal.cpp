@@ -26,16 +26,16 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike::DX11Internal
 {
-    ID3D11Device* g_Device = nullptr;
-    ID3D11DeviceContext* g_DeviceContext = nullptr;
-    IDXGISwapChain* g_SwapChain = nullptr;
-    ID3D11BlendState* g_BlendState = nullptr;
-    ID3D11RasterizerState* g_NormalRasterizerState = nullptr;
-    ID3D11RasterizerState* g_WireframeRasterizerState = nullptr;
-    ID3D11SamplerState* g_SamplerState = nullptr;
-    Ref<Framebuffer>     g_Backbuffer = nullptr;
-    uint32_t g_Height;
-    uint32_t g_Width;
+    ID3D11Device* device = nullptr;
+    ID3D11DeviceContext* deviceContext = nullptr;
+    IDXGISwapChain* swapChain = nullptr;
+    ID3D11BlendState* blendState = nullptr;
+    ID3D11RasterizerState* normalRasterizerState = nullptr;
+    ID3D11RasterizerState* wireframeRasterizerState = nullptr;
+    ID3D11SamplerState* samplerState = nullptr;
+    Ref<Framebuffer>     backbuffer = nullptr;
+    uint32_t height;
+    uint32_t width;
 
     void Init(HWND hwnd)
     {
@@ -49,11 +49,13 @@ namespace Spike::DX11Internal
 
     void Shutdown()
     {
-        g_SamplerState->Release();
-        g_BlendState->Release();
-        g_SwapChain->Release();
-        g_DeviceContext->Release();
-        g_Device->Release();
+        device->Release();
+        deviceContext->Release();
+        swapChain->Release();
+        blendState->Release();
+        normalRasterizerState->Release();
+        wireframeRasterizerState->Release();
+        samplerState->Release();
     }
 
     void CreateSampler()
@@ -63,21 +65,22 @@ namespace Spike::DX11Internal
         samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
         samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
         samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-        DX_CALL(g_Device->CreateSamplerState(&samplerDesc, &g_SamplerState));
+        DX_CALL(device->CreateSamplerState(&samplerDesc, &samplerState));
+        deviceContext->PSSetSamplers(0, 1, &samplerState);
     }
 
     void CreateDeviceAndSwapChain(HWND windowHandle)
     {
         RECT clientRect;
         GetClientRect(windowHandle, &clientRect);
-        g_Width = clientRect.right - clientRect.left;
-        g_Height = clientRect.bottom - clientRect.top;
+        width = clientRect.right - clientRect.left;
+        height = clientRect.bottom - clientRect.top;
         SPK_CORE_ASSERT(windowHandle, "Window handle is null!");
 
         DXGI_SWAP_CHAIN_DESC sd = {};
         sd.BufferCount = 1;
-        sd.BufferDesc.Width = g_Width;
-        sd.BufferDesc.Height = g_Height;
+        sd.BufferDesc.Width = width;
+        sd.BufferDesc.Height = height;
         sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
         sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
         sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -96,17 +99,17 @@ namespace Spike::DX11Internal
 #ifdef SPK_DEBUG
         createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-        DX_CALL(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, &featureLevels, 1, D3D11_SDK_VERSION, &sd, &g_SwapChain, &g_Device, nullptr, &g_DeviceContext));
+        DX_CALL(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, &featureLevels, 1, D3D11_SDK_VERSION, &sd, &swapChain, &device, nullptr, &deviceContext));
     }
 
     void CreateBackbuffer()
     {
         FramebufferSpecification backbufferSpec;
         backbufferSpec.SwapChainTarget = true;
-        backbufferSpec.Width = g_Width;
-        backbufferSpec.Height = g_Height;
+        backbufferSpec.Width = width;
+        backbufferSpec.Height = height;
         backbufferSpec.BufferDescriptions.emplace_back(FramebufferSpecification::BufferDesc());
-        g_Backbuffer = Framebuffer::Create(backbufferSpec);
+        backbuffer = Framebuffer::Create(backbufferSpec);
     }
 
     void CreateBlendState()
@@ -126,26 +129,26 @@ namespace Spike::DX11Internal
         desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
 
         desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-        g_Device->CreateBlendState(&desc, &g_BlendState);
-        g_DeviceContext->OMSetBlendState(g_BlendState, nullptr, 0xffffffff);
+        device->CreateBlendState(&desc, &blendState);
+        deviceContext->OMSetBlendState(blendState, nullptr, 0xffffffff);
     }
 
-    void BindBackbuffer() { g_Backbuffer->Bind(); }
+    void BindBackbuffer() { backbuffer->Bind(); }
 
     void Resize(uint32_t width, uint32_t height)
     {
-        g_Backbuffer.Reset(); //Terminate the backbuffer
-        DX_CALL(g_SwapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_UNKNOWN, 0)); //Resize the swapchain
+        backbuffer.Reset(); //Terminate the backbuffer
+        DX_CALL(swapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_UNKNOWN, 0)); //Resize the swapchain
         CreateBackbuffer();  //Create the backbuffer
-        g_Backbuffer->Resize(width, height);
+        backbuffer->Resize(width, height);
     }
 
-    ID3D11Device* GetDevice()               { return g_Device;        }
-    ID3D11DeviceContext* GetDeviceContext() { return g_DeviceContext; }
-    IDXGISwapChain* GetSwapChain()          { return g_SwapChain;     }
-    ID3D11BlendState* GetBlendState()       { return g_BlendState;    }
-    ID3D11SamplerState* GetCommonSampler()  { return g_SamplerState;  }
-    Ref<Framebuffer> GetBackbuffer()        { return g_Backbuffer;    }
+    ID3D11Device* GetDevice()               { return device;        }
+    ID3D11DeviceContext* GetDeviceContext() { return deviceContext; }
+    IDXGISwapChain* GetSwapChain()          { return swapChain;     }
+    ID3D11BlendState* GetBlendState()       { return blendState;    }
+    ID3D11SamplerState* GetCommonSampler()  { return samplerState;  }
+    Ref<Framebuffer> GetBackbuffer()        { return backbuffer;    }
 
     void LogDeviceInfo()
     {
@@ -188,24 +191,24 @@ namespace Spike::DX11Internal
         rasterDesc.CullMode = D3D11_CULL_NONE;
         rasterDesc.FillMode = D3D11_FILL_SOLID;
         rasterDesc.DepthClipEnable = true;
-        DX_CALL(g_Device->CreateRasterizerState(&rasterDesc, &g_NormalRasterizerState));
+        DX_CALL(device->CreateRasterizerState(&rasterDesc, &normalRasterizerState));
 
         rasterDesc.CullMode = D3D11_CULL_NONE;
         rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
         rasterDesc.DepthClipEnable = true;
-        DX_CALL(g_Device->CreateRasterizerState(&rasterDesc, &g_WireframeRasterizerState));
+        DX_CALL(device->CreateRasterizerState(&rasterDesc, &wireframeRasterizerState));
 
-        g_DeviceContext->RSSetState(g_NormalRasterizerState);
+        deviceContext->RSSetState(normalRasterizerState);
     }
 
     void BeginWireframe()
     {
-        g_DeviceContext->RSSetState(g_WireframeRasterizerState);
+        deviceContext->RSSetState(wireframeRasterizerState);
     }
 
     void EndWireframe()
     {
-        g_DeviceContext->RSSetState(g_NormalRasterizerState);
+        deviceContext->RSSetState(normalRasterizerState);
     }
 }
 

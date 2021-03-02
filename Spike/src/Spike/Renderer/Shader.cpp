@@ -32,7 +32,7 @@ namespace Spike
 {
     Ref<Shader> Shader::Create(const String& filepath)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(filepath);
@@ -44,7 +44,7 @@ namespace Spike
 
     Ref<Shader> Shader::AddBuiltInShader(const String& source, const char* name)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(source, name);

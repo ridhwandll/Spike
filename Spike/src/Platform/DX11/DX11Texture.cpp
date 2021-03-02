@@ -104,23 +104,12 @@ namespace Spike
     void DX11Texture2D::Bind(uint32_t bindslot, ShaderDomain domain) const
     {
         auto deviceContext = DX11Internal::GetDeviceContext();
-        auto sampler = DX11Internal::GetCommonSampler();
 
         switch (domain)
         {
             case ShaderDomain::NONE: SPK_CORE_LOG_WARN("Shader domain NONE is given, this is perfectly valid. However, the developer may not want to rely on the NONE."); break;
-            case ShaderDomain::VERTEX:
-            {
-                deviceContext->VSSetSamplers(bindslot, 1, &sampler);
-                deviceContext->VSSetShaderResources(bindslot, 1, &m_SRV);
-                break;
-            }
-            case ShaderDomain::PIXEL:
-            {
-                deviceContext->PSSetSamplers(bindslot, 1, &sampler);
-                deviceContext->PSSetShaderResources(bindslot, 1, &m_SRV);
-                break;
-            }
+            case ShaderDomain::VERTEX: deviceContext->VSSetShaderResources(bindslot, 1, &m_SRV); break;
+            case ShaderDomain::PIXEL: deviceContext->PSSetShaderResources(bindslot, 1, &m_SRV); break;
         }
     }
 

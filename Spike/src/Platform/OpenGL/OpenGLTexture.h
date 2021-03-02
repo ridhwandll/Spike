@@ -41,7 +41,7 @@ namespace Spike
         virtual String GetFilepath() const override { return m_Path; }
         void SetData(void* data, uint32_t size) override;
         virtual void ActivateSlot(uint32_t slot) override;
-        virtual void Bind(uint32_t slot = 0, ShaderDomain domain = ShaderDomain::VERTEX) const override;
+        virtual void Bind(uint32_t slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
         virtual void Unbind() const override;
         virtual bool Loaded() override { return m_Loaded; }
         bool operator==(const Texture& other) const override

@@ -51,5 +51,8 @@ namespace Spike
         else
             DX11Internal::GetSwapChain()->Present(0, 0);
     }
-    DX11Context::~DX11Context() {}
+    DX11Context::~DX11Context()
+    {
+        DX11Internal::Shutdown();
+    }
 }

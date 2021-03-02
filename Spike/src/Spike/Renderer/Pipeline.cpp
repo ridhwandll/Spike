@@ -31,7 +31,7 @@ namespace Spike
 {
     Ref<Pipeline> Pipeline::Create(const PipelineSpecification& spec)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLPipeline>::Create(spec);

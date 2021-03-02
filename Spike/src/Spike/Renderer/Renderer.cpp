@@ -27,6 +27,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Shader.h"
+#include "Platform/DX11/DX11Internal.h"
 
 namespace Spike
 {
@@ -78,7 +79,8 @@ namespace Spike
 
     void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
     {
-        mesh->m_Shader->Bind();
+        auto shader = mesh->GetShader();
+        shader->Bind();
         mesh->m_VertexBuffer->Bind();
         mesh->m_Pipeline->Bind();
         mesh->m_IndexBuffer->Bind();
@@ -87,6 +89,14 @@ namespace Spike
 
         for (Submesh& submesh : mesh->m_Submeshes)
         {
+            auto& tex = mesh->m_Textures[submesh.MaterialIndex];
+            if (tex)
+            {
+                for (uint32_t i = 0; i < mesh->m_Textures.size(); i++)
+                    tex->Bind(i);
+
+                shader->SetInt("u_Texture", submesh.MaterialIndex);
+            }
             submesh.CBuffer->SetData(&(transform * submesh.Transform));
             RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
         }

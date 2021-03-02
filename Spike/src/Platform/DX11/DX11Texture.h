@@ -33,7 +33,7 @@ namespace Spike
         DX11Texture2D(uint32_t width, uint32_t height);
         DX11Texture2D(const String& filepath);
         ~DX11Texture2D();
-        virtual void Bind(uint32_t bindslot = 0, ShaderDomain domain = ShaderDomain::VERTEX) const override;
+        virtual void Bind(uint32_t bindslot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
         virtual const String GetName() const override { return m_Name; }
         virtual uint32_t GetWidth()  const override { return m_Width; }
         virtual uint32_t GetHeight() const override { return m_Height; }

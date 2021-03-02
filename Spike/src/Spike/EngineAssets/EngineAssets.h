@@ -65,9 +65,11 @@ in vec3 v_Normal;
 in vec3 v_WorldPos;
 in vec2 v_TexCoord;
 
+uniform sampler2D u_Texture;
+
 void main()
 {
-    FragColor = vec4((v_Normal * 0.5 + 0.5), 1.0);
+    FragColor = texture(u_Texture, v_TexCoord);
 }
 
 )";
@@ -300,10 +302,13 @@ struct vsOut
     float2 v_TexCoord : M_TEXCOORD;
 };
 
+Texture2D tex : register(t0);
+SamplerState sampleType;
+
 float4 main(vsOut input) : SV_TARGET
 {
-    float4 color = float4((input.v_Normal * 0.5 + 0.5), 1.0);
-    return color;
+    return tex.Sample(sampleType, input.v_TexCoord);
+    //return float4(input.v_TexCoord.x, input.v_TexCoord.y, 0.2f, 1.0f);
 }
 )";
 SPK_NAMESPACE_END

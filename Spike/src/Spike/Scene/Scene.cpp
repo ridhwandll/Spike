@@ -225,9 +225,7 @@ namespace Spike
             {
                 auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                 if (mesh.Mesh)
-                {
                     Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
-                }
             }
             Renderer::EndScene();
         }

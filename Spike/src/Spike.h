@@ -49,7 +49,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/Shader.h"
 #include "Spike/Renderer/Framebuffer.h"
 #include "Spike/Renderer/Texture.h"
-#include "Spike/Renderer/SubTexture2D.h"
 #include "Spike/Renderer/Pipeline.h"
 #include "Spike/Renderer/ConstantBuffer.h"
 

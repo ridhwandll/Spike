@@ -32,7 +32,7 @@ namespace Spike
 {
     Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(width, height);
@@ -45,7 +45,7 @@ namespace Spike
 
     Ref<Texture2D> Texture2D::Create(const String& path)
     {
-        switch (Renderer::GetAPI())
+        switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
             case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path);

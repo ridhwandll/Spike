@@ -58,7 +58,7 @@ namespace Spike
         virtual void SetData(void* data, uint32_t size) = 0;
         virtual void ActivateSlot(uint32_t slot) = 0;
         virtual bool Loaded() = 0;
-        virtual void Bind(uint32_t slot = 0, ShaderDomain domain = ShaderDomain::VERTEX) const = 0;
+        virtual void Bind(uint32_t slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const = 0;
         virtual void Unbind() const = 0;
         virtual bool operator==(const Texture& other) const = 0;
 

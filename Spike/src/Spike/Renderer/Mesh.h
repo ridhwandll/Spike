@@ -30,7 +30,11 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Renderer/ConstantBuffer.h"
 #include <glm/glm.hpp>
 
+struct aiMesh;
 struct aiNode;
+struct aiMaterial;
+enum aiTextureType;
+
 namespace Spike
 {
     struct Vertex
@@ -64,9 +68,15 @@ namespace Spike
     {
     public:
         Mesh(const String& filename);
+
+        Ref<Pipeline> GetPipeline() { return m_Pipeline; }
+        Ref<VertexBuffer> GetVertexBuffer() { return m_VertexBuffer; }
+        Ref<IndexBuffer> GetIndexBuffer() { return m_IndexBuffer; }
+
         Vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
         const Vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
 
+        const Vector<Ref<Texture2D>> GetTextures() { return m_Textures; }
         const Vector<Vertex>& GetVertices() const { return m_Vertices; }
         const Vector<Index>& GetIndices() const { return m_Indices; }
 
@@ -82,6 +92,7 @@ namespace Spike
         Ref<VertexBuffer> m_VertexBuffer;
         Ref<IndexBuffer> m_IndexBuffer;
 
+        Vector<Ref<Texture2D>> m_Textures;
         Vector<Vertex> m_Vertices;
         Vector<Index> m_Indices;
 

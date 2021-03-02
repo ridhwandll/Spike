@@ -29,6 +29,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <filesystem>
 
 namespace Spike
 {
@@ -81,7 +82,6 @@ namespace Spike
 
             SPK_CORE_ASSERT(mesh->HasPositions(), "Meshes require positions.");
             SPK_CORE_ASSERT(mesh->HasNormals(), "Meshes require normals.");
-
             for (size_t i = 0; i < mesh->mNumVertices; i++)
             {
                 Vertex vertex;
@@ -101,9 +101,41 @@ namespace Spike
                 Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
                 m_Indices.push_back(index);
             }
+
         }
 
         TraverseNodes(scene->mRootNode);
+
+        if (scene->HasMaterials())
+        {
+            m_Textures.resize(scene->mNumMaterials);
+            for (uint32_t i = 0; i < scene->mNumMaterials; i++)
+            {
+                auto aiMaterial = scene->mMaterials[i];
+
+                aiString aiTexPath;
+                uint32_t textureCount = aiMaterial->GetTextureCount(aiTextureType_DIFFUSE);
+
+                bool hasAlbedoMap = aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexPath) == AI_SUCCESS;
+                if (hasAlbedoMap)
+                {
+                    std::filesystem::path path = filepath;
+                    auto parentPath = path.parent_path();
+                    parentPath /= std::string(aiTexPath.data);
+                    std::string texturePath = parentPath.string();
+
+                    SPK_CORE_LOG_INFO("Albedo map path = %s", texturePath.c_str());
+                    auto texture = Texture2D::Create(texturePath);
+
+                    if (texture->Loaded())
+                        m_Textures[i] = texture;
+                    else
+                        SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                }
+                else
+                    SPK_CORE_LOG_WARN("No albedo map");
+            }
+        }
 
         VertexBufferLayout layout =
         {
@@ -126,6 +158,7 @@ namespace Spike
     {
         glm::mat4 localTransform = AssimpMat4ToGlmMat4(node->mTransformation);
         glm::mat4 transform = parentTransform * localTransform;
+
         for (uint32_t i = 0; i < node->mNumMeshes; i++)
         {
             uint32_t mesh = node->mMeshes[i];
