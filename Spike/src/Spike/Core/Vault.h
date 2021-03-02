@@ -30,7 +30,7 @@ namespace Spike
 {
     enum class ResourceType
     {
-        _Shader, _Texture, _Script
+        SHADER = 0, TEXTURE, SCRIPT
     };
 
     class Vault
@@ -39,18 +39,48 @@ namespace Spike
         Vault() = default;
         ~Vault() = default;
 
-        /* [Spike] Returns the path, in which the scene was saved [Spike] */
-        static String Init(const String& projectPath);
+        static void Init(const String& projectPath);
         static void Shutdown();
         static bool Reload();
 
-        static Ref<Shader> SubmitShader(Ref<Shader>& shader);
-        static Ref<Shader> SubmitBuiltInShader(Ref<Shader>& shader);
-        static Ref<Texture2D> SubmitTexture2D(Ref<Texture2D>& texture);
+        template <typename T>
+        static void Submit(Ref<T>& resource)
+        {
+            if constexpr (std::is_same_v<T, Shader>)
+            {
+                auto filepath = resource->GetFilepath();
+                for (auto& cacheShader : s_Shaders)
+                    if (cacheShader.first == filepath)
+                        return;
+                s_Shaders[filepath] = resource;
+            }
+            if constexpr (std::is_same_v<T, Texture2D>)
+            {
+                auto filepath = resource->GetFilepath();
+                for (auto& cacheTexture : s_Textures)
+                    if (cacheTexture.first == filepath)
+                        return;
+                s_Textures[filepath] = resource;
+            }
+        }
 
-        static Ref<Shader> GetBuiltInShaderFromCache(const String& nameWithoutExtension);
-        static Ref<Shader> GetShaderFromCache(const String& nameWithExtension);
-        static Ref<Texture> GetTexture2DFromCache(const String& nameWithExtension);
+        template <typename T>
+        static Ref<T> Get(const String& nameWithExtension)
+        {
+            if constexpr (std::is_same_v<T, Shader>)
+            {
+                for (auto& shader : s_Shaders)
+                    if (GetNameWithExtension(shader.first) == nameWithExtension)
+                        return shader.second;
+            }
+            if constexpr (std::is_same_v<T, Texture2D>)
+            {
+                for (auto& texture : s_Textures)
+                    if (GetNameWithExtension(texture.first) == nameWithExtension)
+                        return texture.second;
+            }
+            return nullptr;
+        }
 
         /* [Spike] Filepath utilities [Spike] */
         static String GetNameWithoutExtension(const String& assetFilepath);
@@ -61,8 +91,8 @@ namespace Spike
         static bool Exists(const String& nameWithExtension, ResourceType type);
         static bool Exists(const char* path, ResourceType type);
         static bool IsVaultInitialized();
+
         static Vector<Ref<Shader>> GetAllShaders();
-        static Vector<Ref<Shader>> GetAllBuiltInShaders();
         static Vector<Ref<Texture>> GetAllTextures();
         static Vector<String> GetAllDirsInProjectPath();
         static Vector<String> GetAllFolderNamesProjectPath();
@@ -79,7 +109,6 @@ namespace Spike
     private:
         static String s_ProjectPath; /* [Spike] Base Path, such as: "C:/Users/Dummy/Desktop/SpikeProject" [Spike] */
         static bool s_VaultInitialized;
-        static Vector<Ref<Shader>> s_BuiltInShaders;
 
         /* [Spike] Mapped as { filepath : Resource  } [Spike] */
         static std::unordered_map<String, Ref<Shader>> s_Shaders;

@@ -41,16 +41,4 @@ namespace Spike
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
         return nullptr;
     }
-
-    Ref<Shader> Shader::AddBuiltInShader(const String& source, const char* name)
-    {
-        switch (RendererAPI::GetAPI())
-        {
-            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLShader>::Create(source, name);
-            case RendererAPI::API::DX11:    return Ref<DX11Shader>::Create(source, name);
-        }
-        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
-        return nullptr;
-    }
 }

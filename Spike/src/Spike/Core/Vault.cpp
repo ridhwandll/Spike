@@ -30,12 +30,11 @@ namespace Spike
 {
     String Vault::s_ProjectPath = "";
     bool Vault::s_VaultInitialized = false;
-    Vector<Ref<Shader>>                             Vault::s_BuiltInShaders;
-    std::unordered_map<String, Ref<Shader>>         Vault::s_Shaders;
-    std::unordered_map<String, Ref<Texture2D>>      Vault::s_Textures;
-    std::unordered_map<String, String>              Vault::s_Scripts;
+    std::unordered_map<String, Ref<Shader>>             Vault::s_Shaders;
+    std::unordered_map<String, Ref<Texture2D>>          Vault::s_Textures;
+    std::unordered_map<String, String>                  Vault::s_Scripts;
 
-    String Vault::Init(const String& projectPath)
+    void Vault::Init(const String& projectPath)
     {
         if (s_VaultInitialized)
             Vault::Shutdown();
@@ -43,76 +42,6 @@ namespace Spike
         s_ProjectPath = projectPath;
         s_VaultInitialized = true;
         Reload();
-        return s_ProjectPath;
-    }
-
-    Ref<Shader> Vault::SubmitShader(Ref<Shader>& shader)
-    {
-        auto filepath = shader->GetFilepath();
-        for (auto& cacheShader : s_Shaders) /* [Spike] Blocks loading same shader twice [Spike] */
-        {
-            if (cacheShader.first == filepath)
-                return cacheShader.second;
-        }
-        s_Shaders[filepath] = shader;
-        return s_Shaders[filepath];
-    }
-
-    Ref<Shader> Vault::SubmitBuiltInShader(Ref<Shader>& shader)
-    {
-        auto name = shader->GetName();
-        for (auto& cacheShader : s_BuiltInShaders) /* [Spike] Blocks loading same shader twice [Spike] */
-        {
-            if (cacheShader->GetName() == name)
-                return cacheShader;
-        }
-        s_BuiltInShaders.push_back(shader); /* [Spike] It is not in the cache, so add it to cache! [Spike] */
-        return shader;
-    }
-
-    Ref<Texture2D> Vault::SubmitTexture2D(Ref<Texture2D>& texture)
-    {
-        auto filepath = texture->GetFilepath();
-        for (auto& cacheTexture : s_Textures) /* [Spike] Blocks loading same texture twice [Spike] */
-        {
-            if (cacheTexture.first == filepath)
-                return cacheTexture.second;
-        }
-        s_Textures[filepath] = texture;
-        return s_Textures[filepath];
-    }
-
-    Ref<Shader> Vault::GetBuiltInShaderFromCache(const String& nameWithoutExtension)
-    {
-        for (auto& shader : s_BuiltInShaders)
-        {
-            if (shader->GetName() == nameWithoutExtension)
-                return shader;
-        }
-        SPK_CORE_LOG_ERROR("Built In Shader is not in cache!");
-        return nullptr;
-    }
-
-    Ref<Shader> Vault::GetShaderFromCache(const String& nameWithExtension)
-    {
-        for (auto& shader : s_Shaders)
-        {
-            if (GetNameWithExtension(shader.first) == nameWithExtension)
-                return shader.second;
-        }
-        SPK_CORE_LOG_WARN("[Spike::Vault::GetShader(const char* path)]::Shader not found in cache!");
-        return nullptr;
-    }
-
-    Ref<Texture> Vault::GetTexture2DFromCache(const String& nameWithExtension)
-    {
-        for (auto& texture : s_Textures)
-        {
-            if (GetNameWithExtension(texture.first) == nameWithExtension)
-                return texture.second;
-        }
-        SPK_CORE_LOG_WARN("[Spike::Vault::GetTexture(const char* path)]::Texture not found in cache!");
-        return nullptr;
     }
 
     void Vault::Shutdown()
@@ -129,17 +58,17 @@ namespace Spike
             if (GetExtension(entry.path().string()) == ".glsl")
             {
                 auto shader = Shader::Create(entry.path().string().c_str());
-                s_Shaders[entry.path().string()] = shader;
+                s_Shaders[entry.path().string()] = shader.Raw();
             }
             if (GetExtension(entry.path().string()) == ".png")
             {
                 auto texture = Texture2D::Create(entry.path().string().c_str());
-                s_Textures[entry.path().string()] = texture;
+                s_Textures[entry.path().string()] = texture.Raw();
             }
             if (GetExtension(entry.path().string()) == ".jpg")
             {
                 auto texture = Texture2D::Create(entry.path().string().c_str());
-                s_Textures[entry.path().string()] = texture;
+                s_Textures[entry.path().string()] = texture.Raw();
             }
             if (GetExtension(entry.path().string()) == ".cs")
             {
@@ -165,20 +94,20 @@ namespace Spike
     {
         switch (type)
         {
-            case Spike::ResourceType::_Shader:
-                    for (auto& shader : s_Shaders)
-                        if (GetNameWithExtension(shader.first) == nameWithExtension)
-                            return true;
+        case ResourceType::SHADER:
+            for (auto& shader : s_Shaders)
+                if (GetNameWithExtension(shader.first) == nameWithExtension)
+                    return true;
 
-            case Spike::ResourceType::_Texture:
-                    for (auto& texture : s_Textures)
-                        if (GetNameWithExtension(texture.first) == nameWithExtension)
-                            return true;
+        case ResourceType::TEXTURE:
+            for (auto& texture : s_Textures)
+                if (GetNameWithExtension(texture.first) == nameWithExtension)
+                    return true;
 
-            case Spike::ResourceType::_Script:
-                for (auto& script : s_Scripts)
-                    if (GetNameWithExtension(script.first) == nameWithExtension)
-                        return true;
+        case ResourceType::SCRIPT:
+            for (auto& script : s_Scripts)
+                if (GetNameWithExtension(script.first) == nameWithExtension)
+                    return true;
         }
         return false;
     }
@@ -187,23 +116,22 @@ namespace Spike
     {
         switch (type)
         {
-            case Spike::ResourceType::_Shader:
-                    for (auto& shader : s_Shaders)
-                        if (shader.first == path)
-                            return true;
+        case Spike::ResourceType::SHADER:
+            for (auto& shader : s_Shaders)
+                if (shader.first == path)
+                    return true;
 
-            case Spike::ResourceType::_Texture:
-                    for (auto& texture : s_Textures)
-                        if (texture.first == path)
-                            return true;
+        case Spike::ResourceType::TEXTURE:
+            for (auto& texture : s_Textures)
+                if (texture.first == path)
+                    return true;
 
-            case Spike::ResourceType::_Script:
-                    for (auto& script : s_Scripts)
-                        if (script.first == path)
-                            return true;
+        case Spike::ResourceType::SCRIPT:
+            for (auto& script : s_Scripts)
+                if (script.first == path)
+                    return true;
         }
         return false;
-
     }
 
     Vector<Ref<Shader>> Vault::GetAllShaders()
@@ -312,11 +240,6 @@ namespace Spike
     String Vault::GetNameWithExtension(const String& assetFilepath)
     {
         return std::filesystem::path(assetFilepath).filename().string();
-    }
-
-    Vector<Ref<Shader>> Vault::GetAllBuiltInShaders()
-    {
-        return s_BuiltInShaders;
     }
 
     bool Vault::IsVaultInitialized()

@@ -24,7 +24,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "spkpch.h"
 #include "Mesh.h"
 #include "Renderer.h"
-#include "Spike/EngineAssets/EngineAssets.h"
 #include "Spike/Core/Vault.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -59,8 +58,8 @@ namespace Spike
 
         switch (RendererAPI::GetAPI())
         {
-            case RendererAPI::API::DX11: m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader.hlsl"); break;
-            case RendererAPI::API::OpenGL: m_Shader = Vault::GetBuiltInShaderFromCache("MeshShader.glsl"); break;
+            case RendererAPI::API::DX11: m_Shader = Vault::Get<Shader>("MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: m_Shader = Vault::Get<Shader>("MeshShader.glsl"); break;
         }
         m_Shader->Bind();
 
@@ -125,12 +124,24 @@ namespace Spike
                     std::string texturePath = parentPath.string();
 
                     SPK_CORE_LOG_INFO("Albedo map path = %s", texturePath.c_str());
-                    auto texture = Texture2D::Create(texturePath);
+                    auto texture = Vault::Get<Texture2D>(Vault::GetNameWithExtension(texturePath));
 
-                    if (texture->Loaded())
-                        m_Textures[i] = texture;
+                    if (texture)
+                    {
+                        if (texture->Loaded())
+                            m_Textures[i] = texture;
+                        else
+                            SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                    }
                     else
-                        SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                    {
+                        auto tex = Texture2D::Create(texturePath);
+                        Vault::Submit<Texture2D>(tex);
+                        if (tex->Loaded())
+                            m_Textures[i] = tex;
+                        else
+                            SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                    }
                 }
                 else
                     SPK_CORE_LOG_WARN("No albedo map");

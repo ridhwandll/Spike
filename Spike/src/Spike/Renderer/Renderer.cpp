@@ -23,7 +23,6 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "spkpch.h"
 #include "Spike/Core/Vault.h"
-#include "Spike/EngineAssets/EngineAssets.h"
 #include "Spike/Renderer/Renderer.h"
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Shader.h"
@@ -41,11 +40,11 @@ namespace Spike
 
         switch (RendererAPI::GetAPI())
         {
-            case RendererAPI::API::DX11: shader = Shader::AddBuiltInShader(s_HLSLMeshShader, "MeshShader.hlsl"); break;
-            case RendererAPI::API::OpenGL: shader = Shader::AddBuiltInShader(s_GLSLMeshShader, "MeshShader.glsl"); break;
+            case RendererAPI::API::DX11: shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl"); break;
         }
 
-        Vault::SubmitBuiltInShader(shader);
+        Vault::Submit<Shader>(shader);
         s_SceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
     }
 

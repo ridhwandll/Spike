@@ -60,9 +60,8 @@ namespace Spike
     }
 
     OpenGLTexture2D::OpenGLTexture2D(const String& path)
-        : m_Path(path)
+        : m_Path(path), m_Name(Vault::GetNameWithExtension(path))
     {
-        m_Name = Vault::GetNameWithoutExtension(path);
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
         stbi_uc* data = nullptr;

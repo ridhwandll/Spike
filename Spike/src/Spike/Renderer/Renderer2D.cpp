@@ -32,7 +32,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Shader.h"
 #include "RenderCommand.h"
 #include "RendererAPI.h"
-#include "Spike/EngineAssets/EngineAssets.h"
 
 #include <array>
 #include <glm/glm.hpp>
@@ -86,10 +85,10 @@ namespace Spike
     {
         switch (RendererAPI::GetAPI())
         {
-            case RendererAPI::API::DX11:   s_Data.TextureShader = Shader::AddBuiltInShader(s_HLSLRenderer2DShader.c_str(), "Standard2D.hlsl"); break;
-            case RendererAPI::API::OpenGL: s_Data.TextureShader = Shader::AddBuiltInShader(s_GLSLRenderer2DShader.c_str(), "Standard2D.glsl"); break;
+            case RendererAPI::API::DX11:   s_Data.TextureShader = Shader::Create("Spike-Editor/assets/shaders/Standard2D.hlsl"); break;
+            case RendererAPI::API::OpenGL: s_Data.TextureShader = Shader::Create("Spike-Editor/assets/shaders/Standard2D.glsl"); break;
         }
-        Vault::SubmitBuiltInShader(s_Data.TextureShader); //Submit the shader to vault
+        Vault::Submit<Shader>(s_Data.TextureShader); //Submit the shader to Vault
 
         s_Data.TextureShader->Bind();
         s_Data.CBuffer = ConstantBuffer::Create(s_Data.TextureShader, "Data", nullptr, sizeof(ShaderConstantBuffer), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);

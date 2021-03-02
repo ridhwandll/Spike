@@ -37,7 +37,6 @@ vsOut main(vsIn input)
 }
 
 #type pixel
-
 struct vsOut
 {
     float4 v_Position : SV_POSITION;
@@ -52,5 +51,4 @@ float4 main(vsOut input) : SV_TARGET
 {
     return tex.Sample(sampleType, input.v_TexCoord);
     //return float4(input.v_TexCoord.x, input.v_TexCoord.y, 0.2f, 1.0f);
-
 }

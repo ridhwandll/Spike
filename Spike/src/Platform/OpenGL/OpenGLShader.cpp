@@ -24,7 +24,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Spike/Core/Vault.h"
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
-#include "Panels/ConsolePanel.h"
 
 namespace Spike
 {
@@ -38,9 +37,8 @@ namespace Spike
     }
 
     OpenGLShader::OpenGLShader(const String& filepath)
-        :m_Filepath(filepath)
+        :m_Filepath(filepath), m_Name(Vault::GetNameWithExtension(filepath))
     {
-        m_Name = Vault::GetNameWithoutExtension(filepath);
         String source = Vault::ReadFile(m_Filepath);
         m_ShaderSource = PreProcess(source);
         Compile();

@@ -89,7 +89,7 @@ namespace Spike
         void SetTexture(const String& filepath)
         {
             Texture = Texture2D::Create(filepath);
-            Vault::SubmitTexture2D(Texture);
+            Vault::Submit<Texture2D>(Texture);
             TextureFilepath = filepath;
         }
 

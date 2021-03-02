@@ -49,7 +49,6 @@ namespace Spike
         virtual void* GetNativeClass() = 0;
 
         static Ref<Shader> Create(const String& filepath);
-        static Ref<Shader> AddBuiltInShader(const String& source, const char* name);
 
         virtual void SetInt(const String& name, int value) = 0;
         virtual void SetIntArray(const String& name, int* value, uint32_t count) = 0;

@@ -118,18 +118,9 @@ namespace Spike
         ImGui::End();
 
         ImGui::Begin("SpikeCache");
-        if (ImGui::TreeNode("External Shaders"))
+        if (ImGui::TreeNode("Shaders"))
         {
             auto& shaders = Vault::GetAllShaders();
-            for (auto& shader : shaders)
-                if (shader)
-                    if (ImGui::TreeNode(shader->GetName().c_str()))
-                        ImGui::TreePop();
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("BuiltIn Shaders"))
-        {
-            auto& shaders = Vault::GetAllBuiltInShaders();
             for (auto& shader : shaders)
                 if (shader)
                     if (ImGui::TreeNode(shader->GetName().c_str()))

@@ -1,4 +1,4 @@
-#TYPE VERTEX
+#type vertex
 #pragma pack_matrix(row_major)
 
 cbuffer Data : register(b0)
@@ -36,7 +36,7 @@ vsOut main(vsIn input)
     return output;
 }
 
-#TYPE PIXEL
+#type pixel
 struct vsOut
 {
     float4 vPosition     : SV_POSITION;
