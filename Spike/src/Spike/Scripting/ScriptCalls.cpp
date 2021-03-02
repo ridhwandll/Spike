@@ -37,12 +37,36 @@ namespace Spike
 }
 
 namespace Spike::Scripting
-{
-    void Spike_Console_LogInfo(MonoString* message)     { SPK_CORE_LOG_INFO    (ConvertMonoStringToCppString(message).c_str()); }
-    void Spike_Console_LogWarn(MonoString* message)     { SPK_CORE_LOG_WARN    (ConvertMonoStringToCppString(message).c_str()); }
-    void Spike_Console_LogDebug(MonoString* message)    { SPK_CORE_LOG_DEBUG   (ConvertMonoStringToCppString(message).c_str()); }
-    void Spike_Console_LogError(MonoString* message)    { SPK_CORE_LOG_ERROR   (ConvertMonoStringToCppString(message).c_str()); }
-    void Spike_Console_LogCritical(MonoString* message) { SPK_CORE_LOG_CRITICAL(ConvertMonoStringToCppString(message).c_str()); }
+{ 
+    void Spike_Console_LogInfo(MonoObject* message)
+    {
+        MonoString* a = mono_object_to_string(message, NULL);
+        const char* c = mono_string_to_utf8(a);
+        SPK_CORE_LOG_INFO(c);
+    }
+    void Spike_Console_LogWarn(MonoObject* message)
+    {
+        MonoString* a = mono_object_to_string(message, NULL);
+        const char* c = mono_string_to_utf8(a);
+        SPK_CORE_LOG_WARN(c);
+    }
+    void Spike_Console_LogDebug(MonoObject* message)
+    {
+        MonoString* a = mono_object_to_string(message, NULL);
+        const char* c = mono_string_to_utf8(a);
+        SPK_CORE_LOG_DEBUG(c); 
+    }
+    void Spike_Console_LogError(MonoObject* message)
+    {
+        MonoString* a = mono_object_to_string(message, NULL);
+        const char* c = mono_string_to_utf8(a);
+        SPK_CORE_LOG_ERROR(c);
+    }
+    void Spike_Console_LogCritical(MonoObject* message) {
+        MonoString* a = mono_object_to_string(message, NULL);
+        const char* c = mono_string_to_utf8(a);
+        SPK_CORE_LOG_CRITICAL(c);
+    }
 
     /* [Spike] INPUT [Spike] */
     bool Spike_Input_IsKeyPressed(KeyCode key) { return Spike::Input::IsKeyPressed(key);}
