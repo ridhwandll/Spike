@@ -6,7 +6,6 @@ namespace Spike
     {
         public static void LogInfo(object message)
         {
-            
             LogInfo_Native(message);
         }
 

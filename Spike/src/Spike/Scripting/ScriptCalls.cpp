@@ -40,32 +40,32 @@ namespace Spike::Scripting
 { 
     void Spike_Console_LogInfo(MonoObject* message)
     {
-        MonoString* a = mono_object_to_string(message, NULL);
-        const char* c = mono_string_to_utf8(a);
-        SPK_CORE_LOG_INFO(c);
+        char* msg = CovertMonoObjectToCppChar(message);
+
+        SPK_CORE_LOG_INFO(msg);
     }
     void Spike_Console_LogWarn(MonoObject* message)
     {
-        MonoString* a = mono_object_to_string(message, NULL);
-        const char* c = mono_string_to_utf8(a);
-        SPK_CORE_LOG_WARN(c);
+        char* msg = CovertMonoObjectToCppChar(message);
+
+        SPK_CORE_LOG_WARN(msg);
     }
     void Spike_Console_LogDebug(MonoObject* message)
     {
-        MonoString* a = mono_object_to_string(message, NULL);
-        const char* c = mono_string_to_utf8(a);
-        SPK_CORE_LOG_DEBUG(c); 
+        char* msg = CovertMonoObjectToCppChar(message);
+
+        SPK_CORE_LOG_DEBUG(msg); 
     }
     void Spike_Console_LogError(MonoObject* message)
     {
-        MonoString* a = mono_object_to_string(message, NULL);
-        const char* c = mono_string_to_utf8(a);
-        SPK_CORE_LOG_ERROR(c);
+        char* msg = CovertMonoObjectToCppChar(message);
+
+        SPK_CORE_LOG_ERROR(msg);
     }
     void Spike_Console_LogCritical(MonoObject* message) {
-        MonoString* a = mono_object_to_string(message, NULL);
-        const char* c = mono_string_to_utf8(a);
-        SPK_CORE_LOG_CRITICAL(c);
+        char* msg = CovertMonoObjectToCppChar(message);
+
+        SPK_CORE_LOG_CRITICAL(msg);
     }
 
     /* [Spike] INPUT [Spike] */
