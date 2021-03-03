@@ -43,6 +43,16 @@ namespace Spike
         static void Shutdown();
         static bool Reload();
 
+        template<typename T>
+        static std::unordered_map<String, Ref<T>>& GetMap()
+        {
+            if constexpr (std::is_same_v<T, Shader>)
+                return s_Shaders;
+            if constexpr (std::is_same_v<T, Texture2D>)
+                return s_Textures;
+            SPK_INTERNAL_ASSERT("Unknown Resource type");
+        }
+
         template <typename T>
         static void Submit(Ref<T>& resource)
         {
@@ -67,18 +77,10 @@ namespace Spike
         template <typename T>
         static Ref<T> Get(const String& nameWithExtension)
         {
-            if constexpr (std::is_same_v<T, Shader>)
-            {
-                for (auto& shader : s_Shaders)
-                    if (GetNameWithExtension(shader.first) == nameWithExtension)
-                        return shader.second;
-            }
-            if constexpr (std::is_same_v<T, Texture2D>)
-            {
-                for (auto& texture : s_Textures)
-                    if (GetNameWithExtension(texture.first) == nameWithExtension)
-                        return texture.second;
-            }
+            const std::unordered_map<String, Ref<T>>& resources = GetMap<T>();
+            for (auto& res : resources)
+                if (GetNameWithExtension(res.first) == nameWithExtension)
+                    return res.second;
             return nullptr;
         }
 

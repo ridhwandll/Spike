@@ -47,7 +47,7 @@ namespace Spike
         m_Window = Scope<Window>(Window::Create(WindowProps(name)));
         m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
-        m_ScriptEngineAppAssemblyPath = "Spike-Editor/assets/scripts/ExampleApp.dll";
+        m_ScriptEngineAppAssemblyPath = "ExampleApp/bin/Debug/ExampleApp.dll";
         ScriptEngine::Init(m_ScriptEngineAppAssemblyPath);
         Renderer::Init();
         Renderer2D::Init();
@@ -92,25 +92,23 @@ namespace Spike
     const char* Application::GetPlatformName()
     {
         #if defined SPK_PLATFORM_WINDOWS
-                return "Windows x64";
+            return "Windows x64";
         #elif defined SPK_PLATFORM_MACOS
-                return "MacOS";
+            return "MacOS";
         #elif defined SPK_PLATFORM_LINUX
-                return "Linux";
+            return "Linux";
         #endif
-                return "Undefined PlatformName";
+            return "Undefined PlatformName";
     }
 
     const char* Application::GetConfigurationName()
     {
         #if defined SPK_DEBUG
-                return "Debug";
+            return "Debug";
         #elif defined SPK_RELEASE
-                return "Release";
-        #elif defined SPK_DIST
-                return "Dist";
+            return "Release";
         #endif
-                return "Undefined ConfigurationName";
+            return "Undefined ConfigurationName";
     }
 
     const char* Application::CurrentGraphicsAPI()

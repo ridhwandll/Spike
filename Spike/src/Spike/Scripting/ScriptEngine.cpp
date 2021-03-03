@@ -364,7 +364,7 @@ namespace Spike
             cleanup = true;
         }
 
-        s_CoreAssembly = LoadAssembly("Spike-Editor/assets/scripts/ScriptEngine.dll");
+        s_CoreAssembly = LoadAssembly("ExampleApp/bin/Debug/ScriptEngine.dll");
         s_CoreAssemblyImage = GetAssemblyImage(s_CoreAssembly);
 
         auto appAssembly = LoadAssembly(path);

@@ -64,7 +64,7 @@ namespace Spike
         if (m_ReloadScriptOnPlay)
         {
             ScriptEngine::SetSceneContext(m_EditorScene);
-            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+            ScriptEngine::ReloadAssembly(Application::Get().GetScriptEngineAppAssemblyPath());
         }
         m_SceneHierarchyPanel.ClearSelectedEntity();
         m_SceneState = SceneState::Play;
@@ -176,7 +176,7 @@ namespace Spike
         ImGui::Begin("ToolBar", false, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
         if (ImGui::Button(ICON_FK_REPEAT))
         {
-            ScriptEngine::ReloadAssembly("Spike-Editor/assets/scripts/ExampleApp.dll");
+            ScriptEngine::ReloadAssembly(Application::Get().GetScriptEngineAppAssemblyPath());
             SPK_CORE_LOG_INFO("ScriptEngine reloaded the C# assembly successfully!");
         }
 

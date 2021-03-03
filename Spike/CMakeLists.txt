@@ -1,81 +1,68 @@
-file(GLOB_RECURSE spike_source_files "src/Spike/*.cpp")
-file(GLOB_RECURSE spike_header_files "src/Spike/*.h")
+include(${CMAKE_SOURCE_DIR}/scripts/CMakeUtils.cmake)
 
-set(SPK_CROSS_PLATFORM_FILES
-	"src/Spike.h"
-	"src/spkpch.cpp"
-	"src/spkpch.h"
-	
-	${spike_source_files}
-	${spike_header_files}
-
-	"vendor/stb_image/stb_image.h"
-	"vendor/stb_image/stb_image.cpp"
+set(INCLUDE_DIRS
+    src
+    ../Spike-Editor/src
+    vendor
+    vendor/GLFW/include
+    vendor/glad/include
+    vendor/stb_image
+    vendor/box2D/include
+    vendor/mono/include
+    vendor/imgui
+    vendor/assimp/include
+    vendor/ImGuizmo
+    vendor/glm
+    vendor/entt/include
+    vendor/yaml-cpp/include
+    vendor/tinyfiledialogs
 )
 
-file(GLOB_RECURSE opengl_platform_source_files "src/Platform/OpenGL/*.cpp")
-file(GLOB_RECURSE opengl_platform_header_files "src/Platform/OpenGL/*.h")
-
-file(GLOB_RECURSE win32_platform_source_files "src/Platform/Windows/*.cpp")
-file(GLOB_RECURSE win32_platform_header_files "src/Platform/Windows/*.h")
+set(LIB_LINKS
+    GLFW
+    glad
+    box2D
+    imgui
+    yaml-cpp
+    TinyFD
+    ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib
+    ${CMAKE_SOURCE_DIR}/Spike/vendor/mono/lib/Debug/mono-2.0-sgen.lib
+    opengl32
+)
 
 if(WIN32)
-    set(SPK_OS_FILES ${win32_platform_source_files} ${win32_platform_header_files})
+    set(DX11_LIBS d3d11 dxgi dxguid d3dCompiler)
+else()
+    set(DX11_LIBS)
 endif()
 
-add_library(Spike STATIC ${SPK_CROSS_PLATFORM_FILES} ${SPK_OS_FILES}
-    ${opengl_platform_source_files}
-    ${opengl_platform_header_files}
-
-    "vendor/ImGuizmo/ImGuizmo.h"
-    "vendor/ImGuizmo/ImGuizmo.cpp"
-
+file(GLOB_RECURSE SOURCE_FILES
+    src/*.cpp
+    src/*.h
+    vendor/stb_image/stb_image.h
+    vendor/stb_image/stb_image.cpp
+    vendor/ImGuizmo/ImGuizmo.h
+    vendor/ImGuizmo/ImGuizmo.cpp
 )
+SOURCE_GROUP_BY_FOLDER(Spike)
 
+add_library(Spike STATIC ${SOURCE_FILES})
+target_include_directories(Spike PUBLIC ${INCLUDE_DIRS})
+target_link_libraries(Spike PUBLIC ${LIB_LINKS} ${DX11_LIBS})
 target_precompile_headers(Spike PUBLIC "src/spkpch.h")
+set_property(TARGET Spike PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-target_include_directories(Spike PRIVATE
-    "res"
-    "vendor/GLFW/include"
-    "vendor/glad/include"
-    "vendor/stb_image"
-    "vendor/box2D/include"
-    "vendor/mono/include"
-)
+target_compile_definitions(
+    Spike
 
-target_include_directories(Spike PUBLIC
-    "src"
-    "../Spike-Editor/src"
-    "vendor"
-    "vendor/imgui"
-    "vendor/assimp/include"
-    "vendor/ImGuizmo"
-    "vendor/glm"
-    "vendor/entt/include"
-    "vendor/yaml-cpp/include"
-)
-
-target_compile_definitions(Spike PRIVATE
+    PRIVATE
     "_CRT_SECURE_NO_WARNINGS"
     "GLFW_INCLUDE_NONE"
+
+    PUBLIC
+    $<$<CONFIG:Debug>:SPK_DEBUG>
+    $<$<CONFIG:Release>:SPK_RELEASE>
+
+    $<$<CONFIG:RelWithDebInfo>:SPK_DEBUG>
+    $<$<CONFIG:MinSizeRel>:SPK_RELEASE>
 )
-
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_definitions("SPK_DEBUG")
-endif()
-
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_compile_definitions("SPK_RELEASE")
-endif()
-
-if (CMAKE_BUILD_TYPE STREQUAL "Dist")
-    add_compile_definitions("SPK_DIST")
-endif()
-
-set_property(TARGET Spike PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
-
-set(LIB_LOCATION ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib ${CMAKE_SOURCE_DIR}/Spike/vendor/mono/lib/Debug/mono-2.0-sgen.lib) #assimp
-target_link_libraries(Spike PUBLIC ${LIB_LOCATION} )
-
-target_link_libraries(Spike PRIVATE glfw glad box2D)
-target_link_libraries(Spike PUBLIC imgui yaml-cpp)

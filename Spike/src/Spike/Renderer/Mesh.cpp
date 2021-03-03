@@ -100,7 +100,6 @@ namespace Spike
                 Index index = { mesh->mFaces[i].mIndices[0], mesh->mFaces[i].mIndices[1], mesh->mFaces[i].mIndices[2] };
                 m_Indices.push_back(index);
             }
-
         }
 
         TraverseNodes(scene->mRootNode);
@@ -113,12 +112,10 @@ namespace Spike
                 auto aiMaterial = scene->mMaterials[i];
 
                 aiString aiTexPath;
-                uint32_t textureCount = aiMaterial->GetTextureCount(aiTextureType_DIFFUSE);
-
                 bool hasAlbedoMap = aiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &aiTexPath) == AI_SUCCESS;
                 if (hasAlbedoMap)
                 {
-                    std::filesystem::path path = filepath;
+                    std::filesystem::path path = m_FilePath;
                     auto parentPath = path.parent_path();
                     parentPath /= std::string(aiTexPath.data);
                     std::string texturePath = parentPath.string();
