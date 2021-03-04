@@ -37,6 +37,7 @@ namespace Spike::Scripting
         mono_free(ptr); /* [Spike] Yes, we need to free this with mono_free [Spike] */
         return s;
     }
+
     char* CovertMonoObjectToCppChar(MonoObject* obj)
     {
         MonoString* a = mono_object_to_string(obj, NULL);
