@@ -38,6 +38,14 @@ namespace Spike::Scripting
         return s;
     }
 
+    char* CovertMonoObjectToCppChar(MonoObject* obj)
+    {
+        MonoString* a = mono_object_to_string(obj, NULL);
+        String b = ConvertMonoStringToCppString(a);
+        char* s = _strdup(b.c_str());
+        return s;
+    }
+
     MonoString* ConvertCppStringToMonoString(MonoDomain* domain, const std::string& str)
     {
         return mono_string_new(domain, str.c_str());

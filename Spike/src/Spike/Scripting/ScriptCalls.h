@@ -30,11 +30,11 @@ Github repository : https://github.com/FahimFuad/Spike
 namespace Spike::Scripting
 {
     /* [Spike] Console [Spike] */
-    void Spike_Console_LogInfo(MonoString* message);
-    void Spike_Console_LogWarn(MonoString* message);
-    void Spike_Console_LogDebug(MonoString* message);
-    void Spike_Console_LogError(MonoString* message);
-    void Spike_Console_LogCritical(MonoString* message);
+    void Spike_Console_LogInfo(MonoObject* message);
+    void Spike_Console_LogWarn(MonoObject* message);
+    void Spike_Console_LogDebug(MonoObject* message);
+    void Spike_Console_LogError(MonoObject* message);
+    void Spike_Console_LogCritical(MonoObject* message);
 
     /* [Spike] Input [Spike] */
     bool Spike_Input_IsKeyPressed(KeyCode key);
