@@ -467,7 +467,6 @@ namespace Spike
                 MonoType* fieldType = mono_field_get_type(iter);
                 FieldType spikeFieldType = MonoTypeToSpikeFieldType(fieldType);
 
-                /* [Spike] TODO: Attributes [Spike] */
                 MonoCustomAttrInfo* attr = mono_custom_attrs_from_field(scriptClass.Class, iter);
 
                 if (oldFields.find(name) != oldFields.end())
@@ -536,7 +535,6 @@ namespace Spike
 
     EntityInstanceData& ScriptEngine::GetEntityInstanceData(UUID sceneID, UUID entityID)
     {
-        /* [Spike] TODO: why it crashes on removing script component lol 😅 [Spike] */
         SPK_CORE_ASSERT(s_EntityInstanceMap.find(sceneID) != s_EntityInstanceMap.end(), "Invalid scene ID!");
         auto& entityIDMap = s_EntityInstanceMap.at(sceneID);
         SPK_CORE_ASSERT(entityIDMap.find(entityID) != entityIDMap.end(), "Invalid entity ID!");
@@ -599,7 +597,7 @@ namespace Spike
         m_StoredValueBuffer = AllocateBuffer(type);
     }
 
-    PublicField::PublicField(PublicField && other)
+    PublicField::PublicField(PublicField&& other)
     {
         Name = std::move(other.Name);
         Type = other.Type;
@@ -637,7 +635,7 @@ namespace Spike
     uint8_t* PublicField::AllocateBuffer(FieldType type)
     {
         uint32_t size = GetFieldSize(type);
-        uint8_t* buffer = new uint8_t[size];
+        byte* buffer = new byte[size];
         memset(buffer, 0, size);
         return buffer;
     }

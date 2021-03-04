@@ -99,7 +99,7 @@ namespace Spike
         MonoClassField* m_MonoClassField;
         uint8_t* m_StoredValueBuffer = nullptr;
 
-        uint8_t* AllocateBuffer(FieldType type);
+        byte* AllocateBuffer(FieldType type);
         void SetStoredValue_Internal(void* value) const;
         void GetStoredValue_Internal(void* outValue) const;
         void SetRuntimeValue_Internal(void* value) const;
