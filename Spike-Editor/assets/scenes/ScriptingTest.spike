@@ -1,64 +1,18 @@
 Scene: Untitled
 Entities:
-  - Entity: 10230136601327689765
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-9.65908337, 7.30728769, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 12389614919645849742
-    TagComponent:
-      Tag: Enemy
-    TransformComponent:
-      Translation: [-0.237598419, 16.7586956, -1.11943674]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Color: [0.964601755, 0.46096015, 0, 1]
-      TextureFilepath: D:\Dev\Spike\Spike-Editor\assets\textures\Checkerboard.png
-      TilingFactor: 1
-    ScriptComponent:
-      ModuleName: Test2
-    RigidBody2DComponent:
-      BodyType: 1
-      FixedRotation: false
-      Gravity: 1
-      CollisionDetection: 1
-      Sleeptype: 0
-    BoxCollider2DComponent:
-      Offset: [0, 0]
-      Size: [1, 1]
-      Density: 1
-      Friction: 1
-  - Entity: 11857696782006745494
+  - Entity: 13505129487088862803
     TagComponent:
       Tag: Ground
     TransformComponent:
-      Translation: [0.12656492, -1.51603985, 0]
+      Translation: [0, -1.61839199, 0]
       Rotation: [0, 0, 0]
-      Scale: [79.3952255, 1, 1]
+      Scale: [11.5740471, 1, 1]
     SpriteRendererComponent:
-      Color: [0.519832432, 0.57079649, 0, 1]
+      Color: [1, 0, 0, 1]
       TextureFilepath: ""
       TilingFactor: 1
+    ScriptComponent:
+      ModuleName: Test
     RigidBody2DComponent:
       BodyType: 0
       FixedRotation: false
@@ -70,15 +24,15 @@ Entities:
       Size: [1, 1]
       Density: 1
       Friction: 1
-  - Entity: 17531317006855022397
+  - Entity: 14992825728600187486
     TagComponent:
       Tag: Player
     TransformComponent:
-      Translation: [-0.724846661, 0.000132761896, 0]
+      Translation: [0, 3.33556366, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
-      Color: [0, 0.516876817, 0.730088472, 1]
+      Color: [1, 1, 1, 1]
       TextureFilepath: ""
       TilingFactor: 1
     ScriptComponent:
@@ -94,11 +48,11 @@ Entities:
       Size: [1, 1]
       Density: 1
       Friction: 1
-  - Entity: 10718837127584730494
+  - Entity: 8618624116413380374
     TagComponent:
-      Tag:  Main Camera
+      Tag: Camera
     TransformComponent:
-      Translation: [0.0429158211, 0, 21.2453766]
+      Translation: [0, 0, 10]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:

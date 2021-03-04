@@ -1,15 +1,11 @@
-# Binaries
-**/bin/
-bin-int/
-!vendor/premake/bin/
-!Spike/vendor/mono/bin
-
 #Spike Generated Project Files
 Logs/
 
 # CMake
 build/
+Build/
 cmake-build-debug/
+out/
 
 # Visual Studio files and folder
 .vs/

@@ -1,4 +1,8 @@
-#Example Project
+# Copyright 2021 - Spike Technologies - All Rights Reserved
+
+# Example Project, this file will be included in the client
+# Do not alter this file
+
 cmake_minimum_required(VERSION 3.8)
 
 file(GLOB_RECURSE ENGINE_SOURCE_FILES ../ScriptEngine/src/*.cs)
@@ -6,7 +10,7 @@ project("ScriptEngine" LANGUAGES CSharp CXX)
 add_library("ScriptEngine" SHARED ${ENGINE_SOURCE_FILES})
 
 set_target_properties("ScriptEngine"
-    PROPERTIES
+     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin"
     LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin"
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin"

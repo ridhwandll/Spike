@@ -1,3 +1,4 @@
+# Copyright 2021 - Spike Technologies - All Rights Reserved
 include(${CMAKE_SOURCE_DIR}/scripts/CMakeUtils.cmake)
 
 set(INCLUDE_DIRS src Spike/vendor)

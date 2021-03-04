@@ -1,3 +1,4 @@
+# Copyright 2021 - Spike Technologies - All Rights Reserved
 cmake_minimum_required(VERSION 3.16.0)
 
 project(Spike)
