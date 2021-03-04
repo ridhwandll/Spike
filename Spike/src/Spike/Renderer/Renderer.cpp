@@ -88,14 +88,7 @@ namespace Spike
 
         for (Submesh& submesh : mesh->m_Submeshes)
         {
-            auto& tex = mesh->m_Textures[submesh.MaterialIndex];
-            if (tex)
-            {
-                for (uint32_t i = 0; i < mesh->m_Textures.size(); i++)
-                    tex->Bind(i);
-
-                shader->SetInt("u_Texture", submesh.MaterialIndex);
-            }
+            mesh->m_Material->Bind(submesh.MaterialIndex);
             submesh.CBuffer->SetData(&(transform * submesh.Transform));
             RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
         }

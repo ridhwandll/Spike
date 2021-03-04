@@ -159,7 +159,8 @@ namespace Spike
     static uint32_t Instantiate(EntityScriptClass& scriptClass)
     {
         MonoObject* instance = mono_object_new(s_MonoDomain, scriptClass.Class);
-        if (!instance) SPK_CORE_LOG_ERROR("mono_object_new failed");
+        if (!instance)
+            SPK_CORE_LOG_ERROR("mono_object_new failed");
 
         mono_runtime_object_init(instance);
         uint32_t handle = mono_gchandle_new(instance, false);
@@ -282,38 +283,6 @@ namespace Spike
 
     void ScriptEngine::SetSceneContext(const Ref<Scene>& scene) { s_SceneContext = scene; }
     Ref<Spike::Scene> ScriptEngine::GetSceneContext() { return s_SceneContext; }
-
-    MonoObject* ScriptEngine::Construct(const String& fullName, bool callConstructor, void** parameters)
-    {
-        String namespaceName;
-        String className;
-        String parameterList;
-
-        if (fullName.find(".") != String::npos)
-        {
-            namespaceName = fullName.substr(0, fullName.find_first_of('.'));
-            className = fullName.substr(fullName.find_first_of('.') + 1, (fullName.find_first_of(':') - fullName.find_first_of('.')) - 1);
-
-        }
-
-        if (fullName.find(":") != String::npos)
-        {
-            parameterList = fullName.substr(fullName.find_first_of(':'));
-        }
-
-        MonoClass* klass = mono_class_from_name(s_CoreAssemblyImage, namespaceName.c_str(), className.c_str());
-        MonoObject* obj = mono_object_new(mono_domain_get(), klass);
-
-        if (callConstructor)
-        {
-            MonoMethodDesc* desc = mono_method_desc_new(parameterList.c_str(), NULL);
-            MonoMethod* constructor = mono_method_desc_search_in_class(desc, klass);
-            MonoObject* exception = nullptr;
-            mono_runtime_invoke(constructor, obj, parameters, &exception);
-        }
-
-        return obj;
-    }
 
     MonoClass* ScriptEngine::GetCoreClass(const String& fullName)
     {
@@ -468,7 +437,6 @@ namespace Spike
                 FieldType spikeFieldType = MonoTypeToSpikeFieldType(fieldType);
 
                 MonoCustomAttrInfo* attr = mono_custom_attrs_from_field(scriptClass.Class, iter);
-
                 if (oldFields.find(name) != oldFields.end())
                 {
                     fieldMap.emplace(name, std::move(oldFields.at(name)));

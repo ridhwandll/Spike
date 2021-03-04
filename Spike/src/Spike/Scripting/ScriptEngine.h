@@ -136,7 +136,6 @@ namespace Spike
         static void SetSceneContext(const Ref<Scene>& scene);
         static Ref<Scene> GetSceneContext();
 
-        static MonoObject* Construct(const String& fullName, bool callConstructor = true, void** parameters = nullptr);
         static MonoClass* GetCoreClass(const String& fullName);
 
         static bool IsEntityModuleValid(Entity entity);

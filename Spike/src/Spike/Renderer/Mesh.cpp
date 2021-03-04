@@ -61,7 +61,8 @@ namespace Spike
             case RendererAPI::API::DX11: m_Shader = Vault::Get<Shader>("MeshShader.hlsl"); break;
             case RendererAPI::API::OpenGL: m_Shader = Vault::Get<Shader>("MeshShader.glsl"); break;
         }
-        m_Shader->Bind();
+
+        m_Material = Material::Create(m_Shader);
 
         m_Submeshes.reserve(scene->mNumMeshes);
         for (size_t m = 0; m < scene->mNumMeshes; m++)
@@ -106,7 +107,7 @@ namespace Spike
 
         if (scene->HasMaterials())
         {
-            m_Textures.resize(scene->mNumMaterials);
+            m_Material->GetTextures().resize(scene->mNumMaterials);
             for (uint32_t i = 0; i < scene->mNumMaterials; i++)
             {
                 auto aiMaterial = scene->mMaterials[i];
@@ -126,7 +127,7 @@ namespace Spike
                     if (texture)
                     {
                         if (texture->Loaded())
-                            m_Textures[i] = texture;
+                            m_Material->PushTexture(texture, i);
                         else
                             SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
                     }
@@ -135,7 +136,7 @@ namespace Spike
                         auto tex = Texture2D::Create(texturePath);
                         Vault::Submit<Texture2D>(tex);
                         if (tex->Loaded())
-                            m_Textures[i] = tex;
+                            m_Material->PushTexture(tex, i);
                         else
                             SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
                     }
