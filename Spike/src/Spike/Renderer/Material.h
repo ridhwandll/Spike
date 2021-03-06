@@ -24,9 +24,16 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include "Spike/Renderer/Shader.h"
 #include "Spike/Renderer/Texture.h"
+#include "Spike/Renderer/ConstantBuffer.h"
 
 namespace Spike
 {
+    struct MaterialCbuffer
+    {
+        glm::vec3 Color;
+        int AlbedoTexToggle;
+    };
+
     class Material : public RefCounted
     {
     public:
@@ -39,10 +46,17 @@ namespace Spike
         Ref<Shader>& GetShader() { return m_Shader; }
         Vector<Ref<Texture2D>>& GetTextures() { return m_Textures; }
         void PushTexture(const Ref<Texture2D>& tex, uint32_t slot = 0);
+        void SetColor(const glm::vec3& color) { m_Color = color; }
+        void SetAlbedoTexToggle(int value);
 
         static Ref<Material> Material::Create(const Ref<Shader>& shader);
     private:
         Ref<Shader> m_Shader;
         Vector<Ref<Texture2D>> m_Textures;
+        glm::vec3 m_Color;
+        int m_AlbedoTexToggleValue;
+
+        MaterialCbuffer m_CBufferData;
+        Ref<ConstantBuffer> m_MainCBuffer;
     };
 }

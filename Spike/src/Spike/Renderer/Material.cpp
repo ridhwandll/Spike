@@ -35,7 +35,7 @@ namespace Spike
     Material::Material(const Ref<Shader>& shader)
         :m_Shader(shader)
     {
-
+        m_MainCBuffer = ConstantBuffer::Create(shader, "Material", nullptr, sizeof(MaterialCbuffer), 2, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
     Material::~Material()
@@ -46,17 +46,33 @@ namespace Spike
     void Material::Bind(uint32_t index)
     {
         m_Shader->Bind();
-        for (size_t i = 0; i < m_Textures.size(); i++)
+        m_CBufferData.AlbedoTexToggle = m_AlbedoTexToggleValue;
+        m_CBufferData.Color = m_Color;
+
+        if (m_CBufferData.AlbedoTexToggle == 1)
         {
-            auto& texture = m_Textures[index];
-            if (texture)
-                texture->Bind(i);
+            for (size_t i = 0; i < m_Textures.size(); i++)
+            {
+                auto& texture = m_Textures[index];
+                if (texture)
+                    texture->Bind(i);
+            }
         }
-        m_Shader->SetInt("u_Texture", index); //TODO: automate
+
+        m_MainCBuffer->SetData(&m_CBufferData);
+        m_Shader->SetInt("u_Texture", index); //TODO: Remove (Required for GLSL only)
     }
 
     void Material::PushTexture(const Ref<Texture2D>& tex, uint32_t slot)
     {
          m_Textures[slot] = tex;
     }
+
+    void Material::SetAlbedoTexToggle(int value)
+    {
+        m_AlbedoTexToggleValue = value;
+        if (m_MainCBuffer)
+            m_MainCBuffer->Bind();
+    }
+
 }

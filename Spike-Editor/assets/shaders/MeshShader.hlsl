@@ -44,11 +44,23 @@ struct vsOut
     float2 v_TexCoord : M_TEXCOORD;
 };
 
+cbuffer Material : register(b2)
+{
+    float3 u_Color;
+    int u_AlbedoTexToggle;
+}
+
 Texture2D tex : register(t0);
 SamplerState sampleType;
 
 float4 main(vsOut input) : SV_TARGET
 {
-    return tex.Sample(sampleType, input.v_TexCoord);
-    //return float4(input.v_TexCoord.x, input.v_TexCoord.y, 0.2f, 1.0f);
+    float4 PixelColor;
+    
+    if (u_AlbedoTexToggle == 1)
+        PixelColor = tex.Sample(sampleType, input.v_TexCoord);
+    else
+        PixelColor = float4(u_Color, 1.0f);
+
+    return PixelColor;
 }

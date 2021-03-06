@@ -121,13 +121,19 @@ namespace Spike
                     parentPath /= std::string(aiTexPath.data);
                     std::string texturePath = parentPath.string();
 
+                    aiColor3D aiColor;
+                    aiMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
+
                     SPK_CORE_LOG_INFO("Albedo map path = %s", texturePath.c_str());
                     auto texture = Vault::Get<Texture2D>(Vault::GetNameWithExtension(texturePath));
 
                     if (texture)
                     {
                         if (texture->Loaded())
+                        {
+                            m_Material->SetAlbedoTexToggle(1);
                             m_Material->PushTexture(texture, i);
+                        }
                         else
                             SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
                     }
@@ -136,13 +142,24 @@ namespace Spike
                         auto tex = Texture2D::Create(texturePath);
                         Vault::Submit<Texture2D>(tex);
                         if (tex->Loaded())
+                        {
+                            m_Material->SetAlbedoTexToggle(1);
                             m_Material->PushTexture(tex, i);
+                        }
                         else
+                        {
                             SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                            m_Material->SetAlbedoTexToggle(0);
+                            m_Material->SetColor({ aiColor.r, aiColor.g, aiColor.b });
+                        }
                     }
                 }
                 else
+                {
                     SPK_CORE_LOG_WARN("No albedo map");
+                    m_Material->SetAlbedoTexToggle(0);
+                    m_Material->SetColor({ 0.0f, 1.0f, 0.0f });
+                }
             }
         }
 

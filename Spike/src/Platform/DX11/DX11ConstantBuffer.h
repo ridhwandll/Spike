@@ -35,17 +35,17 @@ namespace Spike
         virtual void Bind() override;
         virtual void* GetData() override { return mData; }
         virtual void SetData(void* data) override;
-        virtual uint32_t GetSize() override { return mSize; }
+        virtual uint32_t GetSize() override { return m_Size; }
 
-        virtual RendererID GetNativeBuffer() override { return (RendererID)mBuffer; }
-        virtual ShaderDomain GetShaderDomain() override { return mShaderDomain; }
+        virtual RendererID GetNativeBuffer() override { return (RendererID)m_Buffer; }
+        virtual ShaderDomain GetShaderDomain() override { return m_ShaderDomain; }
         virtual DataUsage GetDataUsage() override { return mDataUsage; }
     private:
-        ID3D11Buffer* mBuffer;
-        uint32_t mSize;
-        uint32_t mBindSlot;
+        ID3D11Buffer* m_Buffer;
+        uint32_t m_Size;
+        uint32_t m_BindSlot;
         void* mData;
-        ShaderDomain mShaderDomain;
+        ShaderDomain m_ShaderDomain;
         DataUsage mDataUsage;
     };
 }

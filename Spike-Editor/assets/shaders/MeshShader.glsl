@@ -62,10 +62,19 @@ in vec3 v_Normal;
 in vec3 v_WorldPos;
 in vec2 v_TexCoord;
 
+layout (std140, binding = 2) uniform Material
+{
+    uniform vec3 u_Color;
+    uniform int u_AlbedoTexToggle;
+};
+
 uniform sampler2D u_Texture;
 
 void main()
 {
-    FragColor = texture(u_Texture, v_TexCoord);
+    if (u_AlbedoTexToggle == 1)
+        FragColor = texture(u_Texture, v_TexCoord);
+    else
+        FragColor = vec4(u_Color, 1.0f);
 }
 

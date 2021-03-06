@@ -38,7 +38,7 @@ namespace Spike
     }
 
     DX11ConstantBuffer::DX11ConstantBuffer(const Ref<Shader>& shader, const String& name, void* data, const uint32_t size, const uint32_t bindSlot, ShaderDomain shaderDomain, DataUsage usage)
-        :mBindSlot(bindSlot), mSize(size), mShaderDomain(shaderDomain), mDataUsage(usage)
+        :m_BindSlot(bindSlot), m_Size(size), m_ShaderDomain(shaderDomain), mDataUsage(usage)
     {
         D3D11_BUFFER_DESC bufferDesc = {};
         bufferDesc.ByteWidth = ((size / 16) + 1) * 16; //Align by 16 bytes
@@ -48,28 +48,26 @@ namespace Spike
         bufferDesc.MiscFlags = 0;
         bufferDesc.StructureByteStride = 0;
 
-        if (data == nullptr)
-        {
-            DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &mBuffer)); //Create an empty CBuffer
-        }
-        else
+        if (data != nullptr)
         {
             D3D11_SUBRESOURCE_DATA sd = {};
             sd.pSysMem = data;
             sd.SysMemPitch = 0;
             sd.SysMemSlicePitch = 0;
-            DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&bufferDesc, &sd, &mBuffer));
+            DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&bufferDesc, &sd, &m_Buffer));
         }
+        else
+            DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&bufferDesc, nullptr, &m_Buffer)); //Create an empty CBuffer
     }
 
     void DX11ConstantBuffer::Bind()
     {
         ID3D11DeviceContext* deviceContext = DX11Internal::GetDeviceContext();
-        switch (mShaderDomain)
+        switch (m_ShaderDomain)
         {
             case ShaderDomain::NONE:   break;
-            case ShaderDomain::VERTEX: deviceContext->VSSetConstantBuffers(mBindSlot, 1, &mBuffer); break;
-            case ShaderDomain::PIXEL:  deviceContext->PSSetConstantBuffers(mBindSlot, 1, &mBuffer); break;
+            case ShaderDomain::VERTEX: deviceContext->VSSetConstantBuffers(m_BindSlot, 1, &m_Buffer); break;
+            case ShaderDomain::PIXEL:  deviceContext->PSSetConstantBuffers(m_BindSlot, 1, &m_Buffer); break;
         }
     }
 
@@ -79,18 +77,18 @@ namespace Spike
         switch (mDataUsage)
         {
             case DataUsage::DEFAULT:
-                deviceContext->UpdateSubresource(mBuffer, 0, 0, data, 0, 0); this->Bind();  break;
+                deviceContext->UpdateSubresource(m_Buffer, 0, 0, data, 0, 0); Bind(); break;
             case DataUsage::DYNAMIC:
                 D3D11_MAPPED_SUBRESOURCE ms = {};
-                deviceContext->Map(mBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);
-                memcpy(ms.pData, data, mSize);
-                deviceContext->Unmap(mBuffer, 0); this->Bind(); break;
+                deviceContext->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &ms);
+                memcpy(ms.pData, data, m_Size);
+                deviceContext->Unmap(m_Buffer, 0); Bind(); break;
         }
     }
 
     DX11ConstantBuffer::~DX11ConstantBuffer()
     {
-        mBuffer->Release();
+        m_Buffer->Release();
     }
 }
 
