@@ -131,7 +131,7 @@ namespace Spike
                     {
                         if (texture->Loaded())
                         {
-                            m_Material->SetAlbedoTexToggle(1);
+                            m_Material->SetDiffuseTexToggle(true);
                             m_Material->PushTexture(texture, i);
                         }
                         else
@@ -143,22 +143,21 @@ namespace Spike
                         Vault::Submit<Texture2D>(tex);
                         if (tex->Loaded())
                         {
-                            m_Material->SetAlbedoTexToggle(1);
+                            m_Material->SetDiffuseTexToggle(true);
                             m_Material->PushTexture(tex, i);
                         }
                         else
                         {
                             SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
-                            m_Material->SetAlbedoTexToggle(0);
+                            m_Material->SetDiffuseTexToggle(false);
                             m_Material->SetColor({ aiColor.r, aiColor.g, aiColor.b });
                         }
                     }
                 }
                 else
                 {
-                    SPK_CORE_LOG_WARN("No albedo map");
-                    m_Material->SetAlbedoTexToggle(0);
-                    m_Material->SetColor({ 0.0f, 1.0f, 0.0f });
+                    m_Material->SetDiffuseTexToggle(false);
+                    m_Material->SetColor({ 1.0f, 1.0f, 1.0f });
                 }
             }
         }

@@ -39,24 +39,30 @@ namespace Spike
     public:
         Material() = default;
         Material(const Ref<Shader>& shader);
-        ~Material();
+        ~Material() = default;
 
         void Bind(uint32_t index);
 
         Ref<Shader>& GetShader() { return m_Shader; }
+
         Vector<Ref<Texture2D>>& GetTextures() { return m_Textures; }
         void PushTexture(const Ref<Texture2D>& tex, uint32_t slot = 0);
+
+        glm::vec3& GetColor() { return m_Color; }
         void SetColor(const glm::vec3& color) { m_Color = color; }
-        void SetAlbedoTexToggle(int value);
+
+        void SetDiffuseTexToggle(bool value);
+        bool GetDiffuseTexToggle() { return m_AlbedoTexToggle; }
 
         static Ref<Material> Material::Create(const Ref<Shader>& shader);
     private:
         Ref<Shader> m_Shader;
         Vector<Ref<Texture2D>> m_Textures;
         glm::vec3 m_Color;
-        int m_AlbedoTexToggleValue;
+        bool m_AlbedoTexToggle;
 
         MaterialCbuffer m_CBufferData;
         Ref<ConstantBuffer> m_MainCBuffer;
+        friend class MaterialPanel;
     };
 }

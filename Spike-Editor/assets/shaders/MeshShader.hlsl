@@ -47,7 +47,7 @@ struct vsOut
 cbuffer Material : register(b2)
 {
     float3 u_Color;
-    int u_AlbedoTexToggle;
+    int u_DiffuseTexToggle;
 }
 
 Texture2D tex : register(t0);
@@ -57,8 +57,8 @@ float4 main(vsOut input) : SV_TARGET
 {
     float4 PixelColor;
     
-    if (u_AlbedoTexToggle == 1)
-        PixelColor = tex.Sample(sampleType, input.v_TexCoord);
+    if (u_DiffuseTexToggle == 1)
+        PixelColor = tex.Sample(sampleType, input.v_TexCoord) * float4(u_Color, 1.0f);
     else
         PixelColor = float4(u_Color, 1.0f);
 

@@ -382,13 +382,9 @@ namespace Spike
 
         DrawComponent<SpriteRendererComponent>(ICON_FK_SQUARE_O" Sprite Renderer", entity, [](auto& component)
         {
-            GUI::DrawColorControl("Color", component.Color);
+            GUI::DrawColorControl4("Color", component.Color);
 
             const RendererID imageID = component.Texture.Raw() == nullptr ? 0 : component.Texture->GetRendererID();
-
-            #ifdef RENDERER_API_OPENGL
-                stbi_set_flip_vertically_on_load(true);
-            #endif
 
             ImGui::Text("Texture");
             const float cursorPos = ImGui::GetCursorPosY();

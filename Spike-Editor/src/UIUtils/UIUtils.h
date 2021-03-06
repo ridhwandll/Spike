@@ -47,7 +47,8 @@ namespace Spike::GUI
     bool DrawFloat2Control(const char* label, glm::vec2& value, float columnWidth = 100.0f);
     bool DrawFloat3Control(const char* label, glm::vec3& value, float columnWidth = 100.0f);
     bool DrawFloat4Control(const char* label, glm::vec4& value, float columnWidth = 100.0f);
-    bool DrawColorControl(const char* label, glm::vec4& value, float columnWidth = 100.0f);
+    bool DrawColorControl4(const char* label, glm::vec4& value, float columnWidth = 100.0f);
+    bool DrawColorControl3(const char* label, glm::vec3& value, float columnWidth = 100.0f);
     void DrawToggleButton(const char* text, const ImVec4& color, bool* boolToToggle);
 
     /* [Spike] A dynamic toggle button is a ImGui::Button(...) wrapper that draws label changing button.

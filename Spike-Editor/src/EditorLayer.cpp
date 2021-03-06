@@ -354,6 +354,7 @@ namespace Spike
         m_SceneHierarchyPanel.OnImGuiRender();
         m_ProfilerPanel.OnImGuiRender();
         m_VaultPanel.OnImGuiRender();
+        m_MaterialPanel.OnImGuiRender(m_SceneHierarchyPanel.GetSelectedEntity());
     }
 
     /* [Spike] FILE STUFF [Spike] */
