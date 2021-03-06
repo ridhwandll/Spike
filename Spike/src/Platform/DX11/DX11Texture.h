@@ -45,8 +45,6 @@ namespace Spike
         virtual void Unbind() const override;
 
         virtual bool operator ==(const Texture& other) const override { return m_SRV == ((DX11Texture2D&)other).m_SRV; }
-    private:
-        void CreateSRV();
 
     private:
         ID3D11Texture2D*          m_Texture2D;

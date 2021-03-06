@@ -26,7 +26,6 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-
     Ref<Material> Material::Create(const Ref<Shader>& shader)
     {
         return Ref<Material>::Create(shader);
@@ -38,15 +37,10 @@ namespace Spike
         m_MainCBuffer = ConstantBuffer::Create(shader, "Material", nullptr, sizeof(MaterialCbuffer), 2, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
-    Material::~Material()
-    {
-
-    }
-
     void Material::Bind(uint32_t index)
     {
         m_Shader->Bind();
-        m_CBufferData.AlbedoTexToggle = m_AlbedoTexToggleValue;
+        m_CBufferData.AlbedoTexToggle = m_AlbedoTexToggle;
         m_CBufferData.Color = m_Color;
 
         if (m_CBufferData.AlbedoTexToggle == 1)
@@ -68,9 +62,9 @@ namespace Spike
          m_Textures[slot] = tex;
     }
 
-    void Material::SetAlbedoTexToggle(int value)
+    void Material::SetDiffuseTexToggle(bool value)
     {
-        m_AlbedoTexToggleValue = value;
+        m_AlbedoTexToggle = value;
         if (m_MainCBuffer)
             m_MainCBuffer->Bind();
     }

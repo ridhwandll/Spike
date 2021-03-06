@@ -208,7 +208,7 @@ namespace Spike::GUI
         return modified;
     }
 
-    bool DrawColorControl(const char* label, glm::vec4& value, float columnWidth)
+    bool DrawColorControl4(const char* label, glm::vec4& value, float columnWidth)
     {
         bool modified = false;
         ImGui::PushID(label);
@@ -220,6 +220,25 @@ namespace Spike::GUI
 
         ImGui::PushItemWidth(-std::numeric_limits<float>::min());
         if (ImGui::ColorEdit4("##value", glm::value_ptr(value)))
+            modified = true;
+
+        ImGui::Columns(1);
+        ImGui::PopID();
+        return modified;
+    }
+
+    bool DrawColorControl3(const char* label, glm::vec3& value, float columnWidth /*= 100.0f*/)
+    {
+        bool modified = false;
+        ImGui::PushID(label);
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label);
+        ImGui::NextColumn();
+
+        ImGui::PushItemWidth(-std::numeric_limits<float>::min());
+        if (ImGui::ColorEdit3("##value", glm::value_ptr(value)))
             modified = true;
 
         ImGui::Columns(1);

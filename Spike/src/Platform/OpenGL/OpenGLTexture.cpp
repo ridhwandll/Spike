@@ -28,23 +28,11 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    static GLenum ConvertToOpenGLTextureFormat(TextureFormat format)
-    {
-        switch (format)
-        {
-            case TextureFormat::RGB:     return GL_RGB;
-            case TextureFormat::RGBA:    return GL_RGBA;
-            case TextureFormat::Float16: return GL_RGBA16F;
-        }
-        SPK_INTERNAL_ASSERT("Unknown texture format!");
-        return 0;
-    }
-
     OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
         :m_Width(width), m_Height(height)
     {
         uint32_t rendererID;
-        m_Name = "[Spike] Internal Texture";
+        m_Name = "[Spike] Internal Texture [Spike]";
         m_InternalFormat = GL_RGBA8;
         m_DataFormat = GL_RGBA;
         glGenTextures(1, &rendererID);
@@ -63,7 +51,8 @@ namespace Spike
         : m_Path(path), m_Name(Vault::GetNameWithExtension(path))
     {
         int width, height, channels;
-        stbi_set_flip_vertically_on_load(true);
+
+        stbi_set_flip_vertically_on_load(false);
         stbi_uc* data = nullptr;
         data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
@@ -100,14 +89,17 @@ namespace Spike
         glGenTextures(1, &rendererID);
         glBindTexture(GL_TEXTURE_2D, rendererID);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, 16); //TODO: Render Caps
 
-        GLenum type = internalFormat == GL_RGBA16F ? GL_FLOAT : GL_UNSIGNED_BYTE;
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, type, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
+
+        glBindTexture(GL_TEXTURE_2D, 0); //Always remember to Unbind the Texture
         m_RendererID = (RendererID)rendererID;
         free(data);
     }

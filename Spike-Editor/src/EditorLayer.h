@@ -28,6 +28,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ProfilerPanel.h"
 #include "Panels/VaultPanel.h"
+#include "Panels/MaterialPanel.h"
 
 namespace Spike
 {
@@ -86,6 +87,7 @@ namespace Spike
         SceneHierarchyPanel m_SceneHierarchyPanel;
         ProfilerPanel m_ProfilerPanel;
         VaultPanel m_VaultPanel;
+        MaterialPanel m_MaterialPanel;
     private:
         friend class VaultPanel;
     };

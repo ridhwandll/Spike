@@ -64,8 +64,7 @@ namespace Spike
         template<typename T>
         void RemoveComponent()
         {
-            SPK_CORE_ASSERT(HasComponent<T>(), "Entity does not have this component!");
-            m_Scene->m_Registry.remove<T>(m_EntityHandle);
+            m_Scene->m_Registry.remove_if_exists<T>(m_EntityHandle);
         }
 
         entt::entity Raw()
