@@ -41,30 +41,25 @@ namespace Spike::Scripting
     void Spike_Console_LogInfo(MonoObject* message)
     {
         char* msg = CovertMonoObjectToCppChar(message);
-
         SPK_CORE_LOG_INFO(msg);
     }
     void Spike_Console_LogWarn(MonoObject* message)
     {
         char* msg = CovertMonoObjectToCppChar(message);
-
         SPK_CORE_LOG_WARN(msg);
     }
     void Spike_Console_LogDebug(MonoObject* message)
     {
         char* msg = CovertMonoObjectToCppChar(message);
-
         SPK_CORE_LOG_DEBUG(msg); 
     }
     void Spike_Console_LogError(MonoObject* message)
     {
         char* msg = CovertMonoObjectToCppChar(message);
-
         SPK_CORE_LOG_ERROR(msg);
     }
     void Spike_Console_LogCritical(MonoObject* message) {
         char* msg = CovertMonoObjectToCppChar(message);
-
         SPK_CORE_LOG_CRITICAL(msg);
     }
 
