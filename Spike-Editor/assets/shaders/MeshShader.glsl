@@ -41,16 +41,19 @@ layout (std140, binding = 1) uniform Mesh
     uniform mat4 u_Transform;
 };
 
-out vec3 v_Normal;
-out vec2 v_TexCoord;
-out vec3 v_WorldPos;
+out VertexOutput
+{
+    vec3 v_Normal;
+    vec2 v_TexCoord;
+    vec3 v_WorldPos;
+} vsOut;
 
 void main()
 {
-    v_WorldPos = vec3(u_Transform * vec4(a_Position, 1.0));
-    gl_Position = u_ViewProjection * vec4(v_WorldPos, 1.0f);
-    v_TexCoord = a_TexCoord;
-    v_Normal = a_Normal;
+    vsOut.v_WorldPos = vec3(u_Transform * vec4(a_Position, 1.0));
+    gl_Position = u_ViewProjection * vec4(vsOut.v_WorldPos, 1.0f);
+    vsOut.v_TexCoord = a_TexCoord;
+    vsOut.v_Normal = a_Normal;
 }
 
 #type fragment
@@ -58,23 +61,118 @@ void main()
 
 out vec4 FragColor;
 
-in vec3 v_Normal;
-in vec3 v_WorldPos;
-in vec2 v_TexCoord;
-
-layout (std140, binding = 2) uniform Material
+struct AmbientLight
 {
-    uniform vec3 u_Color;
-    uniform int u_DiffuseTexToggle;
+    float Intensity;
+    vec3 Color;
 };
 
-uniform sampler2D u_Texture;
-
-void main()
+struct DirectionalLight
 {
-    if (u_DiffuseTexToggle == 1)
-        FragColor = texture(u_Texture, v_TexCoord) * vec4(u_Color, 1.0f);
-    else
-        FragColor = vec4(u_Color, 1.0f);
+    vec3 Color;
+    float Intensity;
+    vec3 Direction;
+};
+
+struct PointLight
+{
+    vec3 Position;
+
+    vec3 Color;
+    float Intensity;
+
+    float Constant;
+    float Linear;
+    float Quadratic;
+};
+
+in VertexOutput
+{
+    vec3 v_Normal;
+    vec2 v_TexCoord;
+    vec3 v_WorldPos;
+} vsIn;
+
+uniform int u_AmbientLightCount = 0;
+uniform int u_DirectionalLightCount = 0;
+uniform int u_PointLightCount = 0;
+uniform vec3 u_CameraPosition;
+uniform DirectionalLight u_DirectionalLights[10];
+uniform PointLight u_PointLights[100];
+uniform AmbientLight u_AmbientLights[100];
+uniform sampler2D u_DiffuseTexture;
+
+layout (std140, binding = 2) uniform Material
+{                                          //_____________________________
+    uniform vec3 u_MatColor;               //                  |12| bytes|
+    uniform int u_MatDiffuseTexToggle;     //                  | 4| bytes|
+    uniform float u_MatShininess;          //                  | 4| bytes|
+    uniform float u_MatSmoothness;         //                  | 4| bytes|
+                                           //Total Data size:  |24| bytes|
+    uniform vec2 __Padding;                //                  | 8| bytes|
+                                           //Grand Total size: |32| bytes|
+};
+
+
+// Lightning Functions
+vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir)
+{
+    vec3 lightDir = normalize(-light.Direction);
+
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), u_MatShininess);
+
+    vec3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
+    vec3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
+    return diffuse + specular;
+
+    return diffuse + specular;
 }
 
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir)
+{
+    vec3 lightDir = normalize(light.Position - vsIn.v_WorldPos);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_MatShininess) * light.Intensity;
+
+    float distance = length(light.Position - vsIn.v_WorldPos);
+    float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * (distance * distance));
+
+    vec3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
+    vec3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
+
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return diffuse + specular;
+}
+void main()
+{
+    vec3 norm = normalize(vsIn.v_Normal);
+    vec3 viewDir = normalize(u_CameraPosition - vsIn.v_WorldPos);
+    vec3 lightingResult = vec3(1);
+
+    if (u_AmbientLightCount > 0 || u_DirectionalLightCount > 0 || u_PointLightCount > 0)
+        lightingResult = vec3(0);
+
+    for (int i = 0; i < u_AmbientLightCount; i++)
+        lightingResult += u_AmbientLights[i].Color * vec3(u_AmbientLights[i].Intensity);
+
+    for (int i = 0; i < u_DirectionalLightCount; i++)
+        lightingResult += CalculateDirectionalLight(u_DirectionalLights[i], norm, viewDir);
+
+    for (int i = 0; i < u_PointLightCount; i++)
+        lightingResult += CalculatePointLight(u_PointLights[i], norm, viewDir);
+
+    vec4 tex;
+    if (u_MatDiffuseTexToggle == 1)
+        tex = texture(u_DiffuseTexture, vsIn.v_TexCoord);
+    else
+        tex = vec4(u_MatColor, 1.0f);
+
+    FragColor = tex * vec4(u_MatColor, 1.0f) * vec4(lightingResult, 1.0f);
+}

@@ -42,6 +42,8 @@ namespace Spike
         m_Shader->Bind();
         m_CBufferData.AlbedoTexToggle = m_AlbedoTexToggle;
         m_CBufferData.Color = m_Color;
+        m_CBufferData.Shininess = m_Shininess;
+        m_CBufferData.Smoothness = m_Smoothness;
 
         if (m_CBufferData.AlbedoTexToggle == 1)
         {
@@ -54,7 +56,9 @@ namespace Spike
         }
 
         m_MainCBuffer->SetData(&m_CBufferData);
-        m_Shader->SetInt("u_Texture", index); //TODO: Remove (Required for GLSL only)
+
+        //TODO: Remove (Required for GLSL only)
+        m_Shader->SetInt("u_DiffuseTexture", index);
     }
 
     void Material::PushTexture(const Ref<Texture2D>& tex, uint32_t slot)

@@ -143,6 +143,18 @@ namespace Spike
                 m_SelectionContext = m_Context->CreateEntity("Mesh");
                 m_SelectionContext.AddComponent<MeshComponent>();
             }
+            if (ImGui::MenuItem("Sun"))
+            {
+                m_SelectionContext = m_Context->CreateEntity("Sun");
+                m_SelectionContext.AddComponent<DirectionalLightComponent>();
+                m_SelectionContext.AddComponent<AmbientLightComponent>();
+            }
+            if (ImGui::MenuItem("PointLight"))
+            {
+                m_SelectionContext = m_Context->CreateEntity("Point Light");
+                m_SelectionContext.AddComponent<PointLightComponent>();
+            }
+
             ImGui::EndPopup();
         }
         ImGui::End();
@@ -305,6 +317,30 @@ namespace Spike
                     entity.AddComponent<CircleCollider2DComponent>();
                 else
                     SPK_CORE_LOG_WARN("This entity already has CircleCollider2D component!");
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("PointLight"))
+            {
+                if (!entity.HasComponent<PointLightComponent>())
+                    entity.AddComponent<PointLightComponent>();
+                else
+                    SPK_CORE_LOG_WARN("This entity already has PointLight component!");
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("DirectionalLight"))
+            {
+                if (!entity.HasComponent<DirectionalLightComponent>())
+                    entity.AddComponent<DirectionalLightComponent>();
+                else
+                    SPK_CORE_LOG_WARN("This entity already has DirectionalLight component!");
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("AmbientLight"))
+            {
+                if (!entity.HasComponent<AmbientLightComponent>())
+                    entity.AddComponent<AmbientLightComponent>();
+                else
+                    SPK_CORE_LOG_WARN("This entity already has AmbientLight component!");
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -642,6 +678,27 @@ namespace Spike
             GUI::DrawFloatControl("Radius",   &component.Radius);
             GUI::DrawFloatControl("Density",  &component.Density);
             GUI::DrawFloatControl("Friction", &component.Friction);
+        });
+
+        DrawComponent<PointLightComponent>("PointLight", entity, [](auto& component)
+        {
+            GUI::DrawFloatControl("Intensity", &component.Intensity);
+            GUI::DrawFloatControl("Constant", &component.Constant);
+            GUI::DrawFloatControl("Linear", &component.Linear);
+            GUI::DrawFloatControl("Quadratic", &component.Quadratic);
+            GUI::DrawColorControl3("Color", component.Color);
+        });
+
+        DrawComponent<DirectionalLightComponent>("DirectionalLight", entity, [](auto& component)
+        {
+            GUI::DrawFloatControl("Intensity", &component.Intensity);
+            GUI::DrawColorControl3("Color", component.Color);
+        });
+
+        DrawComponent<AmbientLightComponent>("AmbientLight", entity, [](auto& component)
+        {
+            GUI::DrawFloatControl("Intensity", &component.Intensity);
+            GUI::DrawColorControl3("Color", component.Color);
         });
     }
 }

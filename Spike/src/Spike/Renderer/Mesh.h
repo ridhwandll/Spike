@@ -77,7 +77,7 @@ namespace Spike
         Vector<Submesh>& GetSubmeshes() { return m_Submeshes; }
         const Vector<Submesh>& GetSubmeshes() const { return m_Submeshes; }
 
-        const Ref<Material>& GetMaterial() { return m_Material; }
+        Ref<Material>& GetMaterial() { return m_Material; }
         const Vector<Vertex>& GetVertices() const { return m_Vertices; }
         const Vector<Index>& GetIndices() const { return m_Indices; }
 

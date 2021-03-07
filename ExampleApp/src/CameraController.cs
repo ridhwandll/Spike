@@ -7,7 +7,7 @@ class CameraController : Entity
     public void Start()
     {
         Console.LogDebug("Camera Started");
-        Console.LogInfo("Camera vroommmmmmmmmmmmmmmmmmmmmmmmmmm");
+        Console.LogInfo(null);
     }
 
     public void Update(float ts)

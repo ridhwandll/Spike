@@ -24,9 +24,9 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include "Spike/Core/Ref.h"
 #include "Spike/Core/UUID.h"
+#include "Spike/Scene/LightningHandeler.h"
 #include "Spike/Renderer/EditorCamera.h"
 #include "Spike/Core/Timestep.h"
-#include "Spike/Renderer/Framebuffer.h"
 
 #pragma warning(push, 0)
 #include <entt.hpp>
@@ -82,6 +82,7 @@ namespace Spike
         entt::entity m_SceneEntity;
         entt::registry m_Registry;
 
+        LightningHandeler* m_LightningHandeler = new LightningHandeler();
         friend class Physics2D;
         friend class Entity;
         friend class SceneSerializer;

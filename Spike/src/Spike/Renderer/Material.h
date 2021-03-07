@@ -30,8 +30,11 @@ namespace Spike
 {
     struct MaterialCbuffer
     {
-        glm::vec3 Color;
-        int AlbedoTexToggle;
+        glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+        int AlbedoTexToggle = 0;
+        float Shininess = 32.0f;
+        float Smoothness;
+        glm::vec2 __Padding;
     };
 
     class Material : public RefCounted
@@ -57,6 +60,8 @@ namespace Spike
         static Ref<Material> Material::Create(const Ref<Shader>& shader);
     private:
         Ref<Shader> m_Shader;
+        float m_Shininess = 32.0f;
+        float m_Smoothness = 0.0f;
         Vector<Ref<Texture2D>> m_Textures;
         glm::vec3 m_Color;
         bool m_AlbedoTexToggle;

@@ -82,6 +82,7 @@ namespace Spike
         ScriptEngine::OnSceneDestruct(m_SceneID);
         m_Registry.clear();
         s_ActiveScenes.erase(m_SceneID);
+        delete m_LightningHandeler;
     }
 
     Entity Scene::CreateEntity(const String& name)
@@ -220,13 +221,48 @@ namespace Spike
 
         {
             Renderer::BeginScene(camera);
+            m_LightningHandeler->m_AmbientLights.clear();
+            m_LightningHandeler->m_PointLights.clear();
+            m_LightningHandeler->m_DirectionalLights.clear();
+
+            {
+                auto view = m_Registry.view<TransformComponent, AmbientLightComponent>();
+                for (auto ent : view)
+                {
+                    auto [t, l] = view.get<TransformComponent, AmbientLightComponent>(ent);
+                    m_LightningHandeler->m_AmbientLights.push_back(AmbientLight{ l.Color, l.Intensity });
+                }
+            }
+            {
+                auto view = m_Registry.view<TransformComponent, DirectionalLightComponent>();
+                for (auto ent : view)
+                {
+                    auto [t, l] = view.get<TransformComponent, DirectionalLightComponent>(ent);
+                    m_LightningHandeler->m_DirectionalLights.push_back(DirectionalLight{ glm::degrees(t.Rotation), l.Color, l.Intensity });
+                    break;
+                }
+            }
+            {
+                auto view = m_Registry.view<TransformComponent, PointLightComponent>();
+                for (auto ent : view)
+                {
+                    auto [t, l] = view.get<TransformComponent, PointLightComponent>(ent);
+                    m_LightningHandeler->m_PointLights.push_back(PointLight{ t.Translation, l.Constant, l.Linear, l.Quadratic, l.Color, l.Intensity });
+                }
+            }
+
+
             auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
             for (auto entity : group)
             {
                 auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                 if (mesh.Mesh)
+                {
+                    m_LightningHandeler->Rock(camera, mesh.Mesh->GetMaterial());
                     Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
+                }
             }
+
             Renderer::EndScene();
         }
     }
@@ -433,6 +469,20 @@ namespace Spike
     template<>
     void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
     {
+    }
 
+    template<>
+    void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component)
+    {
+    }
+
+    template<>
+    void Scene::OnComponentAdded<DirectionalLightComponent>(Entity entity, DirectionalLightComponent& component)
+    {
+    }
+
+    template<>
+    void Scene::OnComponentAdded<AmbientLightComponent>(Entity entity, AmbientLightComponent& component)
+    {
     }
 }

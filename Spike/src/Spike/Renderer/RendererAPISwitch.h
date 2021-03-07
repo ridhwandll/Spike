@@ -24,6 +24,6 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 
 /* [Spike] Uncomment/Comment these #define 's to switch the RendererAPI [Spike] */
-#define RENDERER_API_DX11 // DirectX 11
-//#define RENDERER_API_OPENGL // OpenGL
+//#define RENDERER_API_DX11 // DirectX 11
+#define RENDERER_API_OPENGL // OpenGL
 

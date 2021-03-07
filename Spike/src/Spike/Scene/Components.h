@@ -61,17 +61,12 @@ namespace Spike
         TransformComponent(const glm::vec3& translation)
             :Translation(translation) {}
 
-        void Reset()
-        {
-            Translation = { 0.0f, 0.0f, 0.0f };
-            Rotation = { 0.0f, 0.0f, 0.0f };
-            Scale = { 1.0f, 1.0f, 1.0f };
-        }
         glm::mat4 GetTransform() const
         {
             glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
             return glm::translate(glm::mat4(1.0f), Translation) * rotation * glm::scale(glm::mat4(1.0f), Scale);
         }
+        void Reset() { Translation = { 0.0f, 0.0f, 0.0f }; Rotation = { 0.0f, 0.0f, 0.0f }; Scale = { 1.0f, 1.0f, 1.0f }; }
     };
 
     struct SpriteRendererComponent
@@ -213,4 +208,50 @@ namespace Spike
         }
     };
     /////2D Physics End///////////////////////////////////////////////////////////////////
+
+    struct AmbientLightComponent
+    {
+        glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+        float Intensity = 1.0f;
+
+        AmbientLightComponent() = default;
+        AmbientLightComponent(glm::vec3 color, float intensity) :
+            Color(color), Intensity(intensity) {}
+        void Reset() { Color = { 1.0f, 1.0f, 1.0f }; Intensity = 1.0f; }
+    };
+
+    struct DirectionalLightComponent
+    {
+        glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+        float Intensity = 1.0f;
+
+        DirectionalLightComponent() = default;
+        DirectionalLightComponent(glm::vec3 color, float intensity) :
+            Color(color), Intensity(intensity) {}
+        void Reset() { Color = { 1.0f, 1.0f, 1.0f }; Intensity = 1.0f; }
+    };
+
+    struct PointLightComponent
+    {
+        float Constant = 1.0f;
+        float Linear = 0.09f;
+        float Quadratic = 0.032f;
+
+        glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+        float Intensity = 1.0f;
+
+        PointLightComponent() = default;
+        PointLightComponent(float constant, float linear, float quadratic, glm::vec3 color, float intensity) :
+            Constant(constant), Linear(linear), Quadratic(quadratic), Color(color), Intensity(intensity) {}
+
+        void Reset()
+        {
+            Color = { 1.0f, 1.0f, 1.0f };
+            Intensity = 1.0f;
+            Constant = 1.0f;
+            Linear = 0.09f;
+            Quadratic = 0.032f;
+        }
+    };
+
 }
