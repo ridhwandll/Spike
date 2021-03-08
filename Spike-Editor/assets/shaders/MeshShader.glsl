@@ -63,24 +63,28 @@ out vec4 FragColor;
 
 struct AmbientLight
 {
-    float Intensity;
     vec3 Color;
+    float Intensity;
 };
 
 struct DirectionalLight
 {
+    vec3 Direction;
+    float __Padding0;
+
     vec3 Color;
     float Intensity;
-    vec3 Direction;
 };
 
 struct PointLight
 {
     vec3 Position;
+    float __Padding0;
 
     vec3 Color;
-    float Intensity;
+    float __Padding1;
 
+    float Intensity;
     float Constant;
     float Linear;
     float Quadratic;
@@ -93,26 +97,30 @@ in VertexOutput
     vec3 v_WorldPos;
 } vsIn;
 
-uniform int u_AmbientLightCount = 0;
-uniform int u_DirectionalLightCount = 0;
-uniform int u_PointLightCount = 0;
-uniform vec3 u_CameraPosition;
-uniform DirectionalLight u_DirectionalLights[10];
-uniform PointLight u_PointLights[100];
-uniform AmbientLight u_AmbientLights[100];
-uniform sampler2D u_DiffuseTexture;
-
 layout (std140, binding = 2) uniform Material
-{                                          //_____________________________
-    uniform vec3 u_MatColor;               //                  |12| bytes|
-    uniform int u_MatDiffuseTexToggle;     //                  | 4| bytes|
-    uniform float u_MatShininess;          //                  | 4| bytes|
-    uniform float u_MatSmoothness;         //                  | 4| bytes|
-                                           //Total Data size:  |24| bytes|
-    uniform vec2 __Padding;                //                  | 8| bytes|
-                                           //Grand Total size: |32| bytes|
+{
+    uniform vec3  u_MatColor;
+    uniform int   u_MatDiffuseTexToggle;
+    uniform float u_MatShininess;
+    uniform float u_MatSmoothness;
 };
 
+layout (std140, binding = 3) uniform LightCount
+{
+    uniform vec3 u_CameraPosition;
+    int __PADDING__;
+
+    uniform int  u_AmbientLightCount;
+    uniform int  u_DirectionalLightCount;
+    uniform int  u_PointLightCount;
+    int ___PADDING___;
+
+    uniform PointLight u_PointLights[100];
+    uniform AmbientLight u_AmbientLights[100];
+    uniform DirectionalLight u_DirectionalLights[10];
+};
+
+uniform sampler2D u_DiffuseTexture; //I hate this
 
 // Lightning Functions
 vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir)

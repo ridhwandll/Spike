@@ -79,6 +79,7 @@ namespace Spike
     Scene::~Scene()
     {
         m_Registry.on_destroy<ScriptComponent>().disconnect();
+
         ScriptEngine::OnSceneDestruct(m_SceneID);
         m_Registry.clear();
         s_ActiveScenes.erase(m_SceneID);
@@ -130,6 +131,7 @@ namespace Spike
     void Scene::OnUpdateRuntime(Timestep ts)
     {
         Camera* mainCamera = nullptr;
+        TransformComponent cameraTransformComponent;
         glm::mat4 cameraTransform;
 
         {
@@ -141,6 +143,7 @@ namespace Spike
                 {
                     mainCamera = &camera.Camera;
                     cameraTransform = transform.GetTransform();
+                    cameraTransformComponent = transform;
                     break;
                 }
             }
@@ -160,12 +163,15 @@ namespace Spike
             }
             {
                 Renderer::BeginScene(*mainCamera, cameraTransform);
+                PushLights();
+
                 auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
                 for (auto entity : group)
                 {
                     auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                     if (mesh.Mesh)
                     {
+                        m_LightningHandeler->CalculateAndRenderLights(cameraTransformComponent.Translation, mesh.Mesh->GetMaterial());
                         Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
                     }
                 }
@@ -221,36 +227,7 @@ namespace Spike
 
         {
             Renderer::BeginScene(camera);
-            m_LightningHandeler->m_AmbientLights.clear();
-            m_LightningHandeler->m_PointLights.clear();
-            m_LightningHandeler->m_DirectionalLights.clear();
-
-            {
-                auto view = m_Registry.view<TransformComponent, AmbientLightComponent>();
-                for (auto ent : view)
-                {
-                    auto [t, l] = view.get<TransformComponent, AmbientLightComponent>(ent);
-                    m_LightningHandeler->m_AmbientLights.push_back(AmbientLight{ l.Color, l.Intensity });
-                }
-            }
-            {
-                auto view = m_Registry.view<TransformComponent, DirectionalLightComponent>();
-                for (auto ent : view)
-                {
-                    auto [t, l] = view.get<TransformComponent, DirectionalLightComponent>(ent);
-                    m_LightningHandeler->m_DirectionalLights.push_back(DirectionalLight{ glm::degrees(t.Rotation), l.Color, l.Intensity });
-                    break;
-                }
-            }
-            {
-                auto view = m_Registry.view<TransformComponent, PointLightComponent>();
-                for (auto ent : view)
-                {
-                    auto [t, l] = view.get<TransformComponent, PointLightComponent>(ent);
-                    m_LightningHandeler->m_PointLights.push_back(PointLight{ t.Translation, l.Constant, l.Linear, l.Quadratic, l.Color, l.Intensity });
-                }
-            }
-
+            PushLights();
 
             auto group = m_Registry.group<MeshComponent>(entt::get<TransformComponent>);
             for (auto entity : group)
@@ -258,7 +235,7 @@ namespace Spike
                 auto [mesh, transform] = group.get<MeshComponent, TransformComponent>(entity);
                 if (mesh.Mesh)
                 {
-                    m_LightningHandeler->Rock(camera, mesh.Mesh->GetMaterial());
+                    m_LightningHandeler->CalculateAndRenderLights(camera.GetPosition(), mesh.Mesh->GetMaterial());
                     Renderer::SubmitMesh(mesh.Mesh, transform.GetTransform());
                 }
             }
@@ -347,6 +324,9 @@ namespace Spike
         CopyComponent<RigidBody2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<BoxCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<PointLightComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<DirectionalLightComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<AmbientLightComponent>(target->m_Registry, m_Registry, enttMap);
 
 
         const auto& entityInstanceMap = ScriptEngine::GetEntityInstanceMap();
@@ -380,6 +360,9 @@ namespace Spike
         CopyComponentIfExists<RigidBody2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<CircleCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<PointLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<DirectionalLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<AmbientLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
     }
 
     Entity Scene::GetPrimaryCameraEntity()
@@ -406,18 +389,48 @@ namespace Spike
         return {};
     }
 
-    template<typename T>
-    void Scene::OnComponentAdded(Entity entity, T& component)
-    {
-        static_assert(false);
-    }
-
     Ref<Scene> Scene::GetScene(UUID uuid)
     {
         if (s_ActiveScenes.find(uuid) != s_ActiveScenes.end())
             return s_ActiveScenes.at(uuid);
 
         return {};
+    }
+
+    void Scene::PushLights()
+    {
+        m_LightningHandeler->ClearLights();
+        {
+            auto view = m_Registry.view<TransformComponent, AmbientLightComponent>();
+            for (auto entity : view)
+            {
+                auto [transform, light] = view.get<TransformComponent, AmbientLightComponent>(entity);
+                m_LightningHandeler->m_AmbientLights.push_back(AmbientLight{ light.Color, light.Intensity });
+            }
+        }
+        {
+            auto view = m_Registry.view<TransformComponent, DirectionalLightComponent>();
+            for (auto entity : view)
+            {
+                auto [transform, light] = view.get<TransformComponent, DirectionalLightComponent>(entity);
+                m_LightningHandeler->m_DirectionalLights.push_back(DirectionalLight{ transform.Rotation, 0, light.Color, light.Intensity });
+                break;
+            }
+        }
+        {
+            auto view = m_Registry.view<TransformComponent, PointLightComponent>();
+            for (auto entity : view)
+            {
+                auto [transform, light] = view.get<TransformComponent, PointLightComponent>(entity);
+                m_LightningHandeler->m_PointLights.push_back(PointLight{ transform.Translation, 0, light.Color, 0.0f, light.Intensity, light.Constant, light.Linear, light.Quadratic });
+            }
+        }
+    }
+
+    template<typename T>
+    void Scene::OnComponentAdded(Entity entity, T& component)
+    {
+        static_assert(false);
     }
 
     template<>

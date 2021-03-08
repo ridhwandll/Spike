@@ -24,6 +24,7 @@ Github repository : https://github.com/FahimFuad/Spike
 #pragma once
 #include "Spike/Renderer/Material.h"
 #include "Spike/Renderer/EditorCamera.h"
+#include "Spike/Renderer/ConstantBuffer.h"
 #include "Spike/Scene/Components.h"
 #include <glm/glm.hpp>
 
@@ -38,6 +39,8 @@ namespace Spike
     struct DirectionalLight
     {
         glm::vec3 Direction;
+        int __Padding0;
+
         glm::vec3 Color;
         float Intensity;
     };
@@ -45,12 +48,30 @@ namespace Spike
     struct PointLight
     {
         glm::vec3 Position;
+        int __Padding0;
+
+        glm::vec3 Color;
+        float __Padding1;
+
+        float Intensity;
         float Constant;
         float Linear;
         float Quadratic;
+    };
 
-        glm::vec3 Color;
-        float Intensity;
+    struct LightCBuffer
+    {
+        glm::vec3 CameraPosition;
+        float __Padding0;
+
+        int AmbientLightCount;
+        int DirectionalLightCount;
+        int PointLightCount;
+        int __Padding1;
+
+        PointLight PointLights[100];
+        AmbientLight AmbientLights[100];
+        DirectionalLight DirectionalLights[10];
     };
 
     class LightningHandeler
@@ -62,8 +83,13 @@ namespace Spike
         Vector<AmbientLight> m_AmbientLights;
         Vector<PointLight> m_PointLights;
         Vector<DirectionalLight> m_DirectionalLights;
-        float m_Gamma;
-        bool m_useDirectionalLight = false ;
-        void Rock(const EditorCamera& editorCam, Ref<Material>& material);
+
+    public:
+        void CalculateAndRenderLights(const glm::vec3& cameraPos, Ref<Material>& material);
+        void ClearLights();
+
+    private:
+        Ref<ConstantBuffer> m_LightConstantBuffer;
+        LightCBuffer m_LightCBufferData;
     };
 }

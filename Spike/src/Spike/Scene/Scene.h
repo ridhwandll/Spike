@@ -53,23 +53,22 @@ namespace Spike
         void OnViewportResize(uint32_t width, uint32_t height);
         void OnEvent(Event& e);
 
-        // Runtime Stuff
         void OnRuntimeStart();
         void OnRuntimeStop();
         void CopySceneTo(Ref<Scene>& target);
 
-        EntityMap GetEntityMap() { return m_EntityIDMap; }
-
         UUID GetUUID() const { return m_SceneID; }
         static Ref<Scene> GetScene(UUID uuid);
 
-        /* [Spike] Entity stuff [Spike] */
         Entity GetPrimaryCameraEntity();
         Entity FindEntityByTag(const String& tag);
+        EntityMap GetEntityMap() { return m_EntityIDMap; }
 
         template<typename T>
         auto GetAllEntitiesWith() { return m_Registry.view<T>(); }
     private:
+        void PushLights();
+
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
     public:

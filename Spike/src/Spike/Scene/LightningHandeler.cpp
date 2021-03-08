@@ -22,12 +22,14 @@ Github repository : https://github.com/FahimFuad/Spike
 2.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #include "LightningHandeler.h"
+#include "Spike/Core/Vault.h"
 
 namespace Spike
 {
     LightningHandeler::LightningHandeler()
     {
-
+        auto& shader = Vault::Get<Shader>("MeshShader.glsl");
+        m_LightConstantBuffer = ConstantBuffer::Create(shader, "LightData", nullptr, sizeof(LightCBuffer), 3, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
     LightningHandeler::~LightningHandeler()
@@ -35,38 +37,49 @@ namespace Spike
 
     }
 
-    void LightningHandeler::Rock(const EditorCamera& editorCam, Ref<Material>& material)
+    void LightningHandeler::CalculateAndRenderLights(const glm::vec3& cameraPos, Ref<Material>& material)
     {
         Ref<Shader>& shader = material->GetShader();
         shader->Bind();
-        shader->SetFloat3("u_CameraPosition", editorCam.GetPosition());
-        shader->SetInt("u_AmbientLightCount", m_AmbientLights.size());
-        shader->SetInt("u_PointLightCount", m_PointLights.size());
+
+        m_LightCBufferData.CameraPosition = cameraPos;
+        m_LightCBufferData.AmbientLightCount = m_AmbientLights.size();
+        m_LightCBufferData.DirectionalLightCount = m_DirectionalLights.size();
+        m_LightCBufferData.PointLightCount = m_PointLights.size();
+
+        for (int i = 0; i < m_PointLights.size(); i++)
+        {
+            auto& light = m_PointLights[i];
+            m_LightCBufferData.PointLights[i].Position  = light.Position;
+            m_LightCBufferData.PointLights[i].Color     = light.Color;
+            m_LightCBufferData.PointLights[i].Intensity = light.Intensity;
+            m_LightCBufferData.PointLights[i].Constant  = light.Constant;
+            m_LightCBufferData.PointLights[i].Quadratic = light.Quadratic;
+            m_LightCBufferData.PointLights[i].Linear    = light.Linear;
+        }
 
         for (int i = 0; i < m_AmbientLights.size(); i++)
         {
             auto& light = m_AmbientLights[i];
-            shader->SetFloat ("u_AmbientLights[" + std::to_string(i) + "].Intensity", light.Intensity);
-            shader->SetFloat3("u_AmbientLights[" + std::to_string(i) + "].Color",     light.Color);
+            m_LightCBufferData.AmbientLights[i].Intensity = light.Intensity;
+            m_LightCBufferData.AmbientLights[i].Color = light.Color;
         }
 
         for (int i = 0; i < m_DirectionalLights.size(); i++)
         {
             auto& light = m_DirectionalLights[i];
-            shader->SetFloat("u_DirectionalLights[" + std::to_string(i) + "].Intensity", light.Intensity);
-            shader->SetFloat3("u_DirectionalLights[" + std::to_string(i) + "].Color", light.Color);
-            shader->SetFloat3("u_DirectionalLights[" + std::to_string(i) + "].Direction", light.Direction);
+            m_LightCBufferData.DirectionalLights[i].Intensity = light.Intensity;
+            m_LightCBufferData.DirectionalLights[i].Color     = light.Color;
+            m_LightCBufferData.DirectionalLights[i].Direction = light.Direction;
         }
 
-        for (int i = 0; i < m_PointLights.size(); i++)
-        {
-            auto& light = m_PointLights[i];
-            shader->SetFloat ("u_PointLights[" + std::to_string(i) + "].Intensity", light.Intensity);
-            shader->SetFloat3("u_PointLights[" + std::to_string(i) + "].Position",  light.Position);
-            shader->SetFloat3("u_PointLights[" + std::to_string(i) + "].Color",     light.Color);
-            shader->SetFloat ("u_PointLights[" + std::to_string(i) + "].Constant",  light.Constant);
-            shader->SetFloat ("u_PointLights[" + std::to_string(i) + "].Quadratic", light.Quadratic);
-            shader->SetFloat ("u_PointLights[" + std::to_string(i) + "].Linear",    light.Linear);
-        }
+        m_LightConstantBuffer->SetData(&m_LightCBufferData);
+    }
+
+    void LightningHandeler::ClearLights()
+    {
+        m_AmbientLights.clear();
+        m_PointLights.clear();
+        m_DirectionalLights.clear();
     }
 }
