@@ -58,16 +58,16 @@ namespace Spike
         bool GetDiffuseTexToggle() { return m_AlbedoTexToggle; }
 
         static Ref<Material> Material::Create(const Ref<Shader>& shader);
-    private:
-        Ref<Shader> m_Shader;
+    public:
         float m_Shininess = 32.0f;
         float m_Smoothness = 0.0f;
-        Vector<Ref<Texture2D>> m_Textures;
         glm::vec3 m_Color;
         bool m_AlbedoTexToggle;
 
+    private:
+        Ref<Shader> m_Shader;
+        Vector<Ref<Texture2D>> m_Textures;
         MaterialCbuffer m_CBufferData;
         Ref<ConstantBuffer> m_MainCBuffer;
-        friend class MaterialPanel;
     };
 }

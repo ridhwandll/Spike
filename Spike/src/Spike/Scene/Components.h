@@ -233,12 +233,12 @@ namespace Spike
 
     struct PointLightComponent
     {
+        glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
+        float Intensity = 1.0f;
+
         float Constant = 1.0f;
         float Linear = 0.09f;
         float Quadratic = 0.032f;
-
-        glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
-        float Intensity = 1.0f;
 
         PointLightComponent() = default;
         PointLightComponent(float constant, float linear, float quadratic, glm::vec3 color, float intensity) :

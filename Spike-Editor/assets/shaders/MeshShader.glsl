@@ -101,19 +101,21 @@ layout (std140, binding = 2) uniform Material
 {
     uniform vec3  u_MatColor;
     uniform int   u_MatDiffuseTexToggle;
+
     uniform float u_MatShininess;
     uniform float u_MatSmoothness;
+    uniform vec2 _Padding;
 };
 
 layout (std140, binding = 3) uniform LightCount
 {
     uniform vec3 u_CameraPosition;
-    int __PADDING__;
+    int __Padding;
 
     uniform int  u_AmbientLightCount;
     uniform int  u_DirectionalLightCount;
     uniform int  u_PointLightCount;
-    int ___PADDING___;
+    int ___Padding;
 
     uniform PointLight u_PointLights[100];
     uniform AmbientLight u_AmbientLights[100];

@@ -39,7 +39,7 @@ namespace Spike
             if (mesh)
             {
                 auto material = mesh->GetMaterial();
-                ImGui::TextColored(ImVec4(0.1f, 0.9f, 0.1f, 1.0f), "Shader: %s", material->m_Shader->GetName().c_str());
+                ImGui::TextColored(ImVec4(0.1f, 0.9f, 0.1f, 1.0f), "Shader: %s", material->GetShader()->GetName().c_str());
                 ImGui::Separator();
                 GUI::DrawColorControl3("Color", material->m_Color, 150.0f);
                 GUI::DrawFloatControl("Shininess", &material->m_Shininess, 150.0f);

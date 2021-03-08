@@ -247,7 +247,12 @@ namespace Spike
                 out << YAML::BeginMap; // MeshComponent
 
                 auto mesh = entity.GetComponent<MeshComponent>().Mesh;
+                auto mat = mesh->GetMaterial();
                 out << YAML::Key << "AssetPath" << YAML::Value << mesh->GetFilePath();
+                out << YAML::Key << "Material-Color" << YAML::Value << mat->m_Color;
+                out << YAML::Key << "Material-Shininess" << YAML::Value << mat->m_Shininess;
+                out << YAML::Key << "Material-Smoothness" << YAML::Value << mat->m_Smoothness;
+                out << YAML::Key << "Material-AlbedoTexToggle" << YAML::Value << mat->m_AlbedoTexToggle;
 
                 out << YAML::EndMap; // MeshComponent
             }
@@ -306,6 +311,48 @@ namespace Spike
                 out << YAML::Key << "Friction" << YAML::Value << circleCollider2D.Friction;
 
                 out << YAML::EndMap; // CircleCollider2D
+            }
+
+            if (entity.HasComponent<PointLightComponent>())
+            {
+                out << YAML::Key << "PointLightComponent";
+                out << YAML::BeginMap; // PointLightComponent
+
+                auto& pointLight = entity.GetComponent<PointLightComponent>();
+
+                out << YAML::Key << "Color" << YAML::Value << pointLight.Color;
+                out << YAML::Key << "Intensity" << YAML::Value << pointLight.Intensity;
+                out << YAML::Key << "Constant" << YAML::Value << pointLight.Constant;
+                out << YAML::Key << "Linear" << YAML::Value << pointLight.Linear;
+                out << YAML::Key << "Quadratic" << YAML::Value << pointLight.Quadratic;
+
+                out << YAML::EndMap; // PointLightComponent
+            }
+
+            if (entity.HasComponent<AmbientLightComponent>())
+            {
+                out << YAML::Key << "AmbientLightComponent";
+                out << YAML::BeginMap; // AmbientLightComponent
+
+                auto& ambientLight = entity.GetComponent<AmbientLightComponent>();
+
+                out << YAML::Key << "Color" << YAML::Value << ambientLight.Color;
+                out << YAML::Key << "Intensity" << YAML::Value << ambientLight.Intensity;
+
+                out << YAML::EndMap; // AmbientLightComponent
+            }
+
+            if (entity.HasComponent<DirectionalLightComponent>())
+            {
+                out << YAML::Key << "DirectionalLightComponent";
+                out << YAML::BeginMap; // DirectionalLightComponent
+
+                auto& dirLight = entity.GetComponent<DirectionalLightComponent>();
+
+                out << YAML::Key << "Color" << YAML::Value << dirLight.Color;
+                out << YAML::Key << "Intensity" << YAML::Value << dirLight.Intensity;
+
+                out << YAML::EndMap; // DirectionalLightComponent
             }
 
             out << YAML::EndMap; // Entity
@@ -429,7 +476,12 @@ namespace Spike
                         else
                             mesh = Ref<Mesh>::Create(meshPath);
 
-                        deserializedEntity.AddComponent<MeshComponent>(mesh);
+                        auto& component = deserializedEntity.AddComponent<MeshComponent>(mesh);
+                        auto mat = component.Mesh->GetMaterial();
+                        mat->m_Color = meshComponent["Material-Color"].as<glm::vec3>();
+                        mat->m_Shininess = meshComponent["Material-Shininess"].as<float>();
+                        mat->m_Smoothness = meshComponent["Material-Smoothness"].as<float>();
+                        mat->m_AlbedoTexToggle = meshComponent["Material-AlbedoTexToggle"].as<bool>();
                     }
 
                     SPK_CORE_LOG_INFO("  Mesh Asset Path: %s", meshPath.c_str());
@@ -483,6 +535,42 @@ namespace Spike
                         component.Radius = circleCollider2DComponent["Radius"].as<float>();
                         component.Density = circleCollider2DComponent["Density"] ? circleCollider2DComponent["Density"].as<float>() : 1.0f;
                         component.Friction = circleCollider2DComponent["Friction"] ? circleCollider2DComponent["Friction"].as<float>() : 1.0f;
+                    }
+                }
+
+                auto pointLightComponent = entity["PointLightComponent"];
+                if (pointLightComponent)
+                {
+                    if (!deserializedEntity.HasComponent<PointLightComponent>())
+                    {
+                        auto& component = deserializedEntity.AddComponent<PointLightComponent>();
+                        component.Color = pointLightComponent["Color"].as<glm::vec3>();
+                        component.Intensity = pointLightComponent["Intensity"].as<float>();
+                        component.Constant = pointLightComponent["Constant"].as<float>();
+                        component.Linear = pointLightComponent["Linear"].as<float>();
+                        component.Quadratic = pointLightComponent["Quadratic"].as<float>();
+                    }
+                }
+
+                auto ambientLightComponent = entity["AmbientLightComponent"];
+                if (ambientLightComponent)
+                {
+                    if (!deserializedEntity.HasComponent<AmbientLightComponent>())
+                    {
+                        auto& component = deserializedEntity.AddComponent<AmbientLightComponent>();
+                        component.Color = ambientLightComponent["Color"].as<glm::vec3>();
+                        component.Intensity = ambientLightComponent["Intensity"].as<float>();
+                    }
+                }
+
+                auto dirLightComponent = entity["DirectionalLightComponent"];
+                if (dirLightComponent)
+                {
+                    if (!deserializedEntity.HasComponent<DirectionalLightComponent>())
+                    {
+                        auto& component = deserializedEntity.AddComponent<DirectionalLightComponent>();
+                        component.Color = dirLightComponent["Color"].as<glm::vec3>();
+                        component.Intensity = dirLightComponent["Intensity"].as<float>();
                     }
                 }
             }
