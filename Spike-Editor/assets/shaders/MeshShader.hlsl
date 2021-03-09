@@ -68,8 +68,7 @@ cbuffer Material : register(b2)
     int u_MatDiffuseTexToggle;
 
     float u_MatShininess;
-    float u_MatSmoothness;
-    float2 __Padding0;
+    float3 __Padding0;
 }
 
 cbuffer Lights : register(b3)
@@ -94,19 +93,22 @@ float3 CalculatePointLight(PointLight light, float3 normal, float3 viewDir, floa
     float3 lightDir = normalize(light.Position - worldPos);
     float diff = max(dot(normal, lightDir), 0.0);
 
+    float3 halfwayDir = normalize(lightDir + viewDir);
     float3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_MatShininess) * light.Intensity;
+
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), u_MatShininess) * light.Intensity;
 
     float distance = length(light.Position - worldPos);
     float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * (distance * distance));
 
     float3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
-    float3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
+    float3 specular = light.Color * spec * u_MatColor;
 
     diffuse *= attenuation;
     specular *= attenuation;
 
     return diffuse + specular;
+
 }
 
 float4 main(vsOut input) : SV_TARGET

@@ -33,8 +33,7 @@ namespace Spike
         glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
         int AlbedoTexToggle = 0;
         float Shininess = 32.0f;
-        float Smoothness;
-        glm::vec2 __Padding;
+        glm::vec3 __Padding;
     };
 
     class Material : public RefCounted
@@ -60,7 +59,6 @@ namespace Spike
         static Ref<Material> Material::Create(const Ref<Shader>& shader);
     public:
         float m_Shininess = 32.0f;
-        float m_Smoothness = 0.0f;
         glm::vec3 m_Color;
         bool m_AlbedoTexToggle;
 

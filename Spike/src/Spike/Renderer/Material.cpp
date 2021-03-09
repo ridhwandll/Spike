@@ -43,7 +43,6 @@ namespace Spike
         m_CBufferData.AlbedoTexToggle = m_AlbedoTexToggle;
         m_CBufferData.Color = m_Color;
         m_CBufferData.Shininess = m_Shininess;
-        m_CBufferData.Smoothness = m_Smoothness;
 
         if (m_CBufferData.AlbedoTexToggle == 1)
         {

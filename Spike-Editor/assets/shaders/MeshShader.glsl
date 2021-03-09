@@ -91,8 +91,7 @@ layout (std140, binding = 2) uniform Material
     uniform int   u_MatDiffuseTexToggle;
 
     uniform float u_MatShininess;
-    uniform float u_MatSmoothness;
-    uniform vec2 __Padding0;
+    uniform vec3 __Padding0;
 };
 
 layout (std140, binding = 3) uniform Lights
@@ -116,14 +115,16 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 viewDir)
     vec3 lightDir = normalize(light.Position - vsIn.v_WorldPos);
     float diff = max(dot(normal, lightDir), 0.0);
 
+    vec3 halfwayDir = normalize(lightDir + viewDir);
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_MatShininess) * light.Intensity;
+
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), u_MatShininess) * light.Intensity;
 
     float distance = length(light.Position - vsIn.v_WorldPos);
     float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * (distance * distance));
 
     vec3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
-    vec3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
+    vec3 specular = light.Color * spec * u_MatColor;
 
     diffuse *= attenuation;
     specular *= attenuation;

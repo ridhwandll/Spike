@@ -249,7 +249,6 @@ namespace Spike
                 out << YAML::Key << "AssetPath" << YAML::Value << mesh->GetFilePath();
                 out << YAML::Key << "Material-Color" << YAML::Value << mat->m_Color;
                 out << YAML::Key << "Material-Shininess" << YAML::Value << mat->m_Shininess;
-                out << YAML::Key << "Material-Smoothness" << YAML::Value << mat->m_Smoothness;
                 out << YAML::Key << "Material-AlbedoTexToggle" << YAML::Value << mat->m_AlbedoTexToggle;
 
                 out << YAML::EndMap; // MeshComponent
@@ -461,7 +460,6 @@ namespace Spike
                         auto mat = component.Mesh->GetMaterial();
                         mat->m_Color = meshComponent["Material-Color"].as<glm::vec3>();
                         mat->m_Shininess = meshComponent["Material-Shininess"].as<float>();
-                        mat->m_Smoothness = meshComponent["Material-Smoothness"].as<float>();
                         mat->m_AlbedoTexToggle = meshComponent["Material-AlbedoTexToggle"].as<bool>();
                     }
 

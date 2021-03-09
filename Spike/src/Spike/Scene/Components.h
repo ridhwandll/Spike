@@ -212,12 +212,12 @@ namespace Spike
     struct SkyLightComponent
     {
         glm::vec3 Color = { 1.0f, 1.0f, 1.0f };
-        float Intensity = 1.0f;
+        float Intensity = 0.2f;
 
         SkyLightComponent() = default;
         SkyLightComponent(glm::vec3 color, float intensity) :
             Color(color), Intensity(intensity) {}
-        void Reset() { Color = { 1.0f, 1.0f, 1.0f }; Intensity = 1.0f; }
+        void Reset() { Color = { 1.0f, 1.0f, 1.0f }; Intensity = 0.2f; }
     };
 
     struct PointLightComponent
