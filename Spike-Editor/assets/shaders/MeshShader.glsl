@@ -107,7 +107,7 @@ layout (std140, binding = 2) uniform Material
     uniform vec2 _Padding;
 };
 
-layout (std140, binding = 3) uniform LightCount
+layout (std140, binding = 3) uniform Lights
 {
     uniform vec3 u_CameraPosition;
     int __Padding;
@@ -180,9 +180,9 @@ void main()
 
     vec4 tex;
     if (u_MatDiffuseTexToggle == 1)
-        tex = texture(u_DiffuseTexture, vsIn.v_TexCoord);
+        tex = texture(u_DiffuseTexture, vsIn.v_TexCoord) * vec4(u_MatColor, 1.0f);
     else
         tex = vec4(u_MatColor, 1.0f);
 
-    FragColor = tex * vec4(u_MatColor, 1.0f) * vec4(lightingResult, 1.0f);
+    FragColor = tex * vec4(lightingResult, 1.0f);
 }

@@ -13,26 +13,30 @@ cbuffer Mesh : register(b1)
 
 struct vsIn
 {
-    float3 v_Position : M_POSITION;
-    float3 v_Normal : M_NORMAL;
-    float2 v_TexCoord : M_TEXCOORD;
+    float3 a_Position : M_POSITION;
+    float3 a_Normal   : M_NORMAL;
+    float2 a_TexCoord : M_TEXCOORD;
 };
 
 struct vsOut
 {
     float4 v_Position : SV_POSITION;
-    float3 v_Normal : M_NORMAL;
+    float3 v_Normal   : M_NORMAL;
     float2 v_TexCoord : M_TEXCOORD;
+    float3 v_WorldPos : M_POSITION;
 };
 
 vsOut main(vsIn input)
 {
     vsOut output;
-    output.v_Position = mul(float4(input.v_Position, 1.0f), u_Transform);
-    output.v_Position = mul(output.v_Position, u_ViewProjection);
 
-    output.v_Normal = input.v_Normal;
-    output.v_TexCoord = input.v_TexCoord;
+    float4 temp = float4(input.a_Position, 1);
+    temp = mul(temp, u_Transform);
+    output.v_Position = mul(temp, u_ViewProjection);
+    output.v_WorldPos = temp.xyz;
+
+    output.v_Normal = input.a_Normal;
+    output.v_TexCoord = input.a_TexCoord;
     return output;
 }
 
@@ -40,27 +44,131 @@ vsOut main(vsIn input)
 struct vsOut
 {
     float4 v_Position : SV_POSITION;
-    float3 v_Normal : M_NORMAL;
+    float3 v_Normal   : M_NORMAL;
     float2 v_TexCoord : M_TEXCOORD;
+    float3 v_WorldPos : M_POSITION;
+};
+
+struct AmbientLight
+{
+    float3 Color;
+    float Intensity;
+};
+
+struct DirectionalLight
+{
+    float3 Direction;
+    float __Padding0;
+
+    float3 Color;
+    float Intensity;
+};
+
+struct PointLight
+{
+    float3 Position;
+    float __Padding0;
+
+    float3 Color;
+    float __Padding1;
+
+    float Intensity;
+    float Constant;
+    float Linear;
+    float Quadratic;
 };
 
 cbuffer Material : register(b2)
 {
-    float3 u_Color;
-    int u_DiffuseTexToggle;
+    float3 u_MatColor;
+    int u_MatDiffuseTexToggle;
+
+    float u_MatShininess;
+    float u_MatSmoothness;
+    float2 _Padding;
 }
+
+cbuffer LightCount : register(b3)
+{
+    float3 u_CameraPosition;
+    int __Padding;
+
+    int u_AmbientLightCount;
+    int u_DirectionalLightCount;
+    int u_PointLightCount;
+    int ___Padding;
+
+    PointLight u_PointLights[100];
+    AmbientLight u_AmbientLights[100];
+    DirectionalLight u_DirectionalLights[10];
+};
 
 Texture2D tex : register(t0);
 SamplerState sampleType;
 
+float3 CalculateDirectionalLight(DirectionalLight light, float3 normal, float3 viewDir)
+{
+    float3 lightDir = normalize(-light.Direction);
+
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    float3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), u_MatShininess);
+
+    float3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
+    float3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
+    return diffuse + specular;
+
+    return diffuse + specular;
+}
+
+float3 CalculatePointLight(PointLight light, float3 normal, float3 viewDir, float3 worldPos)
+{
+    float3 lightDir = normalize(light.Position - worldPos);
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    float3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_MatShininess) * light.Intensity;
+
+    float distance = length(light.Position - worldPos);
+    float attenuation = 1.0 / (light.Constant + light.Linear * distance + light.Quadratic * (distance * distance));
+
+    float3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
+    float3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
+
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return diffuse + specular;
+}
+
 float4 main(vsOut input) : SV_TARGET
 {
     float4 PixelColor;
+    float3 norm = normalize(input.v_Normal);
+    float3 viewDir = normalize(u_CameraPosition - input.v_WorldPos);
+    float3 lightingResult = float3(1.0f, 1.0f, 1.0f);
+
+    if (u_AmbientLightCount > 0 || u_DirectionalLightCount > 0 || u_PointLightCount > 0)
+        lightingResult = float3(0.0f, 0.0f, 0.0f);
     
-    if (u_DiffuseTexToggle == 1)
-        PixelColor = tex.Sample(sampleType, input.v_TexCoord) * float4(u_Color, 1.0f);
+    for (int i = 0; i < u_AmbientLightCount; i++)
+        lightingResult += u_AmbientLights[i].Color * float3(u_AmbientLights[i].Intensity, u_AmbientLights[i].Intensity, u_AmbientLights[i].Intensity);
+    
+    for (int j = 0; j < u_DirectionalLightCount; j++)
+        lightingResult += CalculateDirectionalLight(u_DirectionalLights[j], norm, viewDir);
+    
+    for (int k = 0; k < u_PointLightCount; k++)
+        lightingResult += CalculatePointLight(u_PointLights[k], norm, viewDir, input.v_WorldPos);
+    
+    if (u_MatDiffuseTexToggle == 1)
+    {
+        PixelColor = tex.Sample(sampleType, input.v_TexCoord) * float4(u_MatColor, 1.0f) * float4(lightingResult, 1.0f);
+    }
     else
-        PixelColor = float4(u_Color, 1.0f);
+    {
+        PixelColor = float4(u_MatColor, 1.0f) * float4(lightingResult, 1.0f);
+    }
 
     return PixelColor;
 }

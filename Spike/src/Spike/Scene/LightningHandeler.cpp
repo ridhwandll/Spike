@@ -23,13 +23,20 @@ Github repository : https://github.com/FahimFuad/Spike
 */
 #include "LightningHandeler.h"
 #include "Spike/Core/Vault.h"
+#include "Spike/Renderer/RendererAPI.h"
 
 namespace Spike
 {
     LightningHandeler::LightningHandeler()
     {
-        auto& shader = Vault::Get<Shader>("MeshShader.glsl");
-        m_LightConstantBuffer = ConstantBuffer::Create(shader, "LightData", nullptr, sizeof(LightCBuffer), 3, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
+        Ref<Shader> shader;
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11: shader = Vault::Get<Shader>("MeshShader.hlsl");
+            case RendererAPI::API::OpenGL: shader = Vault::Get<Shader>("MeshShader.glsl");
+        }
+
+        m_LightConstantBuffer = ConstantBuffer::Create(shader, "Lights", nullptr, sizeof(LightCBuffer), 3, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
     LightningHandeler::~LightningHandeler()
