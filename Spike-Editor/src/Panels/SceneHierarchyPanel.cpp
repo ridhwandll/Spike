@@ -108,21 +108,12 @@ namespace Spike
         // Hierarchy
         ImGui::Begin("Hierarchy");
 
-        m_Context->m_Registry.each([&](auto entityID)
-        {
-            Entity entity{ entityID, m_Context.Raw() };
-            if (entity.HasComponent<IDComponent>())
-                DrawEntityNode(entity);
-        });
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
+        if (ImGui::Button("Add Entity", { ImGui::GetWindowWidth(), 0.0f }))
+            ImGui::OpenPopup("Add Entity");
+        ImGui::PopStyleVar();
 
-        m_IsHierarchyFocused = ImGui::IsWindowFocused();
-        m_IsHierarchyHovered = ImGui::IsWindowHovered();
-
-        if (ImGui::IsMouseDown(0) && m_IsHierarchyHovered)
-            m_SelectionContext = {};
-
-        //Right Click on a blank space
-        if (ImGui::BeginPopupContextWindow(0, 1, false))
+        if (ImGui::BeginPopup("Add Entity") || ImGui::BeginPopupContextWindow(0, 1, false))
         {
             if (ImGui::MenuItem("Empty Entity"))
             {
@@ -156,15 +147,27 @@ namespace Spike
 
             ImGui::EndPopup();
         }
-        ImGui::End();
 
+        m_Context->m_Registry.each([&](auto entityID)
+        {
+            Entity entity{ entityID, m_Context.Raw() };
+            if (entity.HasComponent<IDComponent>())
+                DrawEntityNode(entity);
+        });
+
+        m_IsHierarchyFocused = ImGui::IsWindowFocused();
+        m_IsHierarchyHovered = ImGui::IsWindowHovered();
+
+        if (ImGui::IsMouseDown(0) && m_IsHierarchyHovered)
+            m_SelectionContext = {};
+
+        ImGui::End();
 
         // Inspector
         ImGui::Begin(ICON_FK_INFO_CIRCLE" Inspector");
         if (m_SelectionContext)
-        {
             DrawComponents(m_SelectionContext);
-        }
+
         ImGui::End();
     }
 
@@ -179,9 +182,7 @@ namespace Spike
         bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
 
         if (ImGui::IsItemClicked())
-        {
             m_SelectionContext = entity;
-        }
 
         bool entityDeleted = false;
         if (ImGui::BeginPopupContextItem())
@@ -193,9 +194,7 @@ namespace Spike
         }
 
         if (opened)
-        {
             ImGui::TreePop();
-        }
 
         if (entityDeleted)
         {
@@ -232,112 +231,9 @@ namespace Spike
         auto ID = entity.GetComponent<IDComponent>().ID;
 
         if (entity.HasComponent<TagComponent>())
-        {
-            auto& tag = entity.GetComponent<TagComponent>().Tag;
-
-            char buffer[256];
-            memset(buffer, 0, sizeof(buffer));
-            strcpy_s(buffer, sizeof(buffer), tag.c_str());
-
-            if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-            {
-                tag = String(buffer);
-            }
-        }
-
-        ImGui::SameLine();
-        ImGui::PushItemWidth(-1);
-
-        if (ImGui::Button("Add Component"))
-            ImGui::OpenPopup("Add Component");
+            GUI::DrawTextControlWithoutLabel(&entity.GetComponent<TagComponent>().Tag);
 
         ImGui::TextDisabled("UUID: %llx", entity.GetComponent<IDComponent>().ID);
-        if (ImGui::BeginPopup("Add Component"))
-        {
-            if (ImGui::MenuItem("Transform"))
-            {
-                if (!entity.HasComponent<TransformComponent>())
-                    entity.AddComponent<TransformComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Transform component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Camera"))
-            {
-                if (!entity.HasComponent<CameraComponent>())
-                    entity.AddComponent<CameraComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Camera component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Sprite Renderer"))
-            {
-                if (!entity.HasComponent<SpriteRendererComponent>())
-                    entity.AddComponent<SpriteRendererComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Sprite Renderer component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Mesh"))
-            {
-                if (!entity.HasComponent<MeshComponent>())
-                    entity.AddComponent<MeshComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Mesh component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("Script"))
-            {
-                if (!entity.HasComponent<ScriptComponent>())
-                    entity.AddComponent<ScriptComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has Script component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("RigidBody2D"))
-            {
-                if (!entity.HasComponent<RigidBody2DComponent>())
-                    entity.AddComponent<RigidBody2DComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has RigidBody2D component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("BoxCollider2D"))
-            {
-                if (!entity.HasComponent<BoxCollider2DComponent>())
-                    entity.AddComponent<BoxCollider2DComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has BoxCollider2D component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("CircleCollider2D"))
-            {
-                if (!entity.HasComponent<CircleCollider2DComponent>())
-                    entity.AddComponent<CircleCollider2DComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has CircleCollider2D component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("PointLight"))
-            {
-                if (!entity.HasComponent<PointLightComponent>())
-                    entity.AddComponent<PointLightComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has PointLight component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("SkyLight"))
-            {
-                if (!entity.HasComponent<SkyLightComponent>())
-                    entity.AddComponent<SkyLightComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has AmbientLight component!");
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-        ImGui::PopItemWidth();
-
         DrawComponent<TransformComponent>(ICON_FK_ARROWS_ALT" Transform", entity, [](auto& component)
         {
             GUI::DrawVec3Control("Translation", component.Translation);
@@ -673,11 +569,11 @@ namespace Spike
 
         DrawComponent<PointLightComponent>(ICON_FK_LIGHTBULB_O" PointLight", entity, [](auto& component)
         {
+            GUI::DrawColorControl3("Color", component.Color);
             GUI::DrawFloatControl("Intensity", &component.Intensity);
             GUI::DrawFloatControl("Constant", &component.Constant);
             GUI::DrawFloatControl("Linear", &component.Linear);
             GUI::DrawFloatControl("Quadratic", &component.Quadratic);
-            GUI::DrawColorControl3("Color", component.Color);
         });
 
         DrawComponent<SkyLightComponent>(ICON_FK_SUN_O" SkyLight", entity, [](auto& component)
@@ -685,5 +581,100 @@ namespace Spike
             GUI::DrawFloatControl("Intensity", &component.Intensity);
             GUI::DrawColorControl3("Color", component.Color);
         });
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 8);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.5);
+
+        if (ImGui::Button("Add Component"))
+            ImGui::OpenPopup("Add Component");
+
+        if (ImGui::BeginPopup("Add Component"))
+        {
+            if (ImGui::BeginMenu("Rendering"))
+            {
+                if (ImGui::MenuItem("Camera"))
+                {
+                    if (!entity.HasComponent<CameraComponent>())
+                        entity.AddComponent<CameraComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has Camera component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Sprite Renderer"))
+                {
+                    if (!entity.HasComponent<SpriteRendererComponent>())
+                        entity.AddComponent<SpriteRendererComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has Sprite Renderer component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("Mesh"))
+                {
+                    if (!entity.HasComponent<MeshComponent>())
+                        entity.AddComponent<MeshComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has Mesh component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Physics2D"))
+            {
+                if (ImGui::MenuItem("RigidBody2D"))
+                {
+                    if (!entity.HasComponent<RigidBody2DComponent>())
+                        entity.AddComponent<RigidBody2DComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has RigidBody2D component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("BoxCollider2D"))
+                {
+                    if (!entity.HasComponent<BoxCollider2DComponent>())
+                        entity.AddComponent<BoxCollider2DComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has BoxCollider2D component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("CircleCollider2D"))
+                {
+                    if (!entity.HasComponent<CircleCollider2DComponent>())
+                        entity.AddComponent<CircleCollider2DComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has CircleCollider2D component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Lights"))
+            {
+                if (ImGui::MenuItem("PointLight"))
+                {
+                    if (!entity.HasComponent<PointLightComponent>())
+                        entity.AddComponent<PointLightComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has PointLight component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::MenuItem("SkyLight"))
+                {
+                    if (!entity.HasComponent<SkyLightComponent>())
+                        entity.AddComponent<SkyLightComponent>();
+                    else
+                        SPK_CORE_LOG_WARN("This entity already has AmbientLight component!");
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndMenu();
+            }
+            if (ImGui::MenuItem("Script"))
+            {
+                if (!entity.HasComponent<ScriptComponent>())
+                    entity.AddComponent<ScriptComponent>();
+                else
+                    SPK_CORE_LOG_WARN("This entity already has Script component!");
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
     }
 }

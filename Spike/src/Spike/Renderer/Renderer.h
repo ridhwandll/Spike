@@ -42,6 +42,9 @@ namespace Spike
         static void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform);
         static void Submit(Ref<Pipeline> pipeline, uint32_t size);
 
+        static void UpdateStats();
+        static size_t GetTotalDrawCallsCount();
+
         static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     private:
         struct SceneData

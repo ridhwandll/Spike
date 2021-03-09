@@ -69,6 +69,7 @@ namespace Spike
     {
     public:
         Mesh(const String& filename);
+        Mesh(const Vector<Vertex>& vertices, const Vector<Index>& indices, const glm::mat4& transform);
 
         Ref<Pipeline> GetPipeline() { return m_Pipeline; }
         Ref<VertexBuffer> GetVertexBuffer() { return m_VertexBuffer; }

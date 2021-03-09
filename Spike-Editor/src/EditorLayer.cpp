@@ -110,6 +110,7 @@ namespace Spike
         }
 
         // Render
+        Renderer::UpdateStats();
         Renderer2D::UpdateStats();
 
         m_Framebuffer->Bind();

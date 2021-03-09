@@ -39,7 +39,8 @@ namespace Spike::GUI
     void DrawImageControl(const RendererID imageID, const glm::vec2& viewportDimensions);
     bool DrawImageButtonControl(const RendererID imageID, glm::vec2 buttonSize);
     bool DrawScriptTextControl(const char* label, String& value, float columnWidth = 100.0f, bool foundTheScript = false);
-    bool DrawTextControl(const char* label, char* value, float columnWidth = 100.0f);
+    bool DrawTextControl(const char* label, const char* value, float columnWidth = 100.0f);
+    bool DrawTextControlWithoutLabel(String* source);
     void DrawVec3Control(const String& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f);
     bool DrawBoolControl(const char* label, bool* boolean, float columnWidth = 100.0f);
     bool DrawIntControl(const char* label, int* value, float columnWidth = 100.0f);

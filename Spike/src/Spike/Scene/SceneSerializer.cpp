@@ -25,9 +25,10 @@ Github repository : https://github.com/FahimFuad/Spike
 #include "SceneSerializer.h"
 #include "Entity.h"
 #include "Components.h"
-#include "Panels/ConsolePanel.h"
 #include <yaml-cpp/yaml.h>
-namespace YAML {
+
+namespace YAML
+{
 
     template<>
     struct convert<glm::vec2>
@@ -130,7 +131,6 @@ namespace YAML {
 
 namespace Spike
 {
-
     static bool CheckPath(const String& path)
     {
         FILE* f = fopen(path.c_str(), "rb");
@@ -168,9 +168,7 @@ namespace Spike
     }
 
     SceneSerializer::SceneSerializer(const Ref<Scene>& scene)
-        : m_Scene(scene)
-    {
-    }
+        : m_Scene(scene) {}
 
     static void SerializeEntity(YAML::Emitter& out, Entity entity)
     {
@@ -350,30 +348,26 @@ namespace Spike
     {
         YAML::Emitter out;
         out << YAML::BeginMap;
-        out << YAML::Key << "Scene" << YAML::Value << "Untitled";
+        out << YAML::Key << "Scene" << YAML::Value << m_Scene->GetUUID();
         out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
+
         m_Scene->m_Registry.each([&](auto entityID)
         {
             Entity entity = { entityID, m_Scene.Raw() };
             if (!entity) return;
             SerializeEntity(out, entity);
         });
+
         out << YAML::EndSeq;
         out << YAML::EndMap;
 
         std::ofstream fout(filepath);
-
         if (fout.bad())
         {
             SPK_CORE_LOG_ERROR("Error serializing the file! Terminating serialization system...");
             return;
         }
         fout << out.c_str();
-    }
-
-    void SceneSerializer::SerializeRuntime(const String& filepath)
-    {
-        SPK_INTERNAL_ASSERT("Method not implemented yet!");
     }
 
     bool SceneSerializer::Deserialize(const String& filepath)
@@ -556,20 +550,10 @@ namespace Spike
         {
             SPK_CORE_LOG_ERROR("The following files could not be loaded:");
             for (auto& path : missingPaths)
-            {
                 SPK_CORE_LOG_ERROR("  %s", path.c_str());
-            }
-
             return false;
         }
 
         return true;
     }
-
-    bool SceneSerializer::DeserializeRuntime(const String& filepath)
-    {
-        SPK_INTERNAL_ASSERT("Method not implemented yet!");
-        return false;
-    }
-
 }

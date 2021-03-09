@@ -32,6 +32,7 @@ namespace Spike
 {
     Ref<ConstantBuffer> Renderer::s_SceneCbuffer = nullptr;
     Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
+    static size_t s_DrawCalls = 0;
 
     void Renderer::Init()
     {
@@ -90,7 +91,10 @@ namespace Spike
         {
             mesh->m_Material->Bind(submesh.MaterialIndex);
             submesh.CBuffer->SetData(&(transform * submesh.Transform));
-            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
+            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex); s_DrawCalls++;
         }
     }
+
+    void Renderer::UpdateStats() { s_DrawCalls = 0; }
+    size_t Renderer::GetTotalDrawCallsCount() { return s_DrawCalls; }
 }

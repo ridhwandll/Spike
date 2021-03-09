@@ -63,13 +63,16 @@ namespace Spike
         m_VSync = Application::Get().GetWindow().IsVSync();
         if (GUI::DrawBoolControl("VSync Enabled", &m_VSync, 130.0f))
             Application::Get().GetWindow().SetVSync(m_VSync);
-
-        auto& stats = Renderer2D::GetStats();
+        ImGui::Separator();
+        ImGui::Text("Renderer");
+        ImGui::Text("Draw Calls: %d", Renderer::GetTotalDrawCallsCount());
+        ImGui::Separator();
+        auto& stats2D = Renderer2D::GetStats();
         ImGui::Text("Renderer2D");
-        ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-        ImGui::Text("Quad Count: %d", stats.QuadCount);
-        ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-        ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+        ImGui::Text("Draw Calls: %d", stats2D.DrawCalls);
+        ImGui::Text("Quad Count: %d", stats2D.QuadCount);
+        ImGui::Text("Vertices: %d", stats2D.GetTotalVertexCount());
+        ImGui::Text("Indices: %d", stats2D.GetTotalIndexCount());
         ImGui::End();
     }
 

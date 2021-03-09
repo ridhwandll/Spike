@@ -73,7 +73,7 @@ namespace Spike::GUI
         return modified;
     }
 
-    bool DrawTextControl(const char* label, char* value, float columnWidth)
+    bool DrawTextControl(const char* label, const char* value, float columnWidth)
     {
         bool modified = false;
 
@@ -97,6 +97,22 @@ namespace Spike::GUI
 
         ImGui::Columns(1);
         ImGui::PopID();
+        return modified;
+    }
+
+    bool DrawTextControlWithoutLabel(String* source)
+    {
+        bool modified = false;
+        ImGui::PushItemWidth(-1);
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, sizeof(buffer), source->c_str());
+
+        if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+        {
+            *source = String(buffer);
+        }
+        ImGui::PopItemWidth();
         return modified;
     }
 

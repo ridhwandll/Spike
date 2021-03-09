@@ -44,6 +44,42 @@ namespace Spike
 
     static const uint32_t s_MeshImportFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords | aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices;
 
+    Mesh::Mesh(const Vector<Vertex>& vertices, const Vector<Index>& indices, const glm::mat4& transform)
+        : m_Vertices(vertices), m_Indices(indices)
+    {
+        Submesh submesh;
+        submesh.BaseVertex = 0;
+        submesh.BaseIndex = 0;
+        submesh.IndexCount = indices.size() * 3;
+        submesh.Transform = transform;
+        submesh.CBuffer = ConstantBuffer::Create(m_Shader, "Mesh", nullptr, sizeof(glm::mat4), 1, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
+
+        m_Submeshes.push_back(submesh);
+
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11: m_Shader = Vault::Get<Shader>("MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: m_Shader = Vault::Get<Shader>("MeshShader.glsl"); break;
+        }
+        m_Material = Material::Create(m_Shader);
+
+       VertexBufferLayout layout =
+       {
+           { ShaderDataType::Float3, "M_POSITION" },
+           { ShaderDataType::Float3, "M_NORMAL" },
+           { ShaderDataType::Float2, "M_TEXCOORD" },
+       };
+
+       m_VertexBuffer = VertexBuffer::Create(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex), layout);
+       m_IndexBuffer = IndexBuffer::Create(m_Indices.data(), std::size(m_Indices) * 3);
+
+       PipelineSpecification spec;
+       spec.Shader = m_Shader;
+       spec.VertexBuffer = m_VertexBuffer;
+       spec.IndexBuffer = m_IndexBuffer;
+       m_Pipeline = Pipeline::Create(spec);
+    }
+
     Mesh::Mesh(const String& filepath)
         :m_FilePath(filepath)
     {
@@ -63,7 +99,6 @@ namespace Spike
         }
 
         m_Material = Material::Create(m_Shader);
-
         m_Submeshes.reserve(scene->mNumMeshes);
         for (size_t m = 0; m < scene->mNumMeshes; m++)
         {

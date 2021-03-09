@@ -5,9 +5,9 @@
 
          Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
-File Name      : SceneSerializer
+File Name      : MeshFactory
 File Type      : h
-File created on: 2021/01/09
+File created on: 2021/03/09
 File created by: Fahim Fuad
 Other editors  : None
 Github repository : https://github.com/FahimFuad/Spike
@@ -19,21 +19,16 @@ Github repository : https://github.com/FahimFuad/Spike
 1.The origin of this software must not be misrepresented; you must not claim
   that you wrote the original software.
  
-2. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2.THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
 */
 #pragma once
-#include "Scene.h"
+#include "Mesh.h"
 
 namespace Spike
 {
-    class SceneSerializer
+    class MeshFactory
     {
     public:
-        SceneSerializer(const Ref<Scene>& scene);
-
-        void Serialize(const String& filepath);
-        bool Deserialize(const String& filepath);
-    private:
-        Ref<Scene> m_Scene;
+        static Ref<Mesh> CreateCube(const glm::vec3& size);
     };
 }
