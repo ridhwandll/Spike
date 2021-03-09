@@ -32,10 +32,11 @@ namespace Spike
         Ref<Shader> shader;
         switch (RendererAPI::GetAPI())
         {
-            case RendererAPI::API::DX11: shader = Vault::Get<Shader>("MeshShader.hlsl");
-            case RendererAPI::API::OpenGL: shader = Vault::Get<Shader>("MeshShader.glsl");
+            case RendererAPI::API::DX11: shader = Vault::Get<Shader>("MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: shader = Vault::Get<Shader>("MeshShader.glsl"); break;
         }
 
+        //Setup the lights constant buffer
         m_LightConstantBuffer = ConstantBuffer::Create(shader, "Lights", nullptr, sizeof(LightCBuffer), 3, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
@@ -50,8 +51,7 @@ namespace Spike
         shader->Bind();
 
         m_LightCBufferData.CameraPosition = cameraPos;
-        m_LightCBufferData.AmbientLightCount = m_AmbientLights.size();
-        m_LightCBufferData.DirectionalLightCount = m_DirectionalLights.size();
+        m_LightCBufferData.SkyLightCount = m_SkyLights.size();
         m_LightCBufferData.PointLightCount = m_PointLights.size();
 
         for (int i = 0; i < m_PointLights.size(); i++)
@@ -65,19 +65,11 @@ namespace Spike
             m_LightCBufferData.PointLights[i].Linear    = light.Linear;
         }
 
-        for (int i = 0; i < m_AmbientLights.size(); i++)
+        for (int i = 0; i < m_SkyLights.size(); i++)
         {
-            auto& light = m_AmbientLights[i];
+            auto& light = m_SkyLights[i];
             m_LightCBufferData.AmbientLights[i].Intensity = light.Intensity;
             m_LightCBufferData.AmbientLights[i].Color = light.Color;
-        }
-
-        for (int i = 0; i < m_DirectionalLights.size(); i++)
-        {
-            auto& light = m_DirectionalLights[i];
-            m_LightCBufferData.DirectionalLights[i].Intensity = light.Intensity;
-            m_LightCBufferData.DirectionalLights[i].Color     = light.Color;
-            m_LightCBufferData.DirectionalLights[i].Direction = light.Direction;
         }
 
         m_LightConstantBuffer->SetData(&m_LightCBufferData);
@@ -85,8 +77,7 @@ namespace Spike
 
     void LightningHandeler::ClearLights()
     {
-        m_AmbientLights.clear();
+        m_SkyLights.clear();
         m_PointLights.clear();
-        m_DirectionalLights.clear();
     }
 }

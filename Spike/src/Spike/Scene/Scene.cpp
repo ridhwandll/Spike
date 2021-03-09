@@ -325,8 +325,7 @@ namespace Spike
         CopyComponent<BoxCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<CircleCollider2DComponent>(target->m_Registry, m_Registry, enttMap);
         CopyComponent<PointLightComponent>(target->m_Registry, m_Registry, enttMap);
-        CopyComponent<DirectionalLightComponent>(target->m_Registry, m_Registry, enttMap);
-        CopyComponent<AmbientLightComponent>(target->m_Registry, m_Registry, enttMap);
+        CopyComponent<SkyLightComponent>(target->m_Registry, m_Registry, enttMap);
 
 
         const auto& entityInstanceMap = ScriptEngine::GetEntityInstanceMap();
@@ -361,8 +360,7 @@ namespace Spike
         CopyComponentIfExists<BoxCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<CircleCollider2DComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
         CopyComponentIfExists<PointLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
-        CopyComponentIfExists<DirectionalLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
-        CopyComponentIfExists<AmbientLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
+        CopyComponentIfExists<SkyLightComponent>(newEntity.m_EntityHandle, entity.m_EntityHandle, m_Registry);
     }
 
     Entity Scene::GetPrimaryCameraEntity()
@@ -401,20 +399,11 @@ namespace Spike
     {
         m_LightningHandeler->ClearLights();
         {
-            auto view = m_Registry.view<TransformComponent, AmbientLightComponent>();
+            auto view = m_Registry.view<TransformComponent, SkyLightComponent>();
             for (auto entity : view)
             {
-                auto [transform, light] = view.get<TransformComponent, AmbientLightComponent>(entity);
-                m_LightningHandeler->m_AmbientLights.push_back(AmbientLight{ light.Color, light.Intensity });
-            }
-        }
-        {
-            auto view = m_Registry.view<TransformComponent, DirectionalLightComponent>();
-            for (auto entity : view)
-            {
-                auto [transform, light] = view.get<TransformComponent, DirectionalLightComponent>(entity);
-                m_LightningHandeler->m_DirectionalLights.push_back(DirectionalLight{ transform.Rotation, 0, light.Color, light.Intensity });
-                break;
+                auto [transform, light] = view.get<TransformComponent, SkyLightComponent>(entity);
+                m_LightningHandeler->m_SkyLights.push_back(SkyLight{ light.Color, light.Intensity });
             }
         }
         {
@@ -490,12 +479,7 @@ namespace Spike
     }
 
     template<>
-    void Scene::OnComponentAdded<DirectionalLightComponent>(Entity entity, DirectionalLightComponent& component)
-    {
-    }
-
-    template<>
-    void Scene::OnComponentAdded<AmbientLightComponent>(Entity entity, AmbientLightComponent& component)
+    void Scene::OnComponentAdded<SkyLightComponent>(Entity entity, SkyLightComponent& component)
     {
     }
 }

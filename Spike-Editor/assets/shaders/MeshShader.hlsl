@@ -1,15 +1,8 @@
 #type vertex
 #pragma pack_matrix(row_major)
 
-cbuffer Camera : register(b0)
-{
-    matrix u_ViewProjection;
-}
-
-cbuffer Mesh : register(b1)
-{
-    matrix u_Transform;
-}
+cbuffer Camera : register(b0) { matrix u_ViewProjection; }
+cbuffer Mesh   : register(b1) { matrix u_Transform; }
 
 struct vsIn
 {
@@ -49,21 +42,12 @@ struct vsOut
     float3 v_WorldPos : M_POSITION;
 };
 
-struct AmbientLight
+//Lights
+struct SkyLight
 {
     float3 Color;
     float Intensity;
 };
-
-struct DirectionalLight
-{
-    float3 Direction;
-    float __Padding0;
-
-    float3 Color;
-    float Intensity;
-};
-
 struct PointLight
 {
     float3 Position;
@@ -85,42 +69,25 @@ cbuffer Material : register(b2)
 
     float u_MatShininess;
     float u_MatSmoothness;
-    float2 _Padding;
+    float2 __Padding0;
 }
 
-cbuffer LightCount : register(b3)
+cbuffer Lights : register(b3)
 {
     float3 u_CameraPosition;
-    int __Padding;
+    int __Padding1;
 
-    int u_AmbientLightCount;
-    int u_DirectionalLightCount;
+    int u_SkyLightCount;
     int u_PointLightCount;
-    int ___Padding;
+    int __Padding2;
+    int __Padding3;
 
     PointLight u_PointLights[100];
-    AmbientLight u_AmbientLights[100];
-    DirectionalLight u_DirectionalLights[10];
+    SkyLight u_SkyLights[10];
 };
 
 Texture2D tex : register(t0);
 SamplerState sampleType;
-
-float3 CalculateDirectionalLight(DirectionalLight light, float3 normal, float3 viewDir)
-{
-    float3 lightDir = normalize(-light.Direction);
-
-    float diff = max(dot(normal, lightDir), 0.0);
-
-    float3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0f), u_MatShininess);
-
-    float3 diffuse = light.Color * diff * u_MatColor * light.Intensity;
-    float3 specular = light.Color * spec * u_MatColor * u_MatSmoothness;
-    return diffuse + specular;
-
-    return diffuse + specular;
-}
 
 float3 CalculatePointLight(PointLight light, float3 normal, float3 viewDir, float3 worldPos)
 {
@@ -145,30 +112,25 @@ float3 CalculatePointLight(PointLight light, float3 normal, float3 viewDir, floa
 float4 main(vsOut input) : SV_TARGET
 {
     float4 PixelColor;
+    
     float3 norm = normalize(input.v_Normal);
     float3 viewDir = normalize(u_CameraPosition - input.v_WorldPos);
     float3 lightingResult = float3(1.0f, 1.0f, 1.0f);
 
-    if (u_AmbientLightCount > 0 || u_DirectionalLightCount > 0 || u_PointLightCount > 0)
+    // Some light(s) exists in the scene, so zero the lightning result
+    if (u_SkyLightCount > 0 || u_PointLightCount > 0)
         lightingResult = float3(0.0f, 0.0f, 0.0f);
-    
-    for (int i = 0; i < u_AmbientLightCount; i++)
-        lightingResult += u_AmbientLights[i].Color * float3(u_AmbientLights[i].Intensity, u_AmbientLights[i].Intensity, u_AmbientLights[i].Intensity);
-    
-    for (int j = 0; j < u_DirectionalLightCount; j++)
-        lightingResult += CalculateDirectionalLight(u_DirectionalLights[j], norm, viewDir);
-    
-    for (int k = 0; k < u_PointLightCount; k++)
-        lightingResult += CalculatePointLight(u_PointLights[k], norm, viewDir, input.v_WorldPos);
-    
+
+    for (int i = 0; i < u_SkyLightCount; i++)
+        lightingResult += u_SkyLights[i].Color * float3(u_SkyLights[i].Intensity, u_SkyLights[i].Intensity, u_SkyLights[i].Intensity);
+
+    for (i = 0; i < u_PointLightCount; i++)
+        lightingResult += CalculatePointLight(u_PointLights[i], norm, viewDir, input.v_WorldPos);
+
     if (u_MatDiffuseTexToggle == 1)
-    {
         PixelColor = tex.Sample(sampleType, input.v_TexCoord) * float4(u_MatColor, 1.0f) * float4(lightingResult, 1.0f);
-    }
     else
-    {
         PixelColor = float4(u_MatColor, 1.0f) * float4(lightingResult, 1.0f);
-    }
 
     return PixelColor;
 }

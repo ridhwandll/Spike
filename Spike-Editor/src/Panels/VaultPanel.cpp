@@ -163,10 +163,14 @@ namespace Spike
         bool imageExtBools = entry.Extension == ".png" || entry.Extension == ".jpg" || entry.Extension == ".gif"
             || entry.Extension == ".bmp" || entry.Extension == ".psd";
 
-        if (codeExtBools) nodeString = ICON_FK_CODE + String(" ") + entry.Name + entry.Extension;
-        else if (entry.Extension == ".spike" || entry.Extension == ".txt") nodeString = ICON_FK_FILE_TEXT_O + String(" ") + entry.Name + entry.Extension;
-        else if (imageExtBools) nodeString = ICON_FK_FILE_IMAGE_O + String(" ") + entry.Name + entry.Extension;
-        else if (entry.IsDirectory) nodeString = ICON_FK_FOLDER + String(" ") + entry.Name;
+        if (codeExtBools)
+            nodeString = ICON_FK_CODE + String(" ") + entry.Name + entry.Extension;
+        else if (entry.Extension == ".spike" || entry.Extension == ".txt")
+            nodeString = ICON_FK_FILE_TEXT_O + String(" ") + entry.Name + entry.Extension;
+        else if (imageExtBools)
+            nodeString = ICON_FK_FILE_IMAGE_O + String(" ") + entry.Name + entry.Extension;
+        else if (entry.IsDirectory)
+            nodeString = ICON_FK_FOLDER + String(" ") + entry.Name;
         else nodeString = entry.Name + entry.Extension;
 
         if (ImGui::TreeNodeEx(nodeString.c_str(), flags))

@@ -30,17 +30,8 @@ Github repository : https://github.com/FahimFuad/Spike
 
 namespace Spike
 {
-    struct AmbientLight
+    struct SkyLight
     {
-        glm::vec3 Color;
-        float Intensity;
-    };
-
-    struct DirectionalLight
-    {
-        glm::vec3 Direction;
-        int __Padding0;
-
         glm::vec3 Color;
         float Intensity;
     };
@@ -64,14 +55,13 @@ namespace Spike
         glm::vec3 CameraPosition;
         float __Padding0;
 
-        int AmbientLightCount;
-        int DirectionalLightCount;
+        int SkyLightCount;
         int PointLightCount;
         int __Padding1;
+        int __Padding2;
 
         PointLight PointLights[100];
-        AmbientLight AmbientLights[100];
-        DirectionalLight DirectionalLights[10];
+        SkyLight AmbientLights[10];
     };
 
     class LightningHandeler
@@ -80,9 +70,8 @@ namespace Spike
         LightningHandeler();
         ~LightningHandeler();
 
-        Vector<AmbientLight> m_AmbientLights;
+        Vector<SkyLight> m_SkyLights;
         Vector<PointLight> m_PointLights;
-        Vector<DirectionalLight> m_DirectionalLights;
 
     public:
         void CalculateAndRenderLights(const glm::vec3& cameraPos, Ref<Material>& material);

@@ -329,30 +329,17 @@ namespace Spike
                 out << YAML::EndMap; // PointLightComponent
             }
 
-            if (entity.HasComponent<AmbientLightComponent>())
+            if (entity.HasComponent<SkyLightComponent>())
             {
-                out << YAML::Key << "AmbientLightComponent";
-                out << YAML::BeginMap; // AmbientLightComponent
+                out << YAML::Key << "SkyLightComponent";
+                out << YAML::BeginMap; // SkyLightComponent
 
-                auto& ambientLight = entity.GetComponent<AmbientLightComponent>();
+                auto& ambientLight = entity.GetComponent<SkyLightComponent>();
 
                 out << YAML::Key << "Color" << YAML::Value << ambientLight.Color;
                 out << YAML::Key << "Intensity" << YAML::Value << ambientLight.Intensity;
 
-                out << YAML::EndMap; // AmbientLightComponent
-            }
-
-            if (entity.HasComponent<DirectionalLightComponent>())
-            {
-                out << YAML::Key << "DirectionalLightComponent";
-                out << YAML::BeginMap; // DirectionalLightComponent
-
-                auto& dirLight = entity.GetComponent<DirectionalLightComponent>();
-
-                out << YAML::Key << "Color" << YAML::Value << dirLight.Color;
-                out << YAML::Key << "Intensity" << YAML::Value << dirLight.Intensity;
-
-                out << YAML::EndMap; // DirectionalLightComponent
+                out << YAML::EndMap; // SkyLightComponent
             }
 
             out << YAML::EndMap; // Entity
@@ -552,25 +539,14 @@ namespace Spike
                     }
                 }
 
-                auto ambientLightComponent = entity["AmbientLightComponent"];
-                if (ambientLightComponent)
+                auto skyLightComponent = entity["SkyLightComponent"];
+                if (skyLightComponent)
                 {
-                    if (!deserializedEntity.HasComponent<AmbientLightComponent>())
+                    if (!deserializedEntity.HasComponent<SkyLightComponent>())
                     {
-                        auto& component = deserializedEntity.AddComponent<AmbientLightComponent>();
-                        component.Color = ambientLightComponent["Color"].as<glm::vec3>();
-                        component.Intensity = ambientLightComponent["Intensity"].as<float>();
-                    }
-                }
-
-                auto dirLightComponent = entity["DirectionalLightComponent"];
-                if (dirLightComponent)
-                {
-                    if (!deserializedEntity.HasComponent<DirectionalLightComponent>())
-                    {
-                        auto& component = deserializedEntity.AddComponent<DirectionalLightComponent>();
-                        component.Color = dirLightComponent["Color"].as<glm::vec3>();
-                        component.Intensity = dirLightComponent["Intensity"].as<float>();
+                        auto& component = deserializedEntity.AddComponent<SkyLightComponent>();
+                        component.Color = skyLightComponent["Color"].as<glm::vec3>();
+                        component.Intensity = skyLightComponent["Intensity"].as<float>();
                     }
                 }
             }

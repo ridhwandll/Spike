@@ -143,11 +143,10 @@ namespace Spike
                 m_SelectionContext = m_Context->CreateEntity("Mesh");
                 m_SelectionContext.AddComponent<MeshComponent>();
             }
-            if (ImGui::MenuItem("Sun"))
+            if (ImGui::MenuItem("Directional Light"))
             {
-                m_SelectionContext = m_Context->CreateEntity("Sun");
-                m_SelectionContext.AddComponent<DirectionalLightComponent>();
-                m_SelectionContext.AddComponent<AmbientLightComponent>();
+                m_SelectionContext = m_Context->CreateEntity("Directional Light");
+                m_SelectionContext.AddComponent<SkyLightComponent>();
             }
             if (ImGui::MenuItem("PointLight"))
             {
@@ -327,18 +326,10 @@ namespace Spike
                     SPK_CORE_LOG_WARN("This entity already has PointLight component!");
                 ImGui::CloseCurrentPopup();
             }
-            if (ImGui::MenuItem("DirectionalLight"))
+            if (ImGui::MenuItem("SkyLight"))
             {
-                if (!entity.HasComponent<DirectionalLightComponent>())
-                    entity.AddComponent<DirectionalLightComponent>();
-                else
-                    SPK_CORE_LOG_WARN("This entity already has DirectionalLight component!");
-                ImGui::CloseCurrentPopup();
-            }
-            if (ImGui::MenuItem("AmbientLight"))
-            {
-                if (!entity.HasComponent<AmbientLightComponent>())
-                    entity.AddComponent<AmbientLightComponent>();
+                if (!entity.HasComponent<SkyLightComponent>())
+                    entity.AddComponent<SkyLightComponent>();
                 else
                     SPK_CORE_LOG_WARN("This entity already has AmbientLight component!");
                 ImGui::CloseCurrentPopup();
@@ -347,7 +338,7 @@ namespace Spike
         }
         ImGui::PopItemWidth();
 
-        DrawComponent<TransformComponent>(ICON_FK_WRENCH" Transform", entity, [](auto& component)
+        DrawComponent<TransformComponent>(ICON_FK_ARROWS_ALT" Transform", entity, [](auto& component)
         {
             GUI::DrawVec3Control("Translation", component.Translation);
             glm::vec3 rotation = glm::degrees(component.Rotation);
@@ -416,7 +407,7 @@ namespace Spike
             }
         });
 
-        DrawComponent<SpriteRendererComponent>(ICON_FK_SQUARE_O" Sprite Renderer", entity, [](auto& component)
+        DrawComponent<SpriteRendererComponent>(ICON_FK_SQUARE" Sprite Renderer", entity, [](auto& component)
         {
             GUI::DrawColorControl4("Color", component.Color);
 
@@ -680,7 +671,7 @@ namespace Spike
             GUI::DrawFloatControl("Friction", &component.Friction);
         });
 
-        DrawComponent<PointLightComponent>("PointLight", entity, [](auto& component)
+        DrawComponent<PointLightComponent>(ICON_FK_LIGHTBULB_O" PointLight", entity, [](auto& component)
         {
             GUI::DrawFloatControl("Intensity", &component.Intensity);
             GUI::DrawFloatControl("Constant", &component.Constant);
@@ -689,13 +680,7 @@ namespace Spike
             GUI::DrawColorControl3("Color", component.Color);
         });
 
-        DrawComponent<DirectionalLightComponent>("DirectionalLight", entity, [](auto& component)
-        {
-            GUI::DrawFloatControl("Intensity", &component.Intensity);
-            GUI::DrawColorControl3("Color", component.Color);
-        });
-
-        DrawComponent<AmbientLightComponent>("AmbientLight", entity, [](auto& component)
+        DrawComponent<SkyLightComponent>(ICON_FK_SUN_O" SkyLight", entity, [](auto& component)
         {
             GUI::DrawFloatControl("Intensity", &component.Intensity);
             GUI::DrawColorControl3("Color", component.Color);
