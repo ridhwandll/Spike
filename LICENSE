@@ -1,17 +1,26 @@
-                               SPIKE ENGINE
-                          --Spike Source Code--
+Spike License
 
-         Copyright 2021 - SpikeTechnologies - All Rights Reserved
+Copyright (c) 2021, SpikeTechnologies
+All Rights Reserved
 
-Github repository : https://github.com/FahimFuad/Spike
- 
-1.This software is provided 'AS-IS', without any express or implied warranty.
-  In no event will the authors or contributors be held liable for any damages
-  arising from the use of this software.
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
 
-2.The origin of this software must not be misrepresented; you must not claim
-  that you wrote the original software.
- 
-3. THIS NOTICE MAY NOT BE REMOVED OR ALTERED FROM ANY SOURCE DISTRIBUTION.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
 
-4.You can you this software for any purpose EXCLUDING commercial purposes.
+3. Neither the name of SpikeTechnologies nor the names of
+   its contributors may be used to endorse or promote products derived
+   from this software without specific prior written permission.
+
+4. The origin of this software must not be misrepresented; you must not claim that you wrote the
+   original software. If you use this software in a product, an acknowledgment in the product
+   is mandatory.
+
+5. This software is provided 'AS-IS', without any express or implied warranty. In no event will
+   the authors be held liable for any damages arising from the use of this software.
+
+6. You can you this software for any purpose EXCLUDING commercial purposes.
+
+7. This License may CHANGE anytime without any piror notice.

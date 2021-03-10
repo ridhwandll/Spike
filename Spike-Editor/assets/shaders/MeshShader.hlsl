@@ -1,3 +1,6 @@
+//                    SPIKE ENGINE
+//Copyright 2021 - SpikeTechnologies - All Rights Reserved
+
 #type vertex
 #pragma pack_matrix(row_major)
 
