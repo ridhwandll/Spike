@@ -230,6 +230,7 @@ namespace Spike
                 out << YAML::Key << "Material-Color" << YAML::Value << mat->m_Color;
                 out << YAML::Key << "Material-Shininess" << YAML::Value << mat->m_Shininess;
                 out << YAML::Key << "Material-AlbedoTexToggle" << YAML::Value << mat->m_AlbedoTexToggle;
+                out << YAML::Key << "Material-IsTexturesFlipped" << YAML::Value << mat->m_Flipped;
 
                 out << YAML::EndMap; // MeshComponent
             }
@@ -441,6 +442,7 @@ namespace Spike
                         mat->m_Color = meshComponent["Material-Color"].as<glm::vec3>();
                         mat->m_Shininess = meshComponent["Material-Shininess"].as<float>();
                         mat->m_AlbedoTexToggle = meshComponent["Material-AlbedoTexToggle"].as<bool>();
+                        mat->m_Flipped = meshComponent["Material-IsTexturesFlipped"].as<bool>();
                     }
 
                     SPK_CORE_LOG_INFO("  Mesh Asset Path: %s", meshPath.c_str());

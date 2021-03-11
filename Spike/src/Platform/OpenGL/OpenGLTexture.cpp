@@ -26,17 +26,49 @@ namespace Spike
         m_RendererID = reinterpret_cast<RendererID>(rendererID);
     }
 
-    OpenGLTexture2D::OpenGLTexture2D(const String& path)
-        : m_Path(path), m_Name(Vault::GetNameWithExtension(path))
+    OpenGLTexture2D::OpenGLTexture2D(const String& path, bool flipped)
+        : m_FilePath(path), m_Name(Vault::GetNameWithExtension(path))
+    {
+        LoadTexture(flipped);
+    }
+
+    OpenGLTexture2D::~OpenGLTexture2D()
+    {
+        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        glDeleteTextures(1, &rendererID);
+    }
+
+    void OpenGLTexture2D::Bind(uint32_t slot, ShaderDomain domain) const
+    {
+        GLenum textureUnit = GL_TEXTURE0 + slot;
+        glActiveTexture(textureUnit);
+        glBindTexture(GL_TEXTURE_2D, (GLuint)m_RendererID);
+    }
+
+    void OpenGLTexture2D::Unbind() const
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void OpenGLTexture2D::Reload(bool flip)
+    {
+        if (m_RendererID)
+        {
+            uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+            glDeleteTextures(1, &rendererID);
+        }
+        if (!m_FilePath.empty())
+            LoadTexture(flip);
+    }
+
+    void OpenGLTexture2D::LoadTexture(bool flip)
     {
         int width, height, channels;
 
-        stbi_set_flip_vertically_on_load(false);
-        stbi_uc* data = nullptr;
-        data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-
+        stbi_set_flip_vertically_on_load(flip);
+        stbi_uc* data = stbi_load(m_FilePath.c_str(), &width, &height, &channels, 0);
         if (!data)
-            SPK_CORE_LOG_CRITICAL("Failed to load image!");
+            SPK_CORE_LOG_ERROR("Failed to load image from filepath '%s'!", m_FilePath.c_str());
 
         m_Width = width;
         m_Height = height;
@@ -49,8 +81,8 @@ namespace Spike
         }
         else if (channels == 3)
         {
-          internalFormat = GL_RGB8;
-          dataFormat = GL_RGB;
+            internalFormat = GL_RGB8;
+            dataFormat = GL_RGB;
         }
 
         m_InternalFormat = internalFormat;
@@ -81,24 +113,6 @@ namespace Spike
         glBindTexture(GL_TEXTURE_2D, 0); //Always remember to Unbind the Texture
         m_RendererID = (RendererID)rendererID;
         free(data);
-    }
-
-    OpenGLTexture2D::~OpenGLTexture2D()
-    {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
-        glDeleteTextures(1, &rendererID);
-    }
-
-    void OpenGLTexture2D::Bind(uint32_t slot, ShaderDomain domain) const
-    {
-        GLenum textureUnit = GL_TEXTURE0 + slot;
-        glActiveTexture(textureUnit);
-        glBindTexture(GL_TEXTURE_2D, (GLuint)m_RendererID);
-    }
-
-    void OpenGLTexture2D::Unbind() const
-    {
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void OpenGLTexture2D::SetData(void* data, uint32_t size)

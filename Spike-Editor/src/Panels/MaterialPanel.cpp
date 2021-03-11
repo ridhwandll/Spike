@@ -23,7 +23,9 @@ namespace Spike
                 ImGui::Separator();
                 GUI::DrawColorControl3("Color", material->m_Color, 150.0f);
                 GUI::DrawFloatControl("Shininess", &material->m_Shininess, 150.0f);
-                GUI::DrawBoolControl("Use Diffuse Texture(s)", &material->m_AlbedoTexToggle, 150.0f);
+                GUI::DrawBoolControl("Use Diffuse Texture", &material->m_AlbedoTexToggle, 150.0f);
+                if (GUI::DrawBoolControl("Flip Texture", &material->m_Flipped, 150.0f))
+                    material->FlipTextures(material->m_Flipped);
             }
         }
         ImGui::End();

@@ -11,7 +11,7 @@ namespace Spike
     {
     public:
         DX11Texture2D(uint32_t width, uint32_t height);
-        DX11Texture2D(const String& filepath);
+        DX11Texture2D(const String& path, bool flipped = false);
         ~DX11Texture2D();
         virtual void Bind(uint32_t bindslot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
         virtual const String GetName() const override { return m_Name; }
@@ -20,20 +20,21 @@ namespace Spike
         virtual String GetFilepath() const override { return m_Filepath; }
         virtual RendererID GetRendererID() const override { return (RendererID)m_SRV; }
         virtual void SetData(void* data, uint32_t size) override;
-        virtual void ActivateSlot(uint32_t slot) override;
+        virtual void ActivateSlot(uint32_t slot) override {}
         virtual bool Loaded() override { return m_Loaded; };
-        virtual void Unbind() const override;
-
+        virtual void Reload(bool flip = false);
+        virtual void Unbind() const override {}
         virtual bool operator ==(const Texture& other) const override { return m_SRV == ((DX11Texture2D&)other).m_SRV; }
-
+    private:
+        void LoadTexture(bool flip);
     private:
         ID3D11Texture2D*          m_Texture2D;
         ID3D11ShaderResourceView* m_SRV;
 
+        int m_Width = 0;
+        int m_Height = 0;
         String m_Filepath;
         String m_Name;
-        int m_Width;
-        int m_Height;
         bool m_Loaded = false;
     };
 }

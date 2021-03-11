@@ -1,6 +1,5 @@
 //                    SPIKE ENGINE
 //Copyright 2021 - SpikeTechnologies - All Rights Reserved
-
 #pragma once
 #include "Spike/Core/UUID.h"
 #include "Spike/Core/Vault.h"

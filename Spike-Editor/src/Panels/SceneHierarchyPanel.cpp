@@ -331,8 +331,8 @@ namespace Spike
 
             if (ImGui::Button("Open"))
             {
-                const char* patterns[2] = { "*.fbx", "*.obj" };
-                const char* file = FileDialogs::OpenFile("Open 3D Object file", "", 2, patterns, "", false);
+                const char* patterns[4] = { "*.fbx", "*.obj", "*.max", "*.3ds" };
+                const char* file = FileDialogs::OpenFile("Open 3D Object file", "", 4, patterns, "", false);
                 if (file)
                 {
                     component.Mesh = Ref<Mesh>::Create(file);

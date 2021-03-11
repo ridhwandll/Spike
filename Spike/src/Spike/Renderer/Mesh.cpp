@@ -63,8 +63,6 @@ namespace Spike
     Mesh::Mesh(const String& filepath)
         :m_FilePath(filepath)
     {
-        SPK_CORE_LOG_INFO("Loading Mesh... %s", filepath.c_str());
-
         auto importer = CreateScope<Assimp::Importer>();
         const aiScene* scene = importer->ReadFile(filepath, s_MeshImportFlags);
         if (!scene || !scene->HasMeshes()) SPK_CORE_LOG_ERROR("Failed to load mesh file: %s", filepath.c_str());
@@ -140,33 +138,19 @@ namespace Spike
                     aiMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, aiColor);
 
                     SPK_CORE_LOG_INFO("Albedo map path = %s", texturePath.c_str());
-                    auto texture = Vault::Get<Texture2D>(Vault::GetNameWithExtension(texturePath));
+                    auto tex = Texture2D::Create(texturePath);
 
-                    if (texture)
+                    Vault::Submit<Texture2D>(tex);
+                    if (tex->Loaded())
                     {
-                        if (texture->Loaded())
-                        {
-                            m_Material->SetDiffuseTexToggle(true);
-                            m_Material->PushTexture(texture, i);
-                        }
-                        else
-                            SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                        m_Material->SetDiffuseTexToggle(true);
+                        m_Material->PushTexture(tex, i);
                     }
                     else
                     {
-                        auto tex = Texture2D::Create(texturePath);
-                        Vault::Submit<Texture2D>(tex);
-                        if (tex->Loaded())
-                        {
-                            m_Material->SetDiffuseTexToggle(true);
-                            m_Material->PushTexture(tex, i);
-                        }
-                        else
-                        {
-                            SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
-                            m_Material->SetDiffuseTexToggle(false);
-                            m_Material->SetColor({ aiColor.r, aiColor.g, aiColor.b });
-                        }
+                        SPK_CORE_LOG_ERROR("Could not load texture: %s", texturePath.c_str());
+                        m_Material->SetDiffuseTexToggle(false);
+                        m_Material->SetColor({ aiColor.r, aiColor.g, aiColor.b });
                     }
                 }
                 else

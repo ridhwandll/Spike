@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spike
 {
@@ -36,9 +32,39 @@ namespace Spike
             Y = Mathf.Clamp(Y, min.Y, max.Y);
         }
 
+        public double GetMagnitude()
+        {
+            return Math.Abs(Math.Sqrt((X * X) + (Y * Y)));
+        }
+
+        public static Vector2 MoveTowards(Vector2 current, Vector2 target, float maxDistanceDelta)
+        {
+            float toVector_x = target.X - current.X;
+            float toVector_y = target.Y - current.Y;
+
+            float sqDist = toVector_x * toVector_x + toVector_y * toVector_y;
+
+            if (sqDist == 0 || (maxDistanceDelta >= 0 && sqDist <= maxDistanceDelta * maxDistanceDelta))
+                return target;
+
+            float dist = (float)Math.Sqrt(sqDist);
+
+            return new Vector2(current.X + toVector_x / dist * maxDistanceDelta, current.Y + toVector_y / dist * maxDistanceDelta);
+        }
+
         public static Vector2 operator -(Vector2 left, Vector2 right)
         {
             return new Vector2(left.X - right.X, left.Y - right.Y);
+        }
+
+        public static Vector2 operator +(Vector2 left, Vector2 right)
+        {
+            return new Vector2(left.X + right.X, left.Y + right.Y);
+        }
+
+        public static Vector2 operator /(Vector2 left, double value)
+        {
+            return new Vector2(left.X / (float)value, left.Y / (float)value);
         }
 
         public static Vector2 operator -(Vector2 vector)

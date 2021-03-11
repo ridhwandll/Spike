@@ -31,45 +31,10 @@ namespace Spike
         DX_CALL(DX11Internal::GetDevice()->CreateShaderResourceView(m_Texture2D, nullptr, &m_SRV)); //Create the default SRV
     }
 
-    DX11Texture2D::DX11Texture2D(const String& filepath)
-        :m_Filepath(filepath), m_Name(Vault::GetNameWithExtension(m_Filepath))
+    DX11Texture2D::DX11Texture2D(const String& path, bool flipped)
+        :m_Filepath(path), m_Name(Vault::GetNameWithExtension(m_Filepath))
     {
-        stbi_set_flip_vertically_on_load(false);
-        stbi_uc* data = stbi_load(filepath.c_str(), &m_Width, &m_Height, 0, 4);
-        if (data == nullptr)
-            SPK_CORE_LOG_ERROR("Failed to load image from filepath '%s'!", filepath.c_str());
-
-        ID3D11DeviceContext* deviceContext = DX11Internal::GetDeviceContext();
-
-        D3D11_TEXTURE2D_DESC textureDesc = {};
-        textureDesc.Width = m_Width;
-        textureDesc.Height = m_Height;
-        textureDesc.MipLevels = 0;
-        textureDesc.ArraySize = 1;
-        textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //automate this format
-        textureDesc.SampleDesc.Count = 1;
-        textureDesc.SampleDesc.Quality = 0;
-        textureDesc.Usage = D3D11_USAGE_DEFAULT;
-        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
-        textureDesc.CPUAccessFlags = 0;
-        textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
-
-        DX_CALL(DX11Internal::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_Texture2D)); //Create the Enpty texture
-        m_Loaded = true;
-
-        auto rowPitch = m_Width * 4 * sizeof(unsigned char);
-        deviceContext->UpdateSubresource(m_Texture2D, 0, 0, data, rowPitch, 0);
-
-        //Create the Shader Resource View
-        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        srvDesc.Format = textureDesc.Format;
-        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        srvDesc.Texture2D.MostDetailedMip = 0;
-        srvDesc.Texture2D.MipLevels = -1;
-        DX_CALL(DX11Internal::GetDevice()->CreateShaderResourceView(m_Texture2D, &srvDesc, &m_SRV));
-        deviceContext->GenerateMips(m_SRV);
-
-        free(data); //Always remember to free the data!
+        LoadTexture(flipped);
     }
 
     void DX11Texture2D::SetData(void* data, uint32_t size)
@@ -102,11 +67,49 @@ namespace Spike
         }
     }
 
-    void DX11Texture2D::ActivateSlot(uint32_t slot)
+    void DX11Texture2D::Reload(bool flip)
     {
+        LoadTexture(flip);
     }
 
-    void DX11Texture2D::Unbind() const
+    void DX11Texture2D::LoadTexture(bool flip)
     {
+        stbi_set_flip_vertically_on_load(flip);
+
+        stbi_uc* data = stbi_load(m_Filepath.c_str(), &m_Width, &m_Height, 0, 4);
+        if (!data)
+            SPK_CORE_LOG_ERROR("Failed to load image from filepath '%s'!", m_Filepath.c_str());
+
+        ID3D11DeviceContext* deviceContext = DX11Internal::GetDeviceContext();
+
+        D3D11_TEXTURE2D_DESC textureDesc = {};
+        textureDesc.Width = m_Width;
+        textureDesc.Height = m_Height;
+        textureDesc.MipLevels = 0;
+        textureDesc.ArraySize = 1;
+        textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //TODO: automate this format
+        textureDesc.SampleDesc.Count = 1;
+        textureDesc.SampleDesc.Quality = 0;
+        textureDesc.Usage = D3D11_USAGE_DEFAULT;
+        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+        textureDesc.CPUAccessFlags = 0;
+        textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
+
+        DX_CALL(DX11Internal::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_Texture2D)); //Create the Enpty texture
+        m_Loaded = true;
+
+        auto rowPitch = m_Width * 4 * sizeof(unsigned char);
+        deviceContext->UpdateSubresource(m_Texture2D, 0, 0, data, rowPitch, 0);
+
+        //Create the Shader Resource View
+        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = textureDesc.Format;
+        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.MipLevels = -1;
+        DX_CALL(DX11Internal::GetDevice()->CreateShaderResourceView(m_Texture2D, &srvDesc, &m_SRV));
+        deviceContext->GenerateMips(m_SRV);
+
+        free(data); //Always remember to free the data!
     }
 }

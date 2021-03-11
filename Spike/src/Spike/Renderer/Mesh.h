@@ -39,10 +39,7 @@ namespace Spike
         String NodeName, MeshName;
     };
 
-    struct Index
-    {
-        uint32_t V1, V2, V3;
-    };
+    struct Index { uint32_t V1, V2, V3; };
 
     class Mesh : public RefCounted
     {

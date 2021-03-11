@@ -14,7 +14,7 @@ namespace Spike
     Material::Material(const Ref<Shader>& shader)
         :m_Shader(shader)
     {
-        m_MainCBuffer = ConstantBuffer::Create(shader, "Material", nullptr, sizeof(MaterialCbuffer), 2, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
+        m_CBuffer = ConstantBuffer::Create(shader, "Material", nullptr, sizeof(MaterialCbuffer), 2, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
     void Material::Bind(uint32_t index)
@@ -34,7 +34,7 @@ namespace Spike
             }
         }
 
-        m_MainCBuffer->SetData(&m_CBufferData);
+        m_CBuffer->SetData(&m_CBufferData);
 
         //TODO: Remove (Required for GLSL only)
         m_Shader->SetInt("u_DiffuseTexture", index);
@@ -48,8 +48,14 @@ namespace Spike
     void Material::SetDiffuseTexToggle(bool value)
     {
         m_AlbedoTexToggle = value;
-        if (m_MainCBuffer)
-            m_MainCBuffer->Bind();
+        if (m_CBuffer)
+            m_CBuffer->Bind();
     }
 
+    void Material::FlipTextures(bool flip)
+    {
+        for (auto& texture : m_Textures)
+            if (texture)
+                texture->Reload(flip);
+    }
 }
