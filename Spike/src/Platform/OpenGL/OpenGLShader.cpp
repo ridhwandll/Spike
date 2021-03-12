@@ -34,7 +34,7 @@ namespace Spike
 
     OpenGLShader::~OpenGLShader()
     {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
         glDeleteProgram(rendererID);
     }
 
@@ -142,7 +142,7 @@ namespace Spike
     }
 
     void OpenGLShader::SetInt(const String& name, int value) { UploadUniformInt(name, value); }
-    void OpenGLShader::SetIntArray  (const String& name, int* value, uint32_t count) { UploadUniformIntArray(name, value, count); }
+    void OpenGLShader::SetIntArray  (const String& name, int* value, Uint count) { UploadUniformIntArray(name, value, count); }
     void OpenGLShader::SetFloat     (const String& name, float value)                { UploadUniformFloat   (name, value);        }
     void OpenGLShader::SetFloat2    (const String& name, const glm::vec2& value)     { UploadUniformFloat2  (name, value);        }
     void OpenGLShader::SetFloat3    (const String& name, const glm::vec3& value)     { UploadUniformFloat3  (name, value);        }
@@ -156,7 +156,7 @@ namespace Spike
             glUniform1i(location, value);
     }
 
-    void OpenGLShader::UploadUniformIntArray(const String& name, int* value, uint32_t count)
+    void OpenGLShader::UploadUniformIntArray(const String& name, int* value, Uint count)
     {
         GLint location = glGetUniformLocation((GLuint)m_RendererID, name.c_str());
         if (location != -1)

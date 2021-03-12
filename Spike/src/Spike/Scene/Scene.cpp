@@ -236,7 +236,7 @@ namespace Spike
         }
     }
 
-    void Scene::OnViewportResize(uint32_t width, uint32_t height)
+    void Scene::OnViewportResize(Uint width, Uint height)
     {
         m_ViewportWidth = width;
         m_ViewportHeight = height;
@@ -396,10 +396,7 @@ namespace Spike
     }
 
     template<typename T>
-    void Scene::OnComponentAdded(Entity entity, T& component)
-    {
-        static_assert(false);
-    }
+    void Scene::OnComponentAdded(Entity entity, T& component) { static_assert(false); }
 
     template<>
     void Scene::OnComponentAdded<IDComponent>(Entity entity, IDComponent& component)

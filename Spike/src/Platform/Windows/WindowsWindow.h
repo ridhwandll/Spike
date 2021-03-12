@@ -13,8 +13,8 @@ namespace Spike
         WindowsWindow(const WindowProps& props);
         virtual ~WindowsWindow();
         void OnUpdate() override;
-        uint32_t GetWidth() const override { return m_Data.Width; }
-        uint32_t GetHeight() const override { return m_Data.Height; }
+        Uint GetWidth() const override { return m_Data.Width; }
+        Uint GetHeight() const override { return m_Data.Height; }
 
         virtual const String& GetTitle() const override { return m_Data.Title; }
         virtual void SetTitle(const String& title) override;
@@ -33,7 +33,7 @@ namespace Spike
         struct WindowData
         {
             String Title;
-            uint32_t Width, Height;
+            Uint Width, Height;
             bool VSync;
             EventCallbackFn EventCallback;
         };

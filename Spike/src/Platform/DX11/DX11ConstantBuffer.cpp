@@ -16,7 +16,7 @@ namespace Spike
         return (D3D11_USAGE)-1;
     }
 
-    DX11ConstantBuffer::DX11ConstantBuffer(const Ref<Shader>& shader, const String& name, void* data, const uint32_t size, const uint32_t bindSlot, ShaderDomain shaderDomain, DataUsage usage)
+    DX11ConstantBuffer::DX11ConstantBuffer(const Ref<Shader>& shader, const String& name, void* data, const Uint size, const Uint bindSlot, ShaderDomain shaderDomain, DataUsage usage)
         :m_BindSlot(bindSlot), m_Size(size), m_ShaderDomain(shaderDomain), mDataUsage(usage)
     {
         D3D11_BUFFER_DESC bufferDesc = {};

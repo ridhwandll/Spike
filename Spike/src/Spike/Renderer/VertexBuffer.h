@@ -10,7 +10,7 @@ namespace Spike
         None = 0, Float, Float2, Float3, Float4, Mat3, Mat4, Int, Int2, Int3, Int4, Bool
     };
 
-    static uint32_t ShaderDataTypeSize(ShaderDataType type)
+    static Uint ShaderDataTypeSize(ShaderDataType type)
     {
         switch (type)
         {
@@ -34,7 +34,7 @@ namespace Spike
     {
         String  Name;
         ShaderDataType Type;
-        uint32_t Size;
+        Uint Size;
         size_t Offset;
         bool Normalized;
 
@@ -45,7 +45,7 @@ namespace Spike
         {
         }
 
-        uint32_t GetComponentCount() const
+        Uint GetComponentCount() const
         {
             switch (Type)
             {
@@ -77,7 +77,7 @@ namespace Spike
             CalculateOffsetsAndStride();
         }
 
-        uint32_t GetStride() const { return m_Stride; }
+        Uint GetStride() const { return m_Stride; }
         const std::vector<VertexBufferElement>& GetElements() const { return m_Elements; }
 
         std::vector<VertexBufferElement>::iterator begin() { return m_Elements.begin(); }
@@ -98,7 +98,7 @@ namespace Spike
         }
     private:
         std::vector<VertexBufferElement> m_Elements;
-        uint32_t m_Stride = 0;
+        Uint m_Stride = 0;
     };
     class VertexBuffer : public RefCounted
     {
@@ -111,10 +111,10 @@ namespace Spike
         virtual const VertexBufferLayout& GetLayout() const = 0;
         virtual void SetLayout(const VertexBufferLayout& layout) = 0;
 
-        virtual void SetData(const void* data, uint32_t size) = 0;
+        virtual void SetData(const void* data, Uint size) = 0;
 
-        static Ref<VertexBuffer> Create(uint32_t size, VertexBufferLayout layout);
-        static Ref<VertexBuffer> Create(void* vertices, uint32_t size, VertexBufferLayout layout);
+        static Ref<VertexBuffer> Create(Uint size, VertexBufferLayout layout);
+        static Ref<VertexBuffer> Create(void* vertices, Uint size, VertexBufferLayout layout);
     };
 
 }

@@ -9,7 +9,7 @@
 
 namespace Spike
 {
-    Ref<VertexBuffer> VertexBuffer::Create(uint32_t size, VertexBufferLayout layout)
+    Ref<VertexBuffer> VertexBuffer::Create(Uint size, VertexBufferLayout layout)
     {
         switch (RendererAPI::GetAPI())
         {
@@ -23,7 +23,7 @@ namespace Spike
     }
 
 
-    Ref<VertexBuffer> VertexBuffer::Create(void* vertices, uint32_t size, VertexBufferLayout layout)
+    Ref<VertexBuffer> VertexBuffer::Create(void* vertices, Uint size, VertexBufferLayout layout)
     {
         switch (RendererAPI::GetAPI())
         {

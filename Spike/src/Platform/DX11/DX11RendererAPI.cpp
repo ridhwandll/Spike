@@ -16,7 +16,7 @@ namespace Spike
     {
     }
 
-    void DX11RendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+    void DX11RendererAPI::SetViewport(Uint x, Uint y, Uint width, Uint height)
     {
         DX11Internal::Resize(width, height);
     }
@@ -31,13 +31,13 @@ namespace Spike
         DX11Internal::GetBackbuffer()->Clear(m_ClearColor);
     }
 
-    void DX11RendererAPI::DrawIndexed(const Ref<Pipeline>& pipeline, uint32_t indexCount)
+    void DX11RendererAPI::DrawIndexed(const Ref<Pipeline>& pipeline, Uint indexCount)
     {
-        uint32_t count = indexCount ? indexCount : pipeline->GetSpecification().IndexBuffer->GetCount();
+        Uint count = indexCount ? indexCount : pipeline->GetSpecification().IndexBuffer->GetCount();
         DX11Internal::GetDeviceContext()->DrawIndexed(count, 0, 0);
     }
 
-    void DX11RendererAPI::DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex)
+    void DX11RendererAPI::DrawIndexedMesh(Uint indexCount, Uint baseIndex, Uint baseVertex)
     {
         DX11Internal::GetDeviceContext()->DrawIndexed(indexCount, baseIndex, baseVertex);
     }

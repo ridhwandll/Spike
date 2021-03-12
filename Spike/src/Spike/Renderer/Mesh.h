@@ -26,11 +26,11 @@ namespace Spike
 
     struct Submesh
     {
-        uint32_t BaseVertex;
-        uint32_t BaseIndex;
-        uint32_t MaterialIndex;
-        uint32_t IndexCount;
-        uint32_t VertexCount;
+        Uint BaseVertex;
+        Uint BaseIndex;
+        Uint MaterialIndex;
+        Uint IndexCount;
+        Uint VertexCount;
 
         Ref<ConstantBuffer> CBuffer;
 
@@ -39,7 +39,7 @@ namespace Spike
         String NodeName, MeshName;
     };
 
-    struct Index { uint32_t V1, V2, V3; };
+    struct Index { Uint V1, V2, V3; };
 
     class Mesh : public RefCounted
     {
@@ -61,7 +61,7 @@ namespace Spike
         Ref<Shader> GetShader() { return m_Shader; }
         const String& GetFilePath() const { return m_FilePath; }
     private:
-        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), uint32_t level = 0);
+        void TraverseNodes(aiNode* node, const glm::mat4& parentTransform = glm::mat4(1.0f), Uint level = 0);
 
     private:
         Vector<Submesh> m_Submeshes;
@@ -77,6 +77,5 @@ namespace Spike
         Ref<Material> m_Material;
 
         String m_FilePath;
-        friend class Renderer;
     };
 }

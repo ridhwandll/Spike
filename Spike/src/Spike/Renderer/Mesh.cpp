@@ -22,7 +22,7 @@ namespace Spike
         return result;
     }
 
-    static const uint32_t s_MeshImportFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords | aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices;
+    static const Uint s_MeshImportFlags = aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_GenUVCoords | aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices;
 
     Mesh::Mesh(const Vector<Vertex>& vertices, const Vector<Index>& indices, const glm::mat4& transform)
         : m_Vertices(vertices), m_Indices(indices)
@@ -67,8 +67,8 @@ namespace Spike
         const aiScene* scene = importer->ReadFile(filepath, s_MeshImportFlags);
         if (!scene || !scene->HasMeshes()) SPK_CORE_LOG_ERROR("Failed to load mesh file: %s", filepath.c_str());
 
-        uint32_t vertexCount = 0;
-        uint32_t indexCount = 0;
+        Uint vertexCount = 0;
+        Uint indexCount = 0;
 
         switch (RendererAPI::GetAPI())
         {
@@ -121,7 +121,7 @@ namespace Spike
         if (scene->HasMaterials())
         {
             m_Material->GetTextures().resize(scene->mNumMaterials);
-            for (uint32_t i = 0; i < scene->mNumMaterials; i++)
+            for (Uint i = 0; i < scene->mNumMaterials; i++)
             {
                 auto aiMaterial = scene->mMaterials[i];
 
@@ -178,21 +178,21 @@ namespace Spike
         m_Pipeline = Pipeline::Create(spec);
     }
 
-    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, uint32_t level)
+    void Mesh::TraverseNodes(aiNode* node, const glm::mat4& parentTransform, Uint level)
     {
         glm::mat4 localTransform = AssimpMat4ToGlmMat4(node->mTransformation);
         glm::mat4 transform = parentTransform * localTransform;
 
-        for (uint32_t i = 0; i < node->mNumMeshes; i++)
+        for (Uint i = 0; i < node->mNumMeshes; i++)
         {
-            uint32_t mesh = node->mMeshes[i];
+            Uint mesh = node->mMeshes[i];
             auto& submesh = m_Submeshes[mesh];
             submesh.NodeName = node->mName.C_Str();
             submesh.Transform = transform;
             submesh.LocalTransform = localTransform;
         }
 
-        for (uint32_t i = 0; i < node->mNumChildren; i++)
+        for (Uint i = 0; i < node->mNumChildren; i++)
             TraverseNodes(node->mChildren[i], transform, level + 1);
     }
 }

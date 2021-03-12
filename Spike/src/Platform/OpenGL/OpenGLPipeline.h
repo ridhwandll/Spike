@@ -17,7 +17,7 @@ namespace Spike
         virtual void SetPrimitiveTopology(PrimitiveTopology topology) override;
     private:
         RendererID m_RendererID;
-        uint32_t m_VertexBufferIndex = 0;
+        Uint m_VertexBufferIndex = 0;
         PipelineSpecification m_Specification;
     };
 }

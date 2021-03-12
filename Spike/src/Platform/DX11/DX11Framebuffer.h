@@ -15,7 +15,7 @@ namespace Spike
 
         virtual void Bind() override;
         virtual void Unbind() override;
-        virtual void Resize(uint32_t width, uint32_t height) override;
+        virtual void Resize(Uint width, Uint height) override;
         virtual FramebufferSpecification& GetSpecification() override { return m_Specification; }
         virtual void Clear(const glm::vec4& clearColor) override;
         virtual RendererID GetColorViewID() override { return (RendererID)m_SRV.Get(); }

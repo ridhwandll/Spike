@@ -8,7 +8,7 @@
 
 namespace Spike
 {
-    Ref<IndexBuffer> IndexBuffer::Create(void* indices, uint32_t size)
+    Ref<IndexBuffer> IndexBuffer::Create(void* indices, Uint size)
     {
         switch (RendererAPI::GetAPI())
         {

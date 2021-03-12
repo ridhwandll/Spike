@@ -6,18 +6,18 @@
 
 namespace Spike
 {
-    OpenGLIndexBuffer::OpenGLIndexBuffer(void* indices, uint32_t count)
+    OpenGLIndexBuffer::OpenGLIndexBuffer(void* indices, Uint count)
         : m_Count(count)
     {
-        uint32_t rendererID;
+        Uint rendererID;
         glCreateBuffers(1, &rendererID);
-        glNamedBufferData(rendererID, sizeof(uint32_t) * count, indices, GL_STATIC_DRAW);
+        glNamedBufferData(rendererID, sizeof(Uint) * count, indices, GL_STATIC_DRAW);
         m_RendererID = (RendererID)rendererID;
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
         glDeleteBuffers(1, &rendererID);
     }
 

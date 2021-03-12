@@ -13,8 +13,8 @@ namespace Spike::DX11Internal
     ID3D11RasterizerState* wireframeRasterizerState = nullptr;
     ID3D11SamplerState* samplerState = nullptr;
     Ref<Framebuffer>     backbuffer = nullptr;
-    uint32_t height;
-    uint32_t width;
+    Uint height;
+    Uint width;
 
     void Init(HWND hwnd)
     {
@@ -118,7 +118,7 @@ namespace Spike::DX11Internal
 
     void BindBackbuffer() { backbuffer->Bind(); }
 
-    void Resize(uint32_t width, uint32_t height)
+    void Resize(Uint width, Uint height)
     {
         backbuffer.Reset(); //Terminate the backbuffer
         DX_CALL(swapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_UNKNOWN, 0)); //Resize the swapchain
@@ -197,7 +197,7 @@ namespace Spike::DX11Internal
 
 namespace Spike
 {
-    bool CheckHResult(HRESULT hresult, std::string_view statement, std::string_view file, uint32_t line)
+    bool CheckHResult(HRESULT hresult, std::string_view statement, std::string_view file, Uint line)
     {
         if (FAILED(hresult))
         {

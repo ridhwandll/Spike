@@ -8,14 +8,14 @@ namespace Spike
     class OpenGLVertexBuffer : public VertexBuffer
     {
     public:
-        OpenGLVertexBuffer(uint32_t size, VertexBufferLayout layout);
-        OpenGLVertexBuffer(void* vertices, uint32_t size, VertexBufferLayout layout);
+        OpenGLVertexBuffer(Uint size, VertexBufferLayout layout);
+        OpenGLVertexBuffer(void* vertices, Uint size, VertexBufferLayout layout);
         virtual ~OpenGLVertexBuffer();
 
         virtual void Bind() const override;
         virtual void Unbind() const override;
 
-        virtual void SetData(const void* data, uint32_t size) override;
+        virtual void SetData(const void* data, Uint size) override;
 
         virtual const VertexBufferLayout& GetLayout() const override { return m_Layout; }
         virtual void SetLayout(const VertexBufferLayout& layout) override { m_Layout = layout; }

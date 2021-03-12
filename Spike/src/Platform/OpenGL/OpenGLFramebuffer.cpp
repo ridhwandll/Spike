@@ -6,7 +6,7 @@
 
 namespace Spike
 {
-    static const uint32_t s_MaxFramebufferSize = 8192;
+    static const Uint s_MaxFramebufferSize = 8192;
 
     OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
         :m_Specification(spec)
@@ -16,7 +16,7 @@ namespace Spike
 
     void OpenGLFramebuffer::Invalidate()
     {
-        uint32_t rendererID;
+        Uint rendererID;
         glGenFramebuffers(1, &rendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
 
@@ -46,7 +46,7 @@ namespace Spike
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthAttachmentID, 0); //Attach the texture
     }
 
-    void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
+    void OpenGLFramebuffer::Resize(Uint width, Uint height)
     {
         if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize)
         {
@@ -60,7 +60,7 @@ namespace Spike
 
     void OpenGLFramebuffer::Clear(const glm::vec4& clearColor)
     {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
         glClearColor(clearColor.x, clearColor.y, clearColor.y, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -78,7 +78,7 @@ namespace Spike
 
     OpenGLFramebuffer::~OpenGLFramebuffer()
     {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
         glDeleteFramebuffers(1, &rendererID);
     }
 

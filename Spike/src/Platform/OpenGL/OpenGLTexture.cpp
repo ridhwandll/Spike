@@ -7,10 +7,10 @@
 
 namespace Spike
 {
-    OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
+    OpenGLTexture2D::OpenGLTexture2D(Uint width, Uint height)
         :m_Width(width), m_Height(height)
     {
-        uint32_t rendererID;
+        Uint rendererID;
         m_Name = "[Spike] Internal Texture [Spike]";
         m_InternalFormat = GL_RGBA8;
         m_DataFormat = GL_RGBA;
@@ -34,11 +34,11 @@ namespace Spike
 
     OpenGLTexture2D::~OpenGLTexture2D()
     {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
         glDeleteTextures(1, &rendererID);
     }
 
-    void OpenGLTexture2D::Bind(uint32_t slot, ShaderDomain domain) const
+    void OpenGLTexture2D::Bind(Uint slot, ShaderDomain domain) const
     {
         GLenum textureUnit = GL_TEXTURE0 + slot;
         glActiveTexture(textureUnit);
@@ -54,7 +54,7 @@ namespace Spike
     {
         if (m_RendererID)
         {
-            uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+            Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
             glDeleteTextures(1, &rendererID);
         }
         if (!m_FilePath.empty())
@@ -96,7 +96,7 @@ namespace Spike
 
         m_Loaded = true;
 
-        uint32_t rendererID;
+        Uint rendererID;
         glGenTextures(1, &rendererID);
         glBindTexture(GL_TEXTURE_2D, rendererID);
 
@@ -115,15 +115,15 @@ namespace Spike
         free(data);
     }
 
-    void OpenGLTexture2D::SetData(void* data, uint32_t size)
+    void OpenGLTexture2D::SetData(void* data, Uint size)
     {
-        uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+        Uint bpp = m_DataFormat == GL_RGBA ? 4 : 3;
         SPK_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
         glBindTexture(GL_TEXTURE_2D, (GLuint)m_RendererID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
 
-    void OpenGLTexture2D::ActivateSlot(uint32_t slot)
+    void OpenGLTexture2D::ActivateSlot(Uint slot)
     {
         glActiveTexture(GL_TEXTURE0 + slot);
     }

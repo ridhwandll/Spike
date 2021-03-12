@@ -8,7 +8,7 @@
 
 namespace Spike
 {
-    Ref<ConstantBuffer> ConstantBuffer::Create(const Ref<Shader>& shader, const String& name, void* data, const uint32_t size, const uint32_t bindSlot, ShaderDomain shaderDomain, DataUsage usage)
+    Ref<ConstantBuffer> ConstantBuffer::Create(const Ref<Shader>& shader, const String& name, void* data, const Uint size, const Uint bindSlot, ShaderDomain shaderDomain, DataUsage usage)
     {
         switch (RendererAPI::GetAPI())
         {

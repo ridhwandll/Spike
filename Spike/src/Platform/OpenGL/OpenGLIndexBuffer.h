@@ -8,15 +8,15 @@ namespace Spike
     class OpenGLIndexBuffer : public IndexBuffer
     {
     public:
-        OpenGLIndexBuffer(void* indices, uint32_t count);
+        OpenGLIndexBuffer(void* indices, Uint count);
         virtual ~OpenGLIndexBuffer();
     
         virtual void Bind() const;
         virtual void Unbind() const;
     
-        virtual uint32_t GetCount() const { return m_Count; }
+        virtual Uint GetCount() const { return m_Count; }
     private:
         RendererID m_RendererID;
-        uint32_t m_Count;
+        Uint m_Count;
     };
 }

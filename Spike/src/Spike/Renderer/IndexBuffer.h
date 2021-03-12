@@ -13,7 +13,7 @@ namespace Spike
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
 
-        virtual uint32_t GetCount() const = 0;
-        static Ref<IndexBuffer> Create(void* indices, uint32_t size);
+        virtual Uint GetCount() const = 0;
+        static Ref<IndexBuffer> Create(void* indices, Uint size);
     };
 }

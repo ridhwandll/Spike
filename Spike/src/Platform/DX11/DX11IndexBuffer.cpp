@@ -6,16 +6,16 @@
 
 namespace Spike
 {
-    DX11IndexBuffer::DX11IndexBuffer(void* indices, uint32_t count)
+    DX11IndexBuffer::DX11IndexBuffer(void* indices, Uint count)
         :m_Count(count)
     {
         D3D11_BUFFER_DESC id = {};
         id.Usage = D3D11_USAGE_DEFAULT;
-        id.ByteWidth = sizeof(uint32_t) * count;
+        id.ByteWidth = sizeof(Uint) * count;
         id.BindFlags = D3D11_BIND_INDEX_BUFFER;
         id.CPUAccessFlags = 0;
         id.MiscFlags = 0;
-        id.StructureByteStride = sizeof(uint32_t);
+        id.StructureByteStride = sizeof(Uint);
 
         D3D11_SUBRESOURCE_DATA sd = {};
         sd.pSysMem = indices;

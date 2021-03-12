@@ -25,7 +25,7 @@ namespace Spike
     struct EntityInstance
     {
         EntityScriptClass* ScriptClass;
-        uint32_t Handle = 0;
+        Uint Handle = 0;
         /* [Spike] This class represents a single Entity [Spike] */
         Scene* SceneInstance = nullptr;
         MonoObject* GetInstance();

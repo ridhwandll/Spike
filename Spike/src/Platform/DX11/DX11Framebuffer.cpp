@@ -6,7 +6,7 @@
 
 namespace Spike
 {
-    static const uint32_t sMaxFramebufferSize = 8192;
+    static const Uint sMaxFramebufferSize = 8192;
     DXGI_FORMAT SpikeFormatToDX11Format(FormatCode code)
     {
         switch (code)
@@ -76,7 +76,7 @@ namespace Spike
 
     void DX11Framebuffer::Unbind() {}
 
-    void DX11Framebuffer::Resize(uint32_t width, uint32_t height)
+    void DX11Framebuffer::Resize(Uint width, Uint height)
     {
         if (width == 0 || height == 0 || width > sMaxFramebufferSize || height > sMaxFramebufferSize)
         {

@@ -7,7 +7,7 @@
 namespace Spike
 {
     /* [Spike] Dynamic Vertex Buffer [Spike] */
-    DX11VertexBuffer::DX11VertexBuffer(uint32_t size, VertexBufferLayout layout)
+    DX11VertexBuffer::DX11VertexBuffer(Uint size, VertexBufferLayout layout)
         :mLayout(layout)
     {
         D3D11_BUFFER_DESC vbd = {};
@@ -21,7 +21,7 @@ namespace Spike
         DX_CALL(DX11Internal::GetDevice()->CreateBuffer(&vbd, nullptr, &mVertexBuffer)); //Create empty vertex buffer
     }
 
-    DX11VertexBuffer::DX11VertexBuffer(void* vertices, uint32_t size, VertexBufferLayout layout)
+    DX11VertexBuffer::DX11VertexBuffer(void* vertices, Uint size, VertexBufferLayout layout)
         :mLayout(layout)
     {
         D3D11_BUFFER_DESC vbd = {};
@@ -47,8 +47,8 @@ namespace Spike
 
     void DX11VertexBuffer::Bind() const
     {
-        uint32_t stride = mLayout.GetStride();
-        uint32_t offset = 0;
+        Uint stride = mLayout.GetStride();
+        Uint offset = 0;
         DX11Internal::GetDeviceContext()->IASetVertexBuffers(0, 1, &mVertexBuffer, &stride, &offset);
     }
 
@@ -57,7 +57,7 @@ namespace Spike
         DX11Internal::GetDeviceContext()->IASetVertexBuffers(0, 1, nullptr, 0, 0);
     }
 
-    void DX11VertexBuffer::SetData(const void* data, uint32_t size)
+    void DX11VertexBuffer::SetData(const void* data, Uint size)
     {
         this->Bind();
         auto deviceContext = DX11Internal::GetDeviceContext();

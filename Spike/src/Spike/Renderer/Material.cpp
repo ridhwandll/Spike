@@ -17,7 +17,7 @@ namespace Spike
         m_CBuffer = ConstantBuffer::Create(shader, "Material", nullptr, sizeof(MaterialCbuffer), 2, ShaderDomain::PIXEL, DataUsage::DYNAMIC);
     }
 
-    void Material::Bind(uint32_t index)
+    void Material::Bind(Uint index)
     {
         m_Shader->Bind();
         m_CBufferData.AlbedoTexToggle = m_AlbedoTexToggle;
@@ -40,7 +40,7 @@ namespace Spike
         m_Shader->SetInt("u_DiffuseTexture", index);
     }
 
-    void Material::PushTexture(const Ref<Texture2D>& tex, uint32_t slot)
+    void Material::PushTexture(const Ref<Texture2D>& tex, Uint slot)
     {
          m_Textures[slot] = tex;
     }

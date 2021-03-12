@@ -51,6 +51,7 @@ namespace Spike
     typedef std::string String;
 
     typedef void* RendererID;
+    typedef uint32_t Uint;
 
     template<typename T>
     using Vector = std::vector<T>;

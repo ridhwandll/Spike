@@ -39,7 +39,7 @@ namespace Spike
         static void Flush();
 
     private:
-        static uint32_t GetSeverityMaxBufferCount(Severity severity);
+        static Uint GetSeverityMaxBufferCount(Severity severity);
         static const char* GetSeverityID(Severity severity);
         static const char* GetSeverityConsoleColor(Severity severity);
         static void Log(const char* name, Severity severity, const char* format, va_list args);

@@ -29,7 +29,7 @@ namespace Spike
         void OnUpdate(Timestep ts);
         void OnUpdateRuntime(Timestep ts);
         void OnUpdateEditor(Timestep ts, EditorCamera& camera);
-        void OnViewportResize(uint32_t width, uint32_t height);
+        void OnViewportResize(Uint width, Uint height);
         void OnEvent(Event& e);
 
         void OnRuntimeStart();
@@ -56,7 +56,7 @@ namespace Spike
 
     private:
         UUID m_SceneID;
-        uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
+        Uint m_ViewportWidth = 0, m_ViewportHeight = 0;
         entt::entity m_SceneEntity;
         entt::registry m_Registry;
 

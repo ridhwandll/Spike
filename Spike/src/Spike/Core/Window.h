@@ -12,12 +12,12 @@ namespace Spike
     struct WindowProps
     {
         String Title;
-        uint32_t Width;
-        uint32_t Height;
+        Uint Width;
+        Uint Height;
 
         WindowProps(const String& title = "Spike",
-                    uint32_t width = 1280,
-                    uint32_t height = 720)
+                    Uint width = 1280,
+                    Uint height = 720)
             : Title(title), Width(width), Height(height) {}
     };
 
@@ -31,8 +31,8 @@ namespace Spike
 
         virtual void OnUpdate() = 0;
 
-        virtual uint32_t GetWidth() const = 0;
-        virtual uint32_t GetHeight() const = 0;
+        virtual Uint GetWidth() const = 0;
+        virtual Uint GetHeight() const = 0;
 
         // Window attributes
         virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

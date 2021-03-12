@@ -118,7 +118,7 @@ namespace Spike
         }
     }
 
-    uint32_t Logger::GetSeverityMaxBufferCount(Severity severity)
+    Uint Logger::GetSeverityMaxBufferCount(Severity severity)
     {
         switch (severity)
         {
@@ -200,7 +200,7 @@ namespace Spike
 
     void Logger::Log(const char* name, Severity severity, const char* format, va_list args)
     {
-        uint32_t length = vsnprintf(nullptr, 0, format, args) + 1;
+        Uint length = vsnprintf(nullptr, 0, format, args) + 1;
         char* buf = new char[length];
         vsnprintf(buf, length, format, args);
 
@@ -209,8 +209,8 @@ namespace Spike
 
         std::vector<std::string> messages;
 
-        uint32_t lastIndex = 0;
-        for (uint32_t i = 0; i < message.length(); i++)
+        Uint lastIndex = 0;
+        for (Uint i = 0; i < message.length(); i++)
         {
             if (message[i] == '\n')
             {
@@ -229,7 +229,7 @@ namespace Spike
             std::string systemConsoleMsg = "";
             std::string editorConsoleMsg = "";
 
-            constexpr uint32_t timeBufferSize = 16;
+            constexpr Uint timeBufferSize = 16;
             std::time_t        currentTime = std::time(nullptr);
             char               timeBuffer[timeBufferSize];
 

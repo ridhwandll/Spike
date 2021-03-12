@@ -23,12 +23,12 @@ namespace Spike
         Material(const Ref<Shader>& shader);
         ~Material() = default;
 
-        void Bind(uint32_t index);
+        void Bind(Uint index);
 
         Ref<Shader>& GetShader() { return m_Shader; }
 
         Vector<Ref<Texture2D>>& GetTextures() { return m_Textures; }
-        void PushTexture(const Ref<Texture2D>& tex, uint32_t slot = 0);
+        void PushTexture(const Ref<Texture2D>& tex, Uint slot = 0);
 
         glm::vec3& GetColor() { return m_Color; }
         void SetColor(const glm::vec3& color) { m_Color = color; }

@@ -9,7 +9,7 @@
 
 namespace Spike
 {
-    Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
+    Ref<Texture2D> Texture2D::Create(Uint width, Uint height)
     {
         switch (RendererAPI::GetAPI())
         {
@@ -35,9 +35,9 @@ namespace Spike
         return nullptr;
     }
 
-    uint32_t Texture::CalculateMipMapCount(uint32_t width, uint32_t height)
+    Uint Texture::CalculateMipMapCount(Uint width, Uint height)
     {
-        uint32_t levels = 1;
+        Uint levels = 1;
         while ((width | height) >> levels)
             levels++;
 

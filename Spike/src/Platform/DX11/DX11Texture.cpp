@@ -9,7 +9,7 @@
 
 namespace Spike
 {
-    DX11Texture2D::DX11Texture2D(uint32_t width, uint32_t height)
+    DX11Texture2D::DX11Texture2D(Uint width, Uint height)
         : m_Width(width), m_Height(height), m_Filepath("[Spike] Built in Texture [Spike]"), m_Name("[Spike] Built in Texture [Spike]")
     {
         D3D11_TEXTURE2D_DESC textureDesc = {};
@@ -37,7 +37,7 @@ namespace Spike
         LoadTexture(flipped);
     }
 
-    void DX11Texture2D::SetData(void* data, uint32_t size)
+    void DX11Texture2D::SetData(void* data, Uint size)
     {
         ID3D11DeviceContext* deviceContext = DX11Internal::GetDeviceContext();
         D3D11_MAPPED_SUBRESOURCE ms = {};
@@ -52,7 +52,7 @@ namespace Spike
         m_SRV->Release();
     }
 
-    void DX11Texture2D::Bind(uint32_t bindslot, ShaderDomain domain) const
+    void DX11Texture2D::Bind(Uint bindslot, ShaderDomain domain) const
     {
         auto deviceContext = DX11Internal::GetDeviceContext();
 

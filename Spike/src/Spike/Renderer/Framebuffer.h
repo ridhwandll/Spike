@@ -26,12 +26,12 @@ namespace Spike
         DECODER = 0x200L,
         VIDEO_ENCODER = 0x400L
     };
-    inline BindFlag operator|(BindFlag a, BindFlag b) { return (BindFlag)((uint32_t)a | (uint32_t)b); };
+    inline BindFlag operator|(BindFlag a, BindFlag b) { return (BindFlag)((Uint)a | (Uint)b); };
 
     struct FramebufferSpecification
     {
-        uint32_t Width = 0, Height = 0;
-        uint32_t Samples = 1;
+        Uint Width = 0, Height = 0;
+        Uint Samples = 1;
 
         struct BufferDesc
         {
@@ -54,7 +54,7 @@ namespace Spike
 
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
-        virtual void Resize(uint32_t width, uint32_t height) = 0;
+        virtual void Resize(Uint width, Uint height) = 0;
         virtual FramebufferSpecification& GetSpecification() = 0;
         virtual void Clear(const glm::vec4& clearColor) = 0;
         virtual RendererID GetColorViewID() = 0;

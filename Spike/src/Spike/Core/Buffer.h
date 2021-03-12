@@ -9,15 +9,15 @@ namespace Spike
     struct Buffer
     {
         byte* Data;
-        uint32_t Size;
+        Uint Size;
 
         Buffer()
             : Data(nullptr), Size(0) {}
 
-        Buffer(byte* data, uint32_t size)
+        Buffer(byte* data, Uint size)
             : Data(data), Size(size) {}
 
-        static Buffer Copy(void* data, uint32_t size)
+        static Buffer Copy(void* data, Uint size)
         {
             Buffer buffer;
             buffer.Allocate(size);
@@ -25,7 +25,7 @@ namespace Spike
             return buffer;
         }
 
-        void Allocate(uint32_t size)
+        void Allocate(Uint size)
         {
             delete[] Data;
             Data = nullptr;
@@ -43,12 +43,12 @@ namespace Spike
         }
 
         template<typename T>
-        T& Read(uint32_t offset = 0)
+        T& Read(Uint offset = 0)
         {
             return *(T*)(Data + offset);
         }
 
-        void Write(void* data, uint32_t size, uint32_t offset = 0)
+        void Write(void* data, Uint size, Uint offset = 0)
         {
             SPK_CORE_ASSERT(offset + size <= Size, "Buffer overflow!");
             memcpy(Data + offset, data, size);
@@ -80,6 +80,6 @@ namespace Spike
             return (T*)Data;
         }
 
-        uint32_t GetSize() const { return Size; }
+        Uint GetSize() const { return Size; }
     };
 }

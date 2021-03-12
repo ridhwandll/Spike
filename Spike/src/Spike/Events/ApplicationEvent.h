@@ -11,11 +11,11 @@ namespace Spike
     class  WindowResizeEvent : public Event
     {
     public:
-        WindowResizeEvent(uint32_t width, uint32_t height)
+        WindowResizeEvent(Uint width, Uint height)
             : m_Width(width), m_Height(height) {}
 
-        uint32_t GetWidth() const { return m_Width; }
-        uint32_t GetHeight() const { return m_Height; }
+        Uint GetWidth() const { return m_Width; }
+        Uint GetHeight() const { return m_Height; }
 
         String ToString() const override
         {
@@ -27,7 +27,7 @@ namespace Spike
         EVENT_CLASS_TYPE(WindowResize)
         EVENT_CLASS_CATEGORY(EventCategoryApplication)
     private:
-        uint32_t m_Width, m_Height;
+        Uint m_Width, m_Height;
     };
 //WINDOW CLOSE EVENT
     class  WindowCloseEvent : public Event

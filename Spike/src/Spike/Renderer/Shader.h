@@ -30,7 +30,7 @@ namespace Spike
         static Ref<Shader> Create(const String& filepath);
 
         virtual void SetInt(const String& name, int value) = 0;
-        virtual void SetIntArray(const String& name, int* value, uint32_t count) = 0;
+        virtual void SetIntArray(const String& name, int* value, Uint count) = 0;
         virtual void SetFloat(const String& name, float value) = 0;
         virtual void SetFloat2(const String& name, const glm::vec2& value) = 0;
         virtual void SetFloat3(const String& name, const glm::vec3& value) = 0;

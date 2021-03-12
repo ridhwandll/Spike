@@ -135,14 +135,14 @@ namespace Spike
     }
 
     /* [Spike] Instantiate the Mono Class [Spike] */
-    static uint32_t Instantiate(EntityScriptClass& scriptClass)
+    static Uint Instantiate(EntityScriptClass& scriptClass)
     {
         MonoObject* instance = mono_object_new(s_MonoDomain, scriptClass.Class);
         if (!instance)
             SPK_CORE_LOG_ERROR("mono_object_new failed");
 
         mono_runtime_object_init(instance);
-        uint32_t handle = mono_gchandle_new(instance, false);
+        Uint handle = mono_gchandle_new(instance, false);
         return handle;
     }
 
@@ -408,7 +408,7 @@ namespace Spike
             while ((iter = mono_class_get_fields(scriptClass.Class, &ptr)) != NULL)
             {
                 const char* name = mono_field_get_name(iter);
-                uint32_t flags = mono_field_get_flags(iter);
+                Uint flags = mono_field_get_flags(iter);
                 if ((flags & MONO_FIELD_ATTR_PUBLIC) == 0)
                     continue;
 
@@ -522,7 +522,7 @@ namespace Spike
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    static uint32_t GetFieldSize(FieldType type)
+    static Uint GetFieldSize(FieldType type)
     {
         switch (type)
         {
@@ -575,13 +575,13 @@ namespace Spike
 
     void PublicField::SetStoredValueRaw(void* src)
     {
-        uint32_t size = GetFieldSize(Type);
+        Uint size = GetFieldSize(Type);
         memcpy(m_StoredValueBuffer, src, size);
     }
 
     uint8_t* PublicField::AllocateBuffer(FieldType type)
     {
-        uint32_t size = GetFieldSize(type);
+        Uint size = GetFieldSize(type);
         byte* buffer = new byte[size];
         memset(buffer, 0, size);
         return buffer;
@@ -589,13 +589,13 @@ namespace Spike
 
     void PublicField::SetStoredValue_Internal(void* value) const
     {
-        uint32_t size = GetFieldSize(Type);
+        Uint size = GetFieldSize(Type);
         memcpy(m_StoredValueBuffer, value, size);
     }
 
     void PublicField::GetStoredValue_Internal(void* outValue) const
     {
-        uint32_t size = GetFieldSize(Type);
+        Uint size = GetFieldSize(Type);
         memcpy(outValue, m_StoredValueBuffer, size);
     }
 

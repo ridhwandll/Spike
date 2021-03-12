@@ -24,7 +24,7 @@ namespace Spike
 
         //TODO: Remove
         virtual void SetInt(const String& name, int value) override {};
-        virtual void SetIntArray(const String& name, int* value, uint32_t count) override {};
+        virtual void SetIntArray(const String& name, int* value, Uint count) override {};
         virtual void SetFloat(const String& name, float value) override {};
         virtual void SetFloat2(const String& name, const glm::vec2& value) override {};
         virtual void SetFloat3(const String& name, const glm::vec3& value) override {};

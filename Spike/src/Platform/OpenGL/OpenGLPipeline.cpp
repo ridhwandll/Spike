@@ -31,7 +31,7 @@ namespace Spike
     {
         SPK_CORE_ASSERT(m_Specification.VertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
-        uint32_t rendererID;
+        Uint rendererID;
         glGenVertexArrays(1, &rendererID);
         glBindVertexArray(rendererID);
 
@@ -101,7 +101,7 @@ namespace Spike
 
     OpenGLPipeline::~OpenGLPipeline()
     {
-        uint32_t rendererID = reinterpret_cast<uint32_t>(m_RendererID);
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
         glDeleteVertexArrays(1, &rendererID);
     }
 

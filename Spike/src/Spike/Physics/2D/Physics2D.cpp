@@ -116,7 +116,7 @@ namespace Spike
         {
             auto view = m_Scene->m_Registry.view<RigidBody2DComponent>();
             m_Physics2DBodyEntityBuffer = new Entity[view.size()];
-            uint32_t physicsBodyEntityBufferIndex = 0;
+            Uint physicsBodyEntityBufferIndex = 0;
             for (auto entity : view)
             {
                 Entity e = { entity, m_Scene };

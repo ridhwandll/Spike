@@ -8,73 +8,83 @@
 #include "Spike/Renderer/Shader.h"
 #include "Platform/DX11/DX11Internal.h"
 
-namespace Spike
+namespace Spike::Renderer
 {
-    Ref<ConstantBuffer> Renderer::s_SceneCbuffer = nullptr;
-    Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
-    static size_t s_DrawCalls = 0;
+    struct SceneData
+    {
+        glm::mat4 ViewProjectionMatrix;
+    };
 
-    void Renderer::Init()
+    Scope<SceneData> sceneData = CreateScope<SceneData>();
+    Ref<ConstantBuffer> sceneCbuffer;
+    size_t drawCalls = 0;
+
+    void Init()
     {
         RenderCommand::Init();
         Ref<Shader> shader;
 
         switch (RendererAPI::GetAPI())
         {
-            case RendererAPI::API::DX11: shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.hlsl"); break;
-            case RendererAPI::API::OpenGL: shader = Shader::Create("Spike-Editor/assets/shaders/MeshShader.glsl"); break;
+            case RendererAPI::API::DX11: shader = Shader::Create("Spike-Editor/assets/shaders/HLSL/MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: shader = Shader::Create("Spike-Editor/assets/shaders/GLSL/MeshShader.glsl"); break;
         }
 
         Vault::Submit<Shader>(shader);
-        s_SceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
+        sceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
     }
 
-    void Renderer::Shutdown()
+    void Shutdown()
     {
     }
 
-    void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+    void OnWindowResize(Uint width, Uint height)
     {
         RenderCommand::SetViewport(0, 0, width, height);
     }
 
-    void Renderer::BeginScene(EditorCamera& camera)
+    void BeginScene(EditorCamera& camera)
     {
-        s_SceneData->ViewProjectionMatrix = camera.GetViewProjection();
+        sceneData->ViewProjectionMatrix = camera.GetViewProjection();
     }
 
-    void Renderer::BeginScene(const Camera& camera, const glm::mat4& transform)
+    void BeginScene(const Camera& camera, const glm::mat4& transform)
     {
-        s_SceneData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
+        sceneData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
     }
 
-    void Renderer::EndScene()
+    void EndScene()
     {
     }
 
-    void Renderer::Submit(Ref<Pipeline> pipeline, uint32_t size)
+    void Submit(Ref<Pipeline> pipeline, Uint size)
     {
         RenderCommand::DrawIndexed(pipeline, size);
     }
 
-    void Renderer::SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
+    void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform)
     {
         auto shader = mesh->GetShader();
         shader->Bind();
-        mesh->m_VertexBuffer->Bind();
-        mesh->m_Pipeline->Bind();
-        mesh->m_IndexBuffer->Bind();
+        mesh->GetVertexBuffer()->Bind();
+        mesh->GetPipeline()->Bind();
+        mesh->GetIndexBuffer()->Bind();
 
-        s_SceneCbuffer->SetData(&s_SceneData->ViewProjectionMatrix);
+        sceneCbuffer->SetData(&sceneData->ViewProjectionMatrix);
 
-        for (Submesh& submesh : mesh->m_Submeshes)
+        for (Submesh& submesh : mesh->GetSubmeshes())
         {
-            mesh->m_Material->Bind(submesh.MaterialIndex);
+            mesh->GetMaterial()->Bind(submesh.MaterialIndex);
             submesh.CBuffer->SetData(&(transform * submesh.Transform));
-            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex); s_DrawCalls++;
+            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex); drawCalls++;
         }
     }
 
-    void Renderer::UpdateStats() { s_DrawCalls = 0; }
-    size_t Renderer::GetTotalDrawCallsCount() { return s_DrawCalls; }
+    void UpdateStats() { drawCalls = 0; }
+    size_t GetTotalDrawCallsCount() { return drawCalls; }
+
+    Spike::RendererAPI::API GetAPI()
+    {
+        return RendererAPI::GetAPI();
+    }
 }

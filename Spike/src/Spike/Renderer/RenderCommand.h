@@ -13,7 +13,7 @@ namespace Spike
             s_RendererAPI->Init();
         }
 
-        static void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+        static void SetViewport(Uint x, Uint y, Uint width, Uint height)
         {
             s_RendererAPI->SetViewport(x, y, width, height);
         }
@@ -27,12 +27,12 @@ namespace Spike
             s_RendererAPI->Clear();
         }
 
-        static void DrawIndexed(const Ref<Pipeline>& pipeline, uint32_t count = 0)
+        static void DrawIndexed(const Ref<Pipeline>& pipeline, Uint count = 0)
         {
             s_RendererAPI->DrawIndexed(pipeline, count);
         }
 
-        static void DrawIndexedMesh(uint32_t indexCount, uint32_t baseIndex, uint32_t baseVertex)
+        static void DrawIndexedMesh(Uint indexCount, Uint baseIndex, Uint baseVertex)
         {
             s_RendererAPI->DrawIndexedMesh(indexCount, baseIndex, baseVertex);
         }

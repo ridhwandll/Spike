@@ -10,17 +10,17 @@ namespace Spike
     class DX11Texture2D : public Texture2D
     {
     public:
-        DX11Texture2D(uint32_t width, uint32_t height);
+        DX11Texture2D(Uint width, Uint height);
         DX11Texture2D(const String& path, bool flipped = false);
         ~DX11Texture2D();
-        virtual void Bind(uint32_t bindslot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
+        virtual void Bind(Uint bindslot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
         virtual const String GetName() const override { return m_Name; }
-        virtual uint32_t GetWidth()  const override { return m_Width; }
-        virtual uint32_t GetHeight() const override { return m_Height; }
+        virtual Uint GetWidth()  const override { return m_Width; }
+        virtual Uint GetHeight() const override { return m_Height; }
         virtual String GetFilepath() const override { return m_Filepath; }
         virtual RendererID GetRendererID() const override { return (RendererID)m_SRV; }
-        virtual void SetData(void* data, uint32_t size) override;
-        virtual void ActivateSlot(uint32_t slot) override {}
+        virtual void SetData(void* data, Uint size) override;
+        virtual void ActivateSlot(Uint slot) override {}
         virtual bool Loaded() override { return m_Loaded; };
         virtual void Reload(bool flip = false);
         virtual void Unbind() const override {}

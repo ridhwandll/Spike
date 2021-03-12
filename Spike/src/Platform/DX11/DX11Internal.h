@@ -8,7 +8,7 @@ namespace Spike::DX11Internal
 {
     void Init(HWND hwnd);
     void Shutdown();
-    void Resize(uint32_t width, uint32_t height);
+    void Resize(Uint width, Uint height);
     void BindBackbuffer();
 
     void CreateDeviceAndSwapChain(HWND windowHandle);
@@ -30,7 +30,7 @@ namespace Spike::DX11Internal
 
 namespace Spike
 {
-    bool CheckHResult(HRESULT hresult, std::string_view statement, std::string_view file, uint32_t line);
+    bool CheckHResult(HRESULT hresult, std::string_view statement, std::string_view file, Uint line);
 
     #if SPK_DEBUG
         #define DX_CALL(func)\

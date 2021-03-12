@@ -106,7 +106,7 @@ namespace Spike
                 }
             });
 
-        glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t keycode)
+        glfwSetCharCallback(m_Window, [](GLFWwindow* window, Uint keycode)
             {
                 WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 

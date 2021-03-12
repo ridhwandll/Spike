@@ -29,26 +29,26 @@ namespace Spike
     public:
         virtual ~Texture() = default;
 
-        virtual uint32_t GetWidth() const = 0;
-        virtual uint32_t GetHeight() const = 0;
+        virtual Uint GetWidth() const = 0;
+        virtual Uint GetHeight() const = 0;
         virtual RendererID GetRendererID() const = 0;
         virtual String GetFilepath() const = 0;
         virtual String const GetName() const = 0;
-        virtual void SetData(void* data, uint32_t size) = 0;
-        virtual void ActivateSlot(uint32_t slot) = 0;
+        virtual void SetData(void* data, Uint size) = 0;
+        virtual void ActivateSlot(Uint slot) = 0;
         virtual bool Loaded() = 0;
         virtual void Reload(bool flip = false) = 0;
-        virtual void Bind(uint32_t slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const = 0;
+        virtual void Bind(Uint slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const = 0;
         virtual void Unbind() const = 0;
         virtual bool operator==(const Texture& other) const = 0;
 
-        static uint32_t CalculateMipMapCount(uint32_t width, uint32_t height);
+        static Uint CalculateMipMapCount(Uint width, Uint height);
     };
 
     class Texture2D : public Texture
     {
     public:
-        static Ref<Texture2D> Create(uint32_t width, uint32_t height);
+        static Ref<Texture2D> Create(Uint width, Uint height);
         static Ref<Texture2D> Create(const String& path, bool flipped = false);
     };
 

@@ -30,9 +30,9 @@ namespace Spike
             SPK_REF_LOG_DECREMENT("REF decremented!");
         }
 
-        uint32_t GetRefCount() const { return m_RefCount; }
+        Uint GetRefCount() const { return m_RefCount; }
     private:
-        mutable uint32_t m_RefCount = 0; // TODO: atomic
+        mutable Uint m_RefCount = 0; // TODO: atomic
     };
 
     template<typename T>

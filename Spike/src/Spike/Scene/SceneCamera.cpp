@@ -29,7 +29,7 @@ namespace Spike
         RecalculateProjection();
     }
 
-    void SceneCamera::SetViewportSize(uint32_t width, uint32_t height)
+    void SceneCamera::SetViewportSize(Uint width, Uint height)
     {
         m_AspectRatio = (float)width / (float)height;
         RecalculateProjection();

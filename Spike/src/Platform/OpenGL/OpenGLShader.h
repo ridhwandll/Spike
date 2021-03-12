@@ -22,7 +22,7 @@ namespace Spike
         virtual void* GetNativeClass() override;
 
         virtual void SetInt(const String& name, int value) override;
-        virtual void SetIntArray(const String& name, int* value, uint32_t count) override;
+        virtual void SetIntArray(const String& name, int* value, Uint count) override;
         virtual void SetFloat(const String& name, float value) override;
         virtual void SetFloat2(const String& name, const glm::vec2& value) override;
         virtual void SetFloat3(const String& name, const glm::vec3& value) override;
@@ -33,7 +33,7 @@ namespace Spike
         void Compile();
 
         void UploadUniformInt(const String& name, int value);
-        void UploadUniformIntArray(const String& name, int* value, uint32_t count);
+        void UploadUniformIntArray(const String& name, int* value, Uint count);
         void UploadUniformFloat(const String& name, float value);
         void UploadUniformFloat2(const String& name, const glm::vec2& matrix);
         void UploadUniformFloat3(const String& name, const glm::vec3& values);

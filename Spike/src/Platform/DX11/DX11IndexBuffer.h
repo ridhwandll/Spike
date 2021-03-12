@@ -9,15 +9,15 @@ namespace Spike
     class DX11IndexBuffer : public IndexBuffer
     {
     public:
-        DX11IndexBuffer(void* indices, uint32_t count);
+        DX11IndexBuffer(void* indices, Uint count);
         virtual ~DX11IndexBuffer();
 
         void Bind() const override;
         void Unbind() const override;
 
-        uint32_t GetCount() const override { return m_Count; }
+        Uint GetCount() const override { return m_Count; }
     private:
         ID3D11Buffer* m_IndexBuffer;
-        uint32_t m_Count;
+        Uint m_Count;
     };
 }
