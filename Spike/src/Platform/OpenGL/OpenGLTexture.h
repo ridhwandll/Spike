@@ -19,15 +19,11 @@ namespace Spike
         virtual RendererID GetRendererID() const override { return (RendererID)m_RendererID; };
         virtual String GetFilepath() const override { return m_FilePath; }
         void SetData(void* data, Uint size) override;
-        virtual void ActivateSlot(Uint slot) override;
         virtual void Bind(Uint slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
         virtual void Unbind() const override;
         virtual bool Loaded() override { return m_Loaded; }
         virtual void Reload(bool flip = false);
-        bool operator==(const Texture& other) const override
-        {
-            return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID;
-        }
+        bool operator==(const Texture& other) const override { return m_RendererID == ((OpenGLTexture2D&)other).m_RendererID; }
     private:
         void LoadTexture(bool flip);
     private:
@@ -37,5 +33,33 @@ namespace Spike
         RendererID m_RendererID;
         GLenum m_InternalFormat, m_DataFormat;
         String m_Name;
+    };
+
+    class OpenGLTextureCube : public TextureCube
+    {
+    public:
+        OpenGLTextureCube(const String& folderPath);
+        ~OpenGLTextureCube();
+        virtual void Bind(Uint slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
+        virtual String GetFilepath() const override { return m_FilePath; }
+        virtual Uint GetWidth() const override { return m_Width; }
+        virtual Uint GetHeight() const override { return m_Height; }
+        virtual String const GetName() const override { return m_Name; }
+        virtual RendererID GetRendererID() const override { return m_RendererID; }
+        virtual bool Loaded() override { return m_Loaded; }
+        virtual void Reload(bool flip = false) override;
+        virtual void SetData(void* data, Uint size) override {}
+        virtual void Unbind() const override;
+        virtual bool operator ==(const Texture& other) const override { return m_RendererID == ((OpenGLTextureCube&)other).m_RendererID; }
+    private:
+        void LoadTextureCube(bool flip);
+        void SetTexture(Uint side, const String& file);
+    private:
+        String m_FilePath;
+        Vector<String> m_Faces;
+        RendererID m_RendererID;
+        Uint m_Width, m_Height;
+        String m_Name;
+        bool m_Loaded = false;
     };
 }

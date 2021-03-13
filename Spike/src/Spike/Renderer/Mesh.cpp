@@ -27,6 +27,13 @@ namespace Spike
     Mesh::Mesh(const Vector<Vertex>& vertices, const Vector<Index>& indices, const glm::mat4& transform)
         : m_Vertices(vertices), m_Indices(indices)
     {
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::DX11: m_Shader = Vault::Get<Shader>("MeshShader.hlsl"); break;
+            case RendererAPI::API::OpenGL: m_Shader = Vault::Get<Shader>("MeshShader.glsl"); break;
+        }
+        m_Material = Material::Create(m_Shader);
+
         Submesh submesh;
         submesh.BaseVertex = 0;
         submesh.BaseIndex = 0;
@@ -35,13 +42,6 @@ namespace Spike
         submesh.CBuffer = ConstantBuffer::Create(m_Shader, "Mesh", nullptr, sizeof(glm::mat4), 1, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
 
         m_Submeshes.push_back(submesh);
-
-        switch (RendererAPI::GetAPI())
-        {
-            case RendererAPI::API::DX11: m_Shader = Vault::Get<Shader>("MeshShader.hlsl"); break;
-            case RendererAPI::API::OpenGL: m_Shader = Vault::Get<Shader>("MeshShader.glsl"); break;
-        }
-        m_Material = Material::Create(m_Shader);
 
        VertexBufferLayout layout =
        {

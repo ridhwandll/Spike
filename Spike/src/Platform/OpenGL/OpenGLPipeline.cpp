@@ -110,6 +110,13 @@ namespace Spike
         glBindVertexArray((GLuint)m_RendererID);
     }
 
+    void OpenGLPipeline::BindSpecificationObjects() const
+    {
+        m_Specification.VertexBuffer->Bind();
+        m_Specification.IndexBuffer->Bind();
+        m_Specification.Shader->Bind();
+    }
+
     void OpenGLPipeline::Unbind() const
     {
         glBindVertexArray(0);

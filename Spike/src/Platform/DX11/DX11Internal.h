@@ -13,6 +13,7 @@ namespace Spike::DX11Internal
 
     void CreateDeviceAndSwapChain(HWND windowHandle);
     void CreateSampler();
+    void CreateSkyboxSampler();
     void CreateBackbuffer();
     void CreateBlendState();
     void CreateRasterizerState();
@@ -25,6 +26,7 @@ namespace Spike::DX11Internal
     IDXGISwapChain* GetSwapChain();
     ID3D11BlendState* GetBlendState();
     ID3D11SamplerState* GetCommonSampler();
+    ID3D11SamplerState* GetSkyboxSampler();
     Ref<Framebuffer> GetBackbuffer();
 }
 

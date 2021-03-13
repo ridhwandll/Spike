@@ -20,7 +20,9 @@ namespace Spike
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+    #ifdef SPK_DEBUG
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+    #endif
         glfwMakeContextCurrent(m_WindowHandle);
         int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         SPK_CORE_ASSERT(status, "Failed to initialize Glad!");

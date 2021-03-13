@@ -71,7 +71,6 @@ namespace Spike
 
         if (m_IsDepth)
             deviceContext->OMSetDepthStencilState(m_DepthStencilState.Get(), 1);
-
     }
 
     void DX11Framebuffer::Unbind() {}
@@ -95,7 +94,6 @@ namespace Spike
         deviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), (float*)&clearColor);
         if (m_IsDepth)
             deviceContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
     }
 
     RendererID DX11Framebuffer::GetSwapChainTarget() { return (RendererID)m_RenderTargetView.Get(); }

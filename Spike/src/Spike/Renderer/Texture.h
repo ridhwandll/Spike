@@ -9,21 +9,6 @@
 
 namespace Spike
 {
-    enum class TextureFormat
-    {
-        None = 0,
-        RGB = 1,
-        RGBA = 2,
-        Float16 = 3
-    };
-
-    enum class TextureWrap
-    {
-        None = 0,
-        Clamp = 1,
-        Repeat = 2
-    };
-
     class Texture : public RefCounted
     {
     public:
@@ -35,7 +20,6 @@ namespace Spike
         virtual String GetFilepath() const = 0;
         virtual String const GetName() const = 0;
         virtual void SetData(void* data, Uint size) = 0;
-        virtual void ActivateSlot(Uint slot) = 0;
         virtual bool Loaded() = 0;
         virtual void Reload(bool flip = false) = 0;
         virtual void Bind(Uint slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const = 0;
@@ -52,4 +36,15 @@ namespace Spike
         static Ref<Texture2D> Create(const String& path, bool flipped = false);
     };
 
+    class TextureCube : public Texture
+    {
+    public:
+        /*
+         Make sure the folder contains the image files named
+         Aright, Bleft, Ctop, Dbottom, Efront, Fback,
+         where the names represents the 6 sides of a cubemap.
+         Yes, the prefix A B C D... are necessary!
+        */
+        static Ref<TextureCube> Create(const String& folderpath);
+    };
 }

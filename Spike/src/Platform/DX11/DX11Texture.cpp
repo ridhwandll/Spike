@@ -112,4 +112,99 @@ namespace Spike
 
         free(data); //Always remember to free the data!
     }
+
+    /*
+        Texture Cube
+    */
+
+
+    DX11TextureCube::DX11TextureCube(const String& folderPath)
+    {
+        Vector<String> paths = Vault::GetAllFilePathsFromParentPath(folderPath);
+        m_FilePath = folderPath;
+        m_Name = Vault::GetNameWithoutExtension(folderPath);
+
+        for (uint8_t i = 0; i < 6; i++)
+            m_Faces.emplace_back(paths[i].c_str());
+
+        std::sort(m_Faces.begin(), m_Faces.end());
+        LoadTextureCube(false);
+    }
+
+    void DX11TextureCube::Bind(Uint slot, ShaderDomain domain) const
+    {
+        auto deviceContext = DX11Internal::GetDeviceContext();
+        ID3D11SamplerState* sampler = DX11Internal::GetSkyboxSampler();
+        deviceContext->PSSetSamplers(1, 1, &sampler); //Bind it at slot 1
+
+        switch (domain)
+        {
+            case ShaderDomain::NONE: SPK_CORE_LOG_WARN("Shader domain NONE is given, this is perfectly valid. However, the developer may not want to rely on the NONE."); break;
+            case ShaderDomain::VERTEX: deviceContext->VSSetShaderResources(slot, 1, &m_SRV); break;
+            case ShaderDomain::PIXEL:  deviceContext->PSSetShaderResources(slot, 1, &m_SRV); break;
+        }
+
+    }
+
+    void DX11TextureCube::Reload(bool flip)
+    {
+        LoadTextureCube(flip);
+    }
+
+    void DX11TextureCube::LoadTextureCube(bool flip)
+    {
+        stbi_set_flip_vertically_on_load(flip);
+        SPK_CORE_ASSERT(m_Faces.size() == 6, "TextureCube needs 6 faces!");
+
+        Vector<stbi_uc*> surfaces;
+        int channels;
+        for (uint8_t i = 0; i < 6; i++)
+        {
+            int width, height;
+            surfaces.emplace_back(stbi_load(m_Faces[i].c_str(), &width, &height, &channels, 0));
+            m_Width = width;
+            m_Height = height;
+        }
+
+        D3D11_TEXTURE2D_DESC textureDesc = {};
+        textureDesc.Width = m_Width;
+        textureDesc.Height = m_Height;
+        textureDesc.MipLevels = 1;
+        textureDesc.ArraySize = 6;
+        textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        textureDesc.CPUAccessFlags = 0;
+        textureDesc.SampleDesc.Count = 1;
+        textureDesc.SampleDesc.Quality = 0;
+        textureDesc.Usage = D3D11_USAGE_DEFAULT;
+        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+        D3D11_SUBRESOURCE_DATA datas[6] = {};
+        for (uint8_t i = 0; i < 6; i++)
+        {
+            datas[i].pSysMem = surfaces[i];
+            datas[i].SysMemPitch = m_Width * channels * sizeof(unsigned char);
+            datas[i].SysMemSlicePitch = 0;
+        }
+
+        ID3D11Texture2D* tex = nullptr;
+        DX_CALL(DX11Internal::GetDevice()->CreateTexture2D(&textureDesc, datas, &tex));
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = textureDesc.Format;
+        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+        srvDesc.Texture2D.MipLevels = 1;
+        DX_CALL(DX11Internal::GetDevice()->CreateShaderResourceView(tex, &srvDesc, &m_SRV));
+
+        //Cleanup
+        tex->Release();
+        for (uint8_t i = 0; i < 6; i++)
+            free(surfaces[i]);
+    }
+
+    DX11TextureCube::~DX11TextureCube()
+    {
+        m_SRV->Release();
+    }
 }

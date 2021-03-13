@@ -138,19 +138,17 @@ namespace Spike
     {
         Vector<String> paths;
         for (const auto& entry : std::filesystem::directory_iterator(s_ProjectPath))
-        {
             paths.push_back(entry.path().string());
-        }
+
         return paths;
     }
 
-    Vector<String> Vault::GetAllFolderNamesProjectPath()
+    Vector<String> Vault::GetAllFilePathsFromParentPath(const String& path)
     {
         Vector<String> names;
-        for (const auto& entry : std::filesystem::directory_iterator(s_ProjectPath))
-        {
-            names.push_back(GetNameWithoutExtension(entry.path().string()));
-        }
+        for (const auto& entry : std::filesystem::directory_iterator(path))
+            names.push_back(entry.path().string());
+
         return names;
     }
 

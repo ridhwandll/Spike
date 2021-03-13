@@ -117,7 +117,7 @@ float3 CalculatePointLight(PointLight light, float3 normal, float3 viewDir, floa
 float4 main(vsOut input) : SV_TARGET
 {
     float4 PixelColor;
-    
+
     float3 norm = normalize(input.v_Normal);
     float3 viewDir = normalize(u_CameraPosition - input.v_WorldPos);
     float3 lightingResult = float3(1.0f, 1.0f, 1.0f);

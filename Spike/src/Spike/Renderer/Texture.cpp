@@ -44,4 +44,16 @@ namespace Spike
         return levels;
     }
 
+    Ref<TextureCube> TextureCube::Create(const String& folderpath)
+    {
+        switch (RendererAPI::GetAPI())
+        {
+            case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLTextureCube>::Create(folderpath);
+            case RendererAPI::API::DX11:    return Ref<DX11TextureCube>::Create(folderpath);
+        }
+
+        SPK_INTERNAL_ASSERT("Unknown RendererAPI!");
+        return nullptr;
+    }
 }

@@ -31,7 +31,7 @@ namespace Spike
         DX11Internal::GetBackbuffer()->Clear(m_ClearColor);
     }
 
-    void DX11RendererAPI::DrawIndexed(const Ref<Pipeline>& pipeline, Uint indexCount)
+    void DX11RendererAPI::DrawIndexed(Ref<Pipeline>& pipeline, Uint indexCount)
     {
         Uint count = indexCount ? indexCount : pipeline->GetSpecification().IndexBuffer->GetCount();
         DX11Internal::GetDeviceContext()->DrawIndexed(count, 0, 0);
@@ -55,5 +55,10 @@ namespace Spike
     void DX11RendererAPI::EndWireframe()
     {
         DX11Internal::EndWireframe();
+    }
+
+    void DX11RendererAPI::SetDepthTest(DepthTest type)
+    {
+
     }
 }

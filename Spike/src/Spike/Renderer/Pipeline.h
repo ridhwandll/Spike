@@ -31,9 +31,10 @@ namespace Spike
         virtual ~Pipeline() = default;
 
         virtual void Bind() const = 0;
+        virtual void BindSpecificationObjects() const = 0;
         virtual void Unbind() const = 0;
 
-        virtual const PipelineSpecification& GetSpecification() const = 0;
+        virtual PipelineSpecification& GetSpecification() = 0;
         virtual void SetPrimitiveTopology(PrimitiveTopology topology) = 0;
         static Ref<Pipeline> Create(const PipelineSpecification& spec);
     };

@@ -12,6 +12,7 @@ namespace Spike::DX11Internal
     ID3D11RasterizerState* normalRasterizerState = nullptr;
     ID3D11RasterizerState* wireframeRasterizerState = nullptr;
     ID3D11SamplerState* samplerState = nullptr;
+    ID3D11SamplerState* skyboxSamplerState = nullptr;
     Ref<Framebuffer>     backbuffer = nullptr;
     Uint height;
     Uint width;
@@ -23,6 +24,7 @@ namespace Spike::DX11Internal
         CreateBlendState();
         CreateBackbuffer();
         CreateSampler();
+        CreateSkyboxSampler();
         LogDeviceInfo();
     }
 
@@ -35,6 +37,7 @@ namespace Spike::DX11Internal
         normalRasterizerState->Release();
         wireframeRasterizerState->Release();
         samplerState->Release();
+        skyboxSamplerState->Release();
     }
 
     void CreateSampler()
@@ -50,6 +53,16 @@ namespace Spike::DX11Internal
         samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
         DX_CALL(device->CreateSamplerState(&samplerDesc, &samplerState));
         deviceContext->PSSetSamplers(0, 1, &samplerState);
+    }
+
+    void CreateSkyboxSampler()
+    {
+        D3D11_SAMPLER_DESC samplerDesc = {};
+        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+        DX_CALL(device->CreateSamplerState(&samplerDesc, &skyboxSamplerState));
     }
 
     void CreateDeviceAndSwapChain(HWND windowHandle)
@@ -126,12 +139,13 @@ namespace Spike::DX11Internal
         backbuffer->Resize(width, height);
     }
 
-    ID3D11Device* GetDevice()               { return device;        }
-    ID3D11DeviceContext* GetDeviceContext() { return deviceContext; }
-    IDXGISwapChain* GetSwapChain()          { return swapChain;     }
-    ID3D11BlendState* GetBlendState()       { return blendState;    }
-    ID3D11SamplerState* GetCommonSampler()  { return samplerState;  }
-    Ref<Framebuffer> GetBackbuffer()        { return backbuffer;    }
+    ID3D11Device* GetDevice()               { return device;              }
+    ID3D11DeviceContext* GetDeviceContext() { return deviceContext;       }
+    IDXGISwapChain* GetSwapChain()          { return swapChain;           }
+    ID3D11BlendState* GetBlendState()       { return blendState;          }
+    ID3D11SamplerState* GetCommonSampler()  { return samplerState;        }
+    ID3D11SamplerState* GetSkyboxSampler()  { return skyboxSamplerState;  }
+    Ref<Framebuffer> GetBackbuffer()        { return backbuffer;          }
 
     void LogDeviceInfo()
     {

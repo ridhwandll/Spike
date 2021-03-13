@@ -27,7 +27,7 @@ namespace Spike
             s_RendererAPI->Clear();
         }
 
-        static void DrawIndexed(const Ref<Pipeline>& pipeline, Uint count = 0)
+        static void DrawIndexed(Ref<Pipeline>& pipeline, Uint count = 0)
         {
             s_RendererAPI->DrawIndexed(pipeline, count);
         }
@@ -50,6 +50,11 @@ namespace Spike
         static void EndWireframe()
         {
             s_RendererAPI->EndWireframe();
+        }
+
+        static void SetDepthTest(DepthTest type)
+        {
+            s_RendererAPI->SetDepthTest(type);
         }
 
     private:

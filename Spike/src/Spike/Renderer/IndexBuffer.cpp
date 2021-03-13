@@ -8,13 +8,13 @@
 
 namespace Spike
 {
-    Ref<IndexBuffer> IndexBuffer::Create(void* indices, Uint size)
+    Ref<IndexBuffer> IndexBuffer::Create(void* indices, Uint count)
     {
         switch (RendererAPI::GetAPI())
         {
             case RendererAPI::API::None:    SPK_INTERNAL_ASSERT("RendererAPI::None is currently not supported!"); return nullptr;
-            case RendererAPI::API::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(indices, size);
-            case RendererAPI::API::DX11:    return Ref<DX11IndexBuffer>::Create(indices, size);
+            case RendererAPI::API::OpenGL:  return Ref<OpenGLIndexBuffer>::Create(indices, count);
+            case RendererAPI::API::DX11:    return Ref<DX11IndexBuffer>::Create(indices, count);
         }
 
         SPK_INTERNAL_ASSERT("Unknown RendererAPI!");

@@ -7,6 +7,7 @@
 #include "Spike/Renderer/Renderer2D.h"
 #include "Spike/Renderer/Shader.h"
 #include "Platform/DX11/DX11Internal.h"
+#include "Skybox.h"
 
 namespace Spike::Renderer
 {
@@ -18,6 +19,7 @@ namespace Spike::Renderer
     Scope<SceneData> sceneData = CreateScope<SceneData>();
     Ref<ConstantBuffer> sceneCbuffer;
     size_t drawCalls = 0;
+    Ref<Skybox> skybox;
 
     void Init()
     {
@@ -32,6 +34,7 @@ namespace Spike::Renderer
 
         Vault::Submit<Shader>(shader);
         sceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
+        skybox = Skybox::Create(TextureCube::Create("Spike-Editor/assets/skybox"));
     }
 
     void Shutdown()
@@ -43,9 +46,11 @@ namespace Spike::Renderer
         RenderCommand::SetViewport(0, 0, width, height);
     }
 
+    glm::mat4 viewproj;
     void BeginScene(EditorCamera& camera)
     {
         sceneData->ViewProjectionMatrix = camera.GetViewProjection();
+        viewproj = camera.GetProjection() * glm::mat4(glm::mat3(camera.GetViewMatrix()));
     }
 
     void BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -55,6 +60,7 @@ namespace Spike::Renderer
 
     void EndScene()
     {
+        skybox->Render(viewproj);
     }
 
     void Submit(Ref<Pipeline> pipeline, Uint size)

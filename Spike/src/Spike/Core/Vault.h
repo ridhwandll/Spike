@@ -76,7 +76,7 @@ namespace Spike
         static Vector<Ref<Shader>> GetAllShaders();
         static Vector<Ref<Texture>> GetAllTextures();
         static Vector<String> GetAllDirsInProjectPath();
-        static Vector<String> GetAllFolderNamesProjectPath();
+        static Vector<String> GetAllFilePathsFromParentPath(const String& path);
 
         /* [Spike] Mapped as { filepath : Resource } [Spike] */
         static std::unordered_map<String, String> GetAllScripts();

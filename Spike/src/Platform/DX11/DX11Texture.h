@@ -20,7 +20,6 @@ namespace Spike
         virtual String GetFilepath() const override { return m_Filepath; }
         virtual RendererID GetRendererID() const override { return (RendererID)m_SRV; }
         virtual void SetData(void* data, Uint size) override;
-        virtual void ActivateSlot(Uint slot) override {}
         virtual bool Loaded() override { return m_Loaded; };
         virtual void Reload(bool flip = false);
         virtual void Unbind() const override {}
@@ -37,4 +36,34 @@ namespace Spike
         String m_Name;
         bool m_Loaded = false;
     };
+
+    class DX11TextureCube : public TextureCube
+    {
+    public:
+        DX11TextureCube(const String& folderPath);
+        ~DX11TextureCube();
+        virtual void Bind(Uint slot = 0, ShaderDomain domain = ShaderDomain::PIXEL) const override;
+        virtual String GetFilepath() const override { return m_FilePath; }
+        virtual Uint GetWidth() const override { return m_Width; }
+        virtual Uint GetHeight() const override { return m_Height; }
+        virtual String const GetName() const override { return m_Name; }
+        virtual RendererID GetRendererID() const override { return m_RendererID; }
+        virtual bool Loaded() override { return m_Loaded; }
+        virtual void Reload(bool flip = false) override;
+        virtual void SetData(void* data, Uint size) override {}
+        virtual void Unbind() const override {}
+        virtual bool operator ==(const Texture& other) const override { return m_RendererID == ((DX11TextureCube&)other).m_RendererID; }
+    private:
+        void LoadTextureCube(bool flip);
+    private:
+        String m_FilePath;
+        Vector<String> m_Faces;
+        RendererID m_RendererID;
+        Uint m_Width, m_Height;
+        String m_Name;
+        bool m_Loaded = false;
+
+        ID3D11ShaderResourceView* m_SRV;
+    };
+
 }

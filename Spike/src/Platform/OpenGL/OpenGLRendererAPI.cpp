@@ -68,11 +68,10 @@ namespace Spike
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void OpenGLRendererAPI::DrawIndexed(const Ref<Pipeline>& pipeline, Uint indexCount)
+    void OpenGLRendererAPI::DrawIndexed(Ref<Pipeline>& pipeline, Uint indexCount)
     {
         Uint count = indexCount ? indexCount : pipeline->GetSpecification().IndexBuffer->GetCount();
         glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void OpenGLRendererAPI::DrawIndexedMesh(Uint indexCount, Uint baseIndex, Uint baseVertex)
@@ -90,5 +89,10 @@ namespace Spike
     void OpenGLRendererAPI::EndWireframe()
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+
+    void OpenGLRendererAPI::SetDepthTest(DepthTest type)
+    {
+        glDepthFunc(GL_NEVER + (int)type);
     }
 }

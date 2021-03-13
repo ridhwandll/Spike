@@ -79,6 +79,13 @@ namespace Spike
         DX11Internal::GetDeviceContext()->IASetInputLayout(m_InputLayout);
     }
 
+    void DX11Pipeline::BindSpecificationObjects() const
+    {
+        m_Spec.VertexBuffer->Bind();
+        m_Spec.IndexBuffer->Bind();
+        m_Spec.Shader->Bind();
+    }
+
     void DX11Pipeline::Unbind() const
     {
 

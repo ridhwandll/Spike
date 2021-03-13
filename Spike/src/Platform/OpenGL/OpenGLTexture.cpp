@@ -3,6 +3,7 @@
 #include "spkpch.h"
 #include "OpenGLTexture.h"
 #include "Spike/Core/Vault.h"
+#include <filesystem>
 #include <stb_image.h>
 
 namespace Spike
@@ -123,9 +124,76 @@ namespace Spike
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
     }
 
-    void OpenGLTexture2D::ActivateSlot(Uint slot)
+    /*
+        Texture Cube
+    */
+
+    OpenGLTextureCube::OpenGLTextureCube(const String& folderPath)
     {
-        glActiveTexture(GL_TEXTURE0 + slot);
+        Vector<String> paths = Vault::GetAllFilePathsFromParentPath(folderPath);
+        m_FilePath = folderPath;
+        m_Name = Vault::GetNameWithoutExtension(folderPath);
+
+        for (uint8_t i = 0; i < 6; i++)
+            m_Faces.push_back(paths[i].c_str());
+
+        std::sort(m_Faces.begin(), m_Faces.end());
+
+        for (uint8_t i = 0; i < 6; i++)
+            SPK_CORE_LOG_INFO(m_Faces[i].c_str());
+
+        LoadTextureCube(false);
     }
 
+    OpenGLTextureCube::~OpenGLTextureCube()
+    {
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
+        glDeleteTextures(1, &rendererID);
+    }
+
+    void OpenGLTextureCube::Bind(Uint slot, ShaderDomain domain) const
+    {
+        Uint rendererID = reinterpret_cast<Uint>(m_RendererID);
+        glBindTextureUnit(slot, rendererID);
+    }
+
+    void OpenGLTextureCube::Reload(bool flip) { LoadTextureCube(flip); }
+
+    void OpenGLTextureCube::Unbind() const
+    {
+        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    }
+
+    void OpenGLTextureCube::LoadTextureCube(bool flip)
+    {
+        Uint rendererID;
+        glGenTextures(1, &rendererID);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, rendererID);
+
+        stbi_set_flip_vertically_on_load(flip);
+        for (uint8_t i = 0; i < m_Faces.size(); i++)
+            SetTexture(i, m_Faces[i]);
+
+        m_Loaded = true;
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        m_RendererID = (RendererID)rendererID;
+    }
+
+    void OpenGLTextureCube::SetTexture(Uint side, const String& file)
+    {
+        int width, height, channels;
+        stbi_uc* data = stbi_load(file.c_str(), &width, &height, &channels, 0);
+        m_Width = width; m_Height = height;
+
+        Uint internalFormat = (channels == 4) * GL_RGBA8 + (channels == 3) * GL_RGB8;
+        Uint dataFormat = (channels == 4) * GL_RGBA + (channels == 3) * GL_RGB;
+        if (data)
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + side, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
+
+        free(data);
+    }
 }
