@@ -55,18 +55,18 @@ namespace Spike
         m_Pipeline = Pipeline::Create(spec);
     }
 
-    void Skybox::Render(const glm::mat4& transform)
+    void Skybox::Render(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix)
     {
-        RenderCommand::SetDepthTest(DepthTest::LEqual);
+        RenderCommand::SetDepthTest(DepthTestFunc::LEqual);
 
         m_Pipeline->Bind();
         m_Pipeline->BindSpecificationObjects();
         m_Texture->Bind();
-        auto& spec = m_Pipeline->GetSpecification();
-        m_SkyboxCBuffer->SetData((void*)&transform);
+
+        m_SkyboxCBuffer->SetData((void*)&(projectionMatrix * glm::mat4(glm::mat3(viewMatrix))));
         RenderCommand::DrawIndexed(m_Pipeline, 36);
 
-        RenderCommand::SetDepthTest(DepthTest::Less);
+        RenderCommand::SetDepthTest(DepthTestFunc::Less);
     }
 
     Ref<Skybox> Skybox::Create(const Ref<TextureCube>& texture)

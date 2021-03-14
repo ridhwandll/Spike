@@ -18,7 +18,7 @@ namespace Spike
         int MaxSamples = 0;
     };
 
-    enum class DepthTest
+    enum class DepthTestFunc
     {
         Never = 0,
         Less = 1,
@@ -57,7 +57,7 @@ namespace Spike
         virtual void BindBackbuffer() = 0;
         virtual void BeginWireframe() = 0;
         virtual void EndWireframe() = 0;
-        virtual void SetDepthTest(DepthTest type) = 0;
+        virtual void SetDepthTest(DepthTestFunc type) = 0;
         static API GetAPI() { return s_API; }
     private:
         static API s_API;

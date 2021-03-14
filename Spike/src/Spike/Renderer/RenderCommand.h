@@ -52,7 +52,7 @@ namespace Spike
             s_RendererAPI->EndWireframe();
         }
 
-        static void SetDepthTest(DepthTest type)
+        static void SetDepthTest(DepthTestFunc type)
         {
             s_RendererAPI->SetDepthTest(type);
         }

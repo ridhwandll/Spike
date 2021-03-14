@@ -57,8 +57,8 @@ namespace Spike
         DX11Internal::EndWireframe();
     }
 
-    void DX11RendererAPI::SetDepthTest(DepthTest type)
+    void DX11RendererAPI::SetDepthTest(DepthTestFunc type)
     {
-
+        DX11Internal::GetDeviceContext()->OMSetDepthStencilState(DX11Internal::GetDepthStencilState(type), 1);
     }
 }

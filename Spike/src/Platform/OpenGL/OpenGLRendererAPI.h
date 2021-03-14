@@ -17,6 +17,6 @@ namespace Spike
         virtual void BindBackbuffer() override;
         virtual void BeginWireframe() override;
         virtual void EndWireframe() override;
-        virtual void SetDepthTest(DepthTest type) override;
+        virtual void SetDepthTest(DepthTestFunc type) override;
     };
 }

@@ -15,7 +15,7 @@ namespace Spike
         Skybox(const Ref<TextureCube>& texture);
         ~Skybox() = default;
 
-        void Render(const glm::mat4& transform);
+        void Render(const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix);
         void SetCubemapTexture(const Ref<TextureCube>& texture) { m_Texture = texture; }
 
         /*

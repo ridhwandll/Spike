@@ -157,11 +157,10 @@ namespace Spike
         SPK_CORE_ASSERT(m_Faces.size() == 6, "TextureCube needs 6 faces!");
 
         Vector<stbi_uc*> surfaces;
-        int channels;
         for (uint8_t i = 0; i < 6; i++)
         {
-            int width, height;
-            surfaces.emplace_back(stbi_load(m_Faces[i].c_str(), &width, &height, &channels, 0));
+            int width, height, channels;
+            surfaces.emplace_back(stbi_load(m_Faces[i].c_str(), &width, &height, &channels, 4));
             m_Width = width;
             m_Height = height;
         }
@@ -183,7 +182,7 @@ namespace Spike
         for (uint8_t i = 0; i < 6; i++)
         {
             datas[i].pSysMem = surfaces[i];
-            datas[i].SysMemPitch = m_Width * channels * sizeof(unsigned char);
+            datas[i].SysMemPitch = m_Width * 4 * sizeof(unsigned char);
             datas[i].SysMemSlicePitch = 0;
         }
 

@@ -2,6 +2,7 @@
 //Copyright 2021 - SpikeTechnologies - All Rights Reserveds
 #pragma once
 #include "Spike/Renderer/Framebuffer.h"
+#include "Spike/Renderer/RendererAPI.h"
 #include <d3d11.h>
 
 namespace Spike::DX11Internal
@@ -20,6 +21,9 @@ namespace Spike::DX11Internal
     void LogDeviceInfo();
     void BeginWireframe();
     void EndWireframe();
+    void GenerateVariousDepthStencilStates();
+    ID3D11DepthStencilState* GetDepthStencilState(DepthTestFunc type);
+
 
     ID3D11Device* GetDevice();
     ID3D11DeviceContext* GetDeviceContext();

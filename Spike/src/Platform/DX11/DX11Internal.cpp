@@ -14,6 +14,9 @@ namespace Spike::DX11Internal
     ID3D11SamplerState* samplerState = nullptr;
     ID3D11SamplerState* skyboxSamplerState = nullptr;
     Ref<Framebuffer>     backbuffer = nullptr;
+    ID3D11DepthStencilState* lEqualDepthStencilState;
+    ID3D11DepthStencilState* lessDepthStencilState;
+
     Uint height;
     Uint width;
 
@@ -25,12 +28,12 @@ namespace Spike::DX11Internal
         CreateBackbuffer();
         CreateSampler();
         CreateSkyboxSampler();
+        GenerateVariousDepthStencilStates();
         LogDeviceInfo();
     }
 
     void Shutdown()
     {
-        device->Release();
         deviceContext->Release();
         swapChain->Release();
         blendState->Release();
@@ -38,6 +41,10 @@ namespace Spike::DX11Internal
         wireframeRasterizerState->Release();
         samplerState->Release();
         skyboxSamplerState->Release();
+        lEqualDepthStencilState->Release();
+        lessDepthStencilState->Release();
+        device->Release();
+
     }
 
     void CreateSampler()
@@ -206,6 +213,47 @@ namespace Spike::DX11Internal
     void EndWireframe()
     {
         deviceContext->RSSetState(normalRasterizerState);
+    }
+
+    void GenerateVariousDepthStencilStates()
+    {
+        //TODO: Come up with a better way of creating states
+        D3D11_DEPTH_STENCIL_DESC dsDesc = {};
+        dsDesc.DepthEnable = true;
+        dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        dsDesc.DepthFunc = (D3D11_COMPARISON_FUNC)(1 + (int)DepthTestFunc::Less);
+        dsDesc.StencilEnable = true;
+        dsDesc.StencilReadMask = 0xFF;
+        dsDesc.StencilWriteMask = 0xFF;
+        dsDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        dsDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+        dsDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        dsDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        dsDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+        dsDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+        dsDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+        dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+        device->CreateDepthStencilState(&dsDesc, &lessDepthStencilState);
+
+        dsDesc.DepthFunc = (D3D11_COMPARISON_FUNC)(1 + (int)DepthTestFunc::LEqual);
+        device->CreateDepthStencilState(&dsDesc, &lEqualDepthStencilState);
+    }
+
+    ID3D11DepthStencilState* GetDepthStencilState(DepthTestFunc type)
+    {
+        switch (type)
+        {
+            case DepthTestFunc::Never:                                    break;
+            case DepthTestFunc::Less:     return lessDepthStencilState;   break;
+            case DepthTestFunc::LEqual:   return lEqualDepthStencilState; break;
+            case DepthTestFunc::Equal:                                    break;
+            case DepthTestFunc::Greater:                                  break;
+            case DepthTestFunc::NotEqual:                                 break;
+            case DepthTestFunc::GEqual:                                   break;
+            case DepthTestFunc::Always:                                   break;
+            default: SPK_CORE_LOG_CRITICAL("DX11Internal.cpp: No tepth text func matches with the given type! Fix it now!"); break;
+        }
+        return nullptr;
     }
 }
 

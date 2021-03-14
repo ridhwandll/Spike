@@ -17,6 +17,7 @@ namespace Spike::Renderer
     };
 
     Scope<SceneData> sceneData = CreateScope<SceneData>();
+
     Ref<ConstantBuffer> sceneCbuffer;
     size_t drawCalls = 0;
     Ref<Skybox> skybox;
@@ -46,11 +47,12 @@ namespace Spike::Renderer
         RenderCommand::SetViewport(0, 0, width, height);
     }
 
-    glm::mat4 viewproj;
+    glm::mat4 projectionMatrix, viewMatrix;
     void BeginScene(EditorCamera& camera)
     {
         sceneData->ViewProjectionMatrix = camera.GetViewProjection();
-        viewproj = camera.GetProjection() * glm::mat4(glm::mat3(camera.GetViewMatrix()));
+        projectionMatrix = camera.GetProjection();
+        viewMatrix = camera.GetViewMatrix();
     }
 
     void BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -60,7 +62,7 @@ namespace Spike::Renderer
 
     void EndScene()
     {
-        skybox->Render(viewproj);
+        skybox->Render(projectionMatrix, viewMatrix);
     }
 
     void Submit(Ref<Pipeline> pipeline, Uint size)
@@ -87,10 +89,7 @@ namespace Spike::Renderer
     }
 
     void UpdateStats() { drawCalls = 0; }
+    Spike::RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
     size_t GetTotalDrawCallsCount() { return drawCalls; }
 
-    Spike::RendererAPI::API GetAPI()
-    {
-        return RendererAPI::GetAPI();
-    }
 }

@@ -19,9 +19,9 @@ struct vsOut
 vsOut main(vsIn input)
 {
     vsOut output;
+    output.v_TexCoords = input.a_Position;
     float4 pos = mul(float4(input.a_Position, 1.0f), u_ViewProjection);
     output.v_Position = pos.xyww;
-    output.v_TexCoords = input.a_Position;
     return output;
 }
 

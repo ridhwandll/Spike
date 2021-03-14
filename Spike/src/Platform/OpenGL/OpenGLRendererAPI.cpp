@@ -91,7 +91,7 @@ namespace Spike
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
-    void OpenGLRendererAPI::SetDepthTest(DepthTest type)
+    void OpenGLRendererAPI::SetDepthTest(DepthTestFunc type)
     {
         glDepthFunc(GL_NEVER + (int)type);
     }
