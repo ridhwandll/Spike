@@ -21,7 +21,7 @@ namespace Spike
         void SetSelectedEntity(Entity entity) { m_SelectionContext = entity; }
         Ref<Scene> GetCurrentScene() const { return m_Context; };
 
-        void OnImGuiRender();
+        void OnImGuiRender(bool* show);
         void OnEvent(Event& e);
     private:
         bool OnKeyPressed(KeyPressedEvent& e);

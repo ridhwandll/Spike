@@ -54,11 +54,13 @@ namespace Spike
         Entity m_SelectedEntity;
 
         bool m_ViewportFocused = false, m_ViewportHovered = false;
-        glm::vec2 m_ViewportSize = {0.0f, 0.0f};
+        glm::vec4 m_ClearColor = { 0.1f, 0.1f, 0.1f, 1.0f };
+        glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
         glm::vec2 m_ViewportBounds[2] = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
         bool m_FirstTimeSave = false;
         bool m_ReloadScriptOnPlay = true;
         String m_ActiveFilepath = String();
+        String m_CurrentSkyboxPath = String();
         int m_GizmoType = -1;
         bool m_GizmoInUse = false;
 

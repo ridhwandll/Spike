@@ -49,12 +49,12 @@ namespace Spike
         return result;
     }
 
-    void VaultPanel::OnImGuiRender()
+    void VaultPanel::OnImGuiRender(bool* show)
     {
         if (m_ProjectPath.empty())
             m_ProjectPath = Vault::GetProjectPath();
 
-        ImGui::Begin("Spike Vault");
+        ImGui::Begin("Spike Vault", show);
         if (ImGui::Button(ICON_FK_REFRESH))
         {
             if (Vault::IsVaultInitialized())
@@ -78,7 +78,7 @@ namespace Spike
                 DrawPath(file);
         ImGui::End();
 
-        ImGui::Begin("Texture Preview", false, ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::Begin("Texture Preview", show, ImGuiWindowFlags_HorizontalScrollbar);
         if (s_TexturePreviewStorage)
         {
             auto rendererID = s_TexturePreviewStorage->GetRendererID();
@@ -96,7 +96,7 @@ namespace Spike
         }
         ImGui::End();
 
-        ImGui::Begin("SpikeCache");
+        ImGui::Begin("SpikeCache", show);
         if (ImGui::TreeNode("Shaders"))
         {
             auto& shaders = Vault::GetAllShaders();

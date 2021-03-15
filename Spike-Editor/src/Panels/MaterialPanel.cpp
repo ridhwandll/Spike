@@ -9,9 +9,9 @@
 
 namespace Spike
 {
-    void MaterialPanel::OnImGuiRender(Entity& selectedEntity)
+    void MaterialPanel::OnImGuiRender(bool* show, Entity& selectedEntity)
     {
-        ImGui::Begin("Material Inspector");
+        ImGui::Begin("Material Inspector", show);
 
         if (selectedEntity && selectedEntity.HasComponent<MeshComponent>())
         {

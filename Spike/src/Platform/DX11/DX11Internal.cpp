@@ -70,6 +70,7 @@ namespace Spike::DX11Internal
         samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
         samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
         DX_CALL(device->CreateSamplerState(&samplerDesc, &skyboxSamplerState));
+        deviceContext->PSSetSamplers(1, 1, &skyboxSamplerState); //Set at slot 1
     }
 
     void CreateDeviceAndSwapChain(HWND windowHandle)

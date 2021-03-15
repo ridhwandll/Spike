@@ -10,7 +10,7 @@
 
 namespace Spike
 {
-    void ProfilerPanel::OnImGuiRender()
+    void ProfilerPanel::OnImGuiRender(bool* show)
     {
         float avg = 0.0f;
         const uint32_t size = m_FrameTimes.size();
@@ -25,7 +25,7 @@ namespace Spike
         }
         avg /= size;
 
-        ImGui::Begin("Profiler");
+        ImGui::Begin("Profiler", show);
         auto& caps = RendererAPI::GetCapabilities();
         ImGui::Text("Vendor: %s", caps.Vendor.c_str());
         ImGui::Text("Renderer: %s", caps.Renderer.c_str());

@@ -9,7 +9,7 @@ namespace Spike
     class ProfilerPanel
     {
     public:
-        void OnImGuiRender();
+        void OnImGuiRender(bool* show);
 
     private:
         float m_Time = 0.0f;

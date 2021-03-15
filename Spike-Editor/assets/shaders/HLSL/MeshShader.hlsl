@@ -89,7 +89,7 @@ cbuffer Lights : register(b3)
 };
 
 Texture2D tex : register(t0);
-SamplerState sampleType;
+SamplerState sampleType : register(s0);
 
 float3 CalculatePointLight(PointLight light, float3 normal, float3 viewDir, float3 worldPos)
 {

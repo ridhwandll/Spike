@@ -15,6 +15,14 @@
 
 namespace Spike
 {
+    static bool s_ShowHierarchyAndInspectorPanel = true;
+    static bool s_ShowConsolePanel = true;
+    static bool s_ShowVaultAndCachePanel = true;
+    static bool s_ShowMaterialPanel = true;
+
+    static bool s_ShowRendererSettingsPanel = false;
+    static bool s_ShowRendererProfilerPanel = false;
+
     EditorLayer::EditorLayer()
         : Layer("EditorLayer"), m_VaultPanel(this) {}
 
@@ -94,7 +102,7 @@ namespace Spike
 
         m_Framebuffer->Bind();
         RenderCommand::Clear();
-        m_Framebuffer->Clear({ 0.1f, 0.1f, 0.1f, 1.0f });
+        m_Framebuffer->Clear(m_ClearColor);
 
         switch (m_SceneState)
         {
@@ -144,6 +152,32 @@ namespace Spike
             if (ImGui::BeginMenu("Script"))
             {
                 ImGui::MenuItem("Reload assembly on play", nullptr, &m_ReloadScriptOnPlay);
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("View"))
+            {
+                if (ImGui::MenuItem("Inspector and Hierarchy"))
+                    s_ShowHierarchyAndInspectorPanel = true;
+
+                if (ImGui::MenuItem("Console"))
+                    s_ShowConsolePanel = true;
+
+                if (ImGui::MenuItem("Vault and SpikeCache"))
+                    s_ShowVaultAndCachePanel = true;
+
+                if (ImGui::MenuItem("Material Inspector"))
+                    s_ShowMaterialPanel = true;
+
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("Renderer"))
+            {
+                if (ImGui::MenuItem("Settings"))
+                    s_ShowRendererSettingsPanel = true;
+
+                if (ImGui::MenuItem("Profiler"))
+                    s_ShowRendererProfilerPanel = true;
+
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
@@ -209,8 +243,57 @@ namespace Spike
 
         GUI::DrawImageControl(m_Framebuffer->GetColorViewID(), m_ViewportSize);
         RenderGizmos();
-
         GUI::EndViewport();
+
+        if (s_ShowRendererSettingsPanel)
+        {
+            ImGui::Begin("Renderer Settings", &s_ShowRendererSettingsPanel);
+            GUI::DrawColorControl4("Clear Color", m_ClearColor);
+            ImGui::Separator();
+
+            if (ImGui::TreeNodeEx("Configure SKYBOX", ImGuiTreeNodeFlags_OpenOnArrow))
+            {
+                ImGui::TextColored({ 0.1f, 0.9f, 0.1f, 1.0f }, ICON_FK_ARROW_DOWN " IMPORTANT notes regarding Skybox " ICON_FK_ARROW_DOWN);
+                ImGui::BulletText("Remember the folder must contain 6 exactly image files, nothing else");
+                ImGui::BulletText("The image files must be named as \"Aright, Bleft, Ctop, Dbottom, Efront, Fback\"");
+                ImGui::BulletText("The names represents the 6 sides of a SKYBOX");
+                ImGui::BulletText("Yes, the prefix A, B, C, D, E, F in front of the image file names are necessary!");
+                GUI::DrawDynamicToggleButton(ICON_FK_TIMES, ICON_FK_CHECK, { 0.7f, 0.1f, 0.1f, 1.0f }, { 0.2f, 0.5f, 0.2f, 1.0f }, &Renderer::GetSkyboxActivationBool());
+                GUI::DrawToolTip("Use Skybox");
+                ImGui::SameLine();
+
+                if (ImGui::Button("Open Skybox"))
+                {
+                    const char* folderpath = FileDialogs::SelectFolder("Open A folder containing skybox");
+                    if (folderpath)
+                    {
+                        m_CurrentSkyboxPath = folderpath;
+                        Renderer::GetSkyboxSlot() = Skybox::Create(TextureCube::Create(m_CurrentSkyboxPath));
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Generate Skybox"))
+                {
+                    if (!m_CurrentSkyboxPath.empty())
+                        Renderer::GetSkyboxSlot() = Skybox::Create(TextureCube::Create(m_CurrentSkyboxPath));
+                    else
+                        SPK_CORE_LOG_WARN("Select a skybox path first via 'Open Skybox' button!");
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Destroy Skybox"))
+                    Renderer::GetSkyboxSlot().Reset();
+
+                ImGui::PushItemWidth(-1);
+                ImGui::Text("Skybox folderpath:");
+                ImGui::SameLine();
+                ImGui::InputText("##skyboxFilepath", (char*)m_CurrentSkyboxPath.c_str(), 256, ImGuiInputTextFlags_ReadOnly);
+                ImGui::PopItemWidth();
+                ImGui::TreePop();
+            }
+            ImGui::Separator();
+            ImGui::End();
+        }
+
         GUI::EndDockspace();
     }
 
@@ -270,7 +353,6 @@ namespace Spike
     void EditorLayer::RenderGizmos()
     {
         Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
-        /* [Spike] We are not rendering Gizmos in Play mode! Maybe expose this via a ImGui toggle button? TODO [Spike] */
         if (selectedEntity && m_GizmoType != -1 && m_SceneState != SceneState::Play)
         {
             ImGuizmo::SetOrthographic(false);
@@ -330,11 +412,20 @@ namespace Spike
 
     void EditorLayer::RenderPanels()
     {
-        Console::Get()->OnImGuiRender();
-        m_SceneHierarchyPanel.OnImGuiRender();
-        m_ProfilerPanel.OnImGuiRender();
-        m_VaultPanel.OnImGuiRender();
-        m_MaterialPanel.OnImGuiRender(m_SceneHierarchyPanel.GetSelectedEntity());
+        if(s_ShowConsolePanel)
+            Console::Get()->OnImGuiRender(&s_ShowConsolePanel);
+
+        if(s_ShowHierarchyAndInspectorPanel)
+            m_SceneHierarchyPanel.OnImGuiRender(&s_ShowHierarchyAndInspectorPanel);
+
+        if(s_ShowRendererProfilerPanel)
+            m_ProfilerPanel.OnImGuiRender(&s_ShowRendererProfilerPanel);
+
+        if(s_ShowVaultAndCachePanel)
+            m_VaultPanel.OnImGuiRender(&s_ShowVaultAndCachePanel);
+
+        if(s_ShowMaterialPanel)
+            m_MaterialPanel.OnImGuiRender(&s_ShowMaterialPanel, m_SceneHierarchyPanel.GetSelectedEntity());
     }
 
     /* [Spike] FILE STUFF [Spike] */

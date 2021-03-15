@@ -83,10 +83,10 @@ namespace Spike
         }
     }
 
-    void SceneHierarchyPanel::OnImGuiRender()
+    void SceneHierarchyPanel::OnImGuiRender(bool* show)
     {
         // Hierarchy
-        ImGui::Begin("Hierarchy");
+        ImGui::Begin("Hierarchy", show);
 
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0.0f);
         if (ImGui::Button("Add Entity", { ImGui::GetWindowWidth(), 0.0f }))
@@ -128,6 +128,7 @@ namespace Spike
             ImGui::EndPopup();
         }
 
+        //For each entity in the registry, draw it!
         m_Context->m_Registry.each([&](auto entityID)
         {
             Entity entity{ entityID, m_Context.Raw() };
@@ -144,7 +145,7 @@ namespace Spike
         ImGui::End();
 
         // Inspector
-        ImGui::Begin(ICON_FK_INFO_CIRCLE" Inspector");
+        ImGui::Begin(ICON_FK_INFO_CIRCLE" Inspector", show);
         if (m_SelectionContext)
             DrawComponents(m_SelectionContext);
 
@@ -153,7 +154,6 @@ namespace Spike
 
     void SceneHierarchyPanel::DrawEntityNode(Entity entity)
     {
-
         auto& tag = entity.GetComponent<TagComponent>().Tag;
 
         ImGuiTreeNodeFlags flags = ((m_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;

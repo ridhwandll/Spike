@@ -19,26 +19,18 @@ namespace Spike
         return m_Console;
     }
 
-    void Console::OnImGuiRender()
+    void Console::OnImGuiRender(bool* show)
     {
         ImGuiStyle& style = ImGui::GetStyle();
 
-        ImGui::Begin(ICON_FK_LIST" Console");
+        ImGui::Begin(ICON_FK_LIST" Console", show);
 
         if (ImGui::Button("Clear") || m_Messages.size() > 9999)
             ClearLog();
 
         ImGui::SameLine();
         GUI::DrawDynamicToggleButton(ICON_FK_TIMES, ICON_FK_CHECK, { 0.7f, 0.1f, 0.1f, 1.0f }, { 0.2f, 0.5f, 0.2f, 1.0f }, &m_ScrollLockEnabled);
-
-        if (ImGui::IsItemHovered())
-        {
-            ImGui::BeginTooltip();
-            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
-            ImGui::TextUnformatted("Scroll lock");
-            ImGui::PopTextWrapPos();
-            ImGui::EndTooltip();
-        }
+        GUI::DrawToolTip("Scroll lock");
 
         ImGui::SameLine();
         GUI::DrawColorChangingToggleButton(ICON_FK_PAPERCLIP, m_DisabledColor, m_EnabledColor, m_TraceColor, &m_TraceEnabled);
@@ -57,52 +49,24 @@ namespace Spike
         {
             switch (itr->first)
             {
-            case Severity::Trace:
-            {
-                if (m_TraceEnabled)
-                {
-                    ImGui::TextColored(m_TraceColor, (ICON_FK_PAPERCLIP" " + itr->second).c_str());
-                }
-                break;
-            }
-            case Severity::Info:
-                {
+                case Severity::Trace:
+                    if (m_TraceEnabled)
+                        ImGui::TextColored(m_TraceColor, (ICON_FK_PAPERCLIP" " + itr->second).c_str()); break;
+                case Severity::Info:
                     if (m_InfoEnabled)
-                    {
-                        ImGui::TextColored(m_InfoColor, (ICON_FK_INFO_CIRCLE" " + itr->second).c_str());
-                    }
-                    break;
-                }
-            case Severity::Debug:
-                {
+                        ImGui::TextColored(m_InfoColor, (ICON_FK_INFO_CIRCLE" " + itr->second).c_str()); break;
+                case Severity::Debug:
                     if (m_DebugEnabled)
-                    {
-                        ImGui::TextColored(m_DebugColor, (ICON_FK_BUG" " + itr->second).c_str());
-                    }
-                    break;
-                }
-            case Severity::Warning:
-                {
+                        ImGui::TextColored(m_DebugColor, (ICON_FK_BUG" " + itr->second).c_str()); break;
+                case Severity::Warning:
                     if (m_WarningEnabled)
-                    {
-                        ImGui::TextColored(m_WarnColor, (ICON_FK_EXCLAMATION_TRIANGLE" " + itr->second).c_str());
-                    }
-                    break;
-                }
-            case Severity::Error:
-                {
+                        ImGui::TextColored(m_WarnColor, (ICON_FK_EXCLAMATION_TRIANGLE" " + itr->second).c_str()); break;
+                case Severity::Error:
                     if (m_ErrorEnabled)
-                    {
-                        ImGui::TextColored(m_ErrorColor, (ICON_FK_EXCLAMATION_CIRCLE" " + itr->second).c_str());
-                    }
-                    break;
-                }
-            case Severity::Critical:
-                {
+                        ImGui::TextColored(m_ErrorColor, (ICON_FK_EXCLAMATION_CIRCLE" " + itr->second).c_str()); break;
+                case Severity::Critical:
                     // You can't toggle off the critical errors!
-                    ImGui::TextColored(m_CriticalColor, (ICON_FK_EXCLAMATION_CIRCLE" " + itr->second).c_str());
-                    break;
-                }
+                    ImGui::TextColored(m_CriticalColor, (ICON_FK_EXCLAMATION_CIRCLE" " + itr->second).c_str()); break;
             }
         }
 

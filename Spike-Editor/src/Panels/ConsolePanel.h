@@ -15,7 +15,7 @@ namespace Spike
     public:
         ~Console();
         static Console* Get();
-        void OnImGuiRender();
+        void OnImGuiRender(bool* show);
         void Print(const String& message, Severity level = Severity::Info);
 
     private:

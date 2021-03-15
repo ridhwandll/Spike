@@ -45,7 +45,7 @@ namespace Spike
             case RendererAPI::API::OpenGL: skyboxShader = Shader::Create("Spike-Editor/assets/shaders/GLSL/Skybox.glsl"); break;
         }
         skyboxShader->Bind();
-        skyboxShader->SetInt("u_SkyboxCubemap", 0);
+        skyboxShader->SetInt("u_SkyboxCubemap", 32);
 
         m_SkyboxCBuffer = ConstantBuffer::Create(skyboxShader, "SkyboxCBuffer", nullptr, sizeof(glm::mat4), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
         PipelineSpecification spec;
@@ -61,8 +61,7 @@ namespace Spike
 
         m_Pipeline->Bind();
         m_Pipeline->BindSpecificationObjects();
-        m_Texture->Bind();
-
+        m_Texture->Bind(32, ShaderDomain::PIXEL);
         m_SkyboxCBuffer->SetData((void*)&(projectionMatrix * glm::mat4(glm::mat3(viewMatrix))));
         RenderCommand::DrawIndexed(m_Pipeline, 36);
 

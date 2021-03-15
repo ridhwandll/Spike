@@ -1,4 +1,4 @@
-﻿//                    SPIKE ENGINE
+//                    SPIKE ENGINE
 //Copyright 2021 - SpikeTechnologies - All Rights Reserved
 
 #include "spkpch.h"
@@ -95,7 +95,7 @@ namespace Spike
         textureDesc.CPUAccessFlags = 0;
         textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
-        DX_CALL(DX11Internal::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_Texture2D)); //Create the Enpty texture
+        DX_CALL(DX11Internal::GetDevice()->CreateTexture2D(&textureDesc, nullptr, &m_Texture2D)); //Create the Empty texture
         m_Loaded = true;
 
         auto rowPitch = m_Width * 4 * sizeof(unsigned char);
@@ -117,7 +117,6 @@ namespace Spike
         Texture Cube
     */
 
-
     DX11TextureCube::DX11TextureCube(const String& folderPath)
     {
         Vector<String> paths = Vault::GetAllFilePathsFromParentPath(folderPath);
@@ -135,7 +134,7 @@ namespace Spike
     {
         auto deviceContext = DX11Internal::GetDeviceContext();
         ID3D11SamplerState* sampler = DX11Internal::GetSkyboxSampler();
-        deviceContext->PSSetSamplers(1, 1, &sampler); //Bind it at slot 1
+        deviceContext->PSSetSamplers(1, 1, &sampler);
 
         switch (domain)
         {

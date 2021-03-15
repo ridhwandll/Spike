@@ -32,12 +32,10 @@ struct vsOut
     float3 v_TexCoords : TEX_COORDS;
 };
 
-TextureCube SkyboxCubemap;
+TextureCube SkyboxCubemap : register(t32); //Set at the last slot
 SamplerState sampleType : register(s1);
 
 float4 main(vsOut input) : SV_TARGET
 {
-    float4 PixelColor;
-    PixelColor = SkyboxCubemap.Sample(sampleType, input.v_TexCoords);
-    return PixelColor;
+    return SkyboxCubemap.Sample(sampleType, input.v_TexCoords);
 }

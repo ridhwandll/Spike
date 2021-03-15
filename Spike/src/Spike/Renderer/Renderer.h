@@ -3,6 +3,7 @@
 #pragma once
 #include "RenderCommand.h"
 #include "EditorCamera.h"
+#include "Skybox.h"
 #include "ConstantBuffer.h"
 #include "Mesh.h"
 
@@ -17,6 +18,8 @@ namespace Spike::Renderer
 
     void SubmitMesh(Ref<Mesh> mesh, const glm::mat4& transform);
     void Submit(Ref<Pipeline> pipeline, Uint size);
+    Ref<Skybox>& GetSkyboxSlot();
+    bool& GetSkyboxActivationBool();
 
     void UpdateStats();
     size_t GetTotalDrawCallsCount();

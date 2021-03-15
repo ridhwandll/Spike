@@ -11,16 +11,22 @@
 
 namespace Spike::Renderer
 {
-    struct SceneData
+    struct SceneCBufferData
     {
         glm::mat4 ViewProjectionMatrix;
     };
 
-    Scope<SceneData> sceneData = CreateScope<SceneData>();
+    struct SceneData
+    {
+        glm::mat4 ProjectionMatrix, ViewMatrix;
+        Ref<ConstantBuffer> SceneCbuffer;
+        size_t DrawCalls = 0;
+        Ref<Spike::Skybox> Skybox;
+        bool SkyboxActivated = true;
+    };
 
-    Ref<ConstantBuffer> sceneCbuffer;
-    size_t drawCalls = 0;
-    Ref<Skybox> skybox;
+    Scope<SceneCBufferData> sceneCBufferData = CreateScope<SceneCBufferData>();
+    Scope<SceneData> sceneData = CreateScope<SceneData>();
 
     void Init()
     {
@@ -34,8 +40,7 @@ namespace Spike::Renderer
         }
 
         Vault::Submit<Shader>(shader);
-        sceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
-        skybox = Skybox::Create(TextureCube::Create("Spike-Editor/assets/skybox"));
+        sceneData->SceneCbuffer = ConstantBuffer::Create(shader, "Camera", nullptr, sizeof(SceneCBufferData), 0, ShaderDomain::VERTEX, DataUsage::DYNAMIC);
     }
 
     void Shutdown()
@@ -47,22 +52,22 @@ namespace Spike::Renderer
         RenderCommand::SetViewport(0, 0, width, height);
     }
 
-    glm::mat4 projectionMatrix, viewMatrix;
     void BeginScene(EditorCamera& camera)
     {
-        sceneData->ViewProjectionMatrix = camera.GetViewProjection();
-        projectionMatrix = camera.GetProjection();
-        viewMatrix = camera.GetViewMatrix();
+        sceneCBufferData->ViewProjectionMatrix = camera.GetViewProjection();
+        sceneData->ProjectionMatrix = camera.GetProjection();
+        sceneData->ViewMatrix = camera.GetViewMatrix();
     }
 
     void BeginScene(const Camera& camera, const glm::mat4& transform)
     {
-        sceneData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
+        sceneCBufferData->ViewProjectionMatrix = camera.GetProjection() * glm::inverse(transform);
     }
 
     void EndScene()
     {
-        skybox->Render(projectionMatrix, viewMatrix);
+        if (sceneData->Skybox && sceneData->SkyboxActivated)
+            sceneData->Skybox->Render(sceneData->ProjectionMatrix, sceneData->ViewMatrix);
     }
 
     void Submit(Ref<Pipeline> pipeline, Uint size)
@@ -78,18 +83,38 @@ namespace Spike::Renderer
         mesh->GetPipeline()->Bind();
         mesh->GetIndexBuffer()->Bind();
 
-        sceneCbuffer->SetData(&sceneData->ViewProjectionMatrix);
-
+        sceneData->SceneCbuffer->SetData(&(*sceneCBufferData)); //Upload the sceneCBufferData
         for (Submesh& submesh : mesh->GetSubmeshes())
         {
             mesh->GetMaterial()->Bind(submesh.MaterialIndex);
             submesh.CBuffer->SetData(&(transform * submesh.Transform));
-            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex); drawCalls++;
+            RenderCommand::DrawIndexedMesh(submesh.IndexCount, submesh.BaseIndex, submesh.BaseVertex);
+            sceneData->DrawCalls++;
         }
     }
 
-    void UpdateStats() { drawCalls = 0; }
-    Spike::RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
-    size_t GetTotalDrawCallsCount() { return drawCalls; }
+    void UpdateStats()
+    {
+        sceneData->DrawCalls = 0;
+    }
 
+    RendererAPI::API GetAPI()
+    {
+        return RendererAPI::GetAPI();
+    }
+
+    size_t GetTotalDrawCallsCount()
+    {
+        return sceneData->DrawCalls;
+    }
+
+    Ref<Skybox>& GetSkyboxSlot()
+    {
+        return sceneData->Skybox;
+    }
+
+    bool& GetSkyboxActivationBool()
+    {
+        return sceneData->SkyboxActivated;
+    }
 }

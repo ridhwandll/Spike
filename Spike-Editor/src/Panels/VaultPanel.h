@@ -22,7 +22,7 @@ namespace Spike
         VaultPanel(const void* editorLayerPtr);
         ~VaultPanel() = default;
 
-        void OnImGuiRender();
+        void OnImGuiRender(bool* show);
     private:
         void DrawPath(DirectoryEntry& entry);
         Vector<DirectoryEntry> GetFiles(const String& directory);

@@ -11,6 +11,6 @@ namespace Spike
         MaterialPanel() = default;
         ~MaterialPanel() = default;
 
-        void OnImGuiRender(Entity& selectedEntity);
+        void OnImGuiRender(bool* show, Entity& selectedEntity);
     };
 }

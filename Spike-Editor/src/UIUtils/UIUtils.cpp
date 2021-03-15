@@ -417,4 +417,16 @@ namespace Spike::GUI
     }
 
     void EndDockspace() { ImGui::End(); }
+
+    void DrawToolTip(char* label)
+    {
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::BeginTooltip();
+            ImGui::PushTextWrapPos(ImGui::GetFontSize() * 30.0f);
+            ImGui::TextUnformatted(label);
+            ImGui::PopTextWrapPos();
+            ImGui::EndTooltip();
+        }
+    }
 }
