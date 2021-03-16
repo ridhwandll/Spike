@@ -9,7 +9,7 @@ set(INCLUDE_DIRS
     vendor/glad/include
     vendor/stb_image
     vendor/box2D/include
-    vendor/mono/include
+    vendor/SpikeMono/include
     vendor/imgui
     vendor/assimp/include
     vendor/ImGuizmo
@@ -27,7 +27,7 @@ set(LIB_LINKS
     yaml-cpp
     TinyFD
     ${CMAKE_SOURCE_DIR}/Spike/vendor/assimp/lib/assimp-vc142-mt.lib
-    ${CMAKE_SOURCE_DIR}/Spike/vendor/mono/lib/Debug/mono-2.0-sgen.lib
+    ${CMAKE_SOURCE_DIR}/Spike/vendor/SpikeMono/lib/mono-2.0-sgen.lib
     opengl32
 )
 

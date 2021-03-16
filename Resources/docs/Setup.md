@@ -1,7 +1,5 @@
-## Spike engine has C# scripting, so you need mono on your system to run Spike (We don't have a installer yet that will do this automatically for you) Go to the mono [downloads page](https://www.mono-project.com/download/stable/) and grab the latest version for your OS. After you have installed mono on your system you can proceed to the next setups.
-
 # Cloning Spike
-Clone the repository with `git clone --recursive https://github.com/FahimFuad/Spike.git` to clone along with the submodules. If you have already cloned and you want to initialize the submodules, type `git submodule init` and to update the submodules type `git submodule update` in your project directory. You can use other git clients like Gitkraken, Fork etc. It is upto you how you clone it.
+Clone the repository with `git clone --recursive https://github.com/FahimFuad/Spike.git` to clone along with the submodules. If you have already cloned and you want to initialize the submodules, type `git submodule init` and to update the submodules type `git submodule update` in your project directory.You can use Git clients like Gitkraken, Fork etc. It is upto you how you clone it, just be sure to do a *recursive* clone to fetch the submodules.
 
 # Windows Setup
 

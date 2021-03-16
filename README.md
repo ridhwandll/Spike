@@ -21,7 +21,7 @@
 ![Spike](Resources/Screenshots/ScriptingDemo.png)
 
 | Features                                     | Status                   |
-| :---                                         |        :---:             |
+| :---                                         |           :---:          |
 | Console Logging                              | :heavy_check_mark: Done  |
 | Internal Key and Mouse Codes                 | :heavy_check_mark: Done  |
 | Input Polling                                | :heavy_check_mark: Done  |
@@ -40,14 +40,11 @@
 | Playmode and conept of scene runtime         | :heavy_check_mark: Done  |
 | **Vault** system for caching assets          | :heavy_check_mark: Done  |
 | And many more (not listed here)              | :heavy_check_mark: Done  |
-| Material System                              | :hammer_and_pick: Working|
-| Asset Manager                                | :hammer_and_pick: Working|
+| Material System                              | :heavy_check_mark: Done  |
+| Asset Manager                                | :heavy_check_mark: Done  |
 | DX11 Support                                 | :heavy_check_mark: Done  |
-| Vulkan Support                               | :hammer_and_pick: Working|
-| Robust UI, drag and drop support             | :hammer_and_pick: Working|
-| Crossplatform Support                        | :hammer_and_pick: Working|
-| Integrated profiler                          | :hammer_and_pick: Working|
-| And many more to-do (not listed here)        | :hammer_and_pick: Working|
+| OpenGL Support                               | :heavy_check_mark: Done  |
+| Phong Lightning                              | :heavy_check_mark: Done  |
 
 All the above features which are done are tested in **Release** mode
 

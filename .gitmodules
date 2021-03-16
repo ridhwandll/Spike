@@ -1,0 +1,3 @@
+[submodule "Spike/vendor/SpikeMono"]
+	path = Spike/vendor/SpikeMono
+	url = https://github.com/FahimFuad/SpikeMono

@@ -3,6 +3,7 @@
 #include "spkpch.h"
 #include "ScriptEngine.h"
 #include "ScriptRegistry.h"
+#include <filesystem>
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
@@ -69,8 +70,7 @@ namespace Spike
     /* [Spike] Initialized the Mono [Spike] */
     static void InitMono()
     {
-        mono_set_dirs("C:\\Program Files\\Mono\\lib", "C:\\Program Files\\Mono\\etc"); //TODO: Remove
-        mono_set_assemblies_path("Spike/vendor/mono/lib");
+        mono_set_dirs("Spike/vendor/SpikeMono/lib", "Spike/vendor/SpikeMono/etc");
         MonoDomain* domain = mono_jit_init("Spike");
 
         /* [Spike] Register an app domain [Spike] */
@@ -312,7 +312,10 @@ namespace Spike
             cleanup = true;
         }
 
-        s_CoreAssembly = LoadAssembly("ExampleApp/bin/Debug/ScriptEngine.dll");
+        std::filesystem::path dllPath = path;
+        String corePath = dllPath.parent_path().string() + "/ScriptEngine.dll";
+
+        s_CoreAssembly = LoadAssembly(corePath);
         s_CoreAssemblyImage = GetAssemblyImage(s_CoreAssembly);
 
         auto appAssembly = LoadAssembly(path);
